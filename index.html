@@ -570,6 +570,7 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 }
 .plan[data-on="1"] .pick{background:var(--gold);color:var(--ink);border-color:var(--gold)}
 
+.calc.flash{border-color:var(--gold);box-shadow:0 0 0 4px rgba(232,184,75,.18)}
 /* Calculator */
 .calc{
   margin-top:clamp(40px,5vw,68px);border:1px solid var(--line);border-radius:26px;overflow:hidden;
@@ -1916,6 +1917,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     p.addEventListener('click', ()=>selectPlan(p));
     p.addEventListener('keydown', e=>{
       if(e.key==='Enter'||e.key===' '){ e.preventDefault(); selectPlan(p); }
+    });
+    /* 견적내기 버튼은 플랜 선택 후 계산기까지 데려간다 */
+    const pick = $('.pick', p);
+    if(pick) pick.addEventListener('click', e=>{
+      e.stopPropagation();
+      selectPlan(p);
+      goTo($('#calc'));
+      const calc = $('#calc');
+      if(calc){ calc.classList.add('flash'); setTimeout(()=>calc.classList.remove('flash'), 1600); }
     });
   });
 
