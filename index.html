@@ -823,6 +823,16 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 .field textarea{resize:vertical;min-height:104px;line-height:1.6}
 .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239AA3B2' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:16px;padding-right:40px}
 .field select option{background:#0B0F18}
+.form-quote{
+  border:1px solid rgba(232,184,75,.32);background:rgba(232,184,75,.07);
+  border-radius:14px;padding:14px 16px;margin-bottom:16px;transition:box-shadow .5s var(--ease),border-color .5s;
+}
+.form-quote.flash{border-color:var(--gold);box-shadow:0 0 0 4px rgba(232,184,75,.22)}
+.fq-lb{font-family:var(--f-mono);font-size:.56rem;letter-spacing:.18em;color:var(--gold);display:block;margin-bottom:9px}
+.fq-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.fq-row span{font-size:.86rem;font-weight:700;letter-spacing:-.025em}
+.fq-row b{font-size:1.12rem;font-weight:900;letter-spacing:-.04em;color:var(--gold);white-space:nowrap}
+.fq-more{display:block;margin-top:6px;font-size:.74rem;color:var(--txt-mute)}
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:.76rem;color:var(--txt-mute);line-height:1.6;margin:6px 0 18px}
 .consent input{width:15px;height:15px;accent-color:var(--gold);margin-top:2px;flex-shrink:0}
 .form .btn{width:100%;justify-content:center;padding:16px}
@@ -1647,6 +1657,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
             <label for="f-msg">어떤 일을 하고 계신가요?</label>
             <textarea id="f-msg" name="msg" placeholder="예) 행사 진행하는 이벤트 회사인데, 섭외 문의를 받을 수 있는 페이지가 필요합니다. 사진은 몇 장 있어요."></textarea>
           </div>
+          <div class="form-quote" id="formQuote">
+            <span class="fq-lb">함께 전송될 견적</span>
+            <div class="fq-row"><span id="fqPlan">베이직 (반응형 원페이지)</span><b id="fqTotal">100,000원</b></div>
+            <span class="fq-more" id="fqMore">옵션 없음 · VAT 별도</span>
+          </div>
           <label class="consent">
             <input type="checkbox" id="f-agree" required>
             <span>상담 목적의 개인정보(성함·연락처) 수집·이용에 동의합니다. 수집한 정보는 상담 종료 후 파기합니다.</span>
@@ -1961,6 +1976,17 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
 
   const savedRow = $('#savedRow'), savedAmt = $('#savedAmt');
 
+  /* 문의 폼에 "무엇이 함께 전송되는지"를 보여준다 */
+  function syncFormQuote(items, sum){
+    const plan = $('#fqPlan'), total = $('#fqTotal'), more = $('#fqMore');
+    if(!plan) return;
+    plan.textContent  = items[0] ? items[0].name : '';
+    total.textContent = won(sum) + '원';
+    const opts = items.length - 1;
+    more.textContent = (opts > 0 ? '옵션 ' + opts + '개 포함' : '옵션 없음')
+      + ' · VAT 별도 · 부가세 포함 ' + won(Math.round(sum * 1.1)) + '원';
+  }
+
   function render(){
     const items = collect();
     const sum   = items.reduce((a,b)=>a+b.cost, 0);
@@ -1973,6 +1999,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     savedRow.hidden = saved <= 0;
     savedAmt.textContent = won(saved);
     animateTo(sum);
+    syncFormQuote(items, sum);
   }
   syncCare();
   syncOptions();
@@ -2198,6 +2225,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       }
     });
   })();
+
+  /* ---------- 견적 → 문의 폼으로 이어가기 ---------- */
+  const toContact = $('#toContact');
+  if(toContact) toContact.addEventListener('click', e=>{
+    e.preventDefault();
+    goTo($('#contact'));
+    const box = $('#formQuote');
+    if(box){
+      box.classList.add('flash');
+      setTimeout(()=>box.classList.remove('flash'), 1600);
+    }
+    setTimeout(()=>{ const n = $('#f-name'); if(n) n.focus({preventScroll:true}); }, 700);
+  });
 
   /* ---------- 영상 섹션 → 견적 계산기로 담기 ---------- */
   function goTo(el){
