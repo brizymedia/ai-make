@@ -601,6 +601,8 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 .opt input:checked ~ .box{background:var(--gold);border-color:var(--gold)}
 .opt input:checked ~ .box svg{opacity:1;transform:none}
 .opt:has(input:checked){border-color:rgba(232,184,75,.5);background:rgba(232,184,75,.07)}
+/* 선택한 플랜에서 제공하지 않는 옵션은 감춘다 */
+.opt[hidden],.opt-group[hidden]{display:none}
 .opt .info{flex:1;min-width:0}
 .opt .on{font-size:.85rem;font-weight:600;letter-spacing:-.02em;display:block;line-height:1.3}
 .opt .op{font-family:var(--f-mono);font-size:.66rem;color:var(--gold);margin-top:3px;display:block}
@@ -719,12 +721,25 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
   transition:transform .55s var(--ease-2),border-color .4s;isolation:isolate;
 }
 .work:hover{transform:translateY(-7px);border-color:var(--line-2)}
-.work .mesh{position:absolute;inset:0;z-index:-2;transition:transform .8s var(--ease)}
+.work .mesh{
+  position:absolute;inset:0;z-index:-2;background-size:cover;background-position:top center;
+  transition:transform .8s var(--ease),filter .6s var(--ease);
+  filter:saturate(.95) brightness(.9);
+}
+.work:hover .mesh{filter:saturate(1.05) brightness(1)}
 .work:hover .mesh{transform:scale(1.08)}
-.work::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 25%,rgba(7,9,15,.88))}
+.work::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,
+  rgba(7,9,15,.05) 0%,rgba(7,9,15,.16) 22%,rgba(7,9,15,.80) 39%,
+  rgba(7,9,15,.98) 49%,rgba(7,9,15,1) 57%,rgba(7,9,15,1) 100%)}
 .work .wk{font-family:var(--f-mono);font-size:.58rem;letter-spacing:.18em;color:var(--gold);margin-bottom:8px}
 .work h4{font-size:1.08rem;font-weight:800;letter-spacing:-.035em;margin-bottom:5px}
 .work p{font-size:.8rem;color:var(--txt-dim);line-height:1.55}
+.work .shot{
+  position:absolute;top:18px;left:18px;z-index:2;display:inline-flex;align-items:center;gap:6px;
+  padding:5px 11px;border-radius:99px;background:rgba(7,9,15,.62);backdrop-filter:blur(6px);
+  border:1px solid var(--line-2);font-family:var(--f-mono);font-size:.52rem;letter-spacing:.16em;color:var(--txt-dim);
+}
+.work .shot i{width:5px;height:5px;border-radius:50%;background:var(--teal);font-style:normal}
 .work .go{
   position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
   border:1px solid var(--line-2);display:grid;place-items:center;background:rgba(7,9,15,.4);
@@ -868,9 +883,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       <a href="#why">왜 우리인가</a>
       <a href="#service">홈페이지</a>
       <a href="#video">영상제작</a>
-      <a href="#aiclass">AI 클래스</a>
       <a href="#price">요금 · 견적</a>
       <a href="#works">포트폴리오</a>
+      <a href="#aiclass">AI 클래스</a>
       <a href="#faq">FAQ</a>
     </div>
     <a href="tel:1533-7295" class="nav-cta">
@@ -1191,71 +1206,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   </div>
 </section>
 
-<!-- ══════════ AI CLASS ══════════ -->
-<section class="sec aiclass" id="aiclass">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <div>
-        <div class="mono sec-num">04 — AI CLASS</div>
-        <span class="soon"><i></i>COMING SOON · 준비중</span>
-        <h2 class="sec-title">이제는 직접<br><em>만들어 보시겠어요?</em></h2>
-      </div>
-      <p class="sec-sub">
-        맡기는 것도 좋지만, 직접 만들 수 있으면 훨씬 강해집니다.
-        <b style="color:var(--txt)">AI로 홈페이지 만들기</b>와 <b style="color:var(--txt)">AI로 홍보영상 만들기</b>를
-        묶은 실습 클래스를 준비하고 있습니다. 컴퓨터를 잘 모르셔도 됩니다.
-      </p>
-    </div>
-
-    <div class="tracks">
-      <article class="track rv">
-        <div class="track-n">01</div>
-        <h3>AI로 내 홈페이지 만들기</h3>
-        <p>업체에 맡기지 않고, 내 손으로 페이지를 만들고 고치는 법. 코딩은 한 줄도 배우지 않습니다.</p>
-        <ol>
-          <li><span><b>무엇을 보여줄지 정하기</b>손님이 궁금해하는 순서로 페이지 구조 잡기</span></li>
-          <li><span><b>AI로 문구와 이미지 뽑기</b>소개글, 메뉴 설명, 배너 이미지를 대화로 만들기</span></li>
-          <li><span><b>페이지 완성하고 띄우기</b>도메인 연결까지, 실제로 검색되는 상태로</span></li>
-          <li><span><b>혼자 수정하기</b>가격이 바뀌거나 사진을 갈아끼울 때 직접 하기</span></li>
-        </ol>
-      </article>
-
-      <article class="track rv" style="transition-delay:.08s">
-        <div class="track-n">02</div>
-        <h3>AI로 홍보영상 만들기</h3>
-        <p>휴대폰과 노트북만으로 릴스·숏츠를 뽑아내는 과정. 촬영 장비도, 편집 경력도 필요 없습니다.</p>
-        <ol>
-          <li><span><b>15초 대본 쓰기</b>스크롤을 멈추게 하는 첫 3초 만드는 법</span></li>
-          <li><span><b>AI로 장면 만들기</b>찍은 게 없어도 이미지·영상 소스를 생성해서 채우기</span></li>
-          <li><span><b>자막과 내레이션 넣기</b>AI 성우로 목소리 입히고 자막 얹기</span></li>
-          <li><span><b>올리고 반응 보기</b>업로드 시간, 해시태그, 반응 확인하고 다음 편 고치기</span></li>
-        </ol>
-      </article>
-    </div>
-
-    <div class="prep rv">
-      <div>
-        <h4>준비 진행 상황</h4>
-        <div class="psteps">
-          <div class="pstep done"><div class="pdot"></div><div class="pt">커리큘럼 설계</div><div class="ps">완료</div></div>
-          <div class="pstep now"><div class="pdot"></div><div class="pt">교재 · 실습자료 제작</div><div class="ps">진행중</div></div>
-          <div class="pstep"><div class="pdot"></div><div class="pt">1기 수강생 모집</div><div class="ps">오픈 예정</div></div>
-        </div>
-      </div>
-      <div class="prep-cta">
-        <button class="btn btn-gold" type="button" id="classAlert">1기 모집 알림 받기</button>
-        <small>사전 신청하신 분께 먼저 안내드리고,<br>1기 한정 수강료로 모십니다.<br><br>정규 클래스 오픈 전이라도 <b style="color:var(--gold)">1:1 맞춤 강의</b>는<br>지금 바로 신청하실 수 있습니다.</small>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ══════════ PRICING + CALCULATOR ══════════ -->
 <section class="sec pricing" id="price">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">05 — PRICING</div>
+        <div class="mono sec-num">04 — PRICING</div>
         <h2 class="sec-title">필요한 만큼만,<br><em>정직하게.</em></h2>
       </div>
       <p class="sec-sub">플랜을 고르고 옵션을 켜보세요. 계산기가 실시간으로 총액을 알려드립니다. 숨은 비용은 없습니다.</p>
@@ -1271,8 +1227,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>반응형 원페이지 (섹션 6개)</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>모바일 · PC 완벽 대응</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>전화 · 카톡 · 지도 버튼 연결</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>무료 호스팅 1년 · SSL 보안</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>오픈 후 30일 무상 수정</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>월 호스팅·관리비 1만원 · SSL 보안</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>월 수정 2회 포함</li>
         </ul>
         <button class="pick" type="button">이 플랜으로 견적내기</button>
       </article>
@@ -1285,6 +1241,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <div class="plan-note">VAT 별도 · 10영업일 오픈</div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><b>베이직 전체 포함</b> + 5페이지 구성</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>월 호스팅·관리비 <b>2만원</b> · SSL 보안</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>맞춤 디자인 시안 2안 제안</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>스크롤 애니메이션 · 갤러리</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>문의 · 예약 폼 + 알림 연동</li>
@@ -1301,6 +1258,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <div class="plan-note">VAT 별도 · 일정 협의</div>
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg><b>고급형 전체 포함</b> + 페이지 무제한 설계</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>월 호스팅·관리비 <b>5만원</b> · SSL 보안</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>브랜드 컨설팅 · 로고 리터치</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>공지 · 게시판 · 자료실 관리자 페이지</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>직접 수정 가능한 CMS 세팅 + 교육</li>
@@ -1320,32 +1278,37 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <div class="opt-group">
           <span class="opt-label">기능 옵션</span>
           <div class="opts">
-            <label class="opt" id="optDomainRow">
-              <input type="checkbox" id="optDomain" data-addon="도메인 등록 + 연결" data-cost="20000">
+            <label class="opt" id="optDomainRow" data-plans="basic premium enterprise">
+              <input type="checkbox" id="optDomain" data-addon="도메인 등록 + 연결" data-cost="30000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-              <span class="info"><span class="on">도메인 등록 + 연결</span><span class="op">+20,000원</span></span>
-            </label>
-            <label class="opt">
+              <span class="info"><span class="on">도메인 등록 + 연결</span><span class="op">+30,000원</span></span>
+            </label>
+            <label class="opt" data-plans="basic">
+              <input type="checkbox" data-addon="갤러리 + 인스타·블로그 자동 연동" data-cost="50000">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">갤러리 + 인스타·블로그 자동 연동</span><span class="op">+50,000원</span></span>
+            </label>
+            <label class="opt" data-plans="basic">
+              <input type="checkbox" data-addon="네이버·구글 AI 검색 세팅" data-cost="50000">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">네이버 · 구글 AI 검색 세팅</span><span class="op">+50,000원</span></span>
+            </label>
+            <label class="opt" data-plans="basic">
               <input type="checkbox" data-addon="온라인 예약·신청 시스템" data-cost="150000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">온라인 예약 · 신청 시스템</span><span class="op">+150,000원</span></span>
-            </label>
-            <label class="opt">
-              <input type="checkbox" data-addon="네이버·구글 SEO 세팅" data-cost="100000">
-              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
-              <span class="info"><span class="on">네이버 · 구글 SEO 세팅</span><span class="op">+100,000원</span></span>
-            </label>
-            <label class="opt">
+            </label>
+            <label class="opt" data-plans="premium enterprise">
               <input type="checkbox" data-addon="쇼핑몰·결제 연동" data-cost="300000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">쇼핑몰 · 결제 연동</span><span class="op">+300,000원</span></span>
-            </label>
-            <label class="opt">
+            </label>
+            <label class="opt" data-plans="premium enterprise">
               <input type="checkbox" data-addon="AI 챗봇 상담" data-cost="200000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">AI 챗봇 상담 설치</span><span class="op">+200,000원</span></span>
-            </label>
-            <label class="opt">
+            </label>
+            <label class="opt" data-plans="premium enterprise">
               <input type="checkbox" data-addon="다국어(영·중·일)" data-cost="200000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">다국어 (영 · 중 · 일)</span><span class="op">+200,000원</span></span>
@@ -1356,12 +1319,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <div class="opt-group">
           <span class="opt-label">브랜드 · 콘텐츠 옵션</span>
           <div class="opts">
-            <label class="opt">
+            <label class="opt" data-plans="basic premium">
               <input type="checkbox" data-addon="로고 + 브랜드 키트" data-cost="150000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">로고 + 브랜드 키트 제작</span><span class="op">+150,000원</span></span>
             </label>
-            <label class="opt">
+            <label class="opt" data-plans="basic premium enterprise">
               <input type="checkbox" data-addon="상세 촬영 대행" data-cost="250000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">현장 사진 촬영 대행</span><span class="op">+250,000원</span></span>
@@ -1372,7 +1335,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <div class="opt-group">
           <span class="opt-label">수량 선택 옵션</span>
           <div class="opts">
-            <div class="opt" data-qty-row>
+            <div class="opt" data-qty-row data-plans="basic premium">
               <span class="info"><span class="on">페이지 추가</span><span class="op">1P당 +30,000원</span></span>
               <div class="stepper" data-qty="page" data-addon="페이지 추가" data-cost="30000" data-unit="P">
                 <button type="button" data-step="-1" aria-label="페이지 추가 수량 감소">−</button>
@@ -1380,7 +1343,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
                 <button type="button" data-step="1" aria-label="페이지 추가 수량 증가">+</button>
               </div>
             </div>
-            <div class="opt" data-qty-row>
+            <div class="opt" data-qty-row data-plans="basic premium enterprise">
               <span class="info"><span class="on">숏폼 홍보영상</span><span class="op">30초 1편당 +100,000원</span></span>
               <div class="stepper" data-qty="video" data-addon="숏폼 홍보영상" data-cost="100000" data-unit="편">
                 <button type="button" data-step="-1" aria-label="홍보영상 수량 감소">−</button>
@@ -1388,7 +1351,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
                 <button type="button" data-step="1" aria-label="홍보영상 수량 증가">+</button>
               </div>
             </div>
-            <div class="opt" data-qty-row>
+            <div class="opt" data-qty-row data-plans="basic premium enterprise">
               <span class="info"><span class="on">AI 활용 1:1 강의</span><span class="op">2시간당 +100,000원</span></span>
               <div class="stepper" data-qty="class" data-addon="AI 1:1 강의" data-cost="100000" data-unit="회">
                 <button type="button" data-step="-1" aria-label="강의 수량 감소">−</button>
@@ -1446,7 +1409,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">06 — PROCESS</div>
+        <div class="mono sec-num">05 — PROCESS</div>
         <h2 class="sec-title">전화 한 통이면<br><em>다 됩니다.</em></h2>
       </div>
       <p class="sec-sub">준비물은 없습니다. 사진이 없어도, 문구가 없어도 괜찮습니다. 통화하면서 함께 만들어 갑니다.</p>
@@ -1455,7 +1418,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       <div class="step rv"><div class="sn">01</div><h4>상담 · 견적</h4><p>1533-7295로 전화 주시거나 문의를 남겨주세요. 업종과 목적을 듣고 딱 맞는 플랜을 제안드립니다.</p><span class="dur">당일 회신</span></div>
       <div class="step rv" style="transition-delay:.08s"><div class="sn">02</div><h4>자료 정리</h4><p>가지고 계신 사진·문구만 보내주세요. 부족한 부분은 저희가 촬영·작성으로 채웁니다.</p><span class="dur">1~2일</span></div>
       <div class="step rv" style="transition-delay:.16s"><div class="sn">03</div><h4>제작 · 시안 조율</h4><p>실제 링크로 보면서 함께 다듬습니다. 오픈 전까지 시안을 충분히 조율해 드립니다.</p><span class="dur">3~7일</span></div>
-      <div class="step rv" style="transition-delay:.24s"><div class="sn">04</div><h4>오픈 · 사후관리</h4><p>도메인 연결과 검색 등록까지 마치고 오픈. 오픈 후 30일간 무상 수정해 드립니다.</p><span class="dur">오픈 후 30일</span></div>
+      <div class="step rv" style="transition-delay:.24s"><div class="sn">04</div><h4>오픈 · 사후관리</h4><p>도메인 연결과 검색 등록까지 마치고 오픈. 이후 월 관리 안에서 수정 2회씩 지원해 드립니다.</p><span class="dur">월 2회 수정</span></div>
     </div>
   </div>
 </section>
@@ -1465,14 +1428,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">07 — WORKS</div>
+        <div class="mono sec-num">06 — WORKS</div>
         <h2 class="sec-title">이런 분들이<br><em>함께하고 있습니다.</em></h2>
       </div>
       <p class="sec-sub">업종별로 필요한 구성은 전부 다릅니다. 아래 유형 중 가까운 것을 알려주시면 그 구조부터 잡아드립니다.</p>
     </div>
     <div class="works-grid">
       <a class="work rv" href="https://xn--wk0bn7yi8h24iszc.com/jisuyang/" target="_blank" rel="noopener noreferrer" aria-label="지수양 사이트 새 창에서 열기">
-        <div class="mesh" style="background:radial-gradient(120% 100% at 20% 10%,#2A3550,#0B0F18 70%),linear-gradient(140deg,rgba(232,184,75,.35),transparent 60%)"></div>
+        <div class="mesh" style="background-image:url(works/1.jpg)"></div>
+        <span class="shot"><i></i>LIVE SITE</span>
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
         <div class="wk">SINGER · ARTIST</div>
         <h4>가수 · 아티스트 프로필</h4>
@@ -1480,7 +1444,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <span class="wsite">지수양<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
       <a class="work rv" href="https://www.xn--el3bx2ohi64bba144lgmbdzd.com/" target="_blank" rel="noopener noreferrer" aria-label="YM토탈이벤트 사이트 새 창에서 열기" style="transition-delay:.07s">
-        <div class="mesh" style="background:radial-gradient(120% 100% at 80% 15%,#1E4A46,#0B0F18 70%),linear-gradient(140deg,rgba(63,211,198,.32),transparent 60%)"></div>
+        <div class="mesh" style="background-image:url(works/2.jpg)"></div>
+        <span class="shot"><i></i>LIVE SITE</span>
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
         <div class="wk">EVENT · FESTIVAL</div>
         <h4>이벤트 · 행사 페이지</h4>
@@ -1488,7 +1453,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <span class="wsite">YM토탈이벤트<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
       <a class="work rv" href="https://brizymedia.github.io/banilla-hair/" target="_blank" rel="noopener noreferrer" aria-label="바닐라 헤어 사이트 새 창에서 열기" style="transition-delay:.14s">
-        <div class="mesh" style="background:radial-gradient(120% 100% at 50% 10%,#4A2C2A,#0B0F18 70%),linear-gradient(140deg,rgba(255,107,74,.3),transparent 60%)"></div>
+        <div class="mesh" style="background-image:url(works/3.jpg)"></div>
+        <span class="shot"><i></i>LIVE SITE</span>
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
         <div class="wk">LOCAL STORE</div>
         <h4>동네 매장 · 식당</h4>
@@ -1496,7 +1462,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <span class="wsite">바닐라 헤어<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
       <a class="work rv" href="https://brizymedia.github.io/parkjunhwa-music/" target="_blank" rel="noopener noreferrer" aria-label="박준화실용음악학원 사이트 새 창에서 열기" style="transition-delay:.21s">
-        <div class="mesh" style="background:radial-gradient(120% 100% at 25% 80%,#2F3B22,#0B0F18 70%),linear-gradient(140deg,rgba(232,184,75,.22),transparent 60%)"></div>
+        <div class="mesh" style="background-image:url(works/4.jpg)"></div>
+        <span class="shot"><i></i>LIVE SITE</span>
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
         <div class="wk">STUDIO · ACADEMY</div>
         <h4>공방 · 학원 · 스튜디오</h4>
@@ -1504,7 +1471,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <span class="wsite">박준화실용음악학원<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
       <a class="work rv" href="https://tylife.netlify.app/" target="_blank" rel="noopener noreferrer" aria-label="TY 헬스케어 사이트 새 창에서 열기" style="transition-delay:.28s">
-        <div class="mesh" style="background:radial-gradient(120% 100% at 70% 85%,#243A55,#0B0F18 70%),linear-gradient(140deg,rgba(63,211,198,.24),transparent 60%)"></div>
+        <div class="mesh" style="background-image:url(works/5.jpg)"></div>
+        <span class="shot"><i></i>LIVE SITE</span>
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
         <div class="wk">COMPANY · ASSOCIATION</div>
         <h4>기업 · 협회 사이트</h4>
@@ -1512,13 +1480,73 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <span class="wsite">TY 헬스케어<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
       <a class="work rv" href="https://brizymedia.github.io/donghwa/#apply" target="_blank" rel="noopener noreferrer" aria-label="맞춤동화 구독서비스 사이트 새 창에서 열기" style="transition-delay:.35s">
-        <div class="mesh" style="background:radial-gradient(120% 100% at 40% 20%,#3A2A4E,#0B0F18 70%),linear-gradient(140deg,rgba(255,107,74,.22),transparent 60%)"></div>
+        <div class="mesh" style="background-image:url(works/6.jpg)"></div>
+        <span class="shot"><i></i>LIVE SITE</span>
         <span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
         <div class="wk">LANDING · PROMOTION</div>
         <h4>단발성 홍보 랜딩</h4>
         <p>모집·공연·프로모션 기간에만 쓰는 초저가 원페이지</p>
         <span class="wsite">맞춤동화 구독서비스<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ AI CLASS ══════════ -->
+<section class="sec aiclass" id="aiclass">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div>
+        <div class="mono sec-num">07 — AI CLASS</div>
+        <span class="soon"><i></i>COMING SOON · 준비중</span>
+        <h2 class="sec-title">이제는 직접<br><em>만들어 보시겠어요?</em></h2>
+      </div>
+      <p class="sec-sub">
+        맡기는 것도 좋지만, 직접 만들 수 있으면 훨씬 강해집니다.
+        <b style="color:var(--txt)">AI로 홈페이지 만들기</b>와 <b style="color:var(--txt)">AI로 홍보영상 만들기</b>를
+        묶은 실습 클래스를 준비하고 있습니다. 컴퓨터를 잘 모르셔도 됩니다.
+      </p>
+    </div>
+
+    <div class="tracks">
+      <article class="track rv">
+        <div class="track-n">01</div>
+        <h3>AI로 내 홈페이지 만들기</h3>
+        <p>업체에 맡기지 않고, 내 손으로 페이지를 만들고 고치는 법. 코딩은 한 줄도 배우지 않습니다.</p>
+        <ol>
+          <li><span><b>무엇을 보여줄지 정하기</b>손님이 궁금해하는 순서로 페이지 구조 잡기</span></li>
+          <li><span><b>AI로 문구와 이미지 뽑기</b>소개글, 메뉴 설명, 배너 이미지를 대화로 만들기</span></li>
+          <li><span><b>페이지 완성하고 띄우기</b>도메인 연결까지, 실제로 검색되는 상태로</span></li>
+          <li><span><b>혼자 수정하기</b>가격이 바뀌거나 사진을 갈아끼울 때 직접 하기</span></li>
+        </ol>
+      </article>
+
+      <article class="track rv" style="transition-delay:.08s">
+        <div class="track-n">02</div>
+        <h3>AI로 홍보영상 만들기</h3>
+        <p>휴대폰과 노트북만으로 릴스·숏츠를 뽑아내는 과정. 촬영 장비도, 편집 경력도 필요 없습니다.</p>
+        <ol>
+          <li><span><b>15초 대본 쓰기</b>스크롤을 멈추게 하는 첫 3초 만드는 법</span></li>
+          <li><span><b>AI로 장면 만들기</b>찍은 게 없어도 이미지·영상 소스를 생성해서 채우기</span></li>
+          <li><span><b>자막과 내레이션 넣기</b>AI 성우로 목소리 입히고 자막 얹기</span></li>
+          <li><span><b>올리고 반응 보기</b>업로드 시간, 해시태그, 반응 확인하고 다음 편 고치기</span></li>
+        </ol>
+      </article>
+    </div>
+
+    <div class="prep rv">
+      <div>
+        <h4>준비 진행 상황</h4>
+        <div class="psteps">
+          <div class="pstep done"><div class="pdot"></div><div class="pt">커리큘럼 설계</div><div class="ps">완료</div></div>
+          <div class="pstep now"><div class="pdot"></div><div class="pt">교재 · 실습자료 제작</div><div class="ps">진행중</div></div>
+          <div class="pstep"><div class="pdot"></div><div class="pt">1기 수강생 모집</div><div class="ps">오픈 예정</div></div>
+        </div>
+      </div>
+      <div class="prep-cta">
+        <button class="btn btn-gold" type="button" id="classAlert">1기 모집 알림 받기</button>
+        <small>사전 신청하신 분께 먼저 안내드리고,<br>1기 한정 수강료로 모십니다.<br><br>정규 클래스 오픈 전이라도 <b style="color:var(--gold)">1:1 맞춤 강의</b>는<br>지금 바로 신청하실 수 있습니다.</small>
+      </div>
     </div>
   </div>
 </section>
@@ -1536,7 +1564,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     <div class="faq-list rv">
       <div class="faq-item">
         <button class="faq-q" type="button">정말 10만원이면 끝인가요? 숨은 비용은 없나요?</button>
-        <div class="faq-a"><p>네, 베이직 플랜은 <b>제작비 10만원(VAT 별도)</b>이 전부입니다. 호스팅과 SSL 보안은 1년간 무료로 포함되고, 오픈 후 30일간 수정도 무상입니다. 추가 비용이 생기는 경우는 위 계산기에 있는 <b>옵션을 직접 선택하셨을 때뿐</b>이며, 상담 단계에서 최종 금액을 확정한 뒤에 진행합니다.</p></div>
+        <div class="faq-a"><p>베이직 플랜의 <b>제작비는 10만원(VAT 별도)</b>이고, 오픈 후에는 <b>월 1만원의 호스팅·관리비</b>가 듭니다. 이 월 비용에 SSL 보안과 <b>매달 수정 2회</b>가 포함되어 있어 따로 붙는 항목이 없습니다. 그 밖에 비용이 생기는 경우는 위 계산기에 있는 <b>옵션을 직접 선택하셨을 때뿐</b>이며, 상담 단계에서 최종 금액을 확정한 뒤에 진행합니다.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" type="button">사진도 없고 무슨 내용을 넣어야 할지 모르겠어요.</button>
@@ -1548,7 +1576,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       </div>
       <div class="faq-item">
         <button class="faq-q" type="button">나중에 내용을 직접 바꿀 수 있나요?</button>
-        <div class="faq-a"><p>가능합니다. 고급형 이상은 직접 수정할 수 있는 관리 화면을 세팅해 드리고, 사용법도 알려드립니다. 컴퓨터가 어려우신 분들은 <b>연간 케어팩</b>으로 맡겨 주시면 저희가 대신 수정해 드립니다. 도메인 관리까지 묶어 고급형 30만원 · 기업형 50만원에 1년간 관리해 드립니다. AI 강의를 들으시면 직접 관리하시는 것도 어렵지 않습니다.</p></div>
+        <div class="faq-a"><p>가능합니다. 고급형 이상은 직접 수정할 수 있는 관리 화면을 세팅해 드리고, 사용법도 알려드립니다. 컴퓨터가 어려우신 분들은 <b>연간 케어팩</b>으로 맡겨 주시면 저희가 대신 수정해 드립니다. 도메인 관리까지 묶어 고급형 20만원 · 기업형 50만원에 1년간 관리해 드립니다. AI 강의를 들으시면 직접 관리하시는 것도 어렵지 않습니다.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" type="button">홈페이지만 있으면 손님이 오나요?</button>
@@ -1796,9 +1824,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
 
   /* 연간 케어팩 — 플랜별 단가가 다르고, 도메인이 포함되어 있다 */
   const CARE = {
-    basic:      { list:140000, price:110000, monthly:10000, name:'베이직 연간 케어팩', note:'' },
-    premium:    { list:380000, price:300000, monthly:30000, name:'고급형 연간 케어팩', note:'' },
-    enterprise: { list:620000, price:500000, monthly:50000, name:'기업형 연간 케어팩', note:' · 무상 1개월 종료 후 시작' }
+    basic:      { list:150000, price:110000, monthly:10000, name:'베이직 연간 케어팩', note:'' },
+    premium:    { list:270000, price:200000, monthly:20000, name:'고급형 연간 케어팩', note:'' },
+    enterprise: { list:630000, price:500000, monthly:50000, name:'기업형 연간 케어팩', note:' · 무상 1개월 종료 후 시작' }
   };
   const careInput  = $('#careInput');
   const carePack   = $('#carePack');
@@ -1814,8 +1842,28 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     domainIn.disabled = bundled;
     domainRow.classList.toggle('is-locked', bundled);
     const op = $('.op', domainRow);
-    op.textContent = bundled ? '케어팩에 포함' : '+20,000원';
+    op.textContent = bundled ? '케어팩에 포함' : '+30,000원';
     op.classList.toggle('free', bundled);
+  }
+
+  /* 플랜이 이미 포함하거나 해당되지 않는 옵션은 감추고, 선택 상태도 해제한다 */
+  function syncOptions(){
+    const key = planKey();
+    $$('.opt[data-plans]').forEach(o=>{
+      const on = o.dataset.plans.split(' ').includes(key);
+      o.hidden = !on;
+      if(!on){
+        const cb = $('input[type=checkbox]', o);
+        if(cb) cb.checked = false;
+        const q = $('[data-q]', o);
+        if(q) q.textContent = '0';
+        o.style.borderColor = ''; o.style.background = '';
+      }
+    });
+    $$('.opt-group').forEach(g=>{
+      const list = $$('.opt[data-plans]', g);
+      if(list.length) g.hidden = list.every(o=>o.hidden);
+    });
   }
 
   function syncCare(){
@@ -1842,6 +1890,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     plans.forEach(p=>{ p.dataset.on = '0'; p.setAttribute('aria-pressed','false'); });
     el.dataset.on = '1'; el.setAttribute('aria-pressed','true');
     syncCare();
+    syncOptions();
     render();
   }
   plans.forEach(p=>{
@@ -1871,10 +1920,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const plan = plans.find(p=>p.dataset.on==='1') || plans[0];
     const items = [{ name: PLAN_LABEL[plan.dataset.plan], cost:+plan.dataset.price, base:true }];
     $$('.opt input[type=checkbox]:checked').forEach(c=>{
-      if(c.disabled) return;
+      if(c.disabled || c.closest('.opt').hidden) return;
       items.push({ name:c.dataset.addon, cost:+c.dataset.cost });
     });
     qtyRows.forEach(row=>{
+      if(row.closest('.opt').hidden) return;
       const q = +$('[data-q]',row).textContent;
       if(q>0) items.push({ name: row.dataset.addon + ' × ' + q + row.dataset.unit, cost:+row.dataset.cost * q });
     });
@@ -1925,6 +1975,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     animateTo(sum);
   }
   syncCare();
+  syncOptions();
   render();
 
   /* ---------- estimate text ---------- */
