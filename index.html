@@ -1643,6 +1643,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
             </div>
           </div>
           <div class="field">
+            <label for="f-email">이메일 <span style="color:var(--txt-mute);letter-spacing:0">(선택 · 견적서 받으실 주소)</span></label>
+            <input type="email" id="f-email" name="email" placeholder="name@example.com" inputmode="email" autocomplete="email">
+          </div>
+          <div class="field">
             <label for="f-type">필요한 서비스</label>
             <select id="f-type" name="type">
               <option value="홈페이지 제작">홈페이지 제작</option>
@@ -1664,7 +1668,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           </div>
           <label class="consent">
             <input type="checkbox" id="f-agree" required>
-            <span>상담 목적의 개인정보(성함·연락처) 수집·이용에 동의합니다. 수집한 정보는 상담 종료 후 파기합니다.</span>
+            <span>상담 목적의 개인정보(성함·연락처·이메일) 수집·이용에 동의합니다. 수집한 정보는 상담 종료 후 파기합니다.</span>
           </label>
           <button type="submit" class="btn btn-gold">
             문자로 상담 신청하기
@@ -2090,12 +2094,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const name = $('#f-name').value.trim();
     const tel  = $('#f-tel').value.trim();
     const type = $('#f-type').value;
+    const email = $('#f-email').value.trim();
     const msg  = $('#f-msg').value.trim();
     const agree= $('#f-agree').checked;
 
     if(!name || !tel){
       note.innerHTML = '<span style="color:#FF6B4A">성함과 연락처를 입력해 주세요.</span>';
       (!name ? $('#f-name') : $('#f-tel')).focus();
+      return;
+    }
+    if(email && !(email.indexOf('@') > 0 && email.lastIndexOf('.') > email.indexOf('@') + 1 && !email.includes(' '))){
+      note.innerHTML = '<span style="color:#FF6B4A">이메일 형식을 확인해 주세요.</span>';
+      $('#f-email').focus();
       return;
     }
     if(!agree){
@@ -2107,6 +2117,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       '[큰길브리지 상담 신청]\n' +
       '성함/상호: ' + name + '\n' +
       '연락처: ' + tel + '\n' +
+      (email ? '이메일: ' + email + '\n' : '') +
       '필요 서비스: ' + type + '\n' +
       (msg ? '문의 내용: ' + msg + '\n' : '') +
       '\n' + estimateText();
