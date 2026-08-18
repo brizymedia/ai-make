@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# AI 검색·요약 크롤러 명시 허용
+User-agent: GPTBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Yeti
+Allow: /
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.ai-make.co.kr/sitemap.xml
