@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글쓰기 도구 — 갤러리 · 블로그 · 인스타 자동 작성 | 큰길브리지</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gallery.css">
+<style>
+  .tool{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,56px) var(--pad) 90px}
+  .tool h1{font-size:clamp(1.5rem,3.6vw,2.2rem);font-weight:800;letter-spacing:-.045em;margin:10px 0 8px}
+  .tool > p.sub{color:var(--txt-dim);margin-bottom:28px;max-width:60ch;line-height:1.75}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:880px){.grid2{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:18px;padding:22px;background:rgba(237,234,227,.022)}
+  .card-t{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.03em;margin-bottom:16px}
+  .card-t .n{font-family:var(--f-mono);font-size:.62rem;color:var(--gold);padding:3px 8px;border:1px solid rgba(232,184,75,.35);border-radius:99px}
+  .f{display:block;font-family:var(--f-mono);font-size:.58rem;letter-spacing:.16em;color:var(--txt-mute);margin:14px 0 6px}
+  .f:first-of-type{margin-top:0}
+  input[type=text],input[type=date],select,textarea{
+    width:100%;background:rgba(7,9,15,.55);border:1px solid var(--line);border-radius:11px;padding:11px 13px;
+    font:inherit;font-size:.9rem;color:var(--txt);outline:none;transition:border-color .3s}
+  input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+  textarea{resize:vertical;min-height:80px;line-height:1.6}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239AA3B2' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:15px;padding-right:36px}
+  select option{background:#0B0F18}
+  .kind{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .kind label{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:all .3s}
+  .kind label:hover{border-color:var(--line-2)}
+  .kind label:has(input:checked){border-color:rgba(232,184,75,.55);background:rgba(232,184,75,.08)}
+  .kind input{margin-top:3px;accent-color:var(--gold)}
+  .kind b{display:block;font-size:.86rem;letter-spacing:-.02em}
+  .kind small{display:block;color:var(--txt-mute);font-size:.72rem;line-height:1.4;margin-top:2px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:99px;border:1px solid transparent;font:inherit;font-weight:800;font-size:.88rem;cursor:pointer;letter-spacing:-.02em;transition:all .3s var(--ease-2)}
+  .btn-gold{background:var(--gold);color:var(--ink)}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 30px -12px rgba(232,184,75,.7)}
+  .btn-sub{background:transparent;color:var(--txt);border-color:var(--line-2);padding:8px 14px;font-size:.78rem;font-weight:700}
+  .btn-sub:hover{border-color:var(--gold);color:var(--gold)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .out{margin-top:26px}
+  .out[hidden]{display:none}
+  .detect{font-size:.8rem;color:var(--txt-dim);padding:10px 14px;border-radius:10px;background:rgba(63,211,198,.07);border:1px solid rgba(63,211,198,.25);margin-bottom:18px;line-height:1.6}
+  .detect b{color:var(--teal)}
+  .titles{display:flex;flex-direction:column;gap:7px}
+  .titles div{display:flex;gap:8px;align-items:center}
+  .titles input{flex:1;padding:9px 12px;font-size:.84rem}
+  .cap{font-family:var(--f-body);font-size:.86rem;line-height:1.7;min-height:200px}
+  .cap.tall{min-height:420px}
+  .row-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .row-h .f{margin:14px 0 6px}
+  .hint{font-size:.76rem;color:var(--txt-mute);line-height:1.7;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .hint b{color:var(--txt-dim)}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--ink);padding:11px 18px;border-radius:99px;font-weight:800;font-size:.86rem;opacity:0;pointer-events:none;transition:all .35s var(--ease);z-index:99}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  code{font-family:var(--f-mono);font-size:.78rem;background:rgba(237,234,227,.06);padding:2px 6px;border-radius:5px}
+</style>
+</head>
+<body>
+
+<nav class="gnav">
+  <div class="gnav-in">
+    <a href="../" class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M2 30 C 10 12, 30 12, 38 30" stroke="#E8B84B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M2 30 H38" stroke="#3FD3C6" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M11 30 V20.5 M20 30 V17 M29 30 V20.5" stroke="#EDEAE3" stroke-opacity=".45" stroke-width="1.3"/>
+        <circle cx="20" cy="17" r="2.6" fill="#E8B84B"/>
+      </svg>
+      <span class="brand-txt"><span class="brand-ko">큰길브리지</span><span class="brand-en">WRITE TOOL</span></span>
+    </a>
+    <div class="gnav-links"><a href="./">사례 · 소식 목록</a><a href="../">홈</a></div>
+  </div>
+</nav>
+
+<main class="tool">
+  <div class="mono">GALLERY · BLOG · INSTAGRAM</div>
+  <h1>글쓰기 도구</h1>
+  <p class="sub">사례 정보만 넣으면 <b>갤러리 글(HTML) · 네이버 블로그 글 · 인스타 문구</b>를 한 번에 만듭니다. 지역과 서비스를 자동으로 감지해 검색 키워드가 자연스럽게 들어갑니다. 이 페이지는 검색에 노출되지 않습니다.</p>
+
+  <div class="grid2">
+    <!-- ── 입력 ── -->
+    <section class="card">
+      <div class="card-t"><span class="n">01</span>사례 정보</div>
+
+      <label class="f">글 유형</label>
+      <div class="kind">
+        <label><input type="radio" name="kind" value="web" checked><span><b>홈페이지 제작 사례</b><small>매장·가수·행사 홈페이지를 만든 이야기</small></span></label>
+        <label><input type="radio" name="kind" value="video"><span><b>홍보영상 · 쇼츠 사례</b><small>릴스·쇼츠·유튜브 영상 제작기</small></span></label>
+        <label><input type="radio" name="kind" value="event"><span><b>행사영상 사례</b><small>축제·공연·체육대회 촬영·편집</small></span></label>
+        <label><input type="radio" name="kind" value="edu"><span><b>강의 · 팁</b><small>AI·유튜브 강의 후기, 소상공인 홍보 팁</small></span></label>
+      </div>
+
+      <label class="f">고객 상호 · 사례 이름 <span style="color:var(--coral)">*</span></label>
+      <input type="text" id="in-name" placeholder="예) 여수 돌산 카페 바다뷰">
+      <label class="f">지역 · 장소</label>
+      <input type="text" id="in-place" placeholder="예) 여수 돌산읍 (문장에 지역명이 있으면 자동 감지)">
+      <label class="f">날짜</label>
+      <input type="date" id="in-date">
+      <label class="f">업종 · 대상</label>
+      <select id="in-biz">
+        <option value="">선택 (자동 감지 우선)</option>
+        <option>카페 · 식당</option><option>미용실 · 뷰티</option><option>학원 · 공방</option><option>가수 · 아티스트</option>
+        <option>이벤트 · 행사 회사</option><option>펜션 · 숙박</option><option>병원 · 의원</option><option>기업 · 협회</option><option>1인 사업자 · 프리랜서</option>
+      </select>
+      <label class="f">무엇을 어떻게 했나요 (2~4문장, 그날 이야기)</label>
+      <textarea id="in-desc" placeholder="예) 사장님이 인스타 프로필 링크에 걸 홈페이지가 필요하다고 하셔서, 메뉴·위치·예약 버튼을 한 화면에 담았습니다. 사진은 휴대폰으로 찍어 보내주신 걸 그대로 썼고, 3일 만에 오픈했습니다."></textarea>
+      <label class="f">고객 한마디 (선택)</label>
+      <input type="text" id="in-quote" placeholder='예) "손님들이 링크 눌러보고 예약한다고 하네요"'>
+      <label class="f">결과 · 숫자 (선택)</label>
+      <input type="text" id="in-result" placeholder="예) 오픈 후 첫 주 인스타 프로필 클릭 120회 / 예약 문의 7건">
+
+      <div class="actions">
+        <button class="btn btn-gold" id="go">글 만들기 →</button>
+        <button class="btn btn-sub" id="reset">초기화</button>
+      </div>
+      <p class="hint"><b>팁</b> · 상호에 지역명이 들어가면 제목이 훨씬 잘 걸립니다. 매번 같은 문장이면 저품질로 볼 수 있으니 "그날 이야기" 칸은 꼭 직접 쓰세요. 숫자가 있으면 넣으세요 — 검색과 AI가 제일 좋아하는 재료입니다.</p>
+    </section>
+
+    <!-- ── 결과 ── -->
+    <section class="card">
+      <div class="card-t"><span class="n">02</span>결과</div>
+      <div id="out" hidden>
+        <div class="detect" id="detect"></div>
+
+        <div class="row-h"><label class="f">제목 후보 (하나 골라 복사)</label></div>
+        <div class="titles" id="titles"></div>
+
+        <div class="row-h"><label class="f">네이버 블로그 본문 (「― 사진 ―」 자리에 사진)</label><button class="btn btn-sub" data-copy="cap-blog">복사</button></div>
+        <textarea class="cap tall" id="cap-blog" readonly></textarea>
+
+        <div class="row-h"><label class="f">인스타그램 문구</label><button class="btn btn-sub" data-copy="cap-insta">복사</button></div>
+        <textarea class="cap" id="cap-insta" readonly></textarea>
+
+        <div class="row-h"><label class="f">갤러리 글 HTML (posts/ 에 저장)</label><button class="btn btn-sub" data-copy="cap-html">복사</button></div>
+        <textarea class="cap" id="cap-html" readonly style="font-family:var(--f-mono);font-size:.72rem"></textarea>
+        <div class="actions">
+          <button class="btn btn-gold" id="dl-html">HTML 파일 내려받기</button>
+          <button class="btn btn-sub" data-copy="cap-card">목록 카드 복사</button>
+        </div>
+        <textarea class="cap" id="cap-card" readonly style="font-family:var(--f-mono);font-size:.72rem;min-height:120px;margin-top:10px"></textarea>
+
+        <p class="hint">
+          <b>갤러리에 올리는 순서</b><br>
+          1. 「HTML 파일 내려받기」 → <code>gallery/posts/</code> 폴더에 저장 (파일명 그대로)<br>
+          2. 「목록 카드 복사」 → <code>gallery/index.html</code> 의 <code>&lt;div class="glist"&gt;</code> 맨 위에 붙여넣기<br>
+          3. <code>node build-sitemap.js</code> 실행 후 커밋·푸시<br>
+          또는 이 결과를 저에게 주시면 제가 올려드립니다.
+        </p>
+      </div>
+      <p id="out-empty" style="color:var(--txt-mute);font-size:.88rem;line-height:1.7">왼쪽에 사례 정보를 넣고 「글 만들기」를 누르세요.<br>제목 5개 · 블로그 본문 · 인스타 문구 · 갤러리 HTML이 한 번에 나옵니다.</p>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="write.js"></script>
+</body>
+</html>
