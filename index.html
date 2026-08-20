@@ -2331,7 +2331,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   /* ══ 문의 접수 서버 (구글 Apps Script) ══
      배포 후 받은 웹 앱 URL 을 아래 따옴표 안에 넣으면 이메일 접수가 켜집니다.
      비워두면 기존처럼 문자 앱으로 보내는 방식으로 동작합니다. */
-  const FORM_ENDPOINT = '';
+  const FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwvQ4UJRZklRX7bZB6C0s1yZgSvBAMCVccT580L_1BtiVDyh0DIxShCAvN9McZIB0b7FA/exec';
 
   /* 폼 내용을 접수 서버로 보낸다. 성공하면 true. */
   async function sendByMail(payload){
