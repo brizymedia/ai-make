@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>상담 신청이 접수되었습니다 | 큰길브리지</title>
+<meta name="description" content="큰길브리지 상담 신청이 정상 접수되었습니다. 확인 후 바로 연락드리겠습니다.">
+<!-- 접수 완료 페이지는 검색에 노출될 필요가 없다 -->
+<meta name="robots" content="noindex, follow">
+<link rel="canonical" href="https://www.ai-make.co.kr/thanks/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#07090F;--ink-2:#0B0F18;--gold:#E8B84B;--teal:#3FD3C6;
+  --txt:#EDEAE3;--txt-dim:#9AA3B2;--txt-mute:#5C6577;
+  --line:rgba(237,234,227,.10);--line-2:rgba(237,234,227,.18);
+  --f-body:"Pretendard Variable",Pretendard,-apple-system,sans-serif;
+  --f-disp:"Instrument Serif",serif;--f-mono:"JetBrains Mono",monospace;
+  --ease:cubic-bezier(.19,1,.22,1);--ease-2:cubic-bezier(.16,.84,.44,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--f-body);background:var(--ink);color:var(--txt);
+  line-height:1.7;letter-spacing:-.015em;-webkit-font-smoothing:antialiased;
+  min-height:100svh;display:grid;place-items:center;padding:clamp(24px,6vw,60px) clamp(20px,5vw,40px);
+  background-image:
+    radial-gradient(90% 70% at 50% 0%,rgba(63,211,198,.10),transparent 60%),
+    radial-gradient(80% 60% at 20% 100%,rgba(232,184,75,.12),transparent 62%);
+}
+a{color:inherit;text-decoration:none}
+.box{max-width:560px;width:100%;text-align:center}
+
+.check{
+  width:78px;height:78px;border-radius:50%;margin:0 auto clamp(24px,4vw,34px);
+  display:grid;place-items:center;background:rgba(63,211,198,.12);
+  border:1px solid rgba(63,211,198,.4);
+  animation:pop .6s var(--ease-2) both;
+}
+.check svg{width:34px;height:34px;color:var(--teal);
+  stroke-dasharray:40;stroke-dashoffset:40;animation:draw .6s var(--ease) .25s forwards}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+.mono{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.22em;color:var(--teal);
+  animation:up .7s var(--ease) .15s both}
+h1{font-size:clamp(1.7rem,5vw,2.6rem);font-weight:800;letter-spacing:-.045em;
+  line-height:1.2;margin:14px 0 16px;text-wrap:balance;animation:up .7s var(--ease) .25s both}
+h1 em{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(--gold)}
+.lede{color:var(--txt-dim);font-size:clamp(.95rem,2vw,1.04rem);line-height:1.85;
+  animation:up .7s var(--ease) .35s both}
+@keyframes up{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+
+.next{
+  margin:clamp(28px,5vw,40px) 0;padding:clamp(20px,3.5vw,26px);border-radius:18px;
+  border:1px solid var(--line);background:rgba(237,234,227,.025);text-align:left;
+  animation:up .7s var(--ease) .45s both;
+}
+.next .lb{font-family:var(--f-mono);font-size:.56rem;letter-spacing:.2em;color:var(--txt-mute);
+  display:block;margin-bottom:14px}
+.next ol{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:13px}
+.next li{counter-increment:s;display:flex;gap:13px;align-items:flex-start;font-size:.9rem;line-height:1.6}
+.next li::before{
+  content:counter(s);flex-shrink:0;width:21px;height:21px;border-radius:50%;
+  background:rgba(232,184,75,.14);border:1px solid rgba(232,184,75,.34);color:var(--gold);
+  font-family:var(--f-mono);font-size:.64rem;display:grid;place-items:center;margin-top:2px;
+}
+.next li b{color:var(--txt);font-weight:700}
+.next li span{color:var(--txt-dim)}
+
+.acts{display:flex;flex-direction:column;gap:10px;animation:up .7s var(--ease) .55s both}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:15px 26px;border-radius:999px;font-weight:800;font-size:.95rem;letter-spacing:-.02em;
+  border:1px solid transparent;transition:transform .4s var(--ease-2),box-shadow .4s,border-color .3s,color .3s;
+}
+.btn svg{width:17px;height:17px;flex-shrink:0}
+.gold{background:var(--gold);color:var(--ink);box-shadow:0 14px 40px -16px rgba(232,184,75,.75)}
+.gold:hover{transform:translateY(-3px);box-shadow:0 20px 48px -18px rgba(232,184,75,.9)}
+.ghost{border-color:var(--line-2);color:var(--txt-dim);background:rgba(237,234,227,.03)}
+.ghost:hover{transform:translateY(-3px);border-color:var(--gold);color:var(--gold)}
+@media(min-width:520px){.acts{flex-direction:row;justify-content:center}.btn{flex:0 1 auto}}
+
+.foot{margin-top:clamp(26px,4vw,36px);padding-top:20px;border-top:1px solid var(--line);
+  font-size:.78rem;color:var(--txt-mute);line-height:1.9;animation:up .7s var(--ease) .65s both}
+.foot b{color:var(--txt-dim)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .check svg{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<main class="box">
+
+  <div class="check">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 6L9 17l-5-5"/>
+    </svg>
+  </div>
+
+  <div class="mono">REQUEST RECEIVED</div>
+  <h1>접수되었습니다.<br><em>곧 연락드리겠습니다.</em></h1>
+  <p class="lede">
+    보내주신 내용과 견적을 확인했습니다.<br>
+    평일 기준 하루 안에 연락드립니다.
+  </p>
+
+  <div class="next">
+    <span class="lb">앞으로 이렇게 진행됩니다</span>
+    <ol>
+      <li><b>연락드립니다</b><span> — 어떤 일을 하고 계신지, 무엇을 알리고 싶은지 여쭙습니다.</span></li>
+      <li><b>자료를 받습니다</b><span> — 가지고 계신 사진과 문구만 주시면 됩니다. 없어도 괜찮습니다.</span></li>
+      <li><b>실제 링크로 보여드립니다</b><span> — 만들어진 화면을 함께 보면서 다듬습니다.</span></li>
+      <li><b>오픈합니다</b><span> — 도메인 연결과 검색 등록까지 마치고 넘겨드립니다.</span></li>
+    </ol>
+  </div>
+
+  <div class="acts">
+    <a href="tel:1533-7295" class="btn gold">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      급하시면 1533-7295
+    </a>
+    <a href="../" class="btn ghost">홈으로 돌아가기</a>
+  </div>
+
+  <p class="foot">
+    <b>큰길브리지</b> · 대표 김효민<br>
+    전국 홈페이지 제작 · 홍보영상 · 쇼츠 · AI 강의<br>
+    <a href="../gallery/" style="color:var(--gold);font-weight:700">제작 사례 보러 가기 →</a>
+  </p>
+
+</main>
+</body>
+</html>

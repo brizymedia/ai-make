@@ -2453,9 +2453,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
 
     if(메일성공){
       form.reset();
-      syncFormQuote(collect(), collect().reduce((a,b)=>a+b.cost,0));
-      note.innerHTML = '<span style="color:#3FD3C6">✅ 상담 신청이 접수되었습니다.</span><br>'
-        + '확인 후 바로 연락드리겠습니다. 급하시면 <b>1533-7295</b> 로 전화 주세요.';
+      note.innerHTML = '<span style="color:#3FD3C6">✅ 접수되었습니다. 잠시만요…</span>';
+      /* 접수 완료 페이지로 이동 — 광고 전환 추적의 도착 지점이 된다 */
+      location.href = 'thanks/';
       return;
     }
     /* 접수 서버가 아직 없거나 전송이 막히면 문자로 보낸다 */
