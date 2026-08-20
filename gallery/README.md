@@ -27,9 +27,9 @@
 ```
 `data-cat` 값: `web`(홈페이지) / `video`(홍보영상·쇼츠) / `event`(행사영상) / `edu`(강의·팁)
 
-## 3. sitemap 갱신 후 푸시
+## 3. sitemap · RSS 갱신 후 푸시
 ```
-node build-sitemap.js
+node build-sitemap.js   # sitemap.xml 과 rss.xml 이 함께 갱신됩니다
 git add -A && git commit -m "갤러리 — 글 제목" && git push
 ```
 
