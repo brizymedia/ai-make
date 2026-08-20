@@ -1944,6 +1944,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
             <div class="fq-row"><span id="fqPlan">베이직 (반응형 원페이지)</span><b id="fqTotal">100,000원</b></div>
             <span class="fq-more" id="fqMore">옵션 없음 · VAT 별도</span>
           </div>
+          <input type="text" name="website" id="f-website" tabindex="-1" autocomplete="off"
+                 aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
           <label class="consent">
             <input type="checkbox" id="f-agree" required>
             <span>상담 목적의 개인정보(성함·연락처·이메일) 수집·이용에 동의합니다. 수집한 정보는 상담 종료 후 파기합니다.</span>
@@ -2326,6 +2328,26 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     }catch(e){ return false; }
   }
 
+  /* ══ 문의 접수 서버 (구글 Apps Script) ══
+     배포 후 받은 웹 앱 URL 을 아래 따옴표 안에 넣으면 이메일 접수가 켜집니다.
+     비워두면 기존처럼 문자 앱으로 보내는 방식으로 동작합니다. */
+  const FORM_ENDPOINT = '';
+
+  /* 폼 내용을 접수 서버로 보낸다. 성공하면 true. */
+  async function sendByMail(payload){
+    if(!FORM_ENDPOINT) return false;
+    try{
+      const res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        /* text/plain 으로 보내면 CORS 사전 요청 없이 전달된다 */
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const out = await res.json().catch(()=>({ ok: res.ok }));
+      return !!out.ok;
+    }catch(e){ return false; }
+  }
+
   /* ── 문자 접수 번호 ── */
   const SMS_TO = '010-7635-7886';
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -2410,6 +2432,31 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       (msg ? '문의 내용: ' + msg + '\n' : '') +
       '\n' + estimateText();
 
+    const items = collect();
+    const sum = items.reduce((a,b)=>a+b.cost, 0);
+    const payload = {
+      name: name, phone: tel, email: email, service: type, message: msg,
+      total: won(sum) + '원 (VAT 별도)',
+      quote: items.map(i=>'· ' + i.name + ' — ' + won(i.cost) + '원').join('\n'),
+      at: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
+      page: location.href,
+      website: $('#f-website') ? $('#f-website').value : ''
+    };
+
+    const btn = form.querySelector('button[type=submit]');
+    const 원래라벨 = btn ? btn.innerHTML : '';
+    if(btn){ btn.disabled = true; btn.textContent = '접수 중...'; }
+    const 메일성공 = await sendByMail(payload);
+    if(btn){ btn.disabled = false; btn.innerHTML = 원래라벨; }
+
+    if(메일성공){
+      form.reset();
+      syncFormQuote(collect(), collect().reduce((a,b)=>a+b.cost,0));
+      note.innerHTML = '<span style="color:#3FD3C6">✅ 상담 신청이 접수되었습니다.</span><br>'
+        + '확인 후 바로 연락드리겠습니다. 급하시면 <b>1533-7295</b> 로 전화 주세요.';
+      return;
+    }
+    /* 접수 서버가 아직 없거나 전송이 막히면 문자로 보낸다 */
     await sendBySms(body, note, '문의');
   });
 
