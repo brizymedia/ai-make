@@ -59,6 +59,9 @@ function doPost(e) {
       d.quote || ''
     ]);
 
+    /* 이 시트의 '문의접수' 탭으로 바로 가는 주소 */
+    const 시트주소 = ss.getUrl() + '#gid=' + sh.getSheetId();
+
     /* 2) 이메일 알림 */
     const tel = String(d.phone || '').replace(/[^0-9]/g, '');
     const html =
@@ -94,11 +97,14 @@ function doPost(e) {
             '</div>'
           : '') +
 
-        (tel
-          ? '<p style="margin-top:22px">' +
-              '<a href="tel:' + tel + '" style="display:inline-block;background:#E8B84B;color:#07090F;' +
-              'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px">📞 바로 전화 걸기</a></p>'
-          : '') +
+        '<p style="margin-top:22px">' +
+          (tel
+            ? '<a href="tel:' + tel + '" style="display:inline-block;background:#E8B84B;color:#07090F;' +
+              'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin-right:8px">📞 바로 전화 걸기</a>'
+            : '') +
+          '<a href="' + 시트주소 + '" style="display:inline-block;background:#0F1720;color:#EDEAE3;' +
+          'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px">📋 전체 문의 목록 보기</a>' +
+        '</p>' +
 
         '<p style="color:#8A8A93;font-size:12.5px;margin-top:20px;border-top:1px solid #eee;padding-top:12px">' +
           BRAND + ' 홈페이지 문의폼에서 자동 발송된 메일입니다.<br>' +
@@ -120,9 +126,23 @@ function doPost(e) {
   }
 }
 
-/* 브라우저에서 URL 을 직접 열었을 때 동작 확인용 */
+/* 브라우저에서 URL 을 직접 열었을 때 — 동작 확인 + 시트 바로가기 */
 function doGet() {
-  return ContentService.createTextOutput(BRAND + ' 문의폼 수신 서버가 정상 동작 중입니다.');
+  let 시트주소 = '';
+  try { 시트주소 = SpreadsheetApp.getActiveSpreadsheet().getUrl(); } catch (e) {}
+  const html =
+    '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Malgun Gothic\',sans-serif;' +
+    'max-width:460px;margin:60px auto;padding:0 20px;text-align:center">' +
+      '<div style="font-size:15px;color:#2E7D32;font-weight:bold">✅ ' + BRAND + ' 문의폼 수신 서버 정상</div>' +
+      (시트주소
+        ? '<p style="margin-top:26px"><a href="' + 시트주소 + '" style="display:inline-block;' +
+          'background:#0F1720;color:#EDEAE3;text-decoration:none;font-weight:bold;' +
+          'padding:14px 28px;border-radius:12px">📋 문의 목록 시트 열기</a></p>'
+        : '<p style="color:#B00020;margin-top:20px">시트를 찾지 못했습니다. 이 스크립트가 구글시트 안에서 만들어졌는지 확인해 주세요.</p>') +
+      '<p style="color:#8A8A93;font-size:12.5px;margin-top:22px">이 주소를 즐겨찾기 해두면 언제든 문의 목록을 열 수 있습니다.</p>' +
+    '</div>';
+  return HtmlService.createHtmlOutput(html).setTitle(BRAND + ' 문의 접수');
 }
 
 
