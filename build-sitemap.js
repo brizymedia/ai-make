@@ -51,6 +51,7 @@ if (fs.existsSync(postsDir)) {
 const urls = [
   { loc: SITE, lastmod: lastmod(path.join(root, "index.html")), priority: "1.0", changefreq: "weekly" },
   { loc: SITE + "gallery/", lastmod: lastmod(path.join(root, "gallery", "index.html")), priority: "0.8", changefreq: "weekly" },
+  { loc: SITE + "seo-check/", lastmod: lastmod(path.join(root, "seo-check", "index.html")), priority: "0.9", changefreq: "monthly" },
   ...글.map(p => ({ loc: p.url, lastmod: p.lastmod, priority: "0.7", changefreq: "monthly" }))
 ];
 const sitemap = ['<?xml version="1.0" encoding="UTF-8"?>',
