@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="큰길브리지">
+  <rect width="64" height="64" rx="14" fill="#07090F"/>
+  <path d="M18 50 V28 M32 50 V21 M46 50 V28" stroke="#EDEAE3" stroke-opacity=".4" stroke-width="2.8" stroke-linecap="round"/>
+  <path d="M9 50 C 16 11, 48 11, 55 50" fill="none" stroke="#E8B84B" stroke-width="4.2" stroke-linecap="round"/>
+  <path d="M8 50 H56" stroke="#3FD3C6" stroke-width="5.5" stroke-linecap="round"/>
+  <circle cx="32" cy="20.75" r="5.2" fill="#E8B84B"/>
+</svg>
