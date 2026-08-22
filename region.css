@@ -1,0 +1,77 @@
+/* 지역 페이지 공용 스타일 — gallery.css 의 토큰과 네비/푸터 위에 얹는다 */
+
+.rhead{padding:clamp(52px,8vw,92px) 0 clamp(26px,4vw,42px);
+  background:radial-gradient(90% 70% at 18% 8%,rgba(232,184,75,.13),transparent 62%),linear-gradient(180deg,#0A0E17,var(--ink))}
+.rhead h1{font-size:clamp(2.1rem,5.6vw,3.6rem);font-weight:800;line-height:1.06;letter-spacing:-.05em;margin:14px 0 16px}
+.rhead h1 em{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(--gold)}
+.rhead .lead{color:var(--txt-dim);max-width:54ch;font-size:1.03rem;line-height:1.75}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.facts b{font-size:.78rem;font-weight:700;color:var(--txt);background:rgba(237,234,227,.06);
+  border:1px solid var(--line-2);padding:8px 14px;border-radius:99px}
+.facts b i{font-style:normal;color:var(--gold)}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.hero-cta a{padding:14px 24px;border-radius:12px;font-size:.94rem;font-weight:800;
+  border:1px solid var(--line-2);transition:all .3s var(--ease-2)}
+.hero-cta .gold{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.hero-cta .gold:hover{filter:brightness(1.08)}
+.hero-cta a:hover{border-color:var(--txt-dim)}
+
+.rsec{padding:clamp(40px,6vw,72px) 0;border-top:1px solid var(--line)}
+.rsec:first-of-type{border-top:none}
+.rsec h2{font-size:clamp(1.35rem,3.2vw,2rem);font-weight:800;letter-spacing:-.045em;margin:10px 0 18px;line-height:1.25}
+.rsec h2 em{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(--gold)}
+.rsec p{color:var(--txt-dim);line-height:1.85;margin-bottom:14px;max-width:70ch}
+.rsec p b{color:var(--txt)}
+.rsec p:last-child{margin-bottom:0}
+
+.spots{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.spots span{font-size:.76rem;color:var(--txt-mute);border:1px solid var(--line);
+  padding:6px 12px;border-radius:99px}
+
+.jobs{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(11px,1.8vw,16px);margin-top:8px}
+@media(max-width:700px){.jobs{grid-template-columns:1fr}}
+.job{border:1px solid var(--line);border-radius:17px;padding:22px;background:rgba(237,234,227,.025);
+  transition:transform .5s var(--ease-2),border-color .4s}
+.job:hover{transform:translateY(-4px);border-color:var(--line-2)}
+.job b{display:block;font-size:1rem;font-weight:800;letter-spacing:-.03em;margin-bottom:8px}
+.job b i{font-style:normal;color:var(--gold);margin-right:7px}
+.job p{font-size:.87rem;line-height:1.75;margin:0}
+
+.check{list-style:none;margin-top:6px}
+.check li{position:relative;padding:14px 0 14px 34px;border-bottom:1px solid var(--line);
+  font-size:.93rem;line-height:1.7;color:var(--txt-dim)}
+.check li:last-child{border-bottom:none}
+.check li b{color:var(--txt)}
+.check li::before{content:'';position:absolute;left:2px;top:19px;width:15px;height:15px;border-radius:50%;
+  background:rgba(232,184,75,.16);
+  box-shadow:inset 0 0 0 2px rgba(232,184,75,.55)}
+
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(11px,1.8vw,16px);margin-top:6px}
+@media(max-width:860px){.prices{grid-template-columns:1fr}}
+.pr{border:1px solid var(--line);border-radius:17px;padding:22px;background:rgba(237,234,227,.025)}
+.pr.on{border-color:rgba(232,184,75,.4);background:radial-gradient(130% 130% at 20% 0%,rgba(232,184,75,.1),transparent 62%)}
+.pr .nm{font-family:var(--f-mono);font-size:.62rem;letter-spacing:.2em;color:var(--gold);margin-bottom:9px}
+.pr .amt{font-size:1.5rem;font-weight:800;letter-spacing:-.05em;margin-bottom:4px}
+.pr .amt s{font-size:.85rem;font-weight:500;color:var(--txt-mute);margin-left:7px;letter-spacing:0}
+.pr .amt small{font-size:.82rem;font-weight:600;color:var(--txt-dim)}
+.pr p{font-size:.83rem;line-height:1.7;color:var(--txt-dim);margin:0}
+
+.rfaq details{border-bottom:1px solid var(--line);padding:17px 0}
+.rfaq summary{cursor:pointer;font-size:.97rem;font-weight:700;letter-spacing:-.03em;list-style:none;
+  display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.rfaq summary::-webkit-details-marker{display:none}
+.rfaq summary::after{content:'+';color:var(--gold);font-weight:400;font-size:1.35rem;line-height:1;flex-shrink:0}
+.rfaq details[open] summary::after{content:'\2212'}
+.rfaq p{font-size:.89rem;line-height:1.85;padding-top:11px;margin:0}
+
+.rcta{margin-top:clamp(34px,5vw,56px);border:1px solid rgba(232,184,75,.32);border-radius:22px;
+  padding:clamp(26px,4vw,40px);
+  background:radial-gradient(120% 130% at 15% 0%,rgba(232,184,75,.14),transparent 62%),rgba(237,234,227,.03)}
+.rcta h2{margin-top:0}
+.rcta p{max-width:60ch}
+
+.near{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.near a{font-size:.86rem;font-weight:600;color:var(--txt-dim);border:1px solid var(--line);
+  padding:10px 16px;border-radius:99px;transition:all .3s var(--ease-2)}
+.near a:hover{color:var(--txt);border-color:var(--line-2);background:rgba(237,234,227,.05)}
+.near a b{color:var(--gold);font-weight:800;margin-right:4px}

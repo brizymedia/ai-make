@@ -52,6 +52,15 @@ const urls = [
   { loc: SITE, lastmod: lastmod(path.join(root, "index.html")), priority: "1.0", changefreq: "weekly" },
   { loc: SITE + "gallery/", lastmod: lastmod(path.join(root, "gallery", "index.html")), priority: "0.8", changefreq: "weekly" },
   { loc: SITE + "seo-check/", lastmod: lastmod(path.join(root, "seo-check", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "suncheon/", lastmod: lastmod(path.join(root, "suncheon", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "yeosu/", lastmod: lastmod(path.join(root, "yeosu", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "gwangyang/", lastmod: lastmod(path.join(root, "gwangyang", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "goheung/", lastmod: lastmod(path.join(root, "goheung", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "hadong/", lastmod: lastmod(path.join(root, "hadong", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "namwon/", lastmod: lastmod(path.join(root, "namwon", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "gwangju/", lastmod: lastmod(path.join(root, "gwangju", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "jinju/", lastmod: lastmod(path.join(root, "jinju", "index.html")), priority: "0.9", changefreq: "monthly" },
+  { loc: SITE + "tongyeong/", lastmod: lastmod(path.join(root, "tongyeong", "index.html")), priority: "0.9", changefreq: "monthly" },
   ...글.map(p => ({ loc: p.url, lastmod: p.lastmod, priority: "0.7", changefreq: "monthly" }))
 ];
 const sitemap = ['<?xml version="1.0" encoding="UTF-8"?>',
