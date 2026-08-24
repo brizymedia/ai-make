@@ -20,7 +20,7 @@ img{max-width:100%;display:block}
 .brand-ko{font-weight:800;font-size:.98rem;letter-spacing:-.03em}
 .brand-en{font-family:var(--f-mono);font-size:.5rem;letter-spacing:.24em;color:var(--txt-mute);margin-top:4px}
 .gnav-links{display:flex;gap:4px;margin-left:auto}
-.gnav-links a{padding:8px 13px;font-size:.85rem;color:var(--txt-dim);border-radius:99px}
+.gnav-links a{padding:8px 13px;font-size:.85rem;color:var(--txt-dim);border-radius:99px;white-space:nowrap;flex-shrink:0}
 .gnav-links a:hover,.gnav-links a[aria-current]{color:var(--txt);background:rgba(237,234,227,.06)}
 .gnav-cta{padding:9px 16px;border-radius:99px;background:var(--gold);color:var(--ink);font-weight:800;font-size:.85rem;white-space:nowrap}
 @media(max-width:760px){.gnav-links{display:none}}
