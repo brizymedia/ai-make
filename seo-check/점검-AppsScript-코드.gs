@@ -244,16 +244,24 @@ function 점검(입력, 키워드) {
     처방: ld.length ? '' : 'AI 검색과 구글이 우리 정보를 못 읽습니다. 요즘 순위 차이가 가장 크게 벌어지는 항목입니다.'
   });
 
+  /* alt="" 는 "장식용이니 읽지 말라"는 뜻으로 일부러 비운 것이다. HTML 표준이 그렇게 정해뒀고,
+     화면을 못 보는 사람에게 로고를 세 번 읽어주지 않으려면 오히려 이렇게 써야 한다.
+     이걸 "없음"으로 세면 제대로 만든 사이트를 깎게 된다. 진짜 문제는 alt 를 아예 안 쓴 경우다. */
   var imgs = html.match(/<img\b[^>]*>/gi) || [];
-  var noalt = 0;
-  imgs.forEach(function (t) { if (!속성(t, 'alt')) noalt++; });
+  var noalt = 0, 장식 = 0;
+  imgs.forEach(function (t) {
+    if (!/\salt\s*=/i.test(t)) { noalt++; return; }      // alt 자체가 없다 — 진짜 문제
+    if (!속성(t, 'alt')) 장식++;                          // alt="" — 장식용, 정상
+  });
+  var 설명있음 = imgs.length - noalt - 장식;
   항목.push({
     id: 'alt', 그룹: '구조', 이름: '이미지 설명글 (alt)',
-    값: imgs.length ? (imgs.length - noalt) + ' / ' + imgs.length + '개' : '이미지 없음',
+    값: imgs.length ? (설명있음 + ' / ' + imgs.length + '개' + (장식 ? ' (장식용 ' + 장식 + '개 제외)' : '')) : '이미지 없음',
     상태: !imgs.length ? 'warn' : (noalt === 0 ? 'ok' : (noalt / imgs.length > 0.5 ? 'fail' : 'warn')), g: 4, n: 6,
     설명: '그림이 무엇인지 글로 적어둔 것입니다. 검색엔진은 그림을 눈으로 못 봅니다.',
     처방: !imgs.length ? '이미지가 하나도 없습니다. 네이버는 이미지가 있는 페이지를 더 좋아합니다.'
-        : (noalt ? noalt + '개의 그림에 설명이 없습니다. 이미지 검색으로 들어오는 손님을 통째로 놓치고 있습니다.' : '')
+        : (noalt ? noalt + '개의 그림에 설명이 아예 없습니다. 이미지 검색으로 들어오는 손님을 통째로 놓치고 있습니다.'
+        : (장식 ? '장식용으로 일부러 비운 alt="" ' + 장식 + '개는 정상이라 빼고 셌습니다.' : ''))
   });
 
   var 글자수 = 글.length;
