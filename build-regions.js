@@ -554,7 +554,7 @@ function 만들기(c) {
   /* 푸터 */
   H.push('<footer class="gfoot">');
   H.push('  <div class="wrap">');
-  H.push('    <p><b>큰길브리지</b> · 대표 김효민 · 대표번호 <a href="tel:' + TEL + '">' + TEL + '</a></p>');
+  H.push('    <p><b>큰길브리지</b> · (주)브리지미디어 · 대표 김효민 · 대표번호 <a href="tel:' + TEL + '">' + TEL + '</a></p>');
   H.push('    <p>' + esc(이름) + ' 홈페이지 제작 · ' + esc(이름) + ' 웹사이트 제작 · ' + esc(이름) +
          ' 랜딩페이지 · 홍보영상 · 쇼츠 · AI 강의</p>');
   H.push('    <p>' + 도시들.map(x => esc(x.이름)).join(' · ') + ' 직접 방문 · 그 외 전국 비대면 진행</p>');
