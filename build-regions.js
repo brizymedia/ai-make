@@ -49,7 +49,11 @@ const 도시들 = [
       { q: '순천에서 행사가 있는데 급합니다. 얼마나 걸리나요?',
         a: '행사 안내 페이지는 자료를 받은 날부터 5영업일이 기준이고, 날짜가 급하면 우선 작업합니다. 순천은 직접 방문이 가능해서 현장 사진 촬영까지 함께 진행할 수 있습니다. 먼저 전화로 날짜부터 말씀해 주세요.' }
     ],
-    인접: ['yeosu', 'gwangyang', 'goheung']
+    인접: ['yeosu', 'gwangyang', 'goheung'],
+    글: [
+      { file: '2026-08-suncheon-tourist.html', title: '순천만정원 관광객을 손님으로 바꾸는 법' },
+      { file: '2026-08-suncheon-newstore.html', title: '순천 신대지구 · 연향동 오픈 준비' }
+    ]
   },
 
   {
@@ -517,6 +521,20 @@ function 만들기(c) {
   H.push('      <a href="/seo-check/">지금 내 사이트 점검하기</a>');
   H.push('    </div>');
   H.push('  </section>');
+
+  /* 7-1. 그 지역 글이 있으면 이어준다 (검색에서 서로 힘을 보탠다) */
+  if (c.글 && c.글.length) {
+    H.push('  <section class="rsec">');
+    H.push('    <div class="mono">READ</div>');
+    H.push('    <h2>' + esc(이름) + ' <em>읽을거리</em></h2>');
+    H.push('    <p>' + esc(이름) + '에서 장사하시는 분들과 상담하며 나온 이야기를 글로 정리했습니다.</p>');
+    H.push('    <div class="near">');
+    c.글.forEach(function (p) {
+      H.push('      <a href="/gallery/posts/' + p.file + '">' + esc(p.title) + '</a>');
+    });
+    H.push('    </div>');
+    H.push('  </section>');
+  }
 
   /* 8. 다른 지역 */
   H.push('  <section class="rsec">');
