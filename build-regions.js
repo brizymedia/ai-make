@@ -369,7 +369,8 @@ function 만들기(c) {
   H.push('<head>');
   H.push('<meta charset="UTF-8">');
   H.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
-  H.push('<link rel="icon" href="/favicon.ico" sizes="32x32">');
+  H.push('<link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">');
+  H.push('<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">');
   H.push('<link rel="icon" href="/favicon.svg" type="image/svg+xml">');
   H.push('<link rel="apple-touch-icon" href="/apple-touch-icon.png">');
   H.push('<title>' + esc(제목) + '</title>');
