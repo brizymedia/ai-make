@@ -843,9 +843,34 @@ $('#btn-sign') && $('#btn-sign').addEventListener('click', function(){
     '<div class="tb-act" style="justify-content:center;margin-top:14px">' +
     '<button class="btn btn-primary" id="btn-print2">서명본 PDF로 저장</button>' +
     '<button class="btn btn-teal" id="btn-notify">문자로 통보하기</button>' +
-    '<a class="btn" href="tel:1533-7295">1533-7295 전화</a></div></div>';
+    '<a class="btn" href="tel:1533-7295">1533-7295 전화</a></div>' +
+    '<p id="srv-note" style="margin-top:13px;font-size:.84rem;color:var(--txt-dim)">' +
+    (api() ? '서명본을 만들어 보내는 중입니다…' : '') + '</p></div>';
   $('#btn-print2').addEventListener('click', function(){ window.print(); });
   $('#btn-notify').addEventListener('click', function(){ location.href = 문자링크(문자); });
+
+  /* 서버가 있으면 PDF 생성 · 양측 메일 · 계약 대장까지 맡긴다.
+     실패해도 계약은 이미 성립했다. 문자로 알리는 길을 남겨둔다. */
+  if(api()){
+    확인코드().then(function(h){
+      return 서버호출(api(), {
+        action:'sign', id: Q.get('c') || '',
+        contract:S, sig:S.sig.img, hash:h, ts:new Date().toISOString(),
+        signer:{ name:S.sig.name, tel:S.cl.tel, email:S.cl.email },
+        to:{ customer:S.cl.email }, html:인쇄용HTML(), ua:navigator.userAgent
+      });
+    }).then(function(r){
+      var 안내 = $('#srv-note'); if(!안내) return;
+      if(!r || !r.ok) throw new Error((r && r.error) || '전송 실패');
+      안내.innerHTML = r.already
+        ? '이미 서명이 접수된 계약서입니다.'
+        : '서명본을 <b>' + ((r.mailedTo||[]).length) + '곳</b>으로 보냈습니다.' +
+          (r.pdfUrl ? ' <a href="' + r.pdfUrl + '" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700">PDF 열기</a>' : '');
+    }).catch(function(e){
+      var 안내 = $('#srv-note');
+      if(안내) 안내.textContent = '자동 발송에 실패했습니다. 아래 문자로 알려주세요. (' + e.message + ')';
+    });
+  }
   window.scrollTo({ top:0, behavior:'smooth' });
   알림('서명이 완료되었습니다');
 });
@@ -868,17 +893,77 @@ function 문자링크(t){
   return 'sms:01076357886' + sep + 'body=' + encodeURIComponent(t);
 }
 
+/* ══ 서버 (있으면 쓰고, 없으면 없는 대로 돌아간다) ══ */
+function api(){ return String(S.meta.api||'').trim(); }
+/* 정규식을 쓰지 않는다. 이 환경 편집 스크립트가 백슬래시를 먹어 사고가 난 적이 있다. */
+function 배포ID(u){ var p = String(u||'').split('/macros/s/')[1]; return p ? p.split('/')[0] : ''; }
+function 서버주소(dep){ return 'https://script.google.com/macros/s/' + dep + '/exec'; }
+function 서버호출(url, payload){
+  return fetch(url, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload) }).then(function(r){ return r.json(); });
+}
+/* 문서 확인 코드 — 서버도 같은 방식으로 다시 계산해 내용이 바뀌었는지 대조한다.
+   서버 주소와 서명은 빼야 서명 전후 코드가 같아진다. */
+function 확인코드(){
+  var o = JSON.parse(JSON.stringify(S));
+  if(o.meta) delete o.meta.api;
+  delete o.sig;
+  if(!(window.crypto && crypto.subtle)) return Promise.resolve('');
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(o)))
+    .then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){
+        return ('0' + b.toString(16)).slice(-2); }).join('');
+    }).catch(function(){ return ''; });
+}
+/* PDF 로 만들 HTML — 계약서 본문만 떼어내고 화면용 스타일을 같이 담는다 */
+function 인쇄용HTML(){
+  var css = '';
+  Array.prototype.forEach.call(document.styleSheets, function(ss){
+    try{
+      Array.prototype.forEach.call(ss.cssRules, function(r){
+        if(!r.media) css += r.cssText + '\n';
+      });
+    }catch(e){}
+  });
+  var 머리 = '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><style>'
+    + 'body{margin:0;padding:14mm;background:#fff;color:#1A1D24}'
+    + '@page{size:A4;margin:12mm}'
+    + css
+    + '.doc{box-shadow:none;border-radius:0;padding:0}'
+    + '</style></head><body>';
+  return 머리 + $('#doc').outerHTML + '</body></html>';
+}
+
 /* ══ 링크 만들기 ══ */
 $('#btn-share') && $('#btn-share').addEventListener('click', function(){
   if(!S.cl.name && !S.cl.org){ 알림('갑의 상호나 담당자 이름을 먼저 적어주세요'); return; }
   if(!S.items.length){ 알림('계약 항목이 비어 있습니다'); return; }
   if(!S.meta.no){ S.meta.no = 계약번호(); 값채우기(); }
   if(!S.meta.date){ S.meta.date = new Date().toISOString().slice(0,10); 값채우기(); }
-  var url = location.origin + location.pathname + '#c=' + b64u(JSON.stringify(S));
-  $('#linkbox').hidden = false;
-  $('#linkout').value = url;
-  $('#linkout').select();
-  알림('링크를 만들었습니다. 복사해서 고객에게 보내세요');
+
+  var 긴링크 = location.origin + location.pathname + '#c=' + b64u(JSON.stringify(S));
+  var btn = $('#btn-share');
+  function 보여주기(url, 안내){
+    $('#linkbox').hidden = false;
+    $('#linkout').value = url;
+    $('#linkout').select();
+    알림(안내);
+    btn.disabled = false; btn.textContent = '고객 서명 링크 만들기';
+  }
+  /* 서버가 없으면 예전처럼 긴 링크로 — 계약은 그대로 된다 */
+  if(!api()){ 보여주기(긴링크, '링크를 만들었습니다. 복사해서 고객에게 보내세요'); return; }
+
+  btn.disabled = true; btn.textContent = '서버에 저장하는 중…';
+  확인코드().then(function(h){
+    return 서버호출(api(), { action:'store', contract:S, hash:h });
+  }).then(function(r){
+    if(!r || !r.ok) throw new Error((r && r.error) || '저장에 실패했습니다');
+    var dep = 배포ID(api());
+    보여주기(location.origin + location.pathname + '?c=' + r.id + (dep ? '&s=' + dep : ''),
+             '짧은 링크를 만들었습니다 · 문서번호 ' + r.id);
+  }).catch(function(e){
+    보여주기(긴링크, '서버에 연결하지 못해 긴 링크로 만들었습니다 · ' + e.message);
+  });
 });
 function 계약번호(){
   var d=new Date(), p=function(n){ return (n<10?'0':'')+n; };
@@ -912,19 +997,49 @@ function 알림(t){
 }
 
 /* ══ 시작 ══ */
+function 상태합치기(loaded){
+  Object.keys(S).forEach(function(k){
+    if(loaded[k]===undefined) return;
+    if(typeof S[k]==='object' && !Array.isArray(S[k])) Object.assign(S[k], loaded[k]);
+    else S[k] = loaded[k];
+  });
+}
+
 (function 시작하기(){
-  var h = location.hash.indexOf('#c=')===0 ? location.hash.slice(3) : '';
-  if(h){
-    try{
-      var loaded = JSON.parse(unb64u(h));
-      Object.keys(S).forEach(function(k){
-        if(loaded[k]===undefined) return;
-        if(typeof S[k]==='object' && !Array.isArray(S[k])) Object.assign(S[k], loaded[k]);
-        else S[k] = loaded[k];
+  var 짧은ID = Q.get('c'), 배포 = Q.get('s');
+
+  /* 짧은 링크로 들어온 경우 — 내용이 주소에 없으므로 서버에서 받아온다 */
+  if(짧은ID && 배포){
+    $('#mode-pill').textContent = '불러오는 중…';
+    fetch(서버주소(배포) + '?id=' + encodeURIComponent(짧은ID))
+      .then(function(r){ return r.json(); })
+      .then(function(r){
+        if(!r || !r.ok) throw new Error((r && r.error) || '불러오지 못했습니다');
+        상태합치기(r.contract || {});
+        S.meta.api = 서버주소(배포);
+        if(r.status === 'signed' && r.sig){
+          S.sig.img = r.sig; S.sig.at = r.signedAt || '';
+          S.sig.name = (r.signer && r.signer.name) || '';
+        }
+        화면준비();
+      })
+      .catch(function(e){
+        $('#mode-pill').textContent = '불러오기 실패';
+        알림('계약서를 불러오지 못했습니다 · ' + e.message);
+        화면준비();
       });
-    }catch(e){ 알림('링크가 손상되었습니다. 보내주신 분께 다시 요청해 주세요'); }
+    return;
   }
 
+  var h = location.hash.indexOf('#c=')===0 ? location.hash.slice(3) : '';
+  if(h){
+    try{ 상태합치기(JSON.parse(unb64u(h))); }
+    catch(e){ 알림('링크가 손상되었습니다. 보내주신 분께 다시 요청해 주세요'); }
+  }
+  화면준비();
+})();
+
+function 화면준비(){
   if(MODE==='admin'){
     $('#admin').hidden = false;
     $('#mode-pill').textContent = '작성 모드';
@@ -939,13 +1054,14 @@ function 알림(t){
       setTimeout(패드크기, 60);
     }
     if(S.sig.img){
+      $('#padwrap').hidden = true;
       $('#doneview').hidden = false;
       $('#doneview').innerHTML = '<div class="done"><h3>서명이 완료된 계약서입니다</h3>' +
         '<p>' + esc(S.sig.at) + ' 에 ' + esc(S.sig.name) + ' 님이 서명하셨습니다.</p></div>';
     }
   }
   값채우기();
-})();
+}
 
 /* 도장 이미지가 없으면 조용히 숨긴다 */
 var st = $('#d-stamp');
