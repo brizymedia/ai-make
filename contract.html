@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>홈페이지 제작 계약서 — 큰길브리지</title>
+<!-- 계약서는 검색에 잡히면 안 된다 -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+:root{
+  --ink:#07090F; --ink-2:#0B0F18; --ink-3:#111725;
+  --gold:#E8B84B; --gold-2:#F3D07A; --teal:#3FD3C6; --coral:#FF6B4A;
+  --txt:#EDEAE3; --txt-dim:#9AA3B2; --txt-mute:#5C6577;
+  --line:rgba(237,234,227,.10); --line-2:rgba(237,234,227,.20);
+  --paper:#FFFFFF; --paper-ink:#1A1D24; --paper-dim:#5A6070; --paper-line:#E2E0DA;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;word-break:keep-all}
+body{background:var(--ink);color:var(--txt);line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+input,textarea,select,button{font:inherit;color:inherit}
+
+/* ── 상단바 ─────────────────────────── */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(7,9,15,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1400px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;letter-spacing:-.03em}
+.brand svg{width:28px;height:28px}
+.pill{font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:99px;background:rgba(232,184,75,.14);
+  color:var(--gold);border:1px solid rgba(232,184,75,.3);white-space:nowrap}
+.pill.cust{background:rgba(63,211,198,.14);color:var(--teal);border-color:rgba(63,211,198,.3)}
+.tb-act{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:11px;
+  font-weight:800;font-size:.88rem;border:1px solid var(--line-2);background:none;cursor:pointer;
+  transition:all .25s;white-space:nowrap;text-decoration:none}
+.btn:hover{border-color:var(--txt-dim)}
+.btn-primary{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.btn-primary:hover{filter:brightness(1.08)}
+.btn-teal{background:var(--teal);color:var(--ink);border-color:var(--teal)}
+.btn-sm{padding:7px 12px;font-size:.8rem;border-radius:9px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── 레이아웃 ───────────────────────── */
+.wrap{max-width:1400px;margin:0 auto;padding:22px 20px 80px;display:grid;
+  grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:1080px){.wrap{grid-template-columns:1fr}}
+
+/* ── 작성 패널 ──────────────────────── */
+#admin{position:sticky;top:74px;max-height:calc(100vh - 96px);overflow-y:auto;
+  border:1px solid var(--line);border-radius:16px;background:var(--ink-2);padding:16px}
+@media(max-width:1080px){#admin{position:static;max-height:none}}
+#admin h2{font-size:1rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
+#admin .hint{font-size:.78rem;color:var(--txt-mute);line-height:1.6;margin-bottom:12px}
+.sec{border:1px solid var(--line);border-radius:12px;margin-bottom:9px;background:rgba(237,234,227,.02);overflow:hidden}
+.sec>summary{cursor:pointer;padding:12px 14px;font-weight:800;font-size:.87rem;letter-spacing:-.03em;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sec>summary::-webkit-details-marker{display:none}
+.sec>summary::after{content:'+';color:var(--gold);font-weight:400;font-size:1.2rem;line-height:1}
+.sec[open]>summary::after{content:'\2212'}
+.sec .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.f{display:block;font-size:.76rem;font-weight:700;color:var(--txt-dim);margin-bottom:5px}
+.in{width:100%;padding:10px 12px;border:1px solid var(--line-2);border-radius:9px;
+  background:rgba(7,9,15,.5);font-size:.87rem;transition:border-color .2s}
+.in:focus{outline:none;border-color:var(--gold)}
+.in::placeholder{color:var(--txt-mute)}
+textarea.in{min-height:74px;resize:vertical;line-height:1.65}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+
+/* 플랜 고르기 */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.planbtn{padding:11px 6px;border:1px solid var(--line-2);border-radius:10px;background:none;cursor:pointer;
+  text-align:center;transition:all .25s}
+.planbtn:hover{border-color:var(--gold)}
+.planbtn.on{background:rgba(232,184,75,.14);border-color:var(--gold);color:var(--gold)}
+.planbtn b{display:block;font-size:.85rem;font-weight:800}
+.planbtn small{font-size:.7rem;color:var(--txt-mute)}
+.planbtn.on small{color:var(--gold-2)}
+
+/* 옵션 */
+.opts{display:flex;flex-direction:column;gap:5px;max-height:250px;overflow-y:auto;padding-right:4px}
+.opt{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;
+  cursor:pointer;font-size:.82rem;transition:all .2s}
+.opt:hover{border-color:var(--line-2)}
+.opt input{width:15px;height:15px;accent-color:var(--gold);flex-shrink:0}
+.opt .nm{flex:1;min-width:0}
+.opt .pr{font-size:.76rem;color:var(--txt-mute);white-space:nowrap}
+.opt.on{border-color:rgba(232,184,75,.45);background:rgba(232,184,75,.07)}
+
+/* 항목표 */
+.items-t{width:100%;border-collapse:collapse;font-size:.8rem}
+.items-t th{text-align:left;font-size:.7rem;color:var(--txt-mute);font-weight:700;padding:0 4px 6px}
+.items-t td{padding:2px}
+.items-t .in{padding:7px 8px;font-size:.8rem}
+.items-t .del{padding:6px 8px;color:var(--coral);background:none;border:none;cursor:pointer;font-size:1rem;line-height:1}
+
+.sum{display:flex;justify-content:space-between;padding:10px 12px;border-radius:10px;
+  background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.28);font-weight:800;font-size:.9rem}
+.sum b{color:var(--gold)}
+
+/* ── 계약서 문서 ────────────────────── */
+.doc{background:var(--paper);color:var(--paper-ink);border-radius:16px;padding:clamp(26px,4vw,52px);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.8);line-height:1.75}
+.doc-head{text-align:center;border-bottom:2px solid var(--paper-ink);padding-bottom:20px;margin-bottom:24px}
+.doc-head .no{font-size:.74rem;color:var(--paper-dim);letter-spacing:.1em;margin-bottom:8px}
+.doc-head h1{font-size:clamp(1.4rem,3.4vw,2rem);font-weight:900;letter-spacing:-.04em}
+.doc-head .sub{font-size:.84rem;color:var(--paper-dim);margin-top:7px}
+
+.party{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+@media(max-width:640px){.party{grid-template-columns:1fr}}
+.pbox{border:1px solid var(--paper-line);border-radius:11px;padding:15px}
+.pbox .tag{font-size:.7rem;font-weight:800;color:var(--gold);background:rgba(232,184,75,.14);
+  padding:3px 9px;border-radius:99px;display:inline-block;margin-bottom:9px}
+.pbox .tag.eul{color:#1F7A6E;background:rgba(63,211,198,.16)}
+.pbox dl{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:.83rem}
+.pbox dt{color:var(--paper-dim);white-space:nowrap}
+.pbox dd{font-weight:600;word-break:break-all}
+
+.doc h2{font-size:.95rem;font-weight:900;letter-spacing:-.03em;margin:22px 0 8px;
+  padding-bottom:5px;border-bottom:1px solid var(--paper-line)}
+.doc p{font-size:.86rem;margin-bottom:7px}
+.doc ol{margin:0 0 8px 18px;font-size:.86rem}
+.doc ol li{margin-bottom:5px}
+.doc .quiet{color:var(--paper-dim);font-size:.8rem}
+
+table.t{width:100%;border-collapse:collapse;font-size:.83rem;margin:8px 0 12px}
+table.t th{background:#F5F3EE;font-weight:800;font-size:.76rem;padding:9px 10px;border:1px solid var(--paper-line);text-align:left}
+table.t td{padding:9px 10px;border:1px solid var(--paper-line)}
+table.t td.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+table.t tr.total td{background:#FBF7EC;font-weight:900}
+table.t tr.total td.num{color:#8A6A16}
+
+.note-box{border-left:3px solid var(--gold);background:#FCF9F1;padding:11px 14px;border-radius:0 9px 9px 0;
+  font-size:.82rem;margin:10px 0}
+
+/* 서명 */
+.signs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px;
+  border-top:2px solid var(--paper-ink);padding-top:22px}
+@media(max-width:640px){.signs{grid-template-columns:1fr}}
+.sbox{border:1px solid var(--paper-line);border-radius:11px;padding:15px;position:relative;min-height:150px}
+.sbox .lb{font-size:.74rem;color:var(--paper-dim);font-weight:700;margin-bottom:6px}
+.sbox .nm{font-size:.92rem;font-weight:800;margin-bottom:8px}
+.sbox .ink{height:74px;display:flex;align-items:center;gap:10px}
+.sbox .ink img{max-height:72px;width:auto}
+.sbox .empty{color:#BBB6AC;font-size:.8rem;font-style:italic}
+.sbox .when{font-size:.72rem;color:var(--paper-dim);margin-top:6px}
+
+.padwrap{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:var(--ink-2);padding:16px}
+.padwrap h3{font-size:.95rem;font-weight:800;margin-bottom:4px}
+.padwrap .hint{font-size:.79rem;color:var(--txt-mute);margin-bottom:11px;line-height:1.6}
+#pad{width:100%;height:170px;background:#fff;border-radius:11px;touch-action:none;cursor:crosshair;display:block}
+.padact{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);z-index:200;
+  background:var(--ink-3);border:1px solid var(--line-2);border-radius:12px;padding:13px 20px;
+  font-size:.87rem;opacity:0;pointer-events:none;transition:all .3s;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.linkbox{margin-top:12px;padding:13px;border-radius:11px;background:rgba(63,211,198,.08);
+  border:1px solid rgba(63,211,198,.3)}
+.linkbox h3{font-size:.85rem;font-weight:800;color:var(--teal);margin-bottom:7px}
+.linkbox textarea{width:100%;min-height:66px;font-size:.74rem;padding:9px;border-radius:8px;
+  background:rgba(7,9,15,.6);border:1px solid var(--line-2);resize:vertical;word-break:break-all}
+
+.done{text-align:center;padding:34px 20px;border:1px solid rgba(63,211,198,.35);border-radius:14px;
+  background:rgba(63,211,198,.07);margin-top:16px}
+.done h3{font-size:1.15rem;font-weight:900;color:var(--teal);margin-bottom:7px}
+.done p{font-size:.87rem;color:var(--txt-dim)}
+
+/* ── 인쇄 ───────────────────────────── */
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff;color:#000}
+  .no-print,.topbar,#admin,.padwrap,.toast,.linkbox{display:none !important}
+  .wrap{display:block;max-width:none;padding:0}
+  .doc{box-shadow:none;border-radius:0;padding:0}
+  .doc h2{break-after:avoid}
+  table.t,.signs,.pbox{break-inside:avoid}
+  .doc-head{border-bottom:2px solid #000}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar no-print">
+  <div class="topbar-in">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M2 30 C 10 12, 30 12, 38 30" stroke="#E8B84B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M2 30 H38" stroke="#3FD3C6" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M11 30 V20.5 M20 30 V17 M29 30 V20.5" stroke="#EDEAE3" stroke-opacity=".45" stroke-width="1.3"/>
+        <circle cx="20" cy="17" r="2.6" fill="#E8B84B"/>
+      </svg>
+      <span>큰길브리지</span>
+    </a>
+    <span class="pill" id="mode-pill">전자계약서</span>
+    <div class="tb-act">
+      <button class="btn btn-sm" id="btn-print">인쇄 · PDF 저장</button>
+      <button class="btn btn-sm btn-primary no-cust" id="btn-share">고객 서명 링크 만들기</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ══════════ 작성 패널 (사업자용) ══════════ -->
+  <aside id="admin" class="no-print" hidden>
+    <h2>계약서 작성</h2>
+    <p class="hint">아래를 채우면 오른쪽 계약서가 바로 바뀝니다. 다 채운 뒤 <b>고객 서명 링크</b>를 만들어 문자로 보내세요.</p>
+
+    <details class="sec" open>
+      <summary>계약 상대방 (갑)</summary>
+      <div class="body">
+        <div><label class="f">상호 · 단체명</label><input class="in" data-k="cl.org" placeholder="예) 바닐라 헤어"></div>
+        <div class="row2">
+          <div><label class="f">대표 · 담당자 (서명자)</label><input class="in" data-k="cl.name" placeholder="홍길동"></div>
+          <div><label class="f">연락처</label><input class="in" data-k="cl.tel" placeholder="010-0000-0000" inputmode="tel"></div>
+        </div>
+        <div><label class="f">이메일</label><input class="in" data-k="cl.email" placeholder="name@example.com" inputmode="email"></div>
+        <div><label class="f">주소</label><input class="in" data-k="cl.addr" placeholder="선택"></div>
+        <div><label class="f">사업자등록번호</label><input class="in" data-k="cl.biz" placeholder="선택"></div>
+      </div>
+    </details>
+
+    <details class="sec" open>
+      <summary>제작 대상</summary>
+      <div class="body">
+        <div><label class="f">사이트 이름</label><input class="in" data-k="pj.title" placeholder="예) 바닐라 헤어 홈페이지"></div>
+        <div class="row2">
+          <div><label class="f">도메인 (정해졌으면)</label><input class="in" data-k="pj.domain" placeholder="예) banilla-hair.com"></div>
+          <div><label class="f">업종</label><input class="in" data-k="pj.biztype" placeholder="예) 미용실"></div>
+        </div>
+        <div><label class="f">목적 · 요구사항</label><textarea class="in" data-k="pj.purpose" placeholder="예) 예약 문의를 전화가 아니라 온라인으로 받고 싶다. 시술 사진을 보여주고 싶다."></textarea></div>
+      </div>
+    </details>
+
+    <details class="sec" open>
+      <summary>요금제</summary>
+      <div class="body">
+        <div class="plans">
+          <button class="planbtn" data-plan="basic"><b>베이직</b><small>10만원~</small></button>
+          <button class="planbtn" data-plan="premium"><b>고급형</b><small>50만원~</small></button>
+          <button class="planbtn" data-plan="enterprise"><b>기업형</b><small>100만원~</small></button>
+        </div>
+        <p class="hint" style="margin:0">고르면 해당 요금제의 <b>포함 내역과 금액</b>이 계약 항목에 자동으로 들어갑니다.</p>
+      </div>
+    </details>
+
+    <details class="sec" open>
+      <summary>추가 옵션</summary>
+      <div class="body">
+        <div class="opts" id="optlist"></div>
+      </div>
+    </details>
+
+    <details class="sec" open>
+      <summary>계약 항목 · 금액</summary>
+      <div class="body">
+        <table class="items-t">
+          <thead><tr><th style="width:52%">항목</th><th style="width:16%">수량</th><th style="width:26%">단가</th><th></th></tr></thead>
+          <tbody id="items-body"></tbody>
+        </table>
+        <button class="btn btn-sm" id="btn-add-item">+ 항목 직접 추가</button>
+        <div class="row2">
+          <div><label class="f">부가세</label>
+            <select class="in" data-k="fin.vat"><option value="none">별도 표기 없음</option><option value="incl">포함</option><option value="excl">별도 (10%)</option></select>
+          </div>
+          <div><label class="f">계약금 비율</label>
+            <select class="in" data-k="fin.deposit"><option value="50">50%</option><option value="30">30%</option><option value="100">전액 선금</option><option value="0">없음 (완료 후 일시불)</option></select>
+          </div>
+        </div>
+        <div class="sum"><span>합계</span><b id="sum-total">0원</b></div>
+      </div>
+    </details>
+
+    <details class="sec" open>
+      <summary>오픈 후 관리 (월 관리비)</summary>
+      <div class="body">
+        <div class="row2">
+          <div><label class="f">월 관리비</label><input class="in" data-k="care.monthly" placeholder="10000" inputmode="numeric"></div>
+          <div><label class="f">월 수정 횟수</label><input class="in" data-k="care.fix" placeholder="2"></div>
+        </div>
+        <div><label class="f">무상 유지보수 기간</label><input class="in" data-k="care.free" placeholder="예) 1개월 (기업형)  ·  없으면 비워두세요"></div>
+      </div>
+    </details>
+
+    <details class="sec" open>
+      <summary>일정</summary>
+      <div class="body">
+        <div class="row3">
+          <div><label class="f">착수일</label><input class="in" type="date" data-k="sch.start"></div>
+          <div><label class="f">시안 제시</label><input class="in" type="date" data-k="sch.draft"></div>
+          <div><label class="f">오픈 예정</label><input class="in" type="date" data-k="sch.open"></div>
+        </div>
+        <div><label class="f">갑이 주셔야 할 자료</label><textarea class="in" data-k="sch.material" placeholder="예) 로고 파일, 매장 사진 10장, 시술 메뉴와 가격표, 영업시간, 사업자등록증"></textarea></div>
+      </div>
+    </details>
+
+    <details class="sec">
+      <summary>특약 · 별첨</summary>
+      <div class="body">
+        <div><label class="f">특약사항</label><textarea class="in" data-k="special" placeholder="표준 조항에 없는 내용을 자유롭게 적습니다. 여기 적힌 것이 본문 조항보다 우선합니다."></textarea></div>
+        <div><label class="f">별첨 (부족한 내용을 따로 붙일 때)</label>
+          <p class="hint" style="margin:0 0 6px">견적서, 시안, 기능 명세, 화면 설계 같은 것을 여기 적으면 계약서에 <b>별첨 목록</b>으로 나오고 계약의 일부가 됩니다.</p>
+        </div>
+        <table class="items-t">
+          <thead><tr><th style="width:40%">이름</th><th style="width:54%">링크 또는 설명</th><th></th></tr></thead>
+          <tbody id="attach-body"></tbody>
+        </table>
+        <button class="btn btn-sm" id="btn-add-attach">+ 별첨 추가</button>
+      </div>
+    </details>
+
+    <details class="sec">
+      <summary>계약 정보</summary>
+      <div class="body">
+        <div class="row2">
+          <div><label class="f">계약번호</label><input class="in" data-k="meta.no" placeholder="자동"></div>
+          <div><label class="f">계약일</label><input class="in" type="date" data-k="meta.date"></div>
+        </div>
+        <div><label class="f">서명 요청 서버 (선택)</label><input class="in" data-k="meta.api" placeholder="Apps Script 웹 앱 URL — 없으면 긴 링크로 발급"></div>
+      </div>
+    </details>
+
+    <div class="tb-act" style="margin-top:12px">
+      <button class="btn btn-sm" id="btn-preview">고객 화면 미리보기</button>
+      <button class="btn btn-sm" id="btn-reset">전부 지우기</button>
+    </div>
+    <div class="linkbox" id="linkbox" hidden>
+      <h3>고객 서명 링크</h3>
+      <textarea id="linkout" readonly></textarea>
+      <div class="tb-act" style="margin-top:8px">
+        <button class="btn btn-sm btn-teal" id="btn-copy">복사</button>
+        <button class="btn btn-sm" id="btn-sms">문자로 보내기</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════ 계약서 본문 ══════════ -->
+  <main>
+    <article class="doc" id="doc">
+      <div class="doc-head">
+        <div class="no" id="d-no">계약번호 —</div>
+        <h1>홈페이지 제작 계약서</h1>
+        <div class="sub" id="d-title">—</div>
+      </div>
+
+      <div class="party">
+        <div class="pbox">
+          <span class="tag">발주자 (갑)</span>
+          <dl>
+            <dt>상호</dt><dd id="d-cl-org">—</dd>
+            <dt>대표 · 담당</dt><dd id="d-cl-name">—</dd>
+            <dt>연락처</dt><dd id="d-cl-tel">—</dd>
+            <dt>이메일</dt><dd id="d-cl-email">—</dd>
+            <dt>주소</dt><dd id="d-cl-addr">—</dd>
+            <dt>사업자번호</dt><dd id="d-cl-biz">—</dd>
+          </dl>
+        </div>
+        <div class="pbox">
+          <span class="tag eul">수급자 (을)</span>
+          <dl>
+            <dt>상호</dt><dd>큰길브리지 (주식회사 브리지미디어)</dd>
+            <dt>대표</dt><dd>김효민</dd>
+            <dt>연락처</dt><dd>1533-7295</dd>
+            <dt>이메일</dt><dd>gilauto325@gmail.com</dd>
+            <dt>주소</dt><dd>전라남도 광양시 광양읍 강변동길 1, 2층</dd>
+            <dt>사업자번호</dt><dd>813-81-02252</dd>
+          </dl>
+        </div>
+      </div>
+
+      <p class="quiet">발주자 <b id="d-cl-org2">—</b>(이하 "갑")과 수급자 <b>큰길브리지(주식회사 브리지미디어)</b>(이하 "을")는
+        아래와 같이 홈페이지 제작 용역 계약을 체결한다.</p>
+
+      <h2>제1조 (계약의 목적)</h2>
+      <p>본 계약은 갑이 을에게 의뢰하는 홈페이지의 기획 · 디자인 · 제작 및 오픈 후 관리에 관하여 양 당사자의 권리와 의무를 정하는 것을 목적으로 한다.</p>
+
+      <h2>제2조 (제작 대상 및 범위)</h2>
+      <table class="t">
+        <tr><th style="width:26%">사이트 이름</th><td id="d-pj-title">—</td></tr>
+        <tr><th>도메인</th><td id="d-pj-domain">—</td></tr>
+        <tr><th>업종</th><td id="d-pj-biztype">—</td></tr>
+        <tr><th>요금제</th><td id="d-pj-plan">—</td></tr>
+        <tr><th>목적 · 요구사항</th><td id="d-pj-purpose">—</td></tr>
+      </table>
+      <p>구체적인 제작 범위는 제3조의 계약 항목과 제15조의 별첨에 따른다. 표에 적히지 않은 기능 · 페이지 · 디자인은 본 계약의 범위에 포함되지 않으며, 추가로 필요한 경우 제12조에 따라 별도 합의한다.</p>
+
+      <h2>제3조 (계약 항목 및 계약금액)</h2>
+      <table class="t" id="d-items"></table>
+      <div id="d-vatnote" class="quiet"></div>
+
+      <h2>제4조 (대금의 지급)</h2>
+      <ol>
+        <li id="d-pay1">계약금은 계약 체결일로부터 7일 이내에 지급하고, 잔금은 홈페이지 오픈일로부터 7일 이내에 지급한다.</li>
+        <li>대금은 을이 지정하는 계좌로 입금하며, 입금 수수료는 갑이 부담한다.</li>
+        <li>갑이 지급 기일을 지나 대금을 지급하지 않는 경우 을은 연 6%의 지연이자를 청구할 수 있으며, 지급이 완료될 때까지 오픈 또는 자료 인계를 보류할 수 있다.</li>
+      </ol>
+
+      <h2>제5조 (제작 기간 및 일정)</h2>
+      <table class="t">
+        <tr><th style="width:26%">착수일</th><td id="d-sch-start">—</td></tr>
+        <tr><th>시안 제시</th><td id="d-sch-draft">—</td></tr>
+        <tr><th>오픈 예정일</th><td id="d-sch-open">—</td></tr>
+      </table>
+      <p>위 일정은 <b>갑이 제6조의 자료를 모두 제공한 날</b>을 기준으로 산정한다. 자료 제공이 늦어지거나 갑의 확인 · 회신이 지연된 기간만큼 오픈 예정일은 자동으로 순연되며, 이에 대하여 을은 책임을 지지 않는다.</p>
+
+      <h2>제6조 (갑의 협조 의무)</h2>
+      <ol>
+        <li>갑은 홈페이지 제작에 필요한 아래 자료를 착수일까지 을에게 제공한다.
+          <div class="note-box" id="d-material">로고, 사진, 소개 문구, 서비스 · 가격 정보, 연락처와 영업시간 등 홈페이지에 실릴 자료 일체</div>
+        </li>
+        <li>갑은 자신이 제공하는 사진 · 문구 · 로고 · 상표 등에 대하여 <b>사용 권한을 적법하게 보유</b>함을 보증한다. 제3자의 저작권 · 초상권 · 상표권 침해 문제가 발생한 경우 그 책임은 갑이 부담하며, 을은 책임지지 않는다.</li>
+        <li>갑은 시안과 검수 요청에 대하여 <b>영업일 기준 3일 이내</b>에 회신한다. 회신이 없는 경우 을은 해당 내용에 이의가 없는 것으로 보고 다음 단계를 진행할 수 있다.</li>
+      </ol>
+
+      <h2>제7조 (을의 의무)</h2>
+      <ol>
+        <li>을은 제2조와 제3조에 정한 범위의 홈페이지를 성실히 제작하여 기한 내에 오픈한다.</li>
+        <li>을은 제작 과정에서 갑과 충분히 소통하며, 시안은 실제로 열어볼 수 있는 링크 형태로 제시한다.</li>
+        <li>을은 휴대폰 · PC 화면에서 정상 작동하도록 제작하며, 검색엔진(구글 · 네이버) 기본 등록을 제작 범위에 포함한다.</li>
+      </ol>
+
+      <h2>제8조 (검수 및 수정)</h2>
+      <ol>
+        <li>을이 시안 또는 완성본을 제시하면 갑은 제6조 제3항의 기간 내에 검수하고 수정 사항을 <b>정리하여 한 번에</b> 전달한다.</li>
+        <li>제작 기간 중 수정은 <b>시안 단계 2회, 완성 단계 2회</b>까지 계약금액에 포함된다. 이를 초과하는 수정, 또는 이미 확정한 사항을 되돌리는 요청은 별도 비용이 발생할 수 있다.</li>
+        <li>기획 방향 자체를 바꾸는 요청(업종 변경, 구성 전면 교체 등)은 수정이 아니라 신규 제작으로 본다.</li>
+        <li>오픈 후 <b>7일</b> 이내에 갑의 이의가 없으면 검수가 완료된 것으로 본다.</li>
+      </ol>
+
+      <h2>제9조 (오픈 후 관리 및 유지보수)</h2>
+      <table class="t">
+        <tr><th style="width:26%">월 관리비</th><td id="d-care-monthly">—</td></tr>
+        <tr><th>월 수정 횟수</th><td id="d-care-fix">—</td></tr>
+        <tr><th>무상 유지보수</th><td id="d-care-free">—</td></tr>
+      </table>
+      <ol>
+        <li>월 관리비에는 호스팅, SSL 보안 인증서, 장애 대응, 위 횟수만큼의 내용 수정이 포함된다.</li>
+        <li>관리비는 매월 선불로 지급하며, <b>3개월 이상 미납</b> 시 을은 사전 통지 후 서비스를 중단할 수 있다.</li>
+        <li>갑이 관리를 해지하는 경우 을은 홈페이지 파일 일체를 갑에게 인계한다. 인계 이후의 운영 책임은 갑에게 있다.</li>
+      </ol>
+
+      <h2>제10조 (도메인 · 호스팅 및 계정)</h2>
+      <ol>
+        <li>도메인은 <b>갑의 명의</b>로 등록하는 것을 원칙으로 한다. 을이 대행하여 등록한 경우에도 소유권은 갑에게 있으며, 갑의 요청 시 즉시 이전한다.</li>
+        <li>홈페이지 운영에 필요한 계정(도메인 · 호스팅 · 검색엔진 · 메일 등)의 정보는 오픈 시 갑에게 전달한다.</li>
+        <li>도메인 등록비 · 갱신비는 계약 항목에 포함된 경우를 제외하고 갑이 부담한다.</li>
+      </ol>
+
+      <h2>제11조 (저작권 및 사용권)</h2>
+      <ol>
+        <li>갑이 제공한 자료(사진 · 문구 · 로고 등)의 저작권은 갑에게 있다.</li>
+        <li>을이 제작한 홈페이지의 디자인과 결과물에 대한 <b>사용권은 대금 완납 시 갑에게 이전</b>된다.</li>
+        <li>을이 자체 개발하여 여러 고객에게 공통으로 사용하는 기능 · 코드 · 템플릿의 저작권은 을에게 유보되며, 갑은 본 홈페이지 운영 목적으로 사용할 수 있다.</li>
+        <li>을은 완성된 홈페이지를 <b>포트폴리오와 홍보 자료로 사용</b>할 수 있다. 갑이 원하지 않는 경우 특약사항에 기재한다.</li>
+      </ol>
+
+      <h2>제12조 (계약의 변경 · 해제)</h2>
+      <ol>
+        <li>제작 범위 · 일정 · 금액의 변경은 양 당사자의 합의로 하며, 추가 비용은 원인을 제공한 당사자가 부담한다.</li>
+        <li>갑이 계약을 해제하는 경우 아래 기준으로 정산한다.
+          <div class="note-box">
+            착수 전 — 계약금 전액 환급<br>
+            시안 제시 전 — 계약금의 50% 공제<br>
+            시안 제시 후 — 계약금 환급 없음<br>
+            완성본 제시 후 — 계약금액 전액 지급
+          </div>
+        </li>
+        <li>을의 귀책으로 오픈이 <b>30일 이상</b> 지연되는 경우 갑은 계약을 해제하고 기지급 대금의 환급을 청구할 수 있다. 다만 제5조에 따른 순연 기간은 지연으로 보지 않는다.</li>
+      </ol>
+
+      <h2>제13조 (하자보수)</h2>
+      <p>오픈 후 <b>3개월</b> 이내에 을의 제작상 결함으로 홈페이지가 정상 작동하지 않는 경우 을은 무상으로 보수한다. 다만 갑 또는 제3자의 임의 수정, 외부 서비스(호스팅 · 도메인 · 결제사 등)의 장애, 천재지변으로 인한 것은 제외한다.</p>
+
+      <h2>제14조 (비밀유지 및 개인정보)</h2>
+      <p>양 당사자는 본 계약 과정에서 알게 된 상대방의 영업 정보를 제3자에게 누설하지 않는다. 을은 제작 과정에서 취득한 갑의 정보를 본 계약 목적 외로 사용하지 않으며, 계약 종료 후 갑의 요청이 있으면 파기한다.</p>
+
+      <h2>제15조 (특약사항)</h2>
+      <div class="note-box" id="d-special">없음</div>
+      <p class="quiet">특약사항에 기재된 내용이 본문 조항과 다를 경우 <b>특약사항이 우선</b>한다.</p>
+
+      <h2>제16조 (별첨)</h2>
+      <p>아래 문서는 본 계약의 일부를 구성하며, 본문에 적히지 않은 세부 사항은 별첨에 따른다.</p>
+      <table class="t" id="d-attach"></table>
+
+      <h2>제17조 (분쟁의 해결)</h2>
+      <p>본 계약에 정하지 않은 사항은 관계 법령과 일반 상관례에 따르며, 분쟁이 발생한 경우 상호 협의하여 해결한다. 협의가 이루어지지 않으면 을의 주소지를 관할하는 법원을 제1심 관할 법원으로 한다.</p>
+
+      <h2>제18조 (전자계약의 효력)</h2>
+      <p>본 계약서는 전자문서 및 전자거래 기본법에 따라 작성된 전자문서로서 서면 계약과 동일한 효력을 가진다. 아래 전자서명은 당사자 본인의 서명으로 본다.</p>
+
+      <p style="text-align:center;margin:26px 0 4px;font-weight:800" id="d-date">— 년 — 월 — 일</p>
+
+      <div class="signs">
+        <div class="sbox">
+          <div class="lb">발주자 (갑)</div>
+          <div class="nm" id="d-sig-cl-name">—</div>
+          <div class="ink" id="d-sig-cl"><span class="empty">서명 전</span></div>
+          <div class="when" id="d-sig-when"></div>
+        </div>
+        <div class="sbox">
+          <div class="lb">수급자 (을)</div>
+          <div class="nm">큰길브리지 (주식회사 브리지미디어) · 대표 김효민</div>
+          <div class="ink"><img src="/stamp-brizymedia.png" alt="주식회사 브리지미디어 인감" id="d-stamp"></div>
+          <div class="when">1533-7295</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 서명 패드 (고객 모드에서만) -->
+    <div class="padwrap no-print" id="padwrap" hidden>
+      <h3>여기에 서명해 주세요</h3>
+      <p class="hint">위 계약 내용을 확인하셨다면 아래 칸에 <b>손가락이나 마우스로</b> 서명해 주세요.
+        서명하시면 계약이 체결되고, 서명본을 문자와 이메일로 보내드립니다.</p>
+      <canvas id="pad"></canvas>
+      <div class="padact">
+        <button class="btn btn-sm" id="btn-clear">다시 그리기</button>
+        <button class="btn btn-primary" id="btn-sign" disabled>동의하고 서명 완료</button>
+      </div>
+    </div>
+    <div id="doneview" hidden></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ══════════════════════════════════════════════════
+   실제 홈페이지(요금·옵션)와 같은 값을 쓴다.
+   사이트 요금이 바뀌면 여기도 같이 고쳐야 계약서가 어긋나지 않는다.
+   ══════════════════════════════════════════════════ */
+var PLANS = {
+  basic: { name:'베이직', price:100000, monthly:10000, fix:2, free:'',
+    inc:['반응형 원페이지 (섹션 6개)','모바일 · PC 대응','전화 · 카톡 · 지도 버튼 연결',
+         'SSL 보안 인증서','월 수정 2회'] },
+  premium: { name:'고급형', price:500000, monthly:20000, fix:2, free:'',
+    inc:['베이직 전체 포함 + 5페이지 구성','맞춤 생성형 디자인 제안','스크롤 애니메이션 · 갤러리',
+         '문의 · 예약 폼 + 알림 연동','자동 견적서 생성 및 발송','네이버 · 구글 검색등록',
+         '블로그 · 인스타 홍보글 자동생성'] },
+  enterprise: { name:'기업형', price:1000000, monthly:50000, fix:2, free:'1개월',
+    inc:['고급형 전체 포함 + 페이지 무제한 설계','브랜드 컨설팅 · 로고 리터치',
+         '공지 · 게시판 · 자료실 관리자 페이지','직접 수정 가능한 CMS 세팅 + 교육',
+         '1개월 무상 유지보수','AI 활용 실무 강의 2회'] }
+};
+var OPTIONS = [
+  ['도메인 등록 + 연결', 30000], ['갤러리 + 인스타·블로그 자동 연동', 50000],
+  ['네이버·구글 AI 검색 세팅', 50000], ['자동 계약서 작성·서명', 50000],
+  ['온라인 예약·신청 시스템', 150000], ['쇼핑몰·결제 연동', 300000],
+  ['AI 챗봇 상담', 200000], ['다국어(영·중·일)', 200000],
+  ['로고 + 브랜드 키트', 150000], ['상세 촬영 대행', 250000],
+  ['페이지 추가', 30000], ['숏폼 홍보영상', 100000], ['AI 1:1 강의', 100000]
+];
+
+var $ = function(s){ return document.querySelector(s); };
+var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+var 원 = function(n){ return (Number(n)||0).toLocaleString('ko-KR') + '원'; };
+var esc = function(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+  .replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+var 줄바꿈 = function(t){ return esc(t).split('\n').join('<br>'); };
+
+/* base64url — 한글이 들어가도 안전하게 */
+var b64u = function(s){ return btoa(unescape(encodeURIComponent(s)))
+  .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); };
+var unb64u = function(s){ var t=String(s).replace(/-/g,'+').replace(/_/g,'/');
+  while(t.length%4) t+='='; return decodeURIComponent(escape(atob(t))); };
+
+/* ── 상태 ────────────────────────────── */
+var S = {
+  cl:{org:'',name:'',tel:'',email:'',addr:'',biz:''},
+  pj:{title:'',domain:'',biztype:'',purpose:'',plan:''},
+  items:[], attach:[],
+  fin:{vat:'none',deposit:'50'},
+  care:{monthly:'',fix:'2',free:''},
+  sch:{start:'',draft:'',open:'',material:''},
+  special:'', meta:{no:'',date:'',api:''},
+  sig:{img:'',at:'',name:''}
+};
+
+function get(path){ var p=path.split('.'), o=S; for(var i=0;i<p.length;i++){ o=o[p[i]]; if(o===undefined) return ''; } return o; }
+function set(path,v){ var p=path.split('.'), o=S; for(var i=0;i<p.length-1;i++) o=o[p[i]]; o[p[p.length-1]]=v; }
+
+/* ── 모드 ────────────────────────────── */
+var Q = new URLSearchParams(location.search);
+var MODE = Q.get('admin')==='1' ? 'admin' : (Q.get('preview')==='1' ? 'preview' : 'customer');
+
+/* ══ 계약 항목 ══ */
+function 합계(){ var t=0; S.items.forEach(function(it){ t += (Number(it.q)||0)*(Number(it.p)||0); }); return t; }
+function 부가세(){ return S.fin.vat==='excl' ? Math.round(합계()*0.1) : 0; }
+function 총액(){ return 합계() + 부가세(); }
+
+function 항목그리기(){
+  var b = $('#items-body'); if(!b) return;
+  b.innerHTML = S.items.map(function(it,i){
+    return '<tr>' +
+      '<td><input class="in" data-i="'+i+'" data-c="n" value="'+esc(it.n)+'" placeholder="항목명"></td>' +
+      '<td><input class="in" data-i="'+i+'" data-c="q" value="'+esc(it.q)+'" inputmode="numeric"></td>' +
+      '<td><input class="in" data-i="'+i+'" data-c="p" value="'+esc(it.p)+'" inputmode="numeric"></td>' +
+      '<td><button class="del" data-del="'+i+'" title="삭제">&times;</button></td></tr>';
+  }).join('');
+  $('#sum-total').textContent = 원(총액());
+}
+function 별첨그리기(){
+  var b = $('#attach-body'); if(!b) return;
+  b.innerHTML = S.attach.map(function(a,i){
+    return '<tr>' +
+      '<td><input class="in" data-ai="'+i+'" data-c="t" value="'+esc(a.t)+'" placeholder="예) 견적서"></td>' +
+      '<td><input class="in" data-ai="'+i+'" data-c="u" value="'+esc(a.u)+'" placeholder="링크 또는 설명"></td>' +
+      '<td><button class="del" data-adel="'+i+'" title="삭제">&times;</button></td></tr>';
+  }).join('');
+}
+
+/* ══ 계약서 반영 ══ */
+function 그리기(){
+  var v = function(x){ return x && String(x).trim() ? esc(x) : '—'; };
+  $('#d-no').textContent = '계약번호 ' + (S.meta.no || '—');
+  $('#d-title').textContent = S.pj.title || '—';
+  ['org','name','tel','email','addr','biz'].forEach(function(k){
+    var el=$('#d-cl-'+k); if(el) el.textContent = S.cl[k] || '—';
+  });
+  $('#d-cl-org2').textContent = S.cl.org || '—';
+  $('#d-pj-title').textContent = S.pj.title || '—';
+  $('#d-pj-domain').textContent = S.pj.domain || '오픈 시점에 협의';
+  $('#d-pj-biztype').textContent = S.pj.biztype || '—';
+  $('#d-pj-plan').innerHTML = S.pj.plan && PLANS[S.pj.plan]
+    ? '<b>' + PLANS[S.pj.plan].name + '</b> — ' + PLANS[S.pj.plan].inc.join(' · ') : '—';
+  $('#d-pj-purpose').innerHTML = S.pj.purpose ? 줄바꿈(S.pj.purpose) : '—';
+
+  /* 항목표 */
+  var rows = '<tr><th style="width:44%">항목</th><th style="width:12%">수량</th>' +
+             '<th style="width:22%">단가</th><th style="width:22%">금액</th></tr>';
+  if(!S.items.length){
+    rows += '<tr><td colspan="4" style="text-align:center;color:#9A958A">항목이 없습니다</td></tr>';
+  } else {
+    S.items.forEach(function(it){
+      rows += '<tr><td>'+esc(it.n)+'</td><td class="num">'+(it.q||1)+'</td>' +
+        '<td class="num">'+원(it.p)+'</td><td class="num">'+원((Number(it.q)||0)*(Number(it.p)||0))+'</td></tr>';
+    });
+  }
+  if(부가세()) rows += '<tr><td colspan="3" class="num">부가세 (10%)</td><td class="num">'+원(부가세())+'</td></tr>';
+  rows += '<tr class="total"><td colspan="3" class="num">합계</td><td class="num">'+원(총액())+'</td></tr>';
+  $('#d-items').innerHTML = rows;
+  $('#d-vatnote').textContent = S.fin.vat==='incl' ? '위 금액은 부가세가 포함된 금액이다.'
+    : (S.fin.vat==='excl' ? '위 금액에는 부가세 10%가 포함되어 있다.' : '');
+
+  /* 지급 */
+  var d = Number(S.fin.deposit);
+  var 계약금 = Math.round(총액()*d/100);
+  $('#d-pay1').innerHTML = d===0
+    ? '대금은 홈페이지 오픈 후 <b>7일 이내</b>에 전액(' + 원(총액()) + ') 지급한다.'
+    : (d===100
+      ? '대금 전액(' + 원(총액()) + ')은 계약 체결일로부터 <b>7일 이내</b>에 지급한다.'
+      : '계약금 <b>' + 원(계약금) + '</b>(' + d + '%)은 계약 체결일로부터 7일 이내에, ' +
+        '잔금 <b>' + 원(총액()-계약금) + '</b>은 홈페이지 오픈일로부터 7일 이내에 지급한다.');
+
+  /* 일정 */
+  var 날 = function(s){ if(!s) return '협의'; var p=s.split('-'); return p[0]+'년 '+Number(p[1])+'월 '+Number(p[2])+'일'; };
+  $('#d-sch-start').textContent = 날(S.sch.start);
+  $('#d-sch-draft').textContent = 날(S.sch.draft);
+  $('#d-sch-open').textContent = 날(S.sch.open);
+  $('#d-material').innerHTML = S.sch.material ? 줄바꿈(S.sch.material)
+    : '로고, 사진, 소개 문구, 서비스 · 가격 정보, 연락처와 영업시간 등 홈페이지에 실릴 자료 일체';
+
+  /* 관리 */
+  $('#d-care-monthly').textContent = S.care.monthly ? 원(S.care.monthly) + ' (선불)' : '—';
+  $('#d-care-fix').textContent = S.care.fix ? '월 ' + S.care.fix + '회' : '—';
+  $('#d-care-free').textContent = S.care.free || '없음';
+
+  $('#d-special').innerHTML = S.special ? 줄바꿈(S.special) : '없음';
+
+  /* 별첨 */
+  var a = '<tr><th style="width:30%">문서</th><th>내용 · 링크</th></tr>';
+  if(!S.attach.length){
+    a += '<tr><td colspan="2" style="text-align:center;color:#9A958A">별첨 없음</td></tr>';
+  } else {
+    S.attach.forEach(function(x){
+      var u = String(x.u||'');
+      var 내용 = /^https?:\/\//i.test(u) ? '<a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(u)+'</a>' : esc(u);
+      a += '<tr><td>'+esc(x.t)+'</td><td>'+내용+'</td></tr>';
+    });
+  }
+  $('#d-attach').innerHTML = a;
+
+  $('#d-date').textContent = S.meta.date ? 날(S.meta.date) : '— 년 — 월 — 일';
+  $('#d-sig-cl-name').textContent = (S.cl.org ? S.cl.org + ' · ' : '') + (S.cl.name || '—');
+
+  var ink = $('#d-sig-cl');
+  if(S.sig.img){
+    ink.innerHTML = '<img src="'+S.sig.img+'" alt="갑 서명">';
+    $('#d-sig-when').textContent = S.sig.at ? '서명 ' + S.sig.at : '';
+  } else {
+    ink.innerHTML = '<span class="empty">서명 전</span>';
+    $('#d-sig-when').textContent = '';
+  }
+}
+
+/* ══ 입력 연결 ══ */
+function 값채우기(){
+  $$('[data-k]').forEach(function(el){ el.value = get(el.dataset.k) || ''; });
+  $$('.planbtn').forEach(function(b){ b.classList.toggle('on', b.dataset.plan===S.pj.plan); });
+  항목그리기(); 별첨그리기(); 그리기();
+}
+
+var 저장타이머;
+function 해시저장(){
+  if(MODE!=='admin') return;
+  clearTimeout(저장타이머);
+  저장타이머 = setTimeout(function(){
+    try{ history.replaceState(null,'', location.pathname+'?admin=1#c='+b64u(JSON.stringify(S))); }catch(e){}
+  }, 400);
+}
+
+document.addEventListener('input', function(e){
+  var t = e.target;
+  if(t.dataset && t.dataset.k){ set(t.dataset.k, t.value); 그리기(); 해시저장(); return; }
+  if(t.dataset && t.dataset.i!==undefined){ S.items[t.dataset.i][t.dataset.c] = t.value; $('#sum-total').textContent=원(총액()); 그리기(); 해시저장(); return; }
+  if(t.dataset && t.dataset.ai!==undefined){ S.attach[t.dataset.ai][t.dataset.c] = t.value; 그리기(); 해시저장(); return; }
+});
+document.addEventListener('change', function(e){
+  var t = e.target;
+  if(t.dataset && t.dataset.k){ set(t.dataset.k, t.value); 그리기(); 해시저장(); }
+});
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-del],[data-adel]');
+  if(!t) return;
+  if(t.dataset.del!==undefined){ S.items.splice(Number(t.dataset.del),1); 항목그리기(); 옵션동기화(); }
+  else { S.attach.splice(Number(t.dataset.adel),1); 별첨그리기(); }
+  그리기(); 해시저장();
+});
+
+/* 요금제 고르기 */
+$$('.planbtn').forEach(function(b){
+  b.addEventListener('click', function(){
+    var k = b.dataset.plan, p = PLANS[k];
+    S.pj.plan = k;
+    /* 요금제 항목은 하나만 유지한다. 다시 고르면 갈아끼운다. */
+    S.items = S.items.filter(function(it){ return !it.plan; });
+    S.items.unshift({ n: p.name + ' 홈페이지 제작', q:1, p:p.price, plan:true });
+    if(!S.care.monthly) S.care.monthly = String(p.monthly);
+    if(!S.care.fix) S.care.fix = String(p.fix);
+    if(p.free && !S.care.free) S.care.free = p.free;
+    값채우기(); 옵션동기화(); 해시저장();
+    알림(p.name + ' 요금제를 담았습니다');
+  });
+});
+
+/* 옵션 */
+function 옵션그리기(){
+  $('#optlist').innerHTML = OPTIONS.map(function(o,i){
+    var 담김 = S.items.some(function(it){ return it.n===o[0]; });
+    return '<label class="opt'+(담김?' on':'')+'"><input type="checkbox" data-opt="'+i+'"'+(담김?' checked':'')+'>' +
+      '<span class="nm">'+esc(o[0])+'</span><span class="pr">+'+원(o[1])+'</span></label>';
+  }).join('');
+}
+/* 목록을 다시 그리지 않고 체크 상태만 맞춘다 (스크롤 유지) */
+function 옵션동기화(){
+  $$('[data-opt]').forEach(function(cb){
+    var o = OPTIONS[Number(cb.dataset.opt)];
+    var 담김 = S.items.some(function(it){ return it.n===o[0]; });
+    cb.checked = 담김;
+    cb.closest('.opt').classList.toggle('on', 담김);
+  });
+}
+document.addEventListener('change', function(e){
+  var t=e.target; if(!t.dataset || t.dataset.opt===undefined) return;
+  var o = OPTIONS[Number(t.dataset.opt)];
+  if(t.checked) S.items.push({ n:o[0], q:1, p:o[1] });
+  else S.items = S.items.filter(function(it){ return it.n!==o[0]; });
+  t.closest('.opt').classList.toggle('on', t.checked);
+  항목그리기(); 그리기(); 해시저장();
+});
+
+$('#btn-add-item') && $('#btn-add-item').addEventListener('click', function(){
+  S.items.push({ n:'', q:1, p:0 }); 항목그리기(); 그리기(); 해시저장();
+});
+$('#btn-add-attach') && $('#btn-add-attach').addEventListener('click', function(){
+  S.attach.push({ t:'', u:'' }); 별첨그리기(); 그리기(); 해시저장();
+});
+
+/* ══ 서명 패드 ══ */
+var pad = $('#pad'), ctx = pad ? pad.getContext('2d') : null, 그린적 = false, 그리는중 = false;
+function 패드크기(){
+  if(!pad) return;
+  var r = pad.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio||1, 3);
+  var 이전 = 그린적 ? pad.toDataURL() : null;
+  pad.width = Math.round(r.width*dpr); pad.height = Math.round(r.height*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.lineWidth = 2.4; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#12151C';
+  if(이전){ var im=new Image(); im.onload=function(){ ctx.drawImage(im,0,0,r.width,r.height); }; im.src=이전; }
+}
+function 좌표(e){
+  var r = pad.getBoundingClientRect();
+  var p = e.touches ? e.touches[0] : e;
+  return { x:p.clientX-r.left, y:p.clientY-r.top };
+}
+function 시작(e){ e.preventDefault(); 그리는중=true; var p=좌표(e); ctx.beginPath(); ctx.moveTo(p.x,p.y); }
+function 이동(e){ if(!그리는중) return; e.preventDefault(); var p=좌표(e); ctx.lineTo(p.x,p.y); ctx.stroke(); 그린적=true; $('#btn-sign').disabled=false; }
+function 끝(){ 그리는중=false; }
+if(pad){
+  ['mousedown','touchstart'].forEach(function(t){ pad.addEventListener(t,시작,{passive:false}); });
+  ['mousemove','touchmove'].forEach(function(t){ pad.addEventListener(t,이동,{passive:false}); });
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(function(t){ pad.addEventListener(t,끝); });
+  window.addEventListener('resize', 패드크기);
+}
+$('#btn-clear') && $('#btn-clear').addEventListener('click', function(){
+  ctx.clearRect(0,0,pad.width,pad.height); 그린적=false; $('#btn-sign').disabled=true;
+});
+
+/* 서명 이미지를 여백 없이 잘라낸다 */
+function 서명이미지(){
+  var w=pad.width, h=pad.height, d=ctx.getImageData(0,0,w,h).data;
+  var x0=w,y0=h,x1=0,y1=0, 있음=false;
+  for(var y=0;y<h;y++) for(var x=0;x<w;x++){
+    if(d[(y*w+x)*4+3]>8){ 있음=true; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; }
+  }
+  if(!있음) return '';
+  var m=10; x0=Math.max(0,x0-m); y0=Math.max(0,y0-m); x1=Math.min(w-1,x1+m); y1=Math.min(h-1,y1+m);
+  var c=document.createElement('canvas'); c.width=x1-x0+1; c.height=y1-y0+1;
+  c.getContext('2d').drawImage(pad, x0,y0,c.width,c.height, 0,0,c.width,c.height);
+  return c.toDataURL('image/png');
+}
+
+$('#btn-sign') && $('#btn-sign').addEventListener('click', function(){
+  if(!그린적){ 알림('서명을 그려주세요'); return; }
+  var 이름 = S.cl.name || '';
+  if(!이름){ 이름 = prompt('서명하시는 분의 성함을 적어주세요') || ''; if(!이름) return; S.cl.name = 이름; }
+  S.sig.img = 서명이미지();
+  S.sig.at = 지금();
+  S.sig.name = 이름;
+  그리기();
+  $('#padwrap').hidden = true;
+  var 문자 = 서명문자();
+  $('#doneview').hidden = false;
+  $('#doneview').innerHTML =
+    '<div class="done"><h3>계약이 체결되었습니다</h3>' +
+    '<p>서명해 주셔서 감사합니다. 아래 버튼으로 <b>서명본을 저장</b>하시고, 큰길브리지에도 알려주세요.</p>' +
+    '<div class="tb-act" style="justify-content:center;margin-top:14px">' +
+    '<button class="btn btn-primary" id="btn-print2">서명본 PDF로 저장</button>' +
+    '<button class="btn btn-teal" id="btn-notify">문자로 통보하기</button>' +
+    '<a class="btn" href="tel:1533-7295">1533-7295 전화</a></div></div>';
+  $('#btn-print2').addEventListener('click', function(){ window.print(); });
+  $('#btn-notify').addEventListener('click', function(){ location.href = 문자링크(문자); });
+  window.scrollTo({ top:0, behavior:'smooth' });
+  알림('서명이 완료되었습니다');
+});
+
+function 지금(){
+  var d=new Date(), p=function(n){ return (n<10?'0':'')+n; };
+  return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function 서명문자(){
+  return ['[홈페이지 제작 계약 서명 완료]',
+    '계약번호 : ' + (S.meta.no||'-'),
+    '상호 : ' + (S.cl.org||'-'),
+    '서명자 : ' + (S.sig.name||'-'),
+    '사이트 : ' + (S.pj.title||'-'),
+    '금액 : ' + 원(총액()),
+    '서명시각 : ' + S.sig.at].join('\n');
+}
+function 문자링크(t){
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  return 'sms:01076357886' + sep + 'body=' + encodeURIComponent(t);
+}
+
+/* ══ 링크 만들기 ══ */
+$('#btn-share') && $('#btn-share').addEventListener('click', function(){
+  if(!S.cl.name && !S.cl.org){ 알림('갑의 상호나 담당자 이름을 먼저 적어주세요'); return; }
+  if(!S.items.length){ 알림('계약 항목이 비어 있습니다'); return; }
+  if(!S.meta.no){ S.meta.no = 계약번호(); 값채우기(); }
+  if(!S.meta.date){ S.meta.date = new Date().toISOString().slice(0,10); 값채우기(); }
+  var url = location.origin + location.pathname + '#c=' + b64u(JSON.stringify(S));
+  $('#linkbox').hidden = false;
+  $('#linkout').value = url;
+  $('#linkout').select();
+  알림('링크를 만들었습니다. 복사해서 고객에게 보내세요');
+});
+function 계약번호(){
+  var d=new Date(), p=function(n){ return (n<10?'0':'')+n; };
+  return 'KB-' + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + '-' +
+    String(Math.floor(Math.random()*900)+100);
+}
+$('#btn-copy') && $('#btn-copy').addEventListener('click', function(){
+  var t = $('#linkout'); t.select();
+  if(navigator.clipboard) navigator.clipboard.writeText(t.value).then(function(){ 알림('복사했습니다'); });
+  else { document.execCommand('copy'); 알림('복사했습니다'); }
+});
+$('#btn-sms') && $('#btn-sms').addEventListener('click', function(){
+  var t = ['[' + (S.cl.org||'') + ' 홈페이지 제작 계약서]',
+    '아래 링크에서 내용 확인 후 서명해 주세요.', '', $('#linkout').value, '',
+    '큰길브리지 1533-7295'].join('\n');
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  location.href = 'sms:' + (S.cl.tel||'').replace(/[^0-9+]/g,'') + sep + 'body=' + encodeURIComponent(t);
+});
+$('#btn-preview') && $('#btn-preview').addEventListener('click', function(){
+  window.open(location.pathname + '?preview=1#c=' + b64u(JSON.stringify(S)), '_blank');
+});
+$('#btn-reset') && $('#btn-reset').addEventListener('click', function(){
+  if(!confirm('작성한 내용을 전부 지웁니다. 계속할까요?')) return;
+  location.href = location.pathname + '?admin=1';
+});
+$('#btn-print').addEventListener('click', function(){ window.print(); });
+
+function 알림(t){
+  var el=$('#toast'); el.textContent=t; el.classList.add('on');
+  clearTimeout(el._t); el._t=setTimeout(function(){ el.classList.remove('on'); }, 2600);
+}
+
+/* ══ 시작 ══ */
+(function 시작하기(){
+  var h = location.hash.indexOf('#c=')===0 ? location.hash.slice(3) : '';
+  if(h){
+    try{
+      var loaded = JSON.parse(unb64u(h));
+      Object.keys(S).forEach(function(k){
+        if(loaded[k]===undefined) return;
+        if(typeof S[k]==='object' && !Array.isArray(S[k])) Object.assign(S[k], loaded[k]);
+        else S[k] = loaded[k];
+      });
+    }catch(e){ 알림('링크가 손상되었습니다. 보내주신 분께 다시 요청해 주세요'); }
+  }
+
+  if(MODE==='admin'){
+    $('#admin').hidden = false;
+    $('#mode-pill').textContent = '작성 모드';
+    if(!S.meta.date) S.meta.date = new Date().toISOString().slice(0,10);
+    옵션그리기(); 옵션동기화();
+  } else {
+    $('#mode-pill').textContent = MODE==='preview' ? '미리보기' : '계약서 확인 · 서명';
+    $('#mode-pill').className = 'pill cust';
+    $$('.no-cust').forEach(function(el){ el.style.display='none'; });
+    if(MODE==='customer' && !S.sig.img){
+      $('#padwrap').hidden = false;
+      setTimeout(패드크기, 60);
+    }
+    if(S.sig.img){
+      $('#doneview').hidden = false;
+      $('#doneview').innerHTML = '<div class="done"><h3>서명이 완료된 계약서입니다</h3>' +
+        '<p>' + esc(S.sig.at) + ' 에 ' + esc(S.sig.name) + ' 님이 서명하셨습니다.</p></div>';
+    }
+  }
+  값채우기();
+})();
+
+/* 도장 이미지가 없으면 조용히 숨긴다 */
+var st = $('#d-stamp');
+if(st) st.addEventListener('error', function(){ st.style.display='none'; });
+})();
+</script>
+</body>
+</html>

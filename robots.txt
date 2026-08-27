@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+# 계약서에는 고객 정보가 들어간다. 수집을 막는다.
+Disallow: /contract.html
 
 # AI 검색·요약 크롤러 명시 허용
 User-agent: GPTBot
