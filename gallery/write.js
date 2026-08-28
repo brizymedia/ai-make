@@ -52,6 +52,12 @@
                .join("\n").replace(/\n{3,}/g, "\n\n").trim();
   }
   function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  /* 제목 뒤에 붙은 브랜드명을 뗀다.
+     「… | 큰길브리지」는 검색 결과 목록에서 어느 사이트 글인지 알리는 꼬리표라
+     <title> 에만 붙어야 한다. 화면에 보이는 큰제목이나 목록 카드,
+     구조화 데이터의 headline 에 그대로 들어가면 제목이 두 번 말하는 꼴이 된다.
+     build-sitemap.js 도 목록을 만들 때 같은 방식으로 뗀다. */
+  function 본제목(s) { return String(s || "").replace(/\s*\|\s*큰길브리지\s*$/, ""); }
   /* 파일명 슬러그 — 영문이 있으면 영문, 없으면 한글을 그대로 쓴다.
      GitHub Pages 는 한글 경로를 지원하고, 한글 URL 이 검색에도 불리하지 않다. */
   function 슬러그(s) {
@@ -316,7 +322,7 @@
       .map(function (p) { return "  <p>" + esc(p) + "</p>"; }).join("\n");
     var ld = {
       "@context": "https://schema.org", "@type": "BlogPosting",
-      "@id": url, "mainEntityOfPage": url, "headline": 제목,
+      "@id": url, "mainEntityOfPage": url, "headline": 본제목(제목),
       "description": 요약, "image": SITE + "/og.png",
       "datePublished": iso + "T09:00:00+09:00", "dateModified": iso + "T09:00:00+09:00",
       "inLanguage": "ko-KR",
@@ -333,7 +339,7 @@
       '<meta name="robots" content="index, follow, max-image-preview:large">',
       '<link rel="canonical" href="' + url + '">',
       '<meta property="og:type" content="article">',
-      '<meta property="og:title" content="' + esc(제목) + '">',
+      '<meta property="og:title" content="' + esc(본제목(제목)) + '">',
       '<meta property="og:description" content="' + esc(요약) + '">',
       '<meta property="og:url" content="' + url + '">',
       '<meta property="og:image" content="' + SITE + '/og.png">',
@@ -366,7 +372,7 @@
       '</div></nav>', '',
       '<article class="post">',
       '  <div class="post-meta"><span class="mono">' + 유형[d.유형].라벨 + '</span><time datetime="' + iso + '">' + iso.replace(/-/g, ".") + '</time></div>',
-      '  <h1>' + esc(제목) + '</h1>',
+      '  <h1>' + esc(본제목(제목)) + '</h1>',
       '  <p class="lead">' + esc(요약) + '</p>',
       '',
       '  <!-- 사진을 넣을 자리: <figure><img src="../images/파일.jpg" alt="' + esc((d.지역 || "") + " " + d.이름 + " " + 유형[d.유형].일) + '"><figcaption>설명</figcaption></figure> -->',
@@ -414,7 +420,7 @@
       '      <div class="gthumb" style="background:' + 썸네일(d.유형) + '"></div>',
       '      <div class="gbody">',
       '        <span class="gcat">' + 유형[d.유형].라벨 + '</span>',
-      '        <h2>' + esc(제목) + '</h2>',
+      '        <h2>' + esc(본제목(제목)) + '</h2>',
       '        <p>' + esc(요약) + '</p>',
       '        <time datetime="' + d.날짜iso + '">' + d.날짜iso.replace(/-/g, ".") + '</time>',
       '      </div>',
