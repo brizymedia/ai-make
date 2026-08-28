@@ -1667,7 +1667,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           </div>
           <div class="calc-acts">
             <a href="#contact" class="btn btn-gold" id="toContact">이 견적으로 상담 신청</a>
-            <button class="btn btn-ghost" type="button" id="copyBtn">문자로 견적 보내기</button>
+            <button class="btn btn-ghost" type="button" id="copyBtn">견적서로 받기</button>
           </div>
           <div class="copied" id="copiedMsg"></div>
         </div>
@@ -1936,10 +1936,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
             <span>상담 목적의 개인정보(성함·연락처·이메일) 수집·이용에 동의합니다. 수집한 정보는 상담 종료 후 파기합니다.</span>
           </label>
           <button type="submit" class="btn btn-gold">
-            문자로 상담 신청하기
+            상담 · 견적 신청하기
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
-          <p class="form-note" id="formNote">버튼을 누르면 견적 내용까지 정리되어 <b>문자 앱이 바로 열립니다.</b><br>전송만 누르시면 접수되고, 확인 후 바로 연락드립니다.</p>
+          <p class="form-note" id="formNote">누르면 <b>바로 접수됩니다.</b> 문자 앱을 여실 필요 없습니다.<br>확인하는 대로 견적서를 보내드립니다.</p>
         </form>
       </div>
     </div>
@@ -2390,9 +2390,29 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   }
 
   const copiedMsg = $('#copiedMsg');
-  $('#copyBtn').addEventListener('click', async ()=>{
+  /* 고른 내용을 그대로 견적서(quote.html) 로 넘긴다.
+     예전에는 문자 앱을 열어 저희 번호로 보내게 했는데, 그렇게 들어온 문의는
+     문자로만 남아 견적서 · 계약서로 이어가기가 어려웠다.
+     이제는 손님이 견적서를 문서로 받아 보관 · 인쇄할 수 있고,
+     같은 문서를 저희가 그대로 이어받아 계약서까지 만든다. */
+  $('#copyBtn').addEventListener('click', ()=>{
+    const items = collect();
+    const 미리 = {
+      cl:{ org:'', name:'', tel:'', email:'' },
+      pj:{ title:'', domain:'', biztype:'', purpose:'', plan: planKey() },
+      items: items.map(i=>({ n:i.name, q:1, p:i.cost })),
+      fin:{ vat:'none', deposit:'50' },
+      care:{ monthly:'', free:'' },
+      sch:{ start:'', open:'' },
+      note:'',
+      meta:{ no:'', date:'', valid:'발행일로부터 30일' }
+    };
+    /* base64url — 한글이 들어가도 주소에서 깨지지 않는다 */
+    const code = btoa(unescape(encodeURIComponent(JSON.stringify(미리))))
+      .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    window.open('quote.html#q=' + code, '_blank', 'noopener');
     copiedMsg.classList.add('on');
-    await sendBySms(estimateText(), copiedMsg, '견적');
+    copiedMsg.innerHTML = '견적서를 새 창에 띄웠습니다. <b>인쇄 · PDF 저장</b>으로 보관하세요.';
   });
 
   /* ---------- contact form ---------- */
