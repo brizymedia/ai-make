@@ -89,6 +89,9 @@ table.mini .in{padding:7px 9px;font-size:.8rem}
 .hint{font-size:.74rem;color:var(--txt-mute);line-height:1.65;margin-top:10px;
   padding-top:10px;border-top:1px solid var(--line)}
 .hint b{color:var(--txt-dim)}
+.chk{display:flex;align-items:center;gap:8px;margin-top:9px;
+  font-size:.78rem;color:var(--txt-dim);cursor:pointer}
+.chk input{width:auto;accent-color:var(--gold)}
 
 /* ── 견적서(종이) ────────────────────── */
 .doc{background:var(--paper);color:var(--paper-ink);border-radius:16px;padding:clamp(26px,4vw,52px);
@@ -276,6 +279,15 @@ body.cust .cust-cta{display:flex}
     <input class="in" id="i-no" data-k="meta.no" placeholder="자동으로 만들어집니다">
     <label class="f" for="i-note">특기사항 (견적서에 그대로 나옵니다)</label>
     <textarea class="in" id="i-note" data-k="note" placeholder="예) 사진은 고객이 제공, 원고는 저희가 작성합니다."></textarea>
+
+    <h3>계약 서버 (한 번만)</h3>
+    <label class="f" for="i-api">서명 요청 서버 주소</label>
+    <input class="in" id="i-api" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+    <label class="chk"><input type="checkbox" id="i-api-save" checked> 이 기기에 기억</label>
+    <p class="hint" style="border-top:0;padding-top:6px;margin-top:8px">
+      넣어두면 계약서로 넘어갈 때 <b>서버 주소가 이미 채워진 채로</b> 열립니다.
+      계약서에서 매번 다시 넣지 않아도 됩니다. 비워두셔도 계약은 됩니다 (링크가 길어집니다).
+    </p>
 
     <p class="hint">
       <b>「고객 링크 복사」</b>를 누르면 이 견적서를 그대로 보는 주소가 복사됩니다.
@@ -646,6 +658,28 @@ $('#btn-sms').addEventListener('click', function(){
   location.href = 'sms:' + tel + '?body=' + encodeURIComponent(글);
 });
 
+/* ── 계약 서버 주소는 이 기기에만 기억해 둔다 ──
+   매번 계약서에서 다시 넣지 않아도 되도록, 넘길 때 같이 실어 보낸다. */
+var 저장소 = (function(){
+  try { var t='__t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return localStorage; }
+  catch(e){ return null; }
+})();
+var 키api = 'kb-quote-api';
+
+(function 서버주소불러오기(){
+  if(MODE !== 'admin') return;
+  if(!저장소){ $('#i-api-save').checked = false; return; }
+  $('#i-api').value = 저장소.getItem(키api) || '';
+})();
+$('#i-api').addEventListener('input', function(){
+  if(저장소 && $('#i-api-save').checked) 저장소.setItem(키api, this.value.trim());
+});
+$('#i-api-save').addEventListener('change', function(){
+  if(!저장소) return;
+  if(this.checked) 저장소.setItem(키api, $('#i-api').value.trim());
+  else 저장소.removeItem(키api);
+});
+
 /* 이 견적으로 계약서 작성 → contract.html?admin=1#c=… */
 $('#btn-contract').addEventListener('click', function(){
   var C = {
@@ -658,7 +692,8 @@ $('#btn-contract').addEventListener('click', function(){
     care:{ monthly:S.care.monthly, fix:'2', free:S.care.free },
     sch:{ start:S.sch.start, draft:'', open:S.sch.open, material:'' },
     special: S.note || '',
-    meta:{ no:'', date:new Date().toISOString().slice(0,10), api:'' },
+    /* 계약번호는 계약서가 스스로 새로 만든다 (견적번호와 다른 번호다) */
+    meta:{ no:'', date:new Date().toISOString().slice(0,10), api: $('#i-api').value.trim() },
     sig:{ img:'', at:'', name:'' }
   };
   var url = location.origin + location.pathname.replace(/quote\.html$/, 'contract.html')

@@ -2456,6 +2456,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       name: name, phone: tel, email: email, service: type, message: msg,
       total: won(sum) + '원 (VAT 별도)',
       quote: items.map(i=>'· ' + i.name + ' — ' + won(i.cost) + '원').join('\n'),
+      /* 손님이 고른 항목을 글이 아니라 자료 그대로 보낸다.
+         알림 메일의 「견적서 작성」 버튼이 이걸 그대로 견적서에 채워 넣는다.
+         글로만 보내면 서버에서 다시 뜯어 읽어야 해서 틀리기 쉽다. */
+      plan: planKey(),
+      items: items.map(i=>({ n: i.name, p: i.cost })),
       at: new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }),
       page: location.href,
       website: $('#f-website') ? $('#f-website').value : ''

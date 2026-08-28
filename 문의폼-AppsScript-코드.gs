@@ -44,9 +44,10 @@ function 견적서주소(d) {
     pj: {
       title: 이름 ? 이름 + ' 홈페이지 제작' : '',
       domain: '', biztype: '',
-      purpose: String(d.message || '').trim()
+      purpose: String(d.message || '').trim(),
+      plan: String(d.plan || '')
     },
-    items: [],
+    items: 견적항목(d),
     fin: { vat: 'none', deposit: '50' },
     care: { monthly: '', free: '' },
     sch: { start: '', open: '' },
@@ -56,6 +57,33 @@ function 견적서주소(d) {
   // base64EncodeWebSafe 는 - _ 를 쓰는 형식이라 브라우저에서 그대로 읽힌다
   const 코드 = Utilities.base64EncodeWebSafe(JSON.stringify(미리), Utilities.Charset.UTF_8);
   return SITE + '/quote.html?admin=1#q=' + 코드;
+}
+
+
+/**
+ * 손님이 계산기에서 고른 항목을 견적서 형식으로 바꾼다.
+ *
+ * 홈페이지가 items 를 자료 그대로 보내주면 그걸 쓰고,
+ * 예전 방식(글로 된 견적 상세)만 있으면 한 줄씩 뜯어 읽는다.
+ * 「· 고급형 (5페이지 맞춤 디자인) — 500,000원」 같은 줄이다.
+ */
+function 견적항목(d) {
+  if (Array.isArray(d.items) && d.items.length) {
+    return d.items
+      .filter(function (it) { return it && it.n; })
+      .map(function (it) { return { n: String(it.n), q: 1, p: Number(it.p) || 0 }; });
+  }
+
+  const 글 = String(d.quote || '').trim();
+  if (!글) return [];
+
+  return 글.split('\n').map(function (줄) {
+    const 조각 = 줄.replace(/^[·\-\s]+/, '').split('—');
+    if (조각.length < 2) return null;
+    const 이름 = 조각[0].trim();
+    const 값 = Number(조각[1].replace(/[^0-9]/g, '')) || 0;
+    return 이름 ? { n: 이름, q: 1, p: 값 } : null;
+  }).filter(function (x) { return x; });
 }
 
 
