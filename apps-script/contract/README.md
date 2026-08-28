@@ -18,7 +18,8 @@
 
 1. **https://script.new** 접속 (새 프로젝트가 열립니다)
 2. 프로젝트 이름을 **`큰길브리지 전자계약`** 으로 바꿉니다
-3. 기본 `Code.gs` 내용을 **전부 지우고** 이 폴더의 **`Code.gs`** 를 통째로 붙여넣습니다
+3. 기본으로 열린 `Code.gs` 내용을 **전부 지우고** 이 폴더의 **`큰길브리지-계약서버.gs`** 를 통째로 붙여넣습니다
+   (`keungil-event` 저장소에도 비슷한 파일이 있습니다. **큰길브리지** 라고 적힌 것이 맞습니다)
 4. 위쪽 설정값을 확인합니다
    - `COMPANY_EMAIL` — 서명본을 항상 받을 주소 (기본 `gilauto325@gmail.com`)
    - 나머지는 그대로 두어도 됩니다
@@ -104,7 +105,7 @@ https://script.google.com/macros/s/AKfyc.../exec
 ## 주의할 것
 
 **요금이 바뀌면 두 곳을 같이 고쳐야 합니다.**
-`contract.html` 의 `PLANS` · `OPTIONS` 와 `Code.gs` 의 `calcTotal_()` 은
+`contract.html` 의 `PLANS` · `OPTIONS` 와 `큰길브리지-계약서버.gs` 의 `calcTotal_()` 은
 **같은 방식으로 금액을 계산해야** 합니다. 한쪽만 고치면 계약서 금액과
 메일 · 대장의 금액이 어긋납니다.
 
@@ -112,4 +113,4 @@ https://script.google.com/macros/s/AKfyc.../exec
 계약서 발송은 한 건에 1통이라 넉넉합니다.
 
 **이미 서명된 계약** 에 다시 서명하면 덮어쓰지 않고 기존 것을 돌려줍니다.
-다시 서명받아야 한다면 `Code.gs` 의 `ALLOW_RESIGN` 을 `true` 로 바꾸세요.
+다시 서명받아야 한다면 `큰길브리지-계약서버.gs` 의 `ALLOW_RESIGN` 을 `true` 로 바꾸세요.
