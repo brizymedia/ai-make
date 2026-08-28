@@ -24,7 +24,39 @@ const TO_EMAIL   = 'gilauto325@gmail.com';   // 알림 받을 이메일
 const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
+const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
 /** ───────────────────────────────────────── */
+
+
+/**
+ * 문의 내용을 견적서 작성 화면 주소로 바꾼다.
+ *
+ * 문의 → 견적서 → 계약서 로 이어지게 하는 고리다.
+ * 알림 메일의 버튼을 누르면 고객 정보가 이미 채워진 견적서가 열린다.
+ * 견적서에는 서버가 없다. 내용이 주소(#q=) 안에 통째로 담겨서 열린다.
+ *
+ * quote.html 의 상태 모양과 같아야 한다. 한쪽만 고치면 값이 안 들어간다.
+ */
+function 견적서주소(d) {
+  const 이름 = String(d.name || '').trim();
+  const 미리 = {
+    cl: { org: 이름, name: '', tel: d.phone || '', email: d.email || '' },
+    pj: {
+      title: 이름 ? 이름 + ' 홈페이지 제작' : '',
+      domain: '', biztype: '',
+      purpose: String(d.message || '').trim()
+    },
+    items: [],
+    fin: { vat: 'none', deposit: '50' },
+    care: { monthly: '', free: '' },
+    sch: { start: '', open: '' },
+    note: '',
+    meta: { no: '', date: '', valid: '발행일로부터 30일' }
+  };
+  // base64EncodeWebSafe 는 - _ 를 쓰는 형식이라 브라우저에서 그대로 읽힌다
+  const 코드 = Utilities.base64EncodeWebSafe(JSON.stringify(미리), Utilities.Charset.UTF_8);
+  return SITE + '/quote.html?admin=1#q=' + 코드;
+}
 
 
 function doPost(e) {
@@ -97,12 +129,23 @@ function doPost(e) {
             '</div>'
           : '') +
 
-        '<p style="margin-top:22px">' +
+        /* 다음에 할 일 — 문의를 받고 나서 바로 견적서로 넘어갈 수 있게 */
+        '<div style="margin-top:22px;background:#FDF8EC;border:1px solid #F0DFB4;border-radius:12px;padding:16px 18px">' +
+          '<div style="font-size:12px;color:#8A6512;font-weight:bold;letter-spacing:.04em;margin-bottom:10px">다음 단계</div>' +
+          '<a href="' + 견적서주소(d) + '" style="display:inline-block;background:#E8B84B;color:#07090F;' +
+          'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px">📄 이 문의로 견적서 작성</a>' +
+          '<div style="font-size:12.5px;color:#8A7B57;margin-top:10px;line-height:1.6">' +
+            '고객 정보가 채워진 채로 열립니다. 요금제와 옵션만 고르면 견적서가 됩니다.<br>' +
+            '견적서 화면에서 <b>「이 견적으로 계약서 작성」</b>을 누르면 계약서로 그대로 넘어갑니다.' +
+          '</div>' +
+        '</div>' +
+
+        '<p style="margin-top:18px">' +
           (tel
-            ? '<a href="tel:' + tel + '" style="display:inline-block;background:#E8B84B;color:#07090F;' +
+            ? '<a href="tel:' + tel + '" style="display:inline-block;background:#0F1720;color:#EDEAE3;' +
               'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin-right:8px">📞 바로 전화 걸기</a>'
             : '') +
-          '<a href="' + 시트주소 + '" style="display:inline-block;background:#0F1720;color:#EDEAE3;' +
+          '<a href="' + 시트주소 + '" style="display:inline-block;background:#F4F4F5;color:#3F3F46;' +
           'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px">📋 전체 문의 목록 보기</a>' +
         '</p>' +
 
