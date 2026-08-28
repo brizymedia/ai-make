@@ -477,69 +477,46 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 .vid-cta .pk{font-size:.72rem;color:var(--txt-mute);width:100%;line-height:1.6}
 
 /* ============================================================
-   AI CLASS — 준비중
+   CARD NEWS — 후크
+   무대 조명 아래 카드가 놓인 느낌. 카드는 세로 4:5 라 여러 장을 한 줄에
+   늘어놓으면 글씨가 안 보인다. 인스타에서 보듯 옆으로 넘기게 했다.
    ============================================================ */
-.aiclass{background:var(--ink-2);border-top:1px solid var(--line);position:relative;overflow:hidden}
-.aiclass::before{
+.cardnews{background:var(--ink-2);border-top:1px solid var(--line);position:relative;overflow:hidden}
+.cardnews::before{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(65% 50% at 20% 15%,rgba(63,211,198,.13),transparent 62%);
+  background:radial-gradient(58% 45% at 14% 8%,rgba(232,184,75,.15),transparent 62%);
 }
-.soon{
-  display:inline-flex;align-items:center;gap:9px;padding:7px 15px 7px 10px;border-radius:999px;
-  border:1px solid rgba(63,211,198,.42);background:rgba(63,211,198,.09);color:var(--teal);
-  font-family:var(--f-mono);font-size:.62rem;letter-spacing:.18em;margin-bottom:20px;
-}
-.soon i{width:6px;height:6px;border-radius:50%;background:var(--teal);animation:pulse 2s infinite;font-style:normal}
-.tracks{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2.2vw,22px);margin-bottom:clamp(34px,4.5vw,52px)}
-@media(max-width:820px){.tracks{grid-template-columns:1fr}}
-.track{
-  position:relative;border:1px solid var(--line);border-radius:22px;padding:clamp(24px,3vw,34px);
-  background:linear-gradient(165deg,rgba(63,211,198,.06),transparent 65%);overflow:hidden;
-  transition:transform .5s var(--ease-2),border-color .45s;
-}
-.track:hover{transform:translateY(-6px);border-color:rgba(63,211,198,.45)}
-.track-n{
-  font-family:var(--f-disp);font-style:italic;font-size:2.4rem;line-height:1;color:var(--teal);opacity:.42;margin-bottom:12px;
-}
-.track h3{font-size:clamp(1.1rem,2.2vw,1.4rem);font-weight:800;letter-spacing:-.04em;margin-bottom:9px;line-height:1.25}
-.track > p{font-size:.85rem;color:var(--txt-dim);line-height:1.75;margin-bottom:22px}
-.track ol{list-style:none;counter-reset:c;display:flex;flex-direction:column;gap:0}
-.track li{
-  counter-increment:c;display:flex;gap:13px;padding:13px 0;border-top:1px solid var(--line);
-  font-size:.85rem;color:var(--txt-dim);line-height:1.5;align-items:flex-start;
-}
-.track li:last-child{border-bottom:1px solid var(--line)}
-.track li::before{
-  content:counter(c,decimal-leading-zero);font-family:var(--f-mono);font-size:.6rem;color:var(--teal);
-  padding-top:3px;flex-shrink:0;letter-spacing:.08em;
-}
-.track li b{color:var(--txt);font-weight:700;display:block;margin-bottom:2px;letter-spacing:-.02em}
+.cardnews .wrap{position:relative}
+.cardnews .sec-sub{word-break:keep-all}
 
-.prep{
-  border:1px solid var(--line);border-radius:22px;padding:clamp(24px,3.2vw,36px);
-  background:rgba(237,234,227,.022);display:grid;grid-template-columns:1fr auto;gap:clamp(24px,4vw,48px);align-items:center;
-}
-@media(max-width:820px){.prep{grid-template-columns:1fr}}
-.prep h4{font-size:1.05rem;font-weight:800;letter-spacing:-.035em;margin-bottom:22px}
-.psteps{display:flex;gap:0;flex-wrap:wrap}
-.pstep{flex:1 1 150px;position:relative;padding-right:16px}
-.pstep .pdot{
-  width:11px;height:11px;border-radius:50%;background:var(--ink-3);border:2px solid var(--line-2);
-  margin-bottom:12px;position:relative;z-index:2;
-}
-.pstep.done .pdot{background:var(--teal);border-color:var(--teal)}
-.pstep.now .pdot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 5px rgba(232,184,75,.2);animation:pulse 2.2s infinite}
-.pstep::after{content:"";position:absolute;left:11px;top:4.5px;right:0;height:2px;background:var(--line)}
-.pstep.done::after{background:var(--teal);opacity:.45}
-.pstep:last-child::after{display:none}
-.pstep .pt{font-size:.86rem;font-weight:700;letter-spacing:-.025em;margin-bottom:3px}
-.pstep .ps{font-family:var(--f-mono);font-size:.58rem;letter-spacing:.12em;color:var(--txt-mute)}
-.pstep.done .ps{color:var(--teal)}
-.pstep.now .ps{color:var(--gold)}
-.prep-cta{display:flex;flex-direction:column;gap:10px;min-width:min(100%,230px)}
-.prep-cta .btn{justify-content:center;width:100%}
-.prep-cta small{font-size:.7rem;color:var(--txt-mute);text-align:center;line-height:1.6}
+.cn-proof{display:flex;flex-wrap:wrap;gap:clamp(22px,4vw,56px);margin-bottom:clamp(28px,4vw,42px)}
+.cn-stat{display:flex;align-items:baseline;gap:12px}
+.cn-stat b{font-size:clamp(2rem,4.4vw,3rem);font-weight:800;color:var(--gold);letter-spacing:-.04em;line-height:1}
+.cn-stat span{font-size:.76rem;color:var(--txt-dim);line-height:1.55;word-break:keep-all}
 
+.cn-deck{margin:0}
+.cn-track{
+  display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;padding-bottom:14px;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;
+}
+.cn-track::-webkit-scrollbar{height:6px}
+.cn-track::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
+.cn-track::-webkit-scrollbar-track{background:transparent}
+.cn-track:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:14px}
+.cn-track > a{
+  flex:0 0 min(76%,290px);scroll-snap-align:center;
+  border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--ink);
+  transition:border-color .35s var(--ease-2),transform .35s var(--ease-2);
+}
+.cn-track > a:hover{border-color:var(--gold);transform:translateY(-4px)}
+.cn-track > a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* height:auto 가 없으면 height 속성(1012) 이 그대로 먹어 카드가 세로로 늘어난다 */
+.cn-track img{width:100%;height:auto}
+.cn-deck figcaption{margin-top:12px;font-size:.75rem;color:var(--txt-mute)}
+
+.cn-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:clamp(26px,3.5vw,42px)}
+@media(max-width:560px){ .cn-cta .btn{width:100%;justify-content:center} }
 /* ============================================================
    PRICING + CALCULATOR
    ============================================================ */
@@ -1127,7 +1104,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       <a href="#video">영상제작</a>
       <a href="#price">요금 · 견적</a>
       <a href="#works">포트폴리오</a>
-      <a href="#aiclass">AI 클래스</a>
       <a href="#faq">FAQ</a>
       <a href="gallery/">사례 · 소식</a>
       <a href="seo-check/">SEO 점검</a>
@@ -1323,7 +1299,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <h3>AI를 몰라도 괜찮습니다.<br><em>손잡고 알려드립니다.</em></h3>
         <p>"AI가 좋다는데 뭘 어떻게 해야 할지 모르겠다"는 분들을 위한 강의입니다. 어려운 용어 대신, 당장 내 가게와 내 무대 홍보에 쓸 수 있는 것부터 함께 만들어 봅니다.</p>
         <div class="svc-price"><span class="p">10만원</span><span class="s">부터 / 시간당 1:1 기준</span></div>
-        <p style="margin-top:14px"><a href="#aiclass" style="color:var(--teal);font-size:.85rem;font-weight:700;text-decoration:underline;text-underline-offset:4px">정규 AI 클래스 준비중 · 자세히 보기 →</a></p>
       </div>
       <div class="svc-list">
         <div class="svc-item"><span class="k">01</span><div><div class="t">1:1 맞춤 과외</div><div class="d">업종과 수준에 맞춰 커리큘럼을 그날 그날 조정</div></div></div>
@@ -1336,12 +1311,59 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   </div>
 </section>
 
+<!-- ══════════ CARD NEWS ══════════ -->
+<section class="sec cardnews" id="cardnews">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div>
+        <div class="mono sec-num">03 — CARD NEWS</div>
+        <h2 class="sec-title">블로그, 요즘<br><em>검색 되세요?</em></h2>
+      </div>
+      <p class="sec-sub">
+        안 되는 거 아시죠. 사람들이 목록을 훑는 대신 <b style="color:var(--txt)">AI에게 물어봅니다.</b>
+        그 답에 내 이름이 없으면 없는 사람입니다.
+        저희가 직접 겪고 풀어낸 이야기를 카드 13장에 담았습니다.
+      </p>
+    </div>
+
+    <div class="cn-proof rv">
+      <div class="cn-stat"><b>1위</b><span>우리 지역 이벤트 분야<br>챗지피티 검색</span></div>
+      <div class="cn-stat"><b>0원</b><span>거기까지 쓴<br>광고비</span></div>
+      <div class="cn-stat"><b>5곳</b><span>글 하나로 퍼지는<br>홍보 채널</span></div>
+    </div>
+
+    <figure class="cn-deck rv">
+      <div class="cn-track" tabindex="0" role="group" aria-label="카드뉴스 13장 — 옆으로 넘겨 보세요">
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-01.webp" alt="1. 블로그, 요즘 검색 되세요? 이제는 AI가 답을 골라줍니다" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-02.webp" alt="2. 가수 · MC · 행사팀 · 소상공인을 위한 홈페이지, 10만원부터" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-03.webp" alt="3. 광고비 0원으로 챗지피티 검색 1위" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-04.webp" alt="4. 글 한 번 쓰면 홈페이지 · 블로그 · 인스타 · 스레드 · 페이스북까지" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-05.webp" alt="5. 가수 · MC를 위한 프로필 홈" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-06.webp" alt="6. 프로필 자동 생성 — 카톡으로 링크 하나만" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-07.webp" alt="7. 앨범 · 영상 · 후원 한자리에" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-08.webp" alt="8. 행사 · 이벤트 회사 홈페이지" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-09.webp" alt="9. 행사 사진 올리면 갤러리에 자동 발행" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-10.webp" alt="10. 홈페이지에서 바로 만드는 견적서" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-11.webp" alt="11. 저도 작년에 3,000만원 떼였습니다 — 계약서는 필수입니다" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-12.webp" alt="12. 일감 알림 베타 — 단톡방 구인 글을 놓치지 않게" width="810" height="1012" loading="lazy" decoding="async"></a>
+        <a href="gallery/posts/2026-08-singer-mc-homepage.html"><img src="gallery/images/cards/card-13.webp" alt="13. 먼저 물어보세요. 공짜입니다 — 010-7635-7886" width="810" height="1012" loading="lazy" decoding="async"></a>
+      </div>
+      <figcaption>옆으로 넘겨 보세요 · 카드를 누르면 전체 이야기로 갑니다</figcaption>
+    </figure>
+
+    <div class="cn-cta rv">
+      <a href="gallery/posts/2026-08-singer-mc-homepage.html" class="btn btn-gold">전체 이야기 읽기</a>
+      <a href="#contact" class="btn btn-ghost">내 경우는 어떤지 물어보기</a>
+    </div>
+  </div>
+</section>
+
 <!-- ══════════ VIDEO ══════════ -->
 <section class="sec video" id="video">
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">03 — VIDEO</div>
+        <div class="mono sec-num">04 — VIDEO</div>
         <h2 class="sec-title">손가락이 멈추는<br><em>15초</em>를 만듭니다.</h2>
       </div>
       <p class="sec-sub">
@@ -1455,7 +1477,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">04 — PRICING</div>
+        <div class="mono sec-num">05 — PRICING</div>
         <h2 class="sec-title">필요한 만큼만,<br><em>정직하게.</em></h2>
       </div>
       <p class="sec-sub">플랜을 고르고 옵션을 켜보세요. 계산기가 실시간으로 총액을 알려드립니다. 숨은 비용은 없습니다.</p>
@@ -1659,7 +1681,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">05 — PROCESS</div>
+        <div class="mono sec-num">06 — PROCESS</div>
         <h2 class="sec-title">전화 한 통이면<br><em>다 됩니다.</em></h2>
       </div>
       <p class="sec-sub">준비물은 없습니다. 사진이 없어도, 문구가 없어도 괜찮습니다. 통화하면서 함께 만들어 갑니다.</p>
@@ -1678,7 +1700,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   <div class="wrap">
     <div class="sec-head rv">
       <div>
-        <div class="mono sec-num">06 — WORKS</div>
+        <div class="mono sec-num">07 — WORKS</div>
         <h2 class="sec-title">이런 분들이<br><em>함께하고 있습니다.</em></h2>
       </div>
       <p class="sec-sub">업종별로 필요한 구성은 전부 다릅니다. 아래 유형 중 가까운 것을 알려주시면 그 구조부터 잡아드립니다.</p>
@@ -1738,65 +1760,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         <p>모집·공연·프로모션 기간에만 쓰는 초저가 원페이지</p>
         <span class="wsite">맞춤동화 구독서비스<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg></span>
       </a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════ AI CLASS ══════════ -->
-<section class="sec aiclass" id="aiclass">
-  <div class="wrap">
-    <div class="sec-head rv">
-      <div>
-        <div class="mono sec-num">07 — AI CLASS</div>
-        <span class="soon"><i></i>COMING SOON · 준비중</span>
-        <h2 class="sec-title">이제는 직접<br><em>만들어 보시겠어요?</em></h2>
-      </div>
-      <p class="sec-sub">
-        맡기는 것도 좋지만, 직접 만들 수 있으면 훨씬 강해집니다.
-        <b style="color:var(--txt)">AI로 홈페이지 만들기</b>와 <b style="color:var(--txt)">AI로 홍보영상 만들기</b>를
-        묶은 실습 클래스를 준비하고 있습니다. 컴퓨터를 잘 모르셔도 됩니다.
-      </p>
-    </div>
-
-    <div class="tracks">
-      <article class="track rv">
-        <div class="track-n">01</div>
-        <h3>AI로 내 홈페이지 만들기</h3>
-        <p>업체에 맡기지 않고, 내 손으로 페이지를 만들고 고치는 법. 코딩은 한 줄도 배우지 않습니다.</p>
-        <ol>
-          <li><span><b>무엇을 보여줄지 정하기</b>손님이 궁금해하는 순서로 페이지 구조 잡기</span></li>
-          <li><span><b>AI로 문구와 이미지 뽑기</b>소개글, 메뉴 설명, 배너 이미지를 대화로 만들기</span></li>
-          <li><span><b>페이지 완성하고 띄우기</b>도메인 연결까지, 실제로 검색되는 상태로</span></li>
-          <li><span><b>혼자 수정하기</b>가격이 바뀌거나 사진을 갈아끼울 때 직접 하기</span></li>
-        </ol>
-      </article>
-
-      <article class="track rv" style="transition-delay:.08s">
-        <div class="track-n">02</div>
-        <h3>AI로 홍보영상 만들기</h3>
-        <p>휴대폰과 노트북만으로 릴스·숏츠를 뽑아내는 과정. 촬영 장비도, 편집 경력도 필요 없습니다.</p>
-        <ol>
-          <li><span><b>15초 대본 쓰기</b>스크롤을 멈추게 하는 첫 3초 만드는 법</span></li>
-          <li><span><b>AI로 장면 만들기</b>찍은 게 없어도 이미지·영상 소스를 생성해서 채우기</span></li>
-          <li><span><b>자막과 내레이션 넣기</b>AI 성우로 목소리 입히고 자막 얹기</span></li>
-          <li><span><b>올리고 반응 보기</b>업로드 시간, 해시태그, 반응 확인하고 다음 편 고치기</span></li>
-        </ol>
-      </article>
-    </div>
-
-    <div class="prep rv">
-      <div>
-        <h4>준비 진행 상황</h4>
-        <div class="psteps">
-          <div class="pstep done"><div class="pdot"></div><div class="pt">커리큘럼 설계</div><div class="ps">완료</div></div>
-          <div class="pstep now"><div class="pdot"></div><div class="pt">교재 · 실습자료 제작</div><div class="ps">진행중</div></div>
-          <div class="pstep"><div class="pdot"></div><div class="pt">1기 수강생 모집</div><div class="ps">오픈 예정</div></div>
-        </div>
-      </div>
-      <div class="prep-cta">
-        <button class="btn btn-gold" type="button" id="classAlert">1기 모집 알림 받기</button>
-        <small>사전 신청하신 분께 먼저 안내드리고,<br>1기 한정 수강료로 모십니다.<br><br>정규 클래스 오픈 전이라도 <b style="color:var(--gold)">1:1 맞춤 강의</b>는<br>지금 바로 신청하실 수 있습니다.</small>
-      </div>
     </div>
   </div>
 </section>
@@ -2005,7 +1968,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           <h5>SERVICE</h5>
           <a href="#service">홈페이지 제작</a>
           <a href="#video">숏폼 홍보영상</a>
-          <a href="#aiclass">AI 클래스 (준비중)</a>
+          <a href="#service">AI 1:1 강의</a>
           <a href="#price">요금 · 견적 계산기</a>
           <a href="gallery/">제작 사례 · 소식</a>
           <a href="seo-check/">홈페이지 SEO 무료점검</a>
@@ -2632,15 +2595,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const plus = $('.stepper[data-qty="video"] button[data-step="1"]');
     if(plus && +$('.stepper[data-qty="video"] [data-q]').textContent === 0) plus.click();
     goTo($('#calc'));
-  });
-
-  /* ---------- AI 클래스 알림 신청 → 문의 폼 프리셋 ---------- */
-  const classBtn = $('#classAlert');
-  if(classBtn) classBtn.addEventListener('click', ()=>{
-    const sel = $('#f-type');
-    if(sel) sel.value = 'AI 클래스 1기 사전신청';
-    goTo($('#contact'));
-    setTimeout(()=>{ const n = $('#f-name'); if(n) n.focus({preventScroll:true}); }, 700);
   });
 
   /* ---------- smooth anchor offset ---------- */
