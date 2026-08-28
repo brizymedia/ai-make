@@ -7,7 +7,12 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--f-body);background:var(--ink);color:var(--txt);line-height:1.7;letter-spacing:-.015em;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+/* height:auto 가 없으면 그림이 세로로 늘어난다.
+   <img width="810" height="1012"> 의 height 는 CSS height:1012px 로 먹는데,
+   폭만 100% 로 줄이면 높이는 1012px 그대로 남아 그림이 길쭉하게 찌그러진다.
+   (width·height 속성은 자리를 미리 잡아 화면이 덜 흔들리게 하니 그대로 두고,
+    늘어나는 것만 여기서 막는다) */
+img{max-width:100%;height:auto;display:block}
 .wrap{max-width:1100px;margin:0 auto;padding-inline:var(--pad)}
 .mono{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.22em;color:var(--gold)}
 
@@ -85,10 +90,29 @@ img{max-width:100%;display:block}
 .post-nav a{color:var(--txt-dim)}
 .post-nav a:hover{color:var(--gold)}
 
-/* ══ 카드뉴스 이미지 묶음 (글 본문 안) ══ */
-.post .cardset{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:26px 0}
-.post .cardset img{width:100%;border-radius:12px;border:1px solid var(--line);background:var(--ink-2)}
-.post figure.one{max-width:400px;margin-inline:auto}
+/* ══ 카드뉴스 — 옆으로 넘겨 보는 칸 ══
+   카드가 세로 4:5 라, 여러 장을 한 줄에 늘어놓으면 칸이 좁아져 글씨가 안 보인다.
+   그래서 한 장을 크게 두고 옆으로 넘긴다. 인스타에서 보던 방식 그대로다. */
+.post .cardnews{margin:30px 0}
+.post .cardnews-track{
+  display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory;scroll-padding-inline:0;
+  padding-bottom:12px;margin-bottom:-4px;
+  scrollbar-width:thin;scrollbar-color:var(--line-2) transparent;
+}
+.post .cardnews-track::-webkit-scrollbar{height:6px}
+.post .cardnews-track::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:99px}
+.post .cardnews-track::-webkit-scrollbar-track{background:transparent}
+.post .cardnews-track:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:14px}
+.post .cardnews-track > a{
+  flex:0 0 min(100%,430px);scroll-snap-align:center;
+  border-radius:14px;overflow:hidden;background:var(--ink-2);
+  border:1px solid var(--line);transition:border-color .3s var(--ease)
+}
+.post .cardnews-track > a:hover{border-color:var(--line-2)}
+.post .cardnews-track > a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.post .cardnews-track img{width:100%;border:0;border-radius:0}
+.post .cardnews figcaption{text-align:left}
 
 /* ══ 공유 버튼 ══ */
 .share{margin-top:40px;padding-top:26px;border-top:1px solid var(--line)}
