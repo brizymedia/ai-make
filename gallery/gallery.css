@@ -5,7 +5,11 @@
   --ease:cubic-bezier(.19,1,.22,1);--ease-2:cubic-bezier(.16,.84,.44,1);--pad:clamp(20px,5vw,64px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--f-body);background:var(--ink);color:var(--txt);line-height:1.7;letter-spacing:-.015em;-webkit-font-smoothing:antialiased}
+body{font-family:var(--f-body);background:var(--ink);color:var(--txt);line-height:1.7;letter-spacing:-.015em;-webkit-font-smoothing:antialiased;
+  /* 한글은 그냥 두면 글자 아무 데서나 줄이 바뀐다. "10만원" 이 "10" 과 "만원" 으로,
+     "이 글이" 가 "이" 와 "글이" 로 갈라진다. keep-all 을 주면 띄어쓴 자리에서만 바뀐다.
+     대신 주소처럼 띄어쓰기가 없는 긴 글자는 칸을 넘칠 수 있으니 그때만 break-word 로 푼다. */
+  word-break:keep-all;overflow-wrap:break-word}
 a{color:inherit;text-decoration:none}
 /* height:auto 가 없으면 그림이 세로로 늘어난다.
    <img width="810" height="1012"> 의 height 는 CSS height:1012px 로 먹는데,
@@ -68,7 +72,8 @@ img{max-width:100%;height:auto;display:block}
 .post{max-width:760px;margin:0 auto;padding:clamp(48px,7vw,80px) var(--pad) clamp(70px,9vw,110px)}
 .post-meta{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
 .post-meta time{font-family:var(--f-mono);font-size:.64rem;color:var(--txt-mute);letter-spacing:.08em}
-.post h1{font-size:clamp(1.7rem,4.2vw,2.6rem);font-weight:800;line-height:1.22;letter-spacing:-.045em;margin-bottom:18px}
+/* text-wrap:balance — 줄마다 길이를 고르게 나눠 제목이 한쪽만 길어지지 않게 */
+.post h1{font-size:clamp(1.7rem,4.2vw,2.6rem);font-weight:800;line-height:1.22;letter-spacing:-.045em;margin-bottom:18px;text-wrap:balance}
 .post .lead{font-size:1.06rem;color:var(--txt-dim);line-height:1.8;padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:34px}
 .post-hero{border-radius:18px;overflow:hidden;margin-bottom:34px;border:1px solid var(--line)}
 .post-hero img{width:100%}
