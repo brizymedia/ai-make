@@ -1,0 +1,48 @@
+name: 갤러리 목록 · 사이트맵 자동 갱신
+
+# gallery/posts/ 에 글 파일이 들어오면 목록(gallery/index.html)과 sitemap.xml · rss.xml 을
+# 다시 만들어 커밋한다. 글쓰기 도구에서 「홈페이지에 바로 올리기」를 누르면
+# 앱스 스크립트가 글 파일을 커밋하고 repository_dispatch 로 이 워크플로를 깨운다.
+on:
+  repository_dispatch:            # write.html 에서 발행하면 바로 (앱스 스크립트가 보냄)
+    types: [post-published]
+  push:                           # 손으로 글 파일을 올렸을 때도
+    branches: [main]
+    paths:
+      - 'gallery/posts/**'
+      - 'build-sitemap.js'
+      - '.github/workflows/gallery.yml'
+  schedule:
+    - cron: '23 21 * * *'         # 매일 한 번 (UTC 21:23 = 한국 06:23) — 놓친 것 줍기
+  workflow_dispatch:              # Actions 탭에서 수동 실행
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gallery-build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 목록 · 사이트맵 · RSS 만들기
+        run: node build-sitemap.js
+
+      - name: 변경 있으면 커밋
+        run: |
+          git config user.name "gallery-bot"
+          git config user.email "gallery-bot@users.noreply.github.com"
+          git add gallery/index.html sitemap.xml rss.xml
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+          else
+            git commit -m "갤러리 목록 · 사이트맵 자동 갱신"
+            git push
+          fi

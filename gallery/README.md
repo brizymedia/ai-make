@@ -1,60 +1,35 @@
 # 갤러리(사례 · 소식) 글 추가 방법
 
-새 글 하나 = 파일 하나. 검색엔진이 글마다 따로 색인하도록 이렇게 만들어져 있습니다.
-
-## 1. 글 파일 만들기
-`gallery/posts/2026-08-first-post.html` 을 복사해서 이름을 바꿉니다.
-- 파일명 규칙: `YYYY-MM-짧은영문.html`  (예: `2026-09-yeosu-cafe.html`)
-- 파일 안에서 **반드시 바꿀 곳** (위쪽 주석 참고):
-  - `<title>`, `<meta name="description">`
-  - `<link rel="canonical">` 와 `og:url` 의 파일명
-  - `og:title`, `og:description`, `article:published_time`, `article:tag`
-  - JSON-LD 의 `@id`, `mainEntityOfPage`, `headline`, `description`, `datePublished`, `dateModified`, `keywords`
-  - `<article>` 안의 본문
-
-## 2. 목록에 카드 추가
-`gallery/index.html` 의 `<div class="glist">` 안에 카드를 하나 추가합니다.
-```html
-<a class="gcard" href="posts/파일명.html" data-cat="web">
-  <div class="gthumb" style="background-image:url(../images/썸네일.jpg)"></div>
-  <div class="gbody">
-    <span class="gcat">홈페이지</span>
-    <h2>글 제목</h2>
-    <p>두 줄 요약</p>
-    <time datetime="2026-09-01">2026.09.01</time>
-  </div>
-</a>
-```
-`data-cat` 값: `web`(홈페이지) / `video`(홍보영상·쇼츠) / `event`(행사영상) / `edu`(강의·팁)
-
-## 3. sitemap · RSS 갱신 후 푸시
-```
-node build-sitemap.js   # sitemap.xml 과 rss.xml 이 함께 갱신됩니다
-git add -A && git commit -m "갤러리 — 글 제목" && git push
-```
-
-## 검색에 잘 걸리는 글 쓰기
-- 제목에 **지역명 + 하는 일** 을 자연스럽게 (예: "여수 카페 홈페이지, 3일 만에 오픈한 이야기")
-- 첫 문단에 누구를 위해 무엇을 했는지 한 문장으로
-- 소제목(h2)을 질문 형태로 쓰면 AI 검색이 답변으로 뽑아갑니다
-- 사진에는 alt 를 꼭 (예: `alt="여수 카페 홈페이지 메인 화면"`)
-- 글 끝에 전화번호 CTA 는 템플릿에 이미 들어 있습니다
+**새 글 하나 = 파일 하나.** `gallery/posts/` 에 html 파일을 넣으면
+목록 · 사이트맵 · RSS 에 저절로 들어갑니다. 파일을 지우면 셋 다에서 저절로 빠집니다.
+**목록을 손으로 고칠 필요가 없습니다.**
 
 ---
 
-## 자동 글쓰기 도구 (권장)
+## 가장 쉬운 방법 — 글쓰기 도구
 
-`gallery/write.html` 을 브라우저로 열면 사례 정보만 넣고 **갤러리 HTML · 네이버 블로그 글 · 인스타 문구**를 한 번에 만들 수 있습니다.
-(이 페이지는 `noindex` 라 검색에 안 잡힙니다. 갤러리 목록 상단의 「✎ 글쓰기」 로 들어갑니다.)
+`gallery/write.html` (갤러리 목록 위 「✎ 글쓰기」) 을 열고 사례 정보만 넣으면
+**갤러리 글 · 네이버 블로그 본문 · 인스타 문구**가 한 번에 나옵니다.
 
 ### 나오는 것
 | 결과물 | 쓰는 곳 |
 |---|---|
 | 제목 후보 5개 | 블로그 제목 · 글 제목 |
 | 네이버 블로그 본문 | 블로그에 붙여넣기 (「― 사진 ―」 자리에 사진) |
-| 인스타그램 문구 | 인스타 캡션 (해시태그 30개 포함) |
-| 갤러리 글 HTML | `gallery/posts/` 에 저장 |
-| 목록 카드 | `gallery/index.html` 의 `<div class="glist">` 맨 위 |
+| 인스타그램 문구 | 인스타 캡션 (해시태그 포함) |
+| 갤러리 글 HTML | 「홈페이지에 올리기」 버튼으로 바로 발행 |
+
+### 올리는 방법 두 가지
+
+**① 버튼으로 (권장)** — 「홈페이지에 올리기」
+글이 저장소에 올라가고 목록 · 사이트맵 · RSS 까지 자동으로 갱신됩니다. 1~2분 걸립니다.
+처음 한 번은 발행 서버를 만들어야 합니다 → `apps-script/gallery/README.md`
+
+**② 손으로** — 「HTML 파일 내려받기」
+받은 파일을 `gallery/posts/` 에 넣고 아래를 실행한 뒤 커밋·푸시하면 됩니다.
+```
+node build-sitemap.js
+```
 
 ### 자동으로 되는 것
 - **지역 감지** — 상호·장소·설명에서 순천/여수/광양/고흥/하동/남원/광주/진주/통영 등 17개 지역
@@ -71,3 +46,45 @@ git add -A && git commit -m "갤러리 — 글 제목" && git push
 - **「무엇을 어떻게 했나요」는 꼭 직접 쓰세요.** 매번 같은 문장이면 검색에서 저품질로 봅니다.
 - 숫자(조회수·문의 건수)가 있으면 꼭 넣으세요. 검색과 AI가 가장 좋아하는 재료입니다.
 - 상호에 지역명이 있으면 자동으로 중복을 피합니다.
+
+---
+
+## 글 파일을 직접 쓸 때
+
+`gallery/posts/2026-08-first-post.html` 을 복사해서 이름을 바꿉니다.
+- 파일명 규칙: `YYYY-MM-짧은이름.html`  (예: `2026-09-yeosu-cafe.html`)
+- 파일 안에서 **반드시 바꿀 곳**:
+  - `<title>`, `<meta name="description">`
+  - `<link rel="canonical">` 와 `og:url` 의 파일명
+  - `og:title`, `og:description`, `article:published_time`, `article:tag`
+  - JSON-LD 의 `@id`, `mainEntityOfPage`, `headline`, `description`, `datePublished`, `dateModified`, `keywords`
+  - `<article>` 안의 본문
+
+### 목록에 쓰이는 값
+
+`build-sitemap.js` 가 글 파일에서 이 값들을 읽어 목록 카드를 만듭니다.
+
+| 태그 | 쓰이는 곳 | 없으면 |
+|---|---|---|
+| `<title>` | 카드 제목 (`\| 큰길브리지` 는 자동으로 뗍니다) | 빈 제목 |
+| `<meta name="description">` | 카드 요약 | 빈 요약 |
+| `<meta property="article:published_time">` | 카드 날짜 · **목록 정렬 순서** | 파일명 순 |
+| `<meta property="article:section">` | 카드의 분류 이름 | 슬러그에서 가져옴 |
+| `<meta name="gallery-cat">` | 필터 버튼 (`web`/`video`/`event`/`edu`) | 분류 이름에서 추측 |
+| `<meta name="gallery-thumb">` | 카드 썸네일 — 이미지 경로(`gallery/` 기준) 또는 `linear-gradient(…)` | 기본 그라디언트 |
+
+---
+
+## 검색에 잘 걸리는 글 쓰기
+- 제목에 **지역명 + 하는 일** 을 자연스럽게 (예: "여수 카페 홈페이지, 3일 만에 오픈한 이야기")
+- 첫 문단에 누구를 위해 무엇을 했는지 한 문장으로
+- 소제목(h2)을 질문 형태로 쓰면 AI 검색이 답변으로 뽑아갑니다
+- 사진에는 alt 를 꼭 (예: `alt="여수 카페 홈페이지 메인 화면"`)
+- 글 끝에 전화번호 CTA 는 템플릿에 이미 들어 있습니다
+
+## 읽는 사람이 공유하게 하려면
+
+글 맨 아래 공유 칸(`<div class="share">`)을 넣으면
+**네이버 블로그 · 밴드 · 페이스북 · 링크 복사 · 인스타 문구 복사** 버튼이 생깁니다.
+`posts/2026-08-singer-mc-homepage.html` 의 맨 아래를 그대로 복사해 쓰시면 됩니다.
+인스타는 링크를 미리 채울 수 없어서 문구를 복사해 주는 방식입니다.

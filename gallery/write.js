@@ -340,7 +340,11 @@
       '<meta property="og:site_name" content="큰길브리지">',
       '<meta property="og:locale" content="ko_KR">',
       '<meta property="article:published_time" content="' + iso + 'T09:00:00+09:00">',
-      '<meta property="article:section" content="' + 유형[d.유형].라벨 + '">'
+      '<meta property="article:section" content="' + 유형[d.유형].라벨 + '">',
+      '',
+      '<!-- 갤러리 목록 자동 생성용 — build-sitemap.js 가 읽는다 -->',
+      '<meta name="gallery-cat" content="' + 유형[d.유형].cat + '">',
+      '<meta name="gallery-thumb" content="' + 썸네일(d.유형) + '">'
     ].concat(유형[d.유형].키워드.slice(0, 3).map(function (k) { return '<meta property="article:tag" content="' + k + '">'; }))
      .concat([
       '<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">',
@@ -389,16 +393,25 @@
     ]).join("\n");
   }
 
-  /* ═══ 목록 카드 ═══ */
-  function 카드만들기(d, 제목) {
-    var 요약 = String(d.설명 || "").slice(0, 90).replace(/\s+$/, "") + "…";
+  /* ═══ 썸네일 ═══
+     유형마다 색이 다른 그라디언트. 글 파일의 gallery-thumb 메타와 목록 카드가
+     같은 값을 써야 목록을 다시 만들어도 그림이 바뀌지 않는다. */
+  function 썸네일(유형키) {
     var 색 = { web: "#2A3550,#0B0F18 70%),linear-gradient(140deg,rgba(232,184,75,.35)",
                video: "#4A2C2A,#0B0F18 70%),linear-gradient(140deg,rgba(255,107,74,.3)",
                event: "#1E4A46,#0B0F18 70%),linear-gradient(140deg,rgba(63,211,198,.32)",
-               edu: "#3A2A4E,#0B0F18 70%),linear-gradient(140deg,rgba(232,184,75,.24)" }[d.유형];
+               edu: "#3A2A4E,#0B0F18 70%),linear-gradient(140deg,rgba(232,184,75,.24)" }[유형키];
+    return "radial-gradient(120% 100% at 20% 10%," + 색 + ",transparent 60%)";
+  }
+
+  /* ═══ 목록 카드 ═══
+     build-sitemap.js 가 목록을 자동으로 만들기 때문에 이제 붙여넣을 일은 거의 없다.
+     서버 없이 손으로 올릴 때를 위해 남겨둔다. */
+  function 카드만들기(d, 제목) {
+    var 요약 = String(d.설명 || "").slice(0, 90).replace(/\s+$/, "") + "…";
     return [
       '    <a class="gcard" href="posts/' + d.파일명 + '" data-cat="' + 유형[d.유형].cat + '">',
-      '      <div class="gthumb" style="background:radial-gradient(120% 100% at 20% 10%,' + 색 + ',transparent 60%)"></div>',
+      '      <div class="gthumb" style="background:' + 썸네일(d.유형) + '"></div>',
       '      <div class="gbody">',
       '        <span class="gcat">' + 유형[d.유형].라벨 + '</span>',
       '        <h2>' + esc(제목) + '</h2>',
@@ -460,6 +473,8 @@
     $("#cap-html").value = HTML만들기(d, 대표제목);
     $("#cap-card").value = 카드만들기(d, 대표제목);
     window.__파일명 = d.파일명;
+    window.__제목 = 대표제목;
+    발행알림("", "");                    // 앞 글의 결과 메시지를 지운다
 
     $("#out").hidden = false;
     $("#out-empty").hidden = true;
@@ -496,5 +511,115 @@
     document.body.appendChild(a); a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); document.body.removeChild(a); }, 500);
     toast("내려받았습니다 · gallery/posts/ 에 넣으세요");
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     홈페이지에 바로 올리기
+
+     앱스 스크립트 서버가 글 파일을 저장소에 커밋하고,
+     목록 · 사이트맵 · RSS 는 GitHub Actions 가 알아서 다시 만든다.
+     서버가 없어도 「HTML 파일 내려받기」로 올리면 결과는 같다.
+     ═══════════════════════════════════════════════════════════ */
+  var 저장 = (function () {
+    /* 시크릿 창이나 저장을 막아둔 브라우저에서는 localStorage 접근 자체가 예외를 던진다 */
+    try { var t = "__t"; window.localStorage.setItem(t, "1"); window.localStorage.removeItem(t); return window.localStorage; }
+    catch (e) { return null; }
+  })();
+  var 키주소 = "kb-pub-url", 키암호 = "kb-pub-pw", 키기억 = "kb-pub-save";
+
+  function 발행알림(글, 종류) {
+    var el = $("#pub-msg");
+    el.className = "pub-msg" + (종류 ? " " + 종류 : "");
+    el.innerHTML = 글;
+  }
+
+  /* 배포 주소에서 실수를 걸러낸다 — /exec 가 아니면 거의 항상 오타다 */
+  function 주소확인(u) {
+    var v = String(u || "").trim();
+    if (!v) return "발행 서버 주소를 넣어주세요";
+    if (v.indexOf("https://script.google.com/macros/s/") !== 0) {
+      return "주소가 https://script.google.com/macros/s/… 로 시작해야 합니다";
+    }
+    if (v.slice(-5) !== "/exec") {
+      return "주소가 /exec 로 끝나야 합니다 (/dev 는 나만 열 수 있어 안 됩니다)";
+    }
+    return "";
+  }
+
+  (function 설정불러오기() {
+    if (!저장) { $("#pub-save").checked = false; return; }
+    var 기억 = 저장.getItem(키기억) !== "0";
+    $("#pub-save").checked = 기억;
+    if (기억) {
+      $("#pub-url").value = 저장.getItem(키주소) || "";
+      $("#pub-pw").value = 저장.getItem(키암호) || "";
+    }
+  })();
+
+  $("#pub-save").addEventListener("change", function () {
+    if (!저장) return;
+    if (this.checked) { 저장.setItem(키기억, "1"); }
+    else { 저장.setItem(키기억, "0"); 저장.removeItem(키주소); 저장.removeItem(키암호); }
+  });
+
+  $("#pub-go").addEventListener("click", function () {
+    var 버튼 = this;
+    var html = $("#cap-html").value;
+    if (!html) { 발행알림("먼저 「글 만들기」를 눌러주세요.", "bad"); return; }
+
+    var 주소 = $("#pub-url").value.trim();
+    var 잘못 = 주소확인(주소);
+    if (잘못) { 발행알림(잘못, "bad"); $("#pub-url").focus(); return; }
+
+    var pw = $("#pub-pw").value;
+    if (!pw) { 발행알림("발행 비밀번호를 넣어주세요.", "bad"); $("#pub-pw").focus(); return; }
+
+    if (저장 && $("#pub-save").checked) {
+      저장.setItem(키주소, 주소); 저장.setItem(키암호, pw); 저장.setItem(키기억, "1");
+    }
+
+    버튼.disabled = true;
+    발행알림("올리는 중…", "");
+
+    /* text/plain 으로 보내야 브라우저가 미리 확인(preflight)을 안 보낸다.
+       앱스 스크립트는 그 확인에 답을 못 해서, 안 그러면 CORS 로 막힌다. */
+    fetch(주소, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "publish",
+        pw: pw,
+        filename: window.__파일명,
+        title: window.__제목 || "",
+        html: html
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        버튼.disabled = false;
+        if (!j.ok) {
+          if (j.이미있음) {
+            발행알림("같은 파일명의 글이 이미 있습니다.<br>제목이나 날짜를 바꿔 파일명을 다르게 만든 뒤 다시 눌러주세요.", "bad");
+          } else {
+            발행알림("올리지 못했습니다 — " + (j.error || "알 수 없는 오류"), "bad");
+          }
+          return;
+        }
+        발행알림(
+          "올렸습니다. 홈페이지에 보이기까지 1~2분 걸립니다.<br>" +
+          '<a href="' + j.주소 + '" target="_blank" rel="noopener">' + j.주소 + "</a>" +
+          (j.목록갱신 ? "<br>목록 갱신: " + j.목록갱신 : ""),
+          "ok"
+        );
+        toast("홈페이지에 올렸습니다");
+      })
+      .catch(function (err) {
+        버튼.disabled = false;
+        발행알림(
+          "서버에 닿지 못했습니다 — " + (err && err.message ? err.message : err) +
+          "<br>주소가 맞는지, 배포 시 액세스 권한이 <b>「모든 사용자」</b>인지 확인해 주세요.",
+          "bad"
+        );
+      });
   });
 })();

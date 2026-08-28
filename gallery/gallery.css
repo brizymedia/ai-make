@@ -84,3 +84,25 @@ img{max-width:100%;display:block}
 .post-nav{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:24px;border-top:1px solid var(--line);font-size:.86rem}
 .post-nav a{color:var(--txt-dim)}
 .post-nav a:hover{color:var(--gold)}
+
+/* ══ 카드뉴스 이미지 묶음 (글 본문 안) ══ */
+.post .cardset{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:26px 0}
+.post .cardset img{width:100%;border-radius:12px;border:1px solid var(--line);background:var(--ink-2)}
+.post figure.one{max-width:400px;margin-inline:auto}
+
+/* ══ 공유 버튼 ══ */
+.share{margin-top:40px;padding-top:26px;border-top:1px solid var(--line)}
+.share h3{font-size:.82rem;font-weight:700;letter-spacing:.02em;color:var(--txt-dim);margin-bottom:14px}
+.share-row{display:flex;flex-wrap:wrap;gap:9px}
+.share-row button,.share-row a{
+  font:inherit;font-size:.84rem;font-weight:700;letter-spacing:-.02em;cursor:pointer;
+  padding:11px 17px;border-radius:99px;border:1px solid var(--line-2);
+  background:transparent;color:var(--txt);display:inline-flex;align-items:center;gap:7px;
+  transition:border-color .18s var(--ease),background .18s var(--ease),color .18s var(--ease);
+}
+.share-row button:hover,.share-row a:hover{border-color:var(--gold);color:var(--gold)}
+.share-row button:focus-visible,.share-row a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.share-row .primary{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.share-row .primary:hover{background:#F2C662;color:var(--ink);border-color:#F2C662}
+.share-note{font-size:.78rem;color:var(--txt-mute);margin-top:11px;line-height:1.7}
+.share-done{font-size:.8rem;color:var(--teal);margin-top:11px;min-height:1.2em}
