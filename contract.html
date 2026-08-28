@@ -321,7 +321,9 @@ table.t tr.total td.num{color:#8A6A16}
           <div><label class="f">계약번호</label><input class="in" data-k="meta.no" placeholder="자동"></div>
           <div><label class="f">계약일</label><input class="in" type="date" data-k="meta.date"></div>
         </div>
-        <div><label class="f">서명 요청 서버 (선택)</label><input class="in" data-k="meta.api" placeholder="Apps Script 웹 앱 URL — 없으면 긴 링크로 발급"></div>
+        <div><label class="f">서명 요청 서버 (한 번만 넣으면 기억합니다)</label>
+          <input class="in" data-k="meta.api" placeholder="https://script.google.com/macros/s/…/exec">
+          <p id="api-note" style="font-size:.76rem;line-height:1.6;margin-top:7px"></p></div>
       </div>
     </details>
 
@@ -718,7 +720,11 @@ function 해시저장(){
 
 document.addEventListener('input', function(e){
   var t = e.target;
-  if(t.dataset && t.dataset.k){ set(t.dataset.k, t.value); 그리기(); 해시저장(); return; }
+  if(t.dataset && t.dataset.k){
+    set(t.dataset.k, t.value);
+    if(t.dataset.k === 'meta.api') 서버안내();
+    그리기(); 해시저장(); return;
+  }
   if(t.dataset && t.dataset.i!==undefined){ S.items[t.dataset.i][t.dataset.c] = t.value; $('#sum-total').textContent=원(총액()); 그리기(); 해시저장(); return; }
   if(t.dataset && t.dataset.ai!==undefined){ S.attach[t.dataset.ai][t.dataset.c] = t.value; 그리기(); 해시저장(); return; }
 });
@@ -895,6 +901,21 @@ function 문자링크(t){
 
 /* ══ 서버 (있으면 쓰고, 없으면 없는 대로 돌아간다) ══ */
 function api(){ return String(S.meta.api||'').trim(); }
+
+/* 서버가 연결됐는지 눈에 보이게. 빠뜨리면 링크가 길어지고 서명 통보가 안 온다. */
+function 서버안내(){
+  var el = $('#api-note'); if(!el) return;
+  if(api()){
+    el.innerHTML = '<b style="color:var(--teal)">연결됨</b> — 짧은 링크로 발급되고, ' +
+      '고객이 서명하면 PDF가 양쪽 메일로 자동 발송됩니다.';
+    el.style.color = 'var(--txt-dim)';
+    var 곳2 = 서버기억(); if(곳2) 곳2.setItem('kb-contract-api', api());
+  } else {
+    el.innerHTML = '<b style="color:var(--coral)">비어 있음</b> — 링크가 700자 넘게 길어지고, ' +
+      '<b>고객이 서명해도 자동으로 알려오지 않습니다.</b> (고객이 직접 「문자로 통보」를 눌러야 합니다)';
+    el.style.color = 'var(--txt-dim)';
+  }
+}
 /* 정규식을 쓰지 않는다. 이 환경 편집 스크립트가 백슬래시를 먹어 사고가 난 적이 있다. */
 function 배포ID(u){ var p = String(u||'').split('/macros/s/')[1]; return p ? p.split('/')[0] : ''; }
 function 서버주소(dep){ return 'https://script.google.com/macros/s/' + dep + '/exec'; }
@@ -950,8 +971,12 @@ $('#btn-share') && $('#btn-share').addEventListener('click', function(){
     알림(안내);
     btn.disabled = false; btn.textContent = '고객 서명 링크 만들기';
   }
-  /* 서버가 없으면 예전처럼 긴 링크로 — 계약은 그대로 된다 */
-  if(!api()){ 보여주기(긴링크, '링크를 만들었습니다. 복사해서 고객에게 보내세요'); return; }
+  /* 서버가 없으면 예전처럼 긴 링크로 — 계약 자체는 그대로 된다.
+     다만 링크가 길고 서명 통보가 자동으로 오지 않으니 그 사실을 분명히 알린다. */
+  if(!api()){
+    보여주기(긴링크, '긴 링크로 만들었습니다 · 서명해도 자동 통보가 안 옵니다');
+    return;
+  }
 
   btn.disabled = true; btn.textContent = '서버에 저장하는 중…';
   확인코드().then(function(h){
@@ -1039,12 +1064,25 @@ function 상태합치기(loaded){
   화면준비();
 })();
 
+/* ══ 서명 요청 서버 주소는 이 기기에 기억해 둔다 ══
+   서버 주소가 비어 있으면 링크가 700자 넘게 길어지고(스팸처럼 보인다),
+   고객이 서명해도 우리에게 자동으로 오지 않는다. 매번 손으로 넣게 두면
+   빠뜨리기 쉬워서, 한 번 넣으면 이 브라우저가 계속 기억하게 했다. */
+/* 화면준비() 가 이 줄들보다 먼저 실행되므로 값이 아니라 함수로 둔다.
+   var 로 담아두면 그때는 아직 undefined 라 기억한 주소를 못 읽는다. */
+function 서버기억(){
+  try{ var t='__t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return localStorage; }
+  catch(e){ return null; }
+}
+
 function 화면준비(){
   if(MODE==='admin'){
     $('#admin').hidden = false;
     $('#mode-pill').textContent = '작성 모드';
     if(!S.meta.date) S.meta.date = new Date().toISOString().slice(0,10);
+    if(!S.meta.api){ var 곳 = 서버기억(); if(곳) S.meta.api = 곳.getItem('kb-contract-api') || ''; }
     옵션그리기(); 옵션동기화();
+    서버안내();
   } else {
     $('#mode-pill').textContent = MODE==='preview' ? '미리보기' : '계약서 확인 · 서명';
     $('#mode-pill').className = 'pill cust';

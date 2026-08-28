@@ -664,7 +664,8 @@ var 저장소 = (function(){
   try { var t='__t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return localStorage; }
   catch(e){ return null; }
 })();
-var 키api = 'kb-quote-api';
+/* 계약서(contract.html) 와 같은 칸을 쓴다. 한쪽에 넣으면 양쪽에서 채워진다. */
+var 키api = 'kb-contract-api';
 
 (function 서버주소불러오기(){
   if(MODE !== 'admin') return;
