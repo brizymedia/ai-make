@@ -43,8 +43,33 @@ const 기본썸네일 = [
   "linear-gradient(135deg,#2B1F3D,#FF6B4A 58%,#1A1016)"
 ];
 
+/* 파일이 마지막으로 바뀐 날.
+
+   파일 수정시각(mtime)을 쓰면 안 된다. 깃허브 액션은 매번 저장소를 새로 내려받고,
+   그때 모든 파일의 mtime 이 "내려받은 시각"으로 새로 찍힌다. 그러면 아무것도 안 고쳤는데
+   사이트맵의 모든 주소가 "오늘 바뀜"으로 기록되고, 그게 매일 반복되면
+   검색엔진이 이 사이트의 lastmod 를 믿지 않게 된다.
+
+   그래서 깃 기록에서 그 파일의 마지막 커밋 날짜를 읽는다.
+   깃이 없거나(내려받은 zip 등) 기록에 없는 새 파일이면 mtime 으로 물러선다. */
+const git날짜캐시 = {};
 function lastmod(p) {
-  try { return fs.statSync(p).mtime.toISOString().slice(0, 10); } catch (e) { return today; }
+  const 상대 = path.relative(root, p).split(path.sep).join("/");
+  if (git날짜캐시[상대] !== undefined) return git날짜캐시[상대];
+
+  let 값 = "";
+  try {
+    값 = require("child_process")
+      .execFileSync("git", ["log", "-1", "--format=%cs", "--", 상대],
+                    { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] })
+      .trim();
+  } catch (e) { /* 깃이 없거나 저장소가 아니다 — 아래에서 mtime 으로 */ }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(값)) {
+    try { 값 = fs.statSync(p).mtime.toISOString().slice(0, 10); } catch (e) { 값 = today; }
+  }
+  git날짜캐시[상대] = 값;
+  return 값;
 }
 function 태그값(html, re) {
   const m = html.match(re);

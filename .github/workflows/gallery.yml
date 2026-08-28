@@ -28,6 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # sitemap 의 lastmod 를 파일별 마지막 커밋 날짜로 뽑기 때문에 전체 기록이 필요하다.
+          # 기본값(1)이면 기록이 없어 매번 오늘 날짜로 찍히고, 사이트맵이 날마다 바뀐다.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
