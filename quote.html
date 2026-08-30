@@ -660,6 +660,9 @@ $('#btn-sms').addEventListener('click', function(){
 
 /* ── 계약 서버 주소는 이 기기에만 기억해 둔다 ──
    매번 계약서에서 다시 넣지 않아도 되도록, 넘길 때 같이 실어 보낸다. */
+/* 계약 서버 기본 주소 — 계약서(contract.html) 와 같은 값이어야 한다 */
+var 서버주소_기본 = 'https://script.google.com/macros/s/AKfycbzB5cpUDleZnChRIRFWELgJ2uAbxa5fe2iBE9upWqUl92BgTPA4KrDWtTp5UZJ31Ezc/exec';
+
 var 저장소 = (function(){
   try { var t='__t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return localStorage; }
   catch(e){ return null; }
@@ -670,7 +673,7 @@ var 키api = 'kb-contract-api';
 (function 서버주소불러오기(){
   if(MODE !== 'admin') return;
   if(!저장소){ $('#i-api-save').checked = false; return; }
-  $('#i-api').value = 저장소.getItem(키api) || '';
+  $('#i-api').value = 저장소.getItem(키api) || 서버주소_기본;
 })();
 $('#i-api').addEventListener('input', function(){
   if(저장소 && $('#i-api-save').checked) 저장소.setItem(키api, this.value.trim());

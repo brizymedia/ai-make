@@ -900,7 +900,13 @@ function 문자링크(t){
 }
 
 /* ══ 서버 (있으면 쓰고, 없으면 없는 대로 돌아간다) ══ */
-function api(){ return String(S.meta.api||'').trim(); }
+/* 계약 서버 주소를 여기 박아둔다. 그래야 어느 컴퓨터·휴대폰에서 열어도
+   설정 없이 바로 짧은 링크가 나오고, 고객이 서명하면 자동으로 메일이 온다.
+   (이 주소는 고객에게 보내는 링크의 &s= 에도 어차피 들어간다. 비밀이 아니다)
+   서버를 새로 배포해 주소가 바뀌면 이 줄만 고치면 된다. */
+var 서버주소_기본 = 'https://script.google.com/macros/s/AKfycbzB5cpUDleZnChRIRFWELgJ2uAbxa5fe2iBE9upWqUl92BgTPA4KrDWtTp5UZJ31Ezc/exec';
+
+function api(){ return String(S.meta.api || 서버주소_기본 || '').trim(); }
 
 /* 서버가 연결됐는지 눈에 보이게. 빠뜨리면 링크가 길어지고 서명 통보가 안 온다. */
 function 서버안내(){
@@ -1081,6 +1087,7 @@ function 화면준비(){
     $('#mode-pill').textContent = '작성 모드';
     if(!S.meta.date) S.meta.date = new Date().toISOString().slice(0,10);
     if(!S.meta.api){ var 곳 = 서버기억(); if(곳) S.meta.api = 곳.getItem('kb-contract-api') || ''; }
+    if(!S.meta.api) S.meta.api = 서버주소_기본;
     옵션그리기(); 옵션동기화();
     서버안내();
   } else {
