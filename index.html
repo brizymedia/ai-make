@@ -477,6 +477,41 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 .vid-cta .pk{font-size:.72rem;color:var(--txt-mute);width:100%;line-height:1.6}
 
 /* ============================================================
+   DEMO — 홍보글이 도착하는 자리
+   단톡방 글을 보고 온 손님이 첫 화면 다음에 바로 만나는 띠.
+   섹션 번호를 안 붙였다. 흐름의 일부가 아니라 제안이라서.
+   ============================================================ */
+.demoband{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,rgba(232,184,75,.09),rgba(232,184,75,.03) 60%,transparent),var(--ink-2);
+  border-top:1px solid rgba(232,184,75,.28);border-bottom:1px solid rgba(232,184,75,.28);
+  padding:clamp(46px,6vw,80px) 0;
+}
+.demo-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,56px);align-items:center}
+@media(max-width:900px){ .demo-in{grid-template-columns:1fr;gap:32px} }
+
+.demo-tag{
+  display:inline-block;font-size:.68rem;letter-spacing:.18em;font-weight:700;color:var(--ink);
+  background:var(--gold);padding:5px 12px;border-radius:99px;margin-bottom:16px;
+}
+.demo-copy h2{font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;line-height:1.28;
+  letter-spacing:-.045em;text-wrap:balance}
+.demo-copy h2 em{font-style:normal;color:var(--gold)}
+.demo-copy p{color:var(--txt-dim);line-height:1.85;margin-top:16px;max-width:46ch;word-break:keep-all}
+.demo-copy p b{color:var(--txt);font-weight:700}
+.demo-me{font-size:.92rem;padding-left:14px;border-left:2px solid rgba(232,184,75,.4)}
+.demo-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px}
+@media(max-width:480px){ .demo-actions .btn{width:100%;justify-content:center} }
+.demo-note{font-size:.79rem;color:var(--txt-mute);margin-top:14px}
+
+.demo-list{list-style:none;display:flex;flex-direction:column;gap:1px;
+  background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.demo-list li{background:var(--ink);padding:17px 20px}
+.demo-list b{display:block;font-size:.95rem;font-weight:800;letter-spacing:-.025em;margin-bottom:4px}
+.demo-list span{display:block;font-size:.83rem;color:var(--txt-dim);line-height:1.6;word-break:keep-all}
+.demo-list a{color:var(--teal);font-weight:700;white-space:nowrap}
+.demo-list a:hover{text-decoration:underline}
+/* ============================================================
    CARD NEWS — 후크
    무대 조명 아래 카드가 놓인 느낌. 카드는 세로 4:5 라 여러 장을 한 줄에
    늘어놓으면 글씨가 안 보인다. 인스타에서 보듯 옆으로 넘기게 했다.
@@ -1169,8 +1204,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           당신의 이름이 검색되는 큰길을 놓아드립니다.
         </p>
         <div class="hero-actions">
-          <a href="#price" class="btn btn-gold">
-            1분 견적 내보기
+          <a href="#demo" class="btn btn-gold">
+            무료 데모 신청하기
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
           <a href="tel:1533-7295" class="btn btn-ghost">
@@ -1190,6 +1225,42 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
 
   <div class="scroll-hint"><span class="bar"></span>SCROLL</div>
 </header>
+
+
+<!-- ══════════ DEMO — 홍보글이 도착하는 자리 ══════════ -->
+<section class="demoband" id="demo">
+  <div class="wrap">
+    <div class="demo-in rv">
+      <div class="demo-copy">
+        <div class="mono demo-tag">무료 · 이번 주 5분</div>
+        <h2>말로 설명하기 어려우니<br><em>그냥 만들어 드리겠습니다.</em></h2>
+        <p>
+          <b>상호와 하시는 일만 알려주세요.</b> 그 이름으로 홈페이지를 만들어 보내드립니다.
+          보시고 마음에 드시면 그때 이야기하시면 됩니다. 안 드시면 그냥 지우겠습니다.
+        </p>
+        <p class="demo-me">
+          저도 <b>15년째 이벤트인</b>입니다. 현장에서 아쉬웠던 걸 그대로 담아 만들었습니다.
+          홈페이지 업체가 만든 견적서와, 무대 밑에서 굴러본 사람이 만든 견적서는 다릅니다.
+        </p>
+        <div class="demo-actions">
+          <a href="#contact" class="btn btn-gold" id="toDemo">
+            무료 데모 신청
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="tel:1533-7295" class="btn btn-ghost">전화로 말씀하기</a>
+        </div>
+        <p class="demo-note">혼자 만들다 보니 한 주에 다섯 곳까지만 받습니다. 순서대로 연락드립니다.</p>
+      </div>
+
+      <ul class="demo-list rv">
+        <li><b>사진 올리면 홍보글까지 자동</b><span>갤러리에 행사 사진을 올리면 검색에 걸리는 글이 만들어지고 인스타 · 블로그 · 페이스북으로 나갑니다</span></li>
+        <li><b>견적서 자동 작성 · 발송</b><span>항목만 고르면 견적서가 됩니다. 밤에 엑셀 켤 일이 없어집니다</span></li>
+        <li><b>전자계약서 · 서명</b><span>링크 하나 보내면 손가락으로 서명합니다. 저도 작년에 3,000만원 떼여봤습니다</span></li>
+        <li><b>단톡방 일감 알림 앱</b><span>구인 글이 뜨면 휴대폰이 울립니다. 무대 위에 있어도 놓치지 않습니다 <a href="https://xn--wk0bn7yi8h24iszc.com/app/" target="_blank" rel="noopener">앱 보기 →</a></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
 
 <!-- ══════════ MARQUEE ══════════ -->
 <div class="marquee" aria-hidden="true">
@@ -1913,6 +1984,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           <div class="field">
             <label for="f-type">필요한 서비스</label>
             <select id="f-type" name="type">
+              <option value="무료 데모 신청">무료 데모 신청 (상호만 알려주세요)</option>
               <option value="홈페이지 제작">홈페이지 제작</option>
               <option value="홈페이지 + 홍보영상">홈페이지 + 홍보영상</option>
               <option value="숏폼 홍보영상만">숏폼 홍보영상만</option>
@@ -2619,6 +2691,20 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const plus = $('.stepper[data-qty="video"] button[data-step="1"]');
     if(plus && +$('.stepper[data-qty="video"] [data-q]').textContent === 0) plus.click();
     goTo($('#calc'));
+  });
+
+  /* ---------- 무료 데모 신청 → 문의 폼을 미리 맞춰둔다 ----------
+     홍보글을 보고 온 손님이 폼에서 다시 헤매지 않게, 유형을 골라두고
+     이름 칸에 커서까지 놓아준다. */
+  const demoBtn = $('#toDemo');
+  if(demoBtn) demoBtn.addEventListener('click', e=>{
+    e.preventDefault();
+    const sel = $('#f-type');
+    if(sel) sel.value = '무료 데모 신청';
+    const msg = $('#f-msg');
+    if(msg && !msg.value.trim()) msg.placeholder = '예) 순천에서 행사 MC 하고 있습니다. 상호는 ○○기획입니다.';
+    goTo($('#contact'));
+    setTimeout(()=>{ const n = $('#f-name'); if(n) n.focus({preventScroll:true}); }, 700);
   });
 
   /* ---------- smooth anchor offset ---------- */
