@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>별빛이벤트 — 행사의 처음부터 끝까지 (큰길브리지 시안)</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="description" content="큰길브리지 제안용 시안 페이지입니다. 실제 업체와 무관합니다.">
+<!-- 사장님 직접 편집 열쇠. 값은 열쇠의 SHA-256. 열쇠 자체는 여기 없다. -->
+<meta name="kb-edit" content="0335965cc074ef48137912a82ce3e7069b262f162def3cfd23c2068f1d334381">
+<meta name="kb-edit-path" content="demo/sample/index.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+:root{--bg:#0F0F12;--bg2:#17171C;--ink:#F3F1EC;--ink2:#A9A69E;--line:#2A2A31;--amber:#F5A524;--amber2:#FFD27A}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR","Malgun Gothic",system-ui,sans-serif;line-height:1.7;word-break:keep-all;overflow-wrap:break-word}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+.notice{position:sticky;top:0;z-index:50;background:#FFE85C;color:#111;font-size:12.5px;text-align:center;padding:6px 12px;letter-spacing:.02em}
+.notice b{font-weight:700}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.logo{font-weight:900;font-size:19px;letter-spacing:-.02em}
+.logo i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--amber);margin-right:8px;vertical-align:middle}
+.top nav{display:flex;gap:18px;font-size:14px;color:var(--ink2)}
+.top nav a{text-decoration:none}
+.hero{padding:64px 0 56px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-40% -20% auto;height:120%;background:radial-gradient(ellipse at 30% 0%,rgba(245,165,36,.22),transparent 55%);pointer-events:none}
+.eyebrow{font-size:13px;color:var(--amber);letter-spacing:.14em;font-weight:700;margin-bottom:14px}
+h1{font-size:clamp(34px,7vw,64px);line-height:1.15;letter-spacing:-.03em;margin:0 0 18px;font-weight:900;text-wrap:balance}
+.lede{font-size:clamp(16px,2.4vw,19px);color:var(--ink2);max-width:34em;margin:0 0 26px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:15px;border:1px solid var(--line)}
+.btn.primary{background:var(--amber);color:#111;border-color:var(--amber)}
+section{padding:56px 0;border-top:1px solid var(--line)}
+h2{font-size:clamp(22px,4vw,30px);margin:0 0 6px;letter-spacing:-.02em;font-weight:900}
+.sec-sub{color:var(--ink2);margin:0 0 26px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:22px}
+.card h3{margin:0 0 8px;font-size:18px;font-weight:700}
+.card p{margin:0;color:var(--ink2);font-size:15px}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.num{text-align:center;padding:22px 10px;background:var(--bg2);border:1px solid var(--line);border-radius:14px}
+.num b{display:block;font-size:34px;font-weight:900;color:var(--amber2);letter-spacing:-.02em;line-height:1.1}
+.num span{font-size:13px;color:var(--ink2)}
+.gal{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+.about p{color:var(--ink2);margin:0}
+.contact{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:28px;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center}
+.contact .tel{font-size:clamp(24px,5vw,38px);font-weight:900;letter-spacing:-.02em}
+.contact small{display:block;color:var(--ink2);margin-top:4px}
+footer{padding:36px 0 60px;color:var(--ink2);font-size:13px;border-top:1px solid var(--line)}
+@media(max-width:700px){.about,.contact{grid-template-columns:1fr}.top nav{display:none}}
+</style>
+</head>
+<body>
+
+<div class="notice"><b>큰길브리지 제안용 시안입니다.</b> 실제 업체와 무관한 예시 페이지예요 · 문의 1533-7295</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="logo"><i></i><span data-e="brand"><!--e:brand-->별빛이벤트<!--/e:brand--></span></div>
+    <nav><a href="#work">하는 일</a><a href="#gal">행사 사진</a><a href="#about">소개</a><a href="#contact">문의</a></nav>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow" data-e="eyebrow"><!--e:eyebrow-->순천 · 여수 · 광양 행사 전문<!--/e:eyebrow--></div>
+    <h1 data-e="hero-title"><!--e:hero-title-->무대부터 사회까지,
+행사의 처음과 끝을 맡습니다<!--/e:hero-title--></h1>
+    <p class="lede" data-e="hero-sub"><!--e:hero-sub-->기업 행사, 지역 축제, 체육대회, 개업식. 12년 동안 380번의 행사를 치렀습니다. 장비도 사람도 저희 것이라 약속한 시간에 약속한 무대가 섭니다.<!--/e:hero-sub--></p>
+    <div class="btns">
+      <a class="btn primary" id="tel-btn" href="tel:0611234567">📞 <span data-e="tel"><!--e:tel-->061-123-4567<!--/e:tel--></span></a>
+      <a class="btn" href="#contact">견적 문의</a>
+    </div>
+  </div>
+
+  <section id="work">
+    <h2>하는 일</h2>
+    <p class="sec-sub">행사 하나에 필요한 걸 한 곳에서 해결합니다.</p>
+    <div class="grid3">
+      <div class="card"><h3 data-e="w1-t"><!--e:w1-t-->무대 · 음향 · 조명<!--/e:w1-t--></h3><p data-e="w1-d"><!--e:w1-d-->트러스 무대, 라인어레이 음향, 무빙 조명까지 자체 장비로 세팅합니다.<!--/e:w1-d--></p></div>
+      <div class="card"><h3 data-e="w2-t"><!--e:w2-t-->사회 · 공연 섭외<!--/e:w2-t--></h3><p data-e="w2-d"><!--e:w2-d-->행사 성격에 맞는 사회자와 가수, 공연팀을 연결하고 진행표까지 짭니다.<!--/e:w2-d--></p></div>
+      <div class="card"><h3 data-e="w3-t"><!--e:w3-t-->기획 · 영상 기록<!--/e:w3-t--></h3><p data-e="w3-d"><!--e:w3-d-->큐시트 작성부터 당일 촬영, 끝나고 보내드리는 하이라이트 영상까지.<!--/e:w3-d--></p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="nums">
+      <div class="num"><b data-e="n1"><!--e:n1-->380<!--/e:n1--></b><span>치른 행사</span></div>
+      <div class="num"><b data-e="n2"><!--e:n2-->12년<!--/e:n2--></b><span>한 자리에서</span></div>
+      <div class="num"><b data-e="n3"><!--e:n3-->27<!--/e:n3--></b><span>기관·기업 고객</span></div>
+      <div class="num"><b data-e="n4"><!--e:n4-->100%<!--/e:n4--></b><span>자체 장비</span></div>
+    </div>
+  </section>
+
+  <section id="gal">
+    <h2>행사 사진</h2>
+    <p class="sec-sub">사진을 누르면 바꿀 수 있어요 — 편집 모드에서.</p>
+    <div class="gal">
+      <img data-e-img="photo1" alt="행사 사진 1" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect width='100%' height='100%' fill='%2323232A'/><text x='50%' y='48%' fill='%23F5A524' font-size='30' text-anchor='middle' font-family='sans-serif' font-weight='bold'>무대 전경 사진</text><text x='50%' y='58%' fill='%23888' font-size='20' text-anchor='middle' font-family='sans-serif'>누르면 바꿀 수 있어요</text></svg>">
+      <img data-e-img="photo2" alt="행사 사진 2" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect width='100%' height='100%' fill='%2323232A'/><text x='50%' y='48%' fill='%23F5A524' font-size='30' text-anchor='middle' font-family='sans-serif' font-weight='bold'>장비 세팅 사진</text><text x='50%' y='58%' fill='%23888' font-size='20' text-anchor='middle' font-family='sans-serif'>누르면 바꿀 수 있어요</text></svg>">
+      <img data-e-img="photo3" alt="행사 사진 3" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='600'><rect width='100%' height='100%' fill='%2323232A'/><text x='50%' y='48%' fill='%23F5A524' font-size='30' text-anchor='middle' font-family='sans-serif' font-weight='bold'>공연 · 사회 사진</text><text x='50%' y='58%' fill='%23888' font-size='20' text-anchor='middle' font-family='sans-serif'>누르면 바꿀 수 있어요</text></svg>">
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>인사말</h2>
+    <div class="about">
+      <p data-e="about-1"><!--e:about-1-->행사는 하루지만 준비는 한 달입니다. 저희는 그 한 달을 담당자님 대신 뛰는 회사입니다. 무대 도면부터 동선, 우천 대비, 전기 용량까지 먼저 챙깁니다.<!--/e:about-1--></p>
+      <p data-e="about-2"><!--e:about-2-->대표 김별빛. 2014년 음향 렌탈로 시작해 지금은 기획·무대·영상까지 한 팀으로 움직입니다. 순천에 창고와 사무실이 있어 전남 동부 어디든 당일 세팅이 됩니다.<!--/e:about-2--></p>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>견적 문의</h2>
+    <p class="sec-sub">행사 날짜와 장소, 대략의 인원만 알려주시면 하루 안에 견적을 드립니다.</p>
+    <div class="contact">
+      <div>
+        <div class="tel"><span data-e="tel2"><!--e:tel2-->061-123-4567<!--/e:tel2--></span></div>
+        <small data-e="addr"><!--e:addr-->전남 순천시 해룡면 별빛로 12 · 평일 09:00~18:00<!--/e:addr--></small>
+      </div>
+      <a class="btn primary" href="#" onclick="alert('시안 페이지입니다. 실제 사이트에서는 견적 폼이 열립니다.');return false;">견적 요청하기</a>
+    </div>
+  </section>
+
+  <footer>
+    <span data-e="foot"><!--e:foot-->별빛이벤트 · 대표 김별빛 · 사업자등록번호 000-00-00000<!--/e:foot--></span>
+    <div style="margin-top:8px;opacity:.6">이 페이지는 큰길브리지가 제안용으로 만든 시안입니다 · www.ai-make.co.kr</div>
+  </footer>
+</div>
+
+<script>
+/* 전화번호 글자를 고치면 누르는 링크도 같이 따라간다 */
+(function(){
+  var a=document.getElementById('tel-btn'), s=a&&a.querySelector('[data-e="tel"]');
+  if(!a||!s) return;
+  function 맞추기(){ a.href='tel:'+(s.textContent||'').replace(/[^0-9+]/g,''); }
+  맞추기(); s.addEventListener('input',맞추기);
+})();
+</script>
+<script src="../../demo-beacon.js" data-d="sample" data-n="별빛이벤트(시안)" data-tel="061-123-4567"></script>
+<script src="../../edit.js"></script>
+</body>
+</html>

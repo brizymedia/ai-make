@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>홈페이지 기획서 — 큰길브리지</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/*
+  자동 기획서.
+  사장님 이야기를 칸에 채우면 기획서가 바로 나온다. 서버 없다.
+  내용은 주소(#p=) 안에 통째로 담겨서, 링크만 보내면 그 사람도 같은 문서를 본다.
+
+  ?admin=1  → 우리 화면 (왼쪽 칸 + 오른쪽 문서 + 견적서로 넘기기)
+  그냥 열면 → 고객 화면 (문서만)
+*/
+:root{--paper:#FFFFFF;--bg:#F3F2EE;--ink:#1A1A1A;--ink2:#5C5C57;--ink3:#8B8B84;--line:#E2E0D8;--hair:#EDEBE4;
+      --acc:#1E5EFF;--acc-soft:#E8EEFF;--gold:#8F6828;--gold-soft:#FBF3E1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,sans-serif;
+     font-size:15px;line-height:1.7;word-break:keep-all;overflow-wrap:break-word}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1400px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;letter-spacing:-.02em}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--acc);display:inline-block}
+.mode{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--acc-soft);color:var(--acc);font-weight:700}
+.mode.cust{background:var(--gold-soft);color:var(--gold)}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:99px;border:1px solid var(--line);background:#fff;
+     font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.layout{max-width:1400px;margin:0 auto;padding:20px;display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:22px;align-items:start}
+.layout.cust{grid-template-columns:1fr;max-width:900px}
+aside{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;position:sticky;top:66px;max-height:calc(100vh - 86px);overflow:auto}
+aside h3{margin:16px 0 8px;font-size:12px;letter-spacing:.12em;color:var(--ink3);font-weight:700}
+aside h3:first-child{margin-top:0}
+label{display:block;font-size:12.5px;color:var(--ink2);margin:10px 0 4px}
+input[type=text],input[type=date],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:#fff}
+textarea{min-height:70px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:99px;font-size:13px;cursor:pointer;background:#fff;user-select:none}
+.chip input{margin:0}
+.chip.on{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-weight:600}
+.plans{display:grid;gap:8px}
+.plan{display:flex;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;align-items:flex-start}
+.plan.on{border-color:var(--acc);background:var(--acc-soft)}
+.plan b{display:block;font-size:14px}.plan small{color:var(--ink2);font-size:12px}
+.plan .pr{margin-left:auto;font-weight:800;white-space:nowrap}
+.hint{font-size:12px;color:var(--ink3);margin-top:6px}
+
+/* ── 문서 ── */
+.doc{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:clamp(22px,4vw,52px);box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.cover{border-bottom:2px solid var(--ink);padding-bottom:26px;margin-bottom:30px}
+.cover .k{font-size:12px;letter-spacing:.16em;color:var(--ink3);font-weight:700}
+.cover h1{font-size:clamp(26px,4.4vw,40px);line-height:1.2;letter-spacing:-.02em;margin:10px 0 12px;text-wrap:balance}
+.cover .m{display:flex;gap:18px;flex-wrap:wrap;color:var(--ink2);font-size:13.5px}
+.sec{margin:34px 0 0}
+.sec .n{font-size:12px;letter-spacing:.14em;color:var(--acc);font-weight:800}
+.sec h2{font-size:clamp(19px,2.6vw,24px);margin:6px 0 12px;letter-spacing:-.01em}
+.sec p{margin:0 0 10px;color:var(--ink2)}
+.lead{font-size:clamp(16px,2.2vw,19px);color:var(--ink);line-height:1.6;padding:16px 20px;background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:0 10px 10px 0}
+.tree{list-style:none;padding:0;margin:8px 0 0}
+.tree>li{padding:10px 0;border-top:1px solid var(--hair)}
+.tree>li:first-child{border-top:0}
+.tree b{font-size:15px}
+.tree ul{list-style:none;padding:4px 0 0 14px;margin:0;display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--ink2);font-size:14px}
+.tree ul li::before{content:"└ ";color:var(--ink3)}
+.tips{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.tips li{padding:10px 14px;background:var(--bg);border-radius:10px;font-size:14px;color:var(--ink)}
+.tips li::before{content:"✦ ";color:var(--gold)}
+.chk{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
+.chk li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.chk li::before{content:"";width:16px;height:16px;border:1.5px solid var(--ink3);border-radius:4px;flex:none;margin-top:4px}
+.chk li.have::before{background:var(--acc);border-color:var(--acc)}
+.tl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin-top:8px;font-size:14.5px}
+.tl .d{font-weight:800;white-space:nowrap;color:var(--acc)}
+.money{display:grid;grid-template-columns:1fr auto;gap:8px 16px;padding:16px 20px;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+.money .big{font-size:clamp(20px,3vw,26px);font-weight:900;letter-spacing:-.02em}
+.money small{color:var(--ink2)}
+.cta{margin-top:34px;padding:22px;border-radius:14px;background:var(--ink);color:#fff;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.cta b{font-size:17px}.cta .sp{flex:1}
+.cta .btn{border-color:transparent}
+.foot{margin-top:30px;padding-top:16px;border-top:1px solid var(--hair);font-size:12.5px;color:var(--ink3)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);opacity:0;transition:.25s;background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:99;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.empty{color:var(--ink3);font-style:normal}
+@media(max-width:860px){.layout{grid-template-columns:1fr}aside{position:static;max-height:none}}
+@media print{.topbar,aside,.cta,.toast{display:none!important}.layout{display:block;padding:0}.doc{border:0;box-shadow:none;padding:0}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-in">
+  <a class="brand" href="./"><i></i>큰길브리지 <span style="font-weight:500;color:var(--ink3)">· 기획서</span></a>
+  <span class="mode" id="mode">작성 화면</span>
+  <span class="sp"></span>
+  <button class="btn" id="b-link" type="button">🔗 링크 복사</button>
+  <button class="btn" id="b-prompt" type="button" title="이 내용으로 Claude 에게 더 다듬어 달라고 할 때">✎ 프롬프트 복사</button>
+  <button class="btn" id="b-print" type="button">🖨 인쇄 · PDF</button>
+  <button class="btn gold" id="b-quote" type="button">📄 이 기획서로 견적서 만들기</button>
+</div></div>
+
+<div class="layout" id="layout">
+  <aside id="form">
+    <h3>업체</h3>
+    <label>업종</label>
+    <select id="f-biz"></select>
+    <label>상호</label><input type="text" id="f-org" placeholder="예: 한아름노인주간보호센터">
+    <label>지역</label><input type="text" id="f-region" placeholder="예: 순천">
+    <label>대표·담당</label><input type="text" id="f-owner" placeholder="예: 김효민 원장">
+    <label>전화</label><input type="text" id="f-tel" placeholder="예: 061-000-0000">
+    <label>한 줄 소개 <span class="hint" style="display:inline">(있으면)</span></label><input type="text" id="f-tag" placeholder="사장님이 늘 하는 그 말">
+
+    <h3>홈페이지로 하고 싶은 것</h3>
+    <div class="chips" id="f-goals"></div>
+
+    <h3>손님</h3>
+    <label>누가 볼 페이지인가</label><input type="text" id="f-target" placeholder="업종 고르면 자동으로 채워져요">
+
+    <h3>가진 자료</h3>
+    <div class="chips" id="f-assets"></div>
+
+    <h3>규모</h3>
+    <div class="plans" id="f-plans"></div>
+    <label>오픈 희망일</label><input type="date" id="f-open">
+    <label>메모</label><textarea id="f-note" placeholder="들은 이야기 중에 문서에 남길 것"></textarea>
+    <p class="hint">칸을 채우는 대로 오른쪽 문서가 바뀝니다. 「링크 복사」로 보내면 상대도 같은 문서를 봅니다.</p>
+  </aside>
+
+  <main class="doc" id="doc"></main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ 업종별 뼈대 ═══════════════════════════════════════
+   여기가 이 도구의 알맹이다. 업종마다
+   손님이 누구인지, 첫 화면이 뭘 답해야 하는지, 어떤 사진이 필요한지가 다르다.
+   {org} 는 상호로 바뀐다.                                  */
+var 업종들 = {
+  daycare:{ 이름:'주간보호센터 · 요양', 손님:'부모님을 모실 곳을 찾는 자녀(보호자)',
+    방향:'{org}는 어르신이 낮 동안 안전하고 즐겁게 지내는 곳입니다. 홈페이지는 보호자가 「하루 일과」와 「비용」을 3초 안에 찾게 만듭니다.',
+    섹션:['오늘의 하루 (사진 6장)','프로그램 · 주간 일과표','송영 차량 · 식사 · 안전','선생님 · 시설 소개','이용 안내 · 비용 (장기요양등급별)','상담 신청 · 오시는 길'],
+    페이지:[['센터 소개',['인사말','시설 · 선생님','오시는 길']],['프로그램',['하루 일과표','주간 프로그램','행사 · 나들이']],['하루 이야기',['오늘의 사진','월별 소식']],['이용 안내',['대상 · 등급','비용표','준비물 · 절차']],['상담 신청',['전화 · 폼','자주 묻는 질문']]],
+    사진:['프로그램실에서 어르신 활동 3장 (얼굴 동의 받은 것)','식사 · 간식 사진','송영 차량 사진','선생님 단체 사진','건물 외관과 입구, 안내판'],
+    문구:['보호자가 제일 궁금한 건 「낮에 무슨 일이 있나」 — 일과표를 시간대로 보여줍니다','비용은 숨기지 않고 등급별 표로. 전화 문의가 절반으로 줍니다','「상담 신청」을 화면 위쪽에. 보호자는 밤에 찾습니다'],
+    cta:'상담 신청', plan:'premium' },
+  event:{ 이름:'이벤트 · 행사 기획', 손님:'행사를 맡길 담당자 (기업 · 관공서 · 단체)',
+    방향:'{org}는 무대 · 음향 · 진행을 한 번에 맡는 회사입니다. 홈페이지는 담당자가 「이런 행사도 했구나」를 30초 안에 확인하고 견적을 요청하게 만듭니다.',
+    섹션:['대표 행사 영상 · 사진','하는 일 (기획 · 무대 · 음향 · 영상 · 진행)','실적 (행사 수 · 연도 · 주요 고객)','보유 장비','진행 절차 · 견적 안내','견적 문의'],
+    페이지:[['회사 소개',['인사말 · 연혁','팀 · 장비','오시는 길']],['하는 일',['행사 기획','무대 · 음향 · 조명','영상 · 중계','사회 · 공연 섭외']],['행사 이야기',['최근 행사 갤러리','행사별 후기']],['지역별 안내',['순천 · 여수 · 광양 등 지역 페이지']],['견적 문의',['견적 요청 폼','진행 절차','자주 묻는 질문']]],
+    사진:['무대 전경 (관객 있는) 3장','장비 세팅 사진','사회자 · 공연 사진','팀 작업 사진','대표 행사 현수막 · 로고 보이는 것'],
+    문구:['첫 화면은 「가장 큰 행사」 사진 한 장. 규모가 신뢰입니다','실적은 숫자로: 행사 수 · 연도 · 기관명','견적 문의는 항목 체크 방식으로 — 담당자는 뭘 물어야 할지 모릅니다'],
+    cta:'견적 문의', plan:'premium' },
+  singer:{ 이름:'가수 · MC · 공연자', 손님:'섭외 담당자 (행사 기획사 · 지자체) + 팬',
+    방향:'{org}의 무대를 아직 못 본 담당자가 영상 하나로 섭외를 결정하게 만듭니다.',
+    섹션:['대표 무대 영상','프로필 · 이력','무대 사진','노래 · 공연 목록','섭외 안내 · 출연료 문의','SNS · 팬 연결'],
+    페이지:[['프로필',['소개','이력 · 수상','미디어 보도']],['영상',['대표 무대','최근 공연']],['활동 소식',['공연 일정','후기']],['섭외 안내',['출연 가능 행사','문의 폼']],['A4 프로필',['기획사 발송용 한 장']]],
+    사진:['무대 위 전신 사진 (조명 받은) 2장','정면 프로필 1장','관객과 함께 찍은 것','포스터 · 현수막'],
+    문구:['영상 30초를 첫 화면에. 담당자는 노래를 듣고 결정합니다','이력은 연도순이 아니라 「큰 것」부터','섭외 폼에 행사일 · 장소 · 예산 칸을 미리 둡니다'],
+    cta:'섭외 문의', plan:'basic' },
+  salon:{ 이름:'미용실 · 뷰티', 손님:'동네 손님 (20~50대), 예약할지 고민 중',
+    방향:'{org}는 처음 오는 손님이 「어떤 분위기인지 · 얼마인지 · 예약은 어떻게」를 1분 안에 알게 합니다.',
+    섹션:['매장 · 시술 사진','메뉴 · 가격표','디자이너 소개','예약 안내 (네이버 · 전화)','오시는 길 · 주차','후기'],
+    페이지:[['매장 소개',['인사말','디자이너','매장 사진']],['시술 안내',['컷 · 펌 · 염색 가격표','이벤트']],['스타일 갤러리',['시술 결과 사진']],['예약',['네이버 예약 연결','전화 · 카톡']],['오시는 길',['지도 · 주차']]],
+    사진:['매장 내부 밝은 사진 3장','시술 결과 (동의 받은) 6장','디자이너 프로필','간판 · 입구'],
+    문구:['가격표를 숨기면 손님이 안 옵니다. 그대로 올립니다','예약 버튼은 화면 어디서나 보이게','후기는 사진과 함께 — 글만 옮기면 안 믿습니다'],
+    cta:'예약하기', plan:'basic' },
+  interior:{ 이름:'인테리어 · 시공', 손님:'집 · 매장 공사를 앞둔 30~50대, 견적 비교 중',
+    방향:'{org}는 「이 회사가 한 집」을 사진으로 보여주고 상담 신청으로 잇습니다.',
+    섹션:['대표 시공 사례 (전 · 후 사진)','하는 일 (주거 · 상업 · 부분)','진행 절차 · 기간','견적 안내','회사 소개 · 팀','상담 신청'],
+    페이지:[['회사 소개',['인사말','팀 · 자격','오시는 길']],['시공 사례',['주거','상업','전 · 후 비교']],['진행 절차',['상담 → 실측 → 견적 → 시공 → AS']],['견적 안내',['평형 · 범위별 기준가','자주 묻는 질문']],['상담 신청',['폼 · 전화']]],
+    사진:['시공 전 · 후 짝 사진 5쌍','현장 작업 사진','완성 공간을 넓게 찍은 것','팀 · 대표 사진'],
+    문구:['전 · 후 사진이 전부입니다. 글은 짧게','견적은 「기준가」라도 적습니다. 없으면 비교에서 빠집니다','AS 기간을 눈에 띄게'],
+    cta:'상담 신청', plan:'premium' },
+  pension:{ 이름:'펜션 · 숙박', 손님:'주말 여행을 계획하는 가족 · 커플',
+    방향:'{org}는 객실 · 경치 · 가격을 한 화면에 보여주고 예약으로 잇습니다.',
+    섹션:['대표 경치 · 객실 사진','객실 소개 · 요금','부대시설 (바비큐 · 수영장 등)','주변 관광 · 거리','예약 안내 · 이용 규칙','오시는 길'],
+    페이지:[['객실',['객실별 사진 · 정원 · 요금']],['시설 · 주변',['부대시설','주변 관광지']],['예약',['달력 · 예약 연결','이용 규칙']],['오시는 길',['지도 · 교통']],['소식',['이벤트 · 공지']]],
+    사진:['객실마다 3장 (침구 정돈된 낮 사진)','전경 · 경치','시설 사진','저녁 분위기 사진'],
+    문구:['요금은 시즌별 표로. 전화가 확 줍니다','객실 사진은 낮에, 침구 정돈하고','예약 버튼은 실제 쓰는 곳(네이버 · 야놀자)으로 연결'],
+    cta:'예약 문의', plan:'premium' },
+  academy:{ 이름:'학원 · 교육', 손님:'학부모 · 수강 희망자',
+    방향:'{org}는 학부모가 「선생님 · 시간표 · 수강료」를 확인하고 상담을 신청하게 합니다.',
+    섹션:['원 소개 · 교육 방향','선생님 소개','과정 · 시간표','수강료','상담 신청','오시는 길'],
+    페이지:[['원 소개',['교육 철학','선생님','시설']],['과정 안내',['과정별 설명','시간표']],['수강료 · 안내',['수강료','등록 절차']],['소식 · 후기',['공지','학부모 후기']],['상담 신청',['폼 · 전화']]],
+    사진:['수업 모습 3장','선생님 프로필','교실 · 시설','간판 · 입구'],
+    문구:['선생님 얼굴과 이력이 신뢰의 전부입니다','시간표는 표로, 휴대폰에서 가로로 넘겨지게','상담 폼에 학년 · 과목 칸'],
+    cta:'상담 신청', plan:'basic' },
+  clinic:{ 이름:'병원 · 의원', 손님:'증상으로 검색한 환자',
+    방향:'{org}는 환자가 「진료 과목 · 시간 · 의료진」을 확인하고 바로 전화하게 합니다.',
+    섹션:['진료 시간 · 전화 (첫 화면)','진료 과목','의료진 소개','시설 · 장비','오시는 길 · 주차','예약 · 문의'],
+    페이지:[['병원 소개',['인사말','의료진','시설']],['진료 안내',['과목별 설명','진료 시간']],['오시는 길',['지도 · 주차 · 대중교통']],['공지',['휴진 · 안내']],['예약',['전화 · 네이버 예약']]],
+    사진:['외관 · 접수대','진료실 · 장비','의료진 프로필','대기실'],
+    문구:['진료 시간과 전화번호를 첫 화면 맨 위에. 그게 전부입니다','과목 설명은 증상 단어로 (환자는 병명을 모릅니다)','의료광고법: 치료 효과 단정 문구 · 전후 사진은 피합니다'],
+    cta:'전화 · 예약', plan:'basic' },
+  cafe:{ 이름:'카페 · 식당', 손님:'근처에서 검색한 손님 · 단체 예약',
+    방향:'{org}는 분위기 · 메뉴 · 위치를 사진으로 보여주고 단체 예약 문의로 잇습니다.',
+    섹션:['대표 사진','메뉴 · 가격','매장 분위기','단체 · 행사 예약','영업시간 · 오시는 길','SNS'],
+    페이지:[['매장 소개',['인사말','공간 사진']],['메뉴',['메뉴판 · 가격']],['단체 · 행사',['예약 안내','공간 대여']],['오시는 길',['지도 · 주차']],['소식',['이벤트 · 신메뉴']]],
+    사진:['대표 메뉴 3장','매장 내부 낮 사진','외관 · 간판','단체석'],
+    문구:['메뉴판은 사진 말고 글자로도 — 검색에 걸립니다','영업시간 · 휴무를 첫 화면에','단체 예약 폼에 인원 · 날짜 칸'],
+    cta:'예약 문의', plan:'basic' },
+  etc:{ 이름:'기타 업종', 손님:'서비스를 찾는 손님',
+    방향:'{org}가 무엇을 하는지, 왜 여기인지, 어떻게 연락하는지 — 이 셋을 첫 화면에서 답합니다.',
+    섹션:['대표 사진 · 한 줄 소개','하는 일','실적 · 후기','회사 소개','오시는 길','문의'],
+    페이지:[['회사 소개',['인사말','연혁 · 팀']],['하는 일',['서비스별 설명']],['실적 · 사례',['갤러리','후기']],['오시는 길',['지도']],['문의',['폼 · 전화']]],
+    사진:['대표 사진 1장','일하는 모습 3장','결과물 사진','팀 · 대표'],
+    문구:['첫 화면 한 줄: 「누구에게 무엇을」','전화 · 문의 버튼을 항상 보이게','실적은 숫자로'],
+    cta:'문의하기', plan:'basic' }
+};
+var 목적들 = ['문의 · 상담 받기','예약 받기','믿음 주기 (실적 · 후기)','작업물 보여주기','검색에 나오기','직원 뽑기','물건 · 서비스 팔기'];
+var 자료들 = ['로고','사진','기존 홈페이지','인스타 · 블로그','후기','명함 · 전단'];
+/* 견적서(quote.html)와 같은 요금제. 값이 바뀌면 거기도 같이 바꾼다. */
+var PLANS = {
+  basic:{ name:'베이직', price:100000, monthly:10000, free:'', 설명:'원페이지 · 섹션 6개 · 모바일 대응' },
+  premium:{ name:'고급형', price:500000, monthly:20000, free:'', 설명:'5페이지 · 맞춤 디자인 · 갤러리' },
+  enterprise:{ name:'기업형', price:1000000, monthly:50000, free:'1개월', 설명:'페이지 무제한 · 자동 발행 · 견적 · 계약 자동화' }
+};
+
+/* ══ 상태 ══ */
+var P = { biz:'daycare', org:'', region:'', owner:'', tel:'', tag:'', goals:[], target:'', assets:[], plan:'', open:'', note:'' };
+var Q = new URLSearchParams(location.search);
+var MODE = Q.get('admin')==='1' ? 'admin' : 'customer';
+function $(s){ return document.querySelector(s); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64(t){ t=t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; return decodeURIComponent(escape(atob(t))); }
+function 원(n){ return (Number(n)||0).toLocaleString('ko-KR')+'원'; }
+/* toISOString 은 UTC 라서 한국 아침엔 어제 날짜가 나온다. 로컬 날짜로 직접 만든다. */
+function 날짜글(d){ var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function 오늘(){ return 날짜글(new Date()); }
+function 날짜말(s){ if(!s) return ''; var d=new Date(s+'T00:00:00'); if(isNaN(d)) return s; return (d.getMonth()+1)+'월 '+d.getDate()+'일'; }
+function 더하기(s,n){ var d=new Date(s+'T00:00:00'); d.setDate(d.getDate()+n); return 날짜글(d); }
+function toast(m){ var t=$('#toast'); t.textContent=m; t.className='toast on'; clearTimeout(toast.t); toast.t=setTimeout(function(){t.className='toast';},2600); }
+
+/* ══ 폼 ══ */
+function 폼그리기(){
+  $('#f-biz').innerHTML = Object.keys(업종들).map(function(k){ return '<option value="'+k+'">'+esc(업종들[k].이름)+'</option>'; }).join('');
+  $('#f-goals').innerHTML = 목적들.map(function(g){ return '<label class="chip"><input type="checkbox" value="'+esc(g)+'">'+esc(g)+'</label>'; }).join('');
+  $('#f-assets').innerHTML = 자료들.map(function(g){ return '<label class="chip"><input type="checkbox" value="'+esc(g)+'">'+esc(g)+'</label>'; }).join('');
+  $('#f-plans').innerHTML = Object.keys(PLANS).map(function(k){ var p=PLANS[k]; return '<label class="plan" data-k="'+k+'"><input type="radio" name="plan" value="'+k+'"><span><b>'+p.name+'</b><small>'+esc(p.설명)+'</small></span><span class="pr">'+원(p.price)+'</span></label>'; }).join('');
+
+  $('#f-biz').addEventListener('change', function(){ P.biz=this.value; if(!P.targetTouched) P.target=''; if(!P.planTouched) P.plan=''; 폼채우기(); 그리기(); });
+  ['org','region','owner','tel','tag','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ P[k]=this.value; 그리기(); }); });
+  $('#f-target').addEventListener('input', function(){ P.target=this.value; P.targetTouched=true; 그리기(); });
+  $('#f-open').addEventListener('change', function(){ P.open=this.value; 그리기(); });
+  document.querySelectorAll('#f-goals input').forEach(function(c){ c.addEventListener('change', function(){ P.goals=[].map.call(document.querySelectorAll('#f-goals input:checked'),function(x){return x.value;}); 칩색(); 그리기(); }); });
+  document.querySelectorAll('#f-assets input').forEach(function(c){ c.addEventListener('change', function(){ P.assets=[].map.call(document.querySelectorAll('#f-assets input:checked'),function(x){return x.value;}); 칩색(); 그리기(); }); });
+  document.querySelectorAll('#f-plans input').forEach(function(r){ r.addEventListener('change', function(){ P.plan=this.value; P.planTouched=true; 칩색(); 그리기(); }); });
+}
+function 폼채우기(){
+  $('#f-biz').value = P.biz;
+  ['org','region','owner','tel','tag','note','open'].forEach(function(k){ $('#f-'+k).value = P[k]||''; });
+  $('#f-target').value = P.target || 업종들[P.biz].손님;
+  $('#f-target').placeholder = 업종들[P.biz].손님;
+  document.querySelectorAll('#f-goals input').forEach(function(c){ c.checked = P.goals.indexOf(c.value)>=0; });
+  document.querySelectorAll('#f-assets input').forEach(function(c){ c.checked = P.assets.indexOf(c.value)>=0; });
+  var pk = P.plan || 업종들[P.biz].plan;
+  document.querySelectorAll('#f-plans input').forEach(function(r){ r.checked = r.value===pk; });
+  칩색();
+}
+function 칩색(){
+  document.querySelectorAll('.chip').forEach(function(l){ l.classList.toggle('on', l.querySelector('input').checked); });
+  document.querySelectorAll('.plan').forEach(function(l){ l.classList.toggle('on', l.querySelector('input').checked); });
+}
+
+/* ══ 문서 ══ */
+function 그리기(){
+  var B = 업종들[P.biz], org = P.org || '(상호)', 손님 = P.target || B.손님, pk = P.plan || B.plan, PL = PLANS[pk];
+  var 방향 = B.방향.replace(/\{org\}/g, org);
+  var 목적문 = P.goals.length ? '이번 홈페이지로 하고 싶은 것: <b>' + P.goals.map(esc).join('</b>, <b>') + '</b>.' : '';
+  var h = '';
+
+  h += '<div class="cover"><div class="k">홈페이지 기획서</div>';
+  h += '<h1>' + esc(org) + ' 홈페이지,<br>이렇게 만들겠습니다</h1>';
+  h += '<div class="m"><span>' + esc(B.이름) + '</span>' + (P.region?'<span>'+esc(P.region)+'</span>':'') + (P.owner?'<span>'+esc(P.owner)+'</span>':'') + '<span>' + 오늘().replace(/-/g,'.') + '</span><span>큰길브리지 · 김효민</span></div></div>';
+
+  h += '<div class="sec"><div class="n">01 · 방향</div><h2>이 홈페이지가 하는 일</h2>';
+  h += '<p class="lead">' + esc(방향) + '</p>';
+  h += '<p>이 페이지를 볼 사람은 <b>' + esc(손님) + '</b>입니다. 그 사람이 첫 화면에서 답을 얻게 만드는 것이 목표입니다.' + (P.tag ? ' 사장님 말씀 그대로 첫 줄에 씁니다 — <b>「' + esc(P.tag) + '」</b>.' : '') + '</p>';
+  if (목적문) h += '<p>' + 목적문 + '</p>';
+  h += '</div>';
+
+  h += '<div class="sec"><div class="n">02 · 구성</div><h2>사이트 구성 <span style="font-weight:500;color:var(--ink3);font-size:.7em">' + PL.name + '</span></h2>';
+  if (pk==='basic') {
+    h += '<p>한 페이지에 아래 여섯 칸을 세로로 놓습니다. 휴대폰에서 엄지로 내려보며 3분 안에 다 읽히는 길이입니다.</p><ul class="tree"><li><b>홈 (원페이지)</b><ul>' + B.섹션.map(function(s){return '<li>'+esc(s)+'</li>';}).join('') + '</ul></li></ul>';
+  } else {
+    h += '<p>' + (pk==='premium' ? '다섯 페이지로 나눕니다. 각 페이지는 검색에 따로 걸리고, 손님은 필요한 것만 봅니다.' : '고급형의 다섯 페이지에 자동으로 굴러가는 장치를 얹습니다.') + '</p><ul class="tree">';
+    h += '<li><b>홈</b><ul>' + B.섹션.slice(0,4).map(function(s){return '<li>'+esc(s)+'</li>';}).join('') + '</ul></li>';
+    B.페이지.forEach(function(pg){ h += '<li><b>' + esc(pg[0]) + '</b><ul>' + pg[1].map(function(s){return '<li>'+esc(s)+'</li>';}).join('') + '</ul></li>'; });
+    if (pk==='enterprise') h += '<li><b>자동으로 굴러가는 것</b><ul><li>사진 한 장 올리면 갤러리 글 + 블로그 · 밴드 공유 + 검색 등록</li><li>문의 → 견적서 → 전자계약 → PDF 자동</li><li>지역별 검색 페이지</li><li>누가 봤는지 알림</li></ul></li>';
+    h += '</ul>';
+  }
+  h += '</div>';
+
+  h += '<div class="sec"><div class="n">03 · 문구</div><h2>글은 이렇게 씁니다</h2><ul class="tips">' + B.문구.map(function(t){return '<li>'+esc(t)+'</li>';}).join('') + '<li>화면 어디서나 보이는 단추 하나: <b>' + esc(B.cta) + '</b>' + (P.tel?' · '+esc(P.tel):'') + '</li></ul></div>';
+
+  h += '<div class="sec"><div class="n">04 · 준비</div><h2>사장님이 주실 것</h2><p>사진은 휴대폰으로 찍은 것이면 됩니다. 저희가 밝기와 크기를 맞춥니다.</p><ul class="chk">';
+  h += B.사진.map(function(s){ return '<li' + (P.assets.indexOf('사진')>=0?' class="have"':'') + '>' + esc(s) + '</li>'; }).join('');
+  h += '<li' + (P.assets.indexOf('로고')>=0?' class="have"':'') + '>로고 (없으면 상호 글자로 저희가 만듭니다)</li>';
+  h += '<li>전화번호 · 주소 · 영업시간 · 계좌 (문자로 보내주시면 됩니다)</li>';
+  if (P.assets.indexOf('기존 홈페이지')>=0) h += '<li class="have">기존 홈페이지 주소 — 쓸 만한 글과 사진은 옮겨옵니다</li>';
+  if (P.assets.indexOf('인스타 · 블로그')>=0) h += '<li class="have">인스타 · 블로그 — 새 사이트와 연결하고 사진을 가져옵니다</li>';
+  if (P.assets.indexOf('후기')>=0) h += '<li class="have">후기 — 사진과 함께 넣습니다</li>';
+  h += '</ul></div>';
+
+  h += '<div class="sec"><div class="n">05 · 일정</div><h2>' + (P.open ? 날짜말(P.open) + ' 오픈 기준' : '자료 받은 날부터') + '</h2><div class="tl">';
+  if (P.open) {
+    h += '<span class="d">' + 날짜말(더하기(P.open,-10)) + '</span><span>자료 받기 · 이야기 30분</span>';
+    h += '<span class="d">' + 날짜말(더하기(P.open,-7)) + '</span><span>시안 보여드리기 (휴대폰으로 보실 수 있는 링크)</span>';
+    h += '<span class="d">' + 날짜말(더하기(P.open,-3)) + '</span><span>고칠 것 반영 · 확정 (수정 2회까지 포함)</span>';
+    h += '<span class="d">' + 날짜말(P.open) + '</span><span><b>오픈</b> · 도메인 연결 · 검색 등록</span>';
+  } else {
+    h += '<span class="d">1일차</span><span>자료 받기 · 이야기 30분</span><span class="d">4일차</span><span>시안 보여드리기 (휴대폰 링크)</span><span class="d">7일차</span><span>고칠 것 반영 · 확정 (수정 2회까지 포함)</span><span class="d">오픈</span><span>도메인 연결 · 검색 등록</span>';
+  }
+  h += '</div><p style="margin-top:10px">오픈 뒤에는 사장님이 <b>글자와 사진을 직접 고칠 수 있는 열쇠</b>를 드립니다. 전화번호 하나 바뀌었다고 연락 주실 필요가 없습니다.</p></div>';
+
+  h += '<div class="sec"><div class="n">06 · 비용</div><h2>거품 없이</h2><div class="money">';
+  h += '<span>' + PL.name + ' 홈페이지 제작<br><small>' + esc(PL.설명) + '</small></span><span class="big">' + 원(PL.price) + '</span>';
+  h += '<span>월 관리 (호스팅 · 도메인 · 보안 · 수정 지원)<br><small>' + (PL.free ? '첫 ' + PL.free + ' 무료 · ' : '') + '언제든 해지</small></span><span class="big">월 ' + 원(PL.monthly) + '</span>';
+  h += '</div><p class="hint" style="margin-top:8px">부가세 별도 · 대행비 · 옵션비 · 숨은 비용 없음 · 마음에 안 들면 시안 단계에서 그냥 멈추셔도 됩니다</p></div>';
+
+  if (P.note) h += '<div class="sec"><div class="n">메모</div><p>' + esc(P.note).replace(/\n/g,'<br>') + '</p></div>';
+
+  if (MODE==='customer') {
+    h += '<div class="cta"><b>이 기획서대로 진행할까요?</b><span class="sp"></span><a class="btn" href="tel:15337295">📞 1533-7295</a><a class="btn primary" href="./#contact">문의 남기기</a></div>';
+  }
+  h += '<div class="foot">이 기획서는 ' + esc(org) + '의 이야기를 듣고 정리한 것입니다. 만들면서 바뀔 수 있고, 바뀌면 이 문서도 같이 고칩니다. — 큰길브리지 (주식회사 브리지미디어) · www.ai-make.co.kr</div>';
+
+  $('#doc').innerHTML = h;
+  if (MODE==='admin') { try { history.replaceState(null,'', location.pathname + '?admin=1#p=' + b64u(JSON.stringify(P))); } catch(e){} }
+}
+
+/* ══ 단추 ══ */
+function 고객링크(){ return location.origin + location.pathname + '#p=' + b64u(JSON.stringify(P)); }
+function 복사(text, msg){
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ toast(msg); }, function(){ 폴백(text, msg); });
+  else 폴백(text, msg);
+  function 폴백(t, m){ var ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast(m); }catch(e){ prompt('복사해서 쓰세요', t); } document.body.removeChild(ta); }
+}
+$('#b-link').addEventListener('click', function(){ if(!P.org){ toast('상호부터 넣어주세요'); return; } 복사(고객링크(), '기획서 링크를 복사했어요'); });
+$('#b-print').addEventListener('click', function(){ window.print(); });
+$('#b-prompt').addEventListener('click', function(){
+  var B = 업종들[P.biz], pk = P.plan || B.plan;
+  var t = ['아래 정보로 홈페이지 기획서를 더 다듬어 줘. 사장님이 읽을 문서라 쉬운 말로, 단정하게.','',
+    '업종: ' + B.이름, '상호: ' + (P.org||'(미정)'), '지역: ' + (P.region||'(미정)'),
+    '웹사이트 목적: ' + (P.goals.length ? P.goals.join(', ') : '(미정)'), '타겟 고객: ' + (P.target||B.손님),
+    '보유 콘텐츠: ' + (P.assets.length ? P.assets.join(', ') : '없음'), '규모: ' + PLANS[pk].name + ' (' + PLANS[pk].설명 + ')',
+    '사장님이 한 말: ' + (P.tag||'') , '메모: ' + (P.note||''), '',
+    '지금 뼈대:', '- 방향: ' + B.방향.replace(/\{org\}/g, P.org||'이 업체'),
+    '- 섹션: ' + B.섹션.join(' / '), '- 페이지: ' + B.페이지.map(function(p){return p[0]+'('+p[1].join(', ')+')';}).join(' / '),
+    '- 필요한 사진: ' + B.사진.join(' / '), '',
+    '다음 셋을 포함해서 제안해 줘:', '1) 트리 구조 사이트맵 (depth 최대 2)', '2) 페이지별 콘텐츠 구성과 첫 문장 후보', '3) CTA 위치와 이유'].join('\n');
+  복사(t, '프롬프트를 복사했어요. Claude 에 붙여넣으세요');
+});
+$('#b-quote').addEventListener('click', function(){
+  if(!P.org){ toast('상호부터 넣어주세요'); return; }
+  var B = 업종들[P.biz], pk = P.plan || B.plan, PL = PLANS[pk];
+  /* quote.html 의 S 와 똑같은 모양이어야 한다. 키 하나라도 빠지면 거기서 죽는다. */
+  var S = {
+    cl:{ org:P.org, name:P.owner, tel:P.tel, email:'' },
+    pj:{ title:P.org + ' 홈페이지', domain:'', biztype:B.이름, purpose:P.goals.join(', '), plan:pk },
+    items:[{ n:PL.name + ' 홈페이지 제작', q:1, p:PL.price }],
+    fin:{ vat:'none', deposit:'50' },
+    care:{ monthly:String(PL.monthly), free:PL.free },
+    sch:{ start:'', open:P.open },
+    note:'기획서 기준으로 작성. 기획서: ' + 고객링크(),
+    meta:{ no:'', date:오늘(), valid:'발행일로부터 30일' }
+  };
+  window.open(location.pathname.replace(/plan\.html$/, 'quote.html') + '?admin=1#q=' + b64u(JSON.stringify(S)), '_blank', 'noopener');
+});
+
+/* ══ 시작 ══ */
+(function(){
+  var h = location.hash.indexOf('#p=')===0 ? location.hash.slice(3) : '';
+  if (h) { try { var o = JSON.parse(unb64(h)); if (o && 업종들[o.biz]) { Object.keys(P).forEach(function(k){ if(o[k]!==undefined) P[k]=o[k]; }); } } catch(e){} }
+  if (MODE==='customer') {
+    $('#form').style.display='none'; $('#layout').classList.add('cust');
+    $('#mode').textContent='기획서'; $('#mode').classList.add('cust');
+    ['b-link','b-prompt','b-quote'].forEach(function(id){ $('#'+id).style.display='none'; });
+  } else {
+    폼그리기(); 폼채우기();
+  }
+  그리기();
+})();
+</script>
+</body>
+</html>

@@ -76,6 +76,9 @@ function doPost(e) {
   try {
     const 요청 = JSON.parse(e.postData.contents);
 
+    // 사장님 편집은 발행 비밀번호가 아니라 페이지마다 다른 열쇠로 확인한다 (아래 9번)
+    if (요청.action === 'edit') return 응답(잠그고(function () { return 사장님편집(요청); }));
+
     if (요청.pw !== 설정('WRITE_PW')) {
       return 응답({ ok: false, error: '비밀번호가 다릅니다' });
     }
@@ -263,6 +266,122 @@ function 목록다시만들기() {
   } catch (err) {
     return '자동 갱신 대기';
   }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   9. 사장님 직접 편집
+
+   edit.js 가 보내는 요청을 받는다.
+     { action:'edit', path:'demo/sample/index.html', token:'열쇠',
+       changes:[{id, text}], images:[{id, data}] }
+
+   비밀번호 대신 「열쇠」로 확인한다.
+   열쇠의 SHA-256 이 그 페이지 <head> 의 <meta name="kb-edit"> 에 적혀 있다.
+   그래서 페이지마다 열쇠가 다르고, 이 서버에는 아무 설정도 없다.
+   열쇠 메타가 없는 페이지는 편집이 안 된다 — 그게 곧 「편집 허용」 표시다.
+
+   글자는 <!--e:id--> … <!--/e:id--> 사이만 갈아끼운다.
+   사진은 페이지 옆 폴더에 새 파일로 올리고 <img data-e-img="id"> 의 src 를 바꾼다.
+══════════════════════════════════════════════════════════════ */
+function 사장님편집(요청) {
+  const 경로 = String(요청.path || '').trim();
+  const 경로잘못 = 편집경로확인(경로);
+  if (경로잘못) return { ok: false, error: 경로잘못 };
+
+  const 열쇠 = String(요청.token || '');
+  if (!열쇠 || 열쇠.length > 64) return { ok: false, error: '열쇠가 없습니다' };
+
+  const 기존 = 깃허브(경로, 'get');
+  if (기존.getResponseCode() !== 200) return { ok: false, error: '페이지를 찾지 못했습니다: ' + 경로 };
+  const 파일 = JSON.parse(기존.getContentText());
+  let 내용 = Utilities.newBlob(Utilities.base64Decode(String(파일.content || '').replace(/\n/g, ''))).getDataAsString('UTF-8');
+
+  const 메타 = /<meta\s+name="kb-edit"\s+content="([0-9a-fA-F]{64})"/.exec(내용);
+  if (!메타) return { ok: false, error: '이 페이지는 편집이 열려 있지 않습니다' };
+  if (메타[1].toLowerCase() !== 해시(열쇠)) return { ok: false, error: '열쇠가 맞지 않습니다' };
+
+  // 글자
+  let 바뀐수 = 0;
+  const 못찾은 = [];
+  (요청.changes || []).slice(0, 200).forEach((ch) => {
+    const id = String((ch && ch.id) || '');
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(id)) return;
+    const 시작표 = '<!--e:' + id + '-->', 끝표 = '<!--/e:' + id + '-->';
+    const a = 내용.indexOf(시작표);
+    const b = a < 0 ? -1 : 내용.indexOf(끝표, a);
+    if (a < 0 || b < 0) { 못찾은.push(id); return; }
+    내용 = 내용.slice(0, a + 시작표.length) + 글자정리(ch.text) + 내용.slice(b);
+    바뀐수++;
+  });
+
+  // 사진
+  const 폴더 = 경로.indexOf('/') >= 0 ? 경로.slice(0, 경로.lastIndexOf('/') + 1) : '';
+  let 사진수 = 0;
+  (요청.images || []).slice(0, 20).forEach((im) => {
+    const id = String((im && im.id) || '');
+    if (!/^[A-Za-z0-9_-]{1,40}$/.test(id)) return;
+    const m = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+\/=]+)$/.exec(String((im && im.data) || ''));
+    if (!m || m[2].length > 4 * 1024 * 1024) return;   // 3MB 넘는 건 받지 않는다
+    const 찾기 = 'data-e-img="' + id + '"';
+    const p = 내용.indexOf(찾기);
+    if (p < 0) return;                                  // 페이지에 그 사진 자리가 없다
+    const ts = 내용.lastIndexOf('<img', p);
+    const te = ts < 0 ? -1 : 태그끝(내용, ts);
+    if (ts < 0 || te < 0) return;
+    const 파일명 = 'img-' + id + '-' + Date.now().toString(36) + '.' + (m[1] === 'jpeg' ? 'jpg' : m[1]);
+    const 올림 = 깃허브(폴더 + 파일명, 'put', { message: '사장님 사진 교체 — ' + 파일명, content: m[2], branch: 브랜치 });
+    const 코드 = 올림.getResponseCode();
+    if (코드 !== 200 && 코드 !== 201) return;
+    const 태그 = 내용.slice(ts, te + 1).replace(/\ssrc="[^"]*"/, ' src="' + 파일명 + '"');
+    내용 = 내용.slice(0, ts) + 태그 + 내용.slice(te + 1);
+    사진수++;
+  });
+
+  if (!바뀐수 && !사진수) return { ok: false, error: '바뀐 것이 없습니다', missing: 못찾은 };
+
+  const 저장 = 깃허브(경로, 'put', {
+    message: '사장님 직접 수정 — ' + 경로,
+    content: Utilities.base64Encode(내용, Utilities.Charset.UTF_8),
+    sha: 파일.sha,
+    branch: 브랜치,
+  });
+  if (저장.getResponseCode() !== 200) return { ok: false, error: 사유읽기(저장) };
+  return { ok: true, changed: 바뀐수, images: 사진수, missing: 못찾은 };
+}
+
+function 편집경로확인(경로) {
+  if (!경로) return '경로가 비어 있습니다';
+  if (경로.length > 200) return '경로가 너무 깁니다';
+  if (경로.indexOf('..') >= 0 || 경로.charAt(0) === '/') return '허용되지 않는 경로입니다';
+  if (!/^[A-Za-z0-9가-힣._\/-]+\.html$/.test(경로)) return '경로 형식이 잘못됐습니다';
+  if (/^(apps-script|\.github)\//.test(경로)) return '허용되지 않는 경로입니다';
+  return '';
+}
+
+/* <img …> 태그가 어디서 끝나는지. 따옴표 안의 > 는 건너뛴다
+   (사진 자리에 SVG 데이터 주소를 넣어두면 그 안에 > 가 잔뜩 있다) */
+function 태그끝(s, i) {
+  let q = '';
+  for (; i < s.length; i++) {
+    const c = s.charAt(i);
+    if (q) { if (c === q) q = ''; }
+    else if (c === '"' || c === "'") q = c;
+    else if (c === '>') return i;
+  }
+  return -1;
+}
+
+/* 사장님이 친 글을 페이지에 넣기 전에 안전하게 만든다.
+   태그는 전부 글자로 바꾸고, 줄바꿈만 <br> 로 살린다. */
+function 글자정리(t) {
+  return String(t == null ? '' : t).slice(0, 5000)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\r\n|\r|\n/g, '<br>');
+}
+
+function 해시(s) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8)
+    .map((b) => ('0' + (b & 255).toString(16)).slice(-2)).join('');
 }
 
 /* ══ 공통 응답 ══ */
