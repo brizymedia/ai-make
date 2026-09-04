@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>유입 현황판 — 큰길브리지</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#07090F; --ink2:#0B0F18; --ink3:#111725;
+    --line:rgba(237,234,227,.10); --line2:rgba(237,234,227,.18);
+    --txt:#EDEAE3; --dim:#9AA3B2; --mute:#5C6577;
+    --gold:#E8B84B; --teal:#3FD3C6; --bad:#F08A72;
+    --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{color-scheme:dark}
+  body{background:var(--ink);color:var(--txt);font-family:"Noto Sans KR",system-ui,"Malgun Gothic",sans-serif;line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+  .mono{font-family:var(--mono)}
+  [hidden]{display:none!important}
+
+  /* 머리 */
+  .top{border-bottom:1px solid var(--line);background:var(--ink2)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+  .brand b{font-weight:900;letter-spacing:-.02em;font-size:1.05rem}
+  .brand span{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;color:var(--gold)}
+  .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--mute)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.03);color:var(--txt);font:inherit;font-size:.82rem;font-weight:700;cursor:pointer;text-decoration:none}
+  .btn:hover{border-color:var(--gold)}
+  .btn.fill{background:var(--gold);border-color:var(--gold);color:#111}
+  .btn.sm{padding:6px 11px;font-size:.76rem}
+
+  /* 조절 */
+  .ctl{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:20px 0 6px}
+  .seg{display:inline-flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden;background:var(--ink2)}
+  .seg button{padding:9px 16px;border:0;background:transparent;color:var(--dim);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
+  .seg button[aria-pressed="true"]{background:var(--gold);color:#111}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .tabs button{padding:9px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--dim);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
+  .tabs button[aria-pressed="true"]{border-color:var(--teal);color:var(--teal);background:rgba(63,211,198,.08)}
+  .msg{font-size:.82rem;color:var(--mute);padding:6px 0 0;min-height:1.6em}
+  .msg.bad{color:var(--bad)}
+
+  /* 카드들 */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  @media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px}
+  .kpi .l{font-size:.74rem;color:var(--mute);letter-spacing:.02em}
+  .kpi .v{font-family:var(--mono);font-weight:600;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-.03em;line-height:1.1;margin-top:6px;font-variant-numeric:tabular-nums}
+  .kpi .s{font-size:.76rem;color:var(--dim);margin-top:6px}
+  .kpi .s b{color:var(--gold);font-weight:700}
+  .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}
+  .grid.even{grid-template-columns:1fr 1fr}
+  @media(max-width:900px){.grid,.grid.even{grid-template-columns:1fr}}
+  .card{background:var(--ink2);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}
+  .card h3{font-size:.92rem;font-weight:800;letter-spacing:-.02em;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .card h3 small{font-family:var(--mono);font-size:.66rem;color:var(--mute);font-weight:500;letter-spacing:.06em}
+  .card .hint{font-size:.76rem;color:var(--mute);margin-top:4px}
+  canvas{display:block;width:100%;height:220px;margin-top:12px}
+
+  /* 가로 막대 */
+  .bars{display:grid;gap:9px;margin-top:14px}
+  .bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;font-size:.83rem}
+  .bar .n{display:flex;align-items:center;gap:8px;min-width:0}
+  .bar .n i{width:9px;height:9px;border-radius:3px;background:var(--c,var(--gold));flex:none}
+  .bar .n span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar .v{font-family:var(--mono);font-size:.78rem;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .bar .v b{color:var(--txt);font-weight:600}
+  .bar .t{grid-column:1/-1;height:6px;border-radius:3px;background:rgba(255,255,255,.05);overflow:hidden}
+  .bar .t i{display:block;height:100%;width:var(--w,0%);background:var(--c,var(--gold));border-radius:3px;transition:width .6s ease}
+
+  /* 표 */
+  table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.82rem}
+  th{font-size:.68rem;color:var(--mute);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);letter-spacing:.06em;font-family:var(--mono)}
+  td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  td .p{color:var(--dim);font-size:.74rem;display:block}
+  td.path{max-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.7rem;font-weight:700;background:rgba(255,255,255,.06);color:var(--dim)}
+  .tag.i{background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c)}
+  .empty{color:var(--mute);font-size:.82rem;padding:18px 0 6px;text-align:center}
+  .tblwrap{overflow-x:auto}
+
+  /* 열쇠 · 안내 */
+  .gate{max-width:520px;margin:48px auto;background:var(--ink2);border:1px solid var(--line2);border-radius:20px;padding:28px}
+  .gate h2{font-size:1.2rem;font-weight:900;letter-spacing:-.02em}
+  .gate p{color:var(--dim);font-size:.9rem;margin-top:8px}
+  .gate form{display:flex;gap:8px;margin-top:16px}
+  .gate input{flex:1;padding:12px 14px;border-radius:12px;border:1px solid var(--line2);background:var(--ink);color:var(--txt);font:inherit}
+  .gate input:focus{outline:2px solid var(--gold);outline-offset:1px}
+  .note{background:var(--ink2);border:1px dashed var(--line2);border-radius:16px;padding:18px;margin-top:16px;font-size:.86rem;color:var(--dim)}
+  .note b{color:var(--txt)}
+  .note code{font-family:var(--mono);font-size:.78rem;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:6px;color:var(--gold)}
+  .demo-banner{background:rgba(232,184,75,.12);border:1px solid rgba(232,184,75,.4);color:var(--gold);border-radius:12px;padding:10px 14px;font-size:.82rem;font-weight:700;margin-top:14px}
+
+  /* 링크 만들기 */
+  .mk{display:grid;grid-template-columns:1.1fr .8fr 1fr auto;gap:8px;margin-top:12px;align-items:end}
+  @media(max-width:820px){.mk{grid-template-columns:1fr 1fr}}
+  .mk label{font-size:.7rem;color:var(--mute);display:block;margin-bottom:4px}
+  .mk select,.mk input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:var(--ink);color:var(--txt);font:inherit;font-size:.84rem}
+  .out{margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .out code{flex:1;min-width:0;font-family:var(--mono);font-size:.78rem;color:var(--gold);background:rgba(255,255,255,.05);padding:10px 12px;border-radius:10px;overflow-wrap:anywhere}
+
+  footer{color:var(--mute);font-size:.76rem;padding:28px 0 48px;border-top:1px solid var(--line);margin-top:28px;line-height:1.8}
+  footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><b>큰길브리지</b><span>TRAFFIC · 유입 현황판</span></a>
+    <div class="tools">
+      <span id="stamp"></span>
+      <button class="btn sm" type="button" id="btnKey">열쇠 바꾸기</button>
+      <button class="btn sm fill" type="button" id="btnReload">새로고침</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="ctl" id="ctl" hidden>
+    <div class="seg" id="seg" role="group" aria-label="기간">
+      <button type="button" data-days="1">오늘</button>
+      <button type="button" data-days="7">7일</button>
+      <button type="button" data-days="30" aria-pressed="true">30일</button>
+      <button type="button" data-days="90">90일</button>
+    </div>
+    <div class="tabs" id="tabs" role="tablist" aria-label="사이트"></div>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div class="demo-banner" id="demoBanner" hidden>예시 자료입니다 — 서버가 연결되면 진짜 방문이 보입니다.</div>
+
+  <!-- 열쇠 -->
+  <section class="gate" id="gate" hidden>
+    <h2>열쇠를 넣어 주세요</h2>
+    <p>세 사이트의 방문 기록은 열쇠를 아는 사람만 봅니다. 한 번 넣으면 이 브라우저가 기억합니다.</p>
+    <form id="keyForm"><input id="keyIn" type="password" placeholder="STATS_KEY" autocomplete="current-password"><button class="btn fill" type="submit">열기</button></form>
+  </section>
+
+  <!-- 서버 미연결 -->
+  <section class="gate" id="nosrv" hidden>
+    <h2>아직 서버가 연결되지 않았습니다</h2>
+    <p>유입 기록 서버(앱스 스크립트)를 배포하고 그 주소를 이 페이지와 <span class="mono">stats.js</span> 에 넣으면 그때부터 방문이 쌓입니다. 설치 순서는 저장소의 <span class="mono">apps-script/stats/README.md</span>.</p>
+    <p style="margin-top:12px"><a class="btn" href="#demo" id="toDemo">예시 화면 보기</a></p>
+  </section>
+
+  <main id="main" hidden>
+    <div class="kpis">
+      <div class="kpi"><div class="l">방문 (페이지 열림)</div><div class="v" id="kPv">0</div><div class="s" id="kPvS"></div></div>
+      <div class="kpi"><div class="l">방문자 (브라우저 기준)</div><div class="v" id="kUv">0</div><div class="s" id="kUvS"></div></div>
+      <div class="kpi"><div class="l">검색으로 들어온 방문</div><div class="v" id="kSearch">0</div><div class="s" id="kSearchS"></div></div>
+      <div class="kpi"><div class="l">처음 온 방문자</div><div class="v" id="kNew">0</div><div class="s" id="kNewS"></div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>날짜별 방문 <small>■ 방문 &nbsp;■ 방문자</small></h3>
+        <canvas id="daily" height="220"></canvas>
+      </div>
+      <div class="card">
+        <h3>어디서 들어왔나 <small>방문 · 방문자</small></h3>
+        <div class="hint">「직접 · 카톡 · 문자」는 주소를 직접 쳤거나 카톡·문자 링크로 온 방문. 내가 보내는 링크에 utm 을 붙이면 따로 잡힙니다.</div>
+        <div class="bars" id="src"></div>
+      </div>
+    </div>
+
+    <div class="grid even">
+      <div class="card">
+        <h3>검색엔진별 <small>SEARCH</small></h3>
+        <div class="bars" id="eng"></div>
+      </div>
+      <div class="card">
+        <h3>기기 · 시간대 <small>DEVICE · HOUR</small></h3>
+        <div class="bars" id="dev"></div>
+        <canvas id="hours" height="90" style="height:90px;margin-top:16px"></canvas>
+        <div class="hint" style="display:flex;justify-content:space-between"><span>0시</span><span>6시</span><span>12시</span><span>18시</span><span>23시</span></div>
+      </div>
+    </div>
+
+    <div class="grid even">
+      <div class="card"><h3>많이 본 페이지 <small>PAGES</small></h3><div class="tblwrap" id="pages"></div></div>
+      <div class="card"><h3>들어온 곳 (참조 사이트) <small>REFERRERS</small></h3><div class="tblwrap" id="hosts"></div></div>
+    </div>
+
+    <div class="grid even">
+      <div class="card"><h3>내가 보낸 링크 (utm) <small>CAMPAIGN</small></h3><div class="tblwrap" id="camp"></div></div>
+      <div class="card"><h3>검색어 <small>KEYWORDS</small></h3><div class="hint">검색엔진이 요즘은 거의 안 넘겨줍니다. 검색어는 구글 서치콘솔이 정확합니다.</div><div class="tblwrap" id="kw"></div></div>
+    </div>
+
+    <div class="card" style="margin-top:12px" id="cmpCard">
+      <h3>사이트별 비교 <small>SITES</small></h3>
+      <div class="tblwrap" id="cmp"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>최근 방문 <small id="recentN">RECENT</small></h3>
+      <div class="tblwrap" id="recent"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>링크 만들기 <small>UTM</small></h3>
+      <div class="hint">문자·카톡·명함·QR 로 보내는 링크에 표를 붙입니다. 누가 어디서 눌렀는지 「내가 보낸 링크」에 잡힙니다.</div>
+      <div class="mk">
+        <div><label>어느 페이지</label><select id="mkBase">
+          <option value="https://www.ai-make.co.kr/">큰길브리지 www.ai-make.co.kr</option>
+          <option value="https://www.ai-make.co.kr/#demo">큰길브리지 — 무료 데모</option>
+          <option value="https://www.event-korea.co.kr/">이벤트 코리아</option>
+          <option value="https://xn--wk0bn7yi8h24iszc.com/">큰길이벤트.com</option>
+          <option value="https://xn--wk0bn7yi8h24iszc.com/app/">큰길이벤트 — 알림 앱</option>
+          <option value="https://xn--wk0bn7yi8h24iszc.com/card/">큰길이벤트 — 명함 만들기</option>
+        </select></div>
+        <div><label>어디로 보내나</label><select id="mkSrc">
+          <option value="sms">문자</option><option value="kakao">카톡</option><option value="card">명함</option><option value="qr">QR · 인쇄물</option><option value="instagram">인스타</option><option value="blog">블로그</option><option value="email">메일</option>
+        </select></div>
+        <div><label>이름 (예: demo0905, 순천행사팀)</label><input id="mkCamp" placeholder="캠페인 이름 — 영문·숫자·한글" maxlength="40"></div>
+        <div><button class="btn fill" type="button" id="mkGo">만들기</button></div>
+      </div>
+      <div class="out" id="mkOut" hidden><code id="mkUrl"></code><button class="btn sm" type="button" id="mkCopy">복사</button></div>
+    </div>
+  </main>
+
+  <footer>
+    큰길브리지 유입 현황판 · 방문 기록은 브라우저별 무작위 번호로 셉니다(IP·이름 없음) · 집계는 5분 캐시 · 내 방문을 빼려면 각 사이트를 <span class="mono">?me=1</span> 붙여 한 번 열어 두세요.<br>
+    <a href="https://www.ai-make.co.kr/">큰길브리지</a> · <a href="https://xn--wk0bn7yi8h24iszc.com/">큰길이벤트</a> · <a href="https://www.event-korea.co.kr/">이벤트 코리아</a>
+  </footer>
+</div>
+
+<script>
+(function(){
+  /* ── 서버 주소 — 배포 뒤 여기 한 곳 ── */
+  var 서버 = '';
+
+  var 사이트들 = [['all','전체'],['ai-make','큰길브리지'],['keungil','큰길이벤트'],['event-korea','이벤트 코리아']];
+  var 이름 = {}; 사이트들.forEach(function(x){ 이름[x[0]] = x[1]; });
+  var 색 = {
+    '네이버 검색':'#03C75A','구글 검색':'#4A8DF8','다음 검색':'#3D7BFF','기타 검색':'#7BC8A4','AI 검색':'#B388FF',
+    '직접 · 카톡 · 문자':'#E8B84B','문자 링크':'#F5A524','카톡 링크':'#FEE500','명함 링크':'#FFD37A','QR':'#FFB86B',
+    '인스타 · 페북':'#E1306C','유튜브':'#FF4B4B','SNS · 커뮤니티':'#9AA3B2','네이버 (블로그·카페·지도)':'#1EC800',
+    '우리 사이트 이동':'#6E7080','다른 사이트':'#3FD3C6'
+  };
+  var $ = function(s){ return document.querySelector(s); };
+  var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+  var n = function(v){ return Number(v || 0).toLocaleString('ko-KR'); };
+  var pct = function(a, b){ return b ? Math.round(a / b * 100) + '%' : '0%'; };
+
+  var state = { days: 30, site: 'all', key: '', data: null, recent: null, demo: location.hash === '#demo' };
+  try { state.key = localStorage.getItem('kb-stats-key') || ''; } catch(e){}
+
+  /* 탭 */
+  var tabs = $('#tabs');
+  사이트들.forEach(function(x){
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = x[1]; b.dataset.site = x[0];
+    b.setAttribute('aria-pressed', x[0] === state.site ? 'true' : 'false');
+    b.addEventListener('click', function(){ state.site = x[0]; paintTabs(); render(); });
+    tabs.appendChild(b);
+  });
+  function paintTabs(){ tabs.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.site === state.site ? 'true' : 'false'); }); }
+  $('#seg').querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.days = +b.dataset.days;
+      $('#seg').querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      load(false);
+    });
+  });
+  $('#btnReload').addEventListener('click', function(){ load(true); });
+  $('#btnKey').addEventListener('click', function(){ try { localStorage.removeItem('kb-stats-key'); } catch(e){} state.key = ''; show('gate'); });
+  $('#keyForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var k = $('#keyIn').value.trim(); if (!k) return;
+    state.key = k; try { localStorage.setItem('kb-stats-key', k); } catch(err){}
+    load(true);
+  });
+  $('#toDemo').addEventListener('click', function(){ state.demo = true; setTimeout(load, 0); });
+  window.addEventListener('hashchange', function(){ state.demo = location.hash === '#demo'; load(false); });
+
+  function show(which){
+    ['gate','nosrv','main'].forEach(function(id){ $('#' + id).hidden = id !== which; });
+    $('#ctl').hidden = which !== 'main';
+    $('#demoBanner').hidden = !(which === 'main' && state.demo);
+  }
+  function msg(t, bad){ var m = $('#msg'); m.textContent = t || ''; m.className = 'msg' + (bad ? ' bad' : ''); }
+
+  /* ── 불러오기 ── */
+  var busy = false;
+  function load(fresh){
+    if (state.demo) { state.data = 예시(state.days); state.recent = 예시최근(); show('main'); render(); msg(''); return; }
+    if (!서버) { show('nosrv'); return; }
+    if (!state.key) { show('gate'); return; }
+    if (busy) return; busy = true;
+    msg('불러오는 중…');
+    var q = '?view=summary&key=' + encodeURIComponent(state.key) + '&days=' + state.days + (fresh ? '&fresh=1' : '');
+    Promise.all([
+      fetch(서버 + q).then(function(r){ return r.json(); }),
+      fetch(서버 + '?view=recent&key=' + encodeURIComponent(state.key) + '&n=40').then(function(r){ return r.json(); }).catch(function(){ return null; })
+    ]).then(function(res){
+      busy = false;
+      var d = res[0];
+      if (!d || !d.ok) { if (d && /열쇠/.test(d.error || '')) { show('gate'); } msg((d && d.error) || '서버가 답하지 않습니다', true); return; }
+      state.data = d; state.recent = res[1] && res[1].ok ? res[1].rows : null;
+      show('main'); render(); msg('');
+    }).catch(function(e){ busy = false; msg('불러오지 못했습니다 — 인터넷 또는 서버 주소를 확인해 주세요 (' + (e && e.message) + ')', true); });
+  }
+
+  /* ── 그리기 ── */
+  function render(){
+    var D = state.data; if (!D) return;
+    var S = D.sites[state.site] || D.sites.all || emptyS(D.days);
+    $('#stamp').textContent = (D.from === D.to ? D.from : D.from + ' ~ ' + D.to) + ' · ' + 이름[state.site] + (D.generated ? ' · 집계 ' + new Date(D.generated).toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'}) : '');
+
+    $('#kPv').textContent = n(S.pv);
+    $('#kPvS').innerHTML = '하루 평균 <b>' + n(Math.round(S.pv / Math.max(1, D.days))) + '</b>';
+    $('#kUv').textContent = n(S.uv);
+    $('#kUvS').innerHTML = '한 사람이 평균 <b>' + (S.uv ? (S.pv / S.uv).toFixed(1) : '0') + '</b>쪽';
+    $('#kSearch').textContent = n(S.search);
+    $('#kSearchS').innerHTML = '전체의 <b>' + pct(S.search, S.pv) + '</b> · 방문자 ' + n(S.searchUV) + '명';
+    $('#kNew').textContent = n(S.new_);
+    $('#kNewS').innerHTML = '방문자 중 <b>' + pct(S.new_, S.uv) + '</b>가 처음';
+
+    drawDaily($('#daily'), S.byDay, D.days);
+    bars($('#src'), S.bySource, S.pv, true);
+    bars($('#eng'), S.bySource.filter(function(x){ return /검색$/.test(x[0]); }), S.search, true, '검색 유입이 아직 없습니다');
+    bars($('#dev'), S.byDevice.map(function(x){ return [{mobile:'모바일', pc:'PC', tablet:'태블릿'}[x[0]] || x[0], x[1]]; }), S.pv, false);
+    drawHours($('#hours'), S.byHour || []);
+    table($('#pages'), ['페이지','방문'], S.byPage.map(function(x){ return ['<span class="path" title="' + esc(x[0]) + '">' + esc(x[0]) + '</span>', n(x[1])]; }), S.pv);
+    table($('#hosts'), ['참조 사이트','방문'], S.byHost.map(function(x){ return [esc(x[0]), n(x[1])]; }), S.pv, '참조 정보가 있는 방문이 아직 없습니다');
+    table($('#camp'), ['utm (출처 / 매체 / 이름)','방문'], S.byCampaign.map(function(x){ return [esc(x[0]), n(x[1])]; }), S.pv, '아직 utm 붙인 링크로 온 방문이 없습니다 — 아래 「링크 만들기」');
+    table($('#kw'), ['검색어','방문'], S.byKeyword.map(function(x){ return [esc(x[0]), n(x[1])]; }), S.pv, '잡힌 검색어가 없습니다');
+
+    /* 사이트별 비교 — 전체 탭에서만 */
+    var cmp = $('#cmpCard'); cmp.hidden = state.site !== 'all';
+    if (state.site === 'all') {
+      var rows = 사이트들.slice(1).map(function(x){ var s = D.sites[x[0]] || emptyS(D.days); return [esc(x[1]), n(s.pv), n(s.uv), n(s.search) + ' <span class="p">' + pct(s.search, s.pv) + '</span>', n(s.new_)]; });
+      $('#cmp').innerHTML = '<table><thead><tr><th>사이트</th><th class="num">방문</th><th class="num">방문자</th><th class="num">검색 유입</th><th class="num">처음 온 사람</th></tr></thead><tbody>' +
+        rows.map(function(r){ return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td><td class="num">' + r[2] + '</td><td class="num">' + r[3] + '</td><td class="num">' + r[4] + '</td></tr>'; }).join('') + '</tbody></table>';
+    }
+
+    /* 최근 */
+    var R = (state.recent || []).filter(function(r){ return state.site === 'all' || r[1] === state.site; });
+    $('#recentN').textContent = 'RECENT · ' + R.length + '건';
+    $('#recent').innerHTML = R.length ? '<table><thead><tr><th>시각</th><th>사이트</th><th>페이지</th><th>유입</th><th>출처</th><th>기기</th></tr></thead><tbody>' +
+      R.slice(0, 40).map(function(r){
+        var t = new Date(r[0]); var c = 색[r[3]] || '#9AA3B2';
+        return '<tr><td class="num">' + (isNaN(t) ? esc(r[0]) : (t.getMonth()+1) + '/' + t.getDate() + ' ' + ('0'+t.getHours()).slice(-2) + ':' + ('0'+t.getMinutes()).slice(-2)) + '</td>' +
+          '<td>' + esc(이름[r[1]] || r[1]) + '</td><td class="path" title="' + esc(r[2]) + '">' + esc(r[2]) + '</td>' +
+          '<td><span class="tag i" style="--c:' + c + '">' + esc(r[3]) + '</span>' + (r[6] == 1 ? ' <span class="tag">처음</span>' : '') + '</td>' +
+          '<td>' + esc(r[4] || (r[7] ? 'utm ' + r[7] : '—')) + '</td><td>' + esc({mobile:'모바일', pc:'PC', tablet:'태블릿'}[r[5]] || r[5]) + '</td></tr>';
+      }).join('') + '</tbody></table>' : '<div class="empty">아직 방문 기록이 없습니다</div>';
+  }
+
+  function emptyS(days){ return { pv:0, uv:0, new_:0, search:0, searchUV:0, byDay:[], bySource:[], byHost:[], byPage:[], byDevice:[], byCampaign:[], byKeyword:[], byHour:[] }; }
+
+  function bars(el, list, total, withUv, emptyText){
+    if (!list || !list.length) { el.innerHTML = '<div class="empty">' + (emptyText || '아직 자료가 없습니다') + '</div>'; return; }
+    var max = Math.max.apply(null, list.map(function(x){ return x[1]; })) || 1;
+    el.innerHTML = list.map(function(x){
+      var c = 색[x[0]] || '#9AA3B2';
+      return '<div class="bar" style="--c:' + c + ';--w:' + Math.round(x[1] / max * 100) + '%"><div class="n"><i></i><span>' + esc(x[0]) + '</span></div>' +
+        '<div class="v"><b>' + n(x[1]) + '</b>' + (withUv && x[2] != null ? ' · ' + n(x[2]) + '명' : '') + ' · ' + pct(x[1], total) + '</div><div class="t"><i></i></div></div>';
+    }).join('');
+  }
+
+  function table(el, head, rows, total, emptyText){
+    if (!rows.length) { el.innerHTML = '<div class="empty">' + (emptyText || '아직 자료가 없습니다') + '</div>'; return; }
+    el.innerHTML = '<table><thead><tr><th>' + head[0] + '</th><th class="num">' + head[1] + '</th></tr></thead><tbody>' +
+      rows.map(function(r){ return '<tr><td class="path">' + r[0] + '</td><td class="num">' + r[1] + '</td></tr>'; }).join('') + '</tbody></table>';
+  }
+
+  /* 날짜별 막대 — 방문(금) 위에 방문자(청록) */
+  function drawDaily(cv, byDay, days){
+    var W = cv.clientWidth || 600, H = 220, dpr = window.devicePixelRatio || 1;
+    cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext('2d'); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+    if (!byDay || !byDay.length) { g.fillStyle = '#5C6577'; g.font = '13px "Noto Sans KR"'; g.textAlign = 'center'; g.fillText('아직 자료가 없습니다', W/2, H/2); return; }
+    var padL = 34, padB = 26, padT = 12, w = W - padL - 8, h = H - padB - padT;
+    var max = Math.max(1, Math.max.apply(null, byDay.map(function(d){ return d[1]; })));
+    var step = Math.pow(10, Math.floor(Math.log10(max))); var top = Math.ceil(max / step) * step; if (top / step < 2) top = 2 * step;
+    g.strokeStyle = 'rgba(237,234,227,.08)'; g.fillStyle = '#5C6577'; g.font = '10px "IBM Plex Mono"'; g.textAlign = 'right';
+    for (var i = 0; i <= 4; i++) { var y = padT + h - h * i / 4; g.beginPath(); g.moveTo(padL, y); g.lineTo(W - 8, y); g.stroke(); g.fillText(n(Math.round(top * i / 4)), padL - 6, y + 3); }
+    var bw = w / byDay.length, gap = Math.min(6, bw * .25);
+    byDay.forEach(function(d, i){
+      var x = padL + i * bw + gap / 2, bwid = Math.max(2, bw - gap);
+      var hp = h * d[1] / top, hu = h * d[2] / top;
+      g.fillStyle = '#E8B84B'; g.fillRect(x, padT + h - hp, bwid, hp);
+      g.fillStyle = '#3FD3C6'; g.fillRect(x, padT + h - hu, bwid, hu);
+    });
+    g.fillStyle = '#5C6577'; g.textAlign = 'center';
+    var every = byDay.length > 60 ? 15 : byDay.length > 20 ? 5 : 1;
+    byDay.forEach(function(d, i){ if (i % every === 0 || i === byDay.length - 1) { var lab = d[0].slice(5).replace('-', '/'); g.fillText(lab, padL + i * bw + bw / 2, H - 8); } });
+  }
+
+  function drawHours(cv, hours){
+    var W = cv.clientWidth || 400, H = 90, dpr = window.devicePixelRatio || 1;
+    cv.width = W * dpr; cv.height = H * dpr; var g = cv.getContext('2d'); g.scale(dpr, dpr); g.clearRect(0, 0, W, H);
+    var max = Math.max(1, Math.max.apply(null, hours.length ? hours : [0]));
+    var bw = W / 24;
+    for (var i = 0; i < 24; i++) { var v = hours[i] || 0, hh = (H - 6) * v / max; g.fillStyle = v ? 'rgba(232,184,75,' + (0.35 + 0.65 * v / max) + ')' : 'rgba(255,255,255,.05)'; g.fillRect(i * bw + 1, H - Math.max(2, hh), bw - 2, Math.max(2, hh)); }
+  }
+
+  /* ── 링크 만들기 ── */
+  $('#mkGo').addEventListener('click', function(){
+    var base = $('#mkBase').value, src = $('#mkSrc').value, camp = $('#mkCamp').value.trim().replace(/\s+/g, '-');
+    var hashAt = base.indexOf('#'), hash = hashAt >= 0 ? base.slice(hashAt) : '', url = hashAt >= 0 ? base.slice(0, hashAt) : base;
+    var u = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'utm_source=' + encodeURIComponent(src) + '&utm_medium=' + encodeURIComponent({sms:'sms', kakao:'social', card:'referral', qr:'offline', instagram:'social', blog:'referral', email:'email'}[src] || 'referral') + (camp ? '&utm_campaign=' + encodeURIComponent(camp) : '') + hash;
+    $('#mkUrl').textContent = u; $('#mkOut').hidden = false;
+  });
+  $('#mkCopy').addEventListener('click', function(){
+    var t = $('#mkUrl').textContent; var b = $('#mkCopy');
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ b.textContent = '복사됨'; setTimeout(function(){ b.textContent = '복사'; }, 1500); }, function(){ window.prompt('복사해서 쓰세요', t); });
+  });
+
+  /* ── 예시 자료 (서버 연결 전 화면 확인용) ── */
+  function 예시(days){
+    var srcs = [['네이버 검색', 30], ['구글 검색', 18], ['직접 · 카톡 · 문자', 25], ['문자 링크', 8], ['AI 검색', 4], ['인스타 · 페북', 5], ['우리 사이트 이동', 6], ['다른 사이트', 4]];
+    var rnd = function(k){ var x = Math.sin(k * 9301 + 49297) * 233280; return x - Math.floor(x); };
+    function one(seed, scale){
+      var byDay = [], pv = 0, uv = 0, today = new Date();
+      for (var i = days - 1; i >= 0; i--) { var d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i); var p = Math.round((6 + rnd(seed + i) * 14) * scale), u = Math.round(p * (0.55 + rnd(seed + i + 7) * .25)); pv += p; uv += u; byDay.push([d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2), p, u]); }
+      var bySource = srcs.map(function(s, i){ var v = Math.round(pv * s[1] / 100 * (0.7 + rnd(seed + i) * .6)); return [s[0], v, Math.round(v * .7)]; }).sort(function(a, b){ return b[1] - a[1]; });
+      var search = bySource.filter(function(x){ return /검색$/.test(x[0]); }).reduce(function(a, x){ return a + x[1]; }, 0);
+      var hours = []; for (var hh = 0; hh < 24; hh++) hours.push(Math.round(pv / 24 * (hh > 8 && hh < 22 ? 1.5 : 0.3) * (0.6 + rnd(seed + hh) * .8)));
+      return { pv: pv, uv: uv, new_: Math.round(uv * .62), search: search, searchUV: Math.round(search * .8), byDay: byDay, bySource: bySource,
+        byHost: [['m.search.naver.com', Math.round(pv * .22)], ['google.com', Math.round(pv * .17)], ['blog.naver.com', Math.round(pv * .05)], ['chatgpt.com', Math.round(pv * .03)], ['instagram.com', Math.round(pv * .04)]],
+        byPage: [['/', Math.round(pv * .55)], ['/quote.html', Math.round(pv * .12)], ['/seo-check/', Math.round(pv * .09)], ['/suncheon/', Math.round(pv * .07)], ['/plan.html', Math.round(pv * .05)]],
+        byDevice: [['mobile', Math.round(pv * .68)], ['pc', Math.round(pv * .32)]],
+        byCampaign: [['sms / sms / demo0905', Math.round(pv * .06)], ['kakao / social / 행사팀단톡', Math.round(pv * .03)]],
+        byKeyword: [['순천 이벤트 회사', 3], ['광양 행사 음향', 2]], byHour: hours };
+    }
+    var a = one(1, 1), b = one(2, .8), c = one(3, .5);
+    var all = one(4, 2.3); all.pv = a.pv + b.pv + c.pv; all.uv = a.uv + b.uv + c.uv; all.search = a.search + b.search + c.search; all.new_ = a.new_ + b.new_ + c.new_; all.searchUV = a.searchUV + b.searchUV + c.searchUV;
+    all.byDay = a.byDay.map(function(d, i){ return [d[0], d[1] + b.byDay[i][1] + c.byDay[i][1], d[2] + b.byDay[i][2] + c.byDay[i][2]]; });
+    var today = new Date(), from = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (days - 1));
+    var f = function(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth()+1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); };
+    return { ok: true, days: days, from: f(from), to: f(today), generated: new Date().toISOString(), sites: { all: all, 'ai-make': a, 'keungil': b, 'event-korea': c } };
+  }
+  function 예시최근(){
+    var now = Date.now(), out = [], src = ['네이버 검색', '직접 · 카톡 · 문자', '구글 검색', '문자 링크', 'AI 검색', '인스타 · 페북'], host = ['m.search.naver.com', '', 'google.com', '', 'chatgpt.com', 'instagram.com'];
+    var sites = ['ai-make', 'keungil', 'event-korea'], pages = ['/', '/quote.html', '/app/', '/seo-check/', '/', '/card/khm/'];
+    for (var i = 0; i < 24; i++) { var k = i % 6; out.push([new Date(now - i * 9e5 * (1 + i % 3)).toISOString(), sites[i % 3], pages[k], src[k], host[k], i % 4 ? 'mobile' : 'pc', i % 3 === 0 ? 1 : 0, k === 3 ? 'demo0905' : '']); }
+    return out;
+  }
+
+  load(false);
+  window.addEventListener('resize', function(){ if (state.data && !$('#main').hidden) render(); });
+})();
+</script>
+</body>
+</html>
