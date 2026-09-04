@@ -89,7 +89,127 @@ textarea{min-height:70px;resize:vertical}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .empty{color:var(--ink3);font-style:normal}
 @media(max-width:860px){.layout{grid-template-columns:1fr}aside{position:static;max-height:none}}
-@media print{.topbar,aside,.cta,.toast{display:none!important}.layout{display:block;padding:0}.doc{border:0;box-shadow:none;padding:0}body{background:#fff}}
+
+/* ── 보기 전환 ── */
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;background:#fff}
+.seg button{padding:8px 13px;border:0;background:transparent;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink2);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+body.v-board .doc{display:none}
+body.v-doc .boardwrap,body.v-doc .bhint{display:none}
+.bhint{display:none;margin:8px 4px 0;font-size:12.5px;color:var(--ink3)}
+@media(max-width:700px){body.v-board .bhint{display:block}}
+@media print{.bhint{display:none!important}}
+#right{min-width:0}   /* 격자 칸이 1080px 보드에 밀려 늘어나지 않게 — 이게 없으면 zoom 이 1 이 되고 가로 스크롤이 생긴다 */
+.boardwrap{overflow:hidden;min-width:0;border-radius:14px;border:1px solid var(--line);background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+
+/* ── 보드 (한 장 그림) — 폭 1080 고정, zoom 으로 맞춘다 ── */
+.board{--ac:#1E5EFF;--ac2:#E4EBFF;--ac3:#10347D;   /* 색 셋은 JS 가 업종별로 다시 넣는다 (html2canvas 가 color-mix 를 못 읽어서 hex 로) */
+  width:1080px;background:#fff;color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",sans-serif;line-height:1.5;position:relative}
+.board *{box-sizing:border-box}
+.bh{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:start;padding:44px 48px 36px;color:#fff;
+  background:linear-gradient(135deg,var(--ac3),var(--ac) 70%,var(--ac4))}   /* --ac4 = 강조색 70% + 금색 30%, JS 가 hex 로 넣는다 (html2canvas 가 color-mix 를 못 읽음) */
+.bh .eyebrow{font-size:12.5px;letter-spacing:.18em;font-weight:700;opacity:.85}
+.bh h1{font-size:44px;line-height:1.15;letter-spacing:-.03em;margin:10px 0 14px;font-weight:900;text-wrap:balance}
+.bh h1 small{display:block;font-size:20px;font-weight:600;opacity:.9;letter-spacing:-.01em;margin-top:6px}
+.bh .lead{font-size:16.5px;line-height:1.6;margin:0;opacity:.95;max-width:640px}
+.bh .bh-r{text-align:right;font-size:13px;line-height:1.7;opacity:.95;padding-top:4px}
+.bh .bh-r b{display:block;font-size:20px;font-weight:900;letter-spacing:-.02em;opacity:1}
+.bh .bh-r small{display:block;font-size:10.5px;letter-spacing:.2em;opacity:.7;margin-bottom:12px}
+.bin{padding:26px 48px 0}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;min-height:96px}
+.tile span{display:block;font-size:11.5px;letter-spacing:.06em;color:var(--ink3);font-weight:700}
+.tile b{display:block;font-size:15.5px;line-height:1.35;margin-top:6px;letter-spacing:-.01em}
+.tile small{display:block;font-size:12px;color:var(--ink2);margin-top:4px}
+.tile .gl{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
+.tile .gl i{font-style:normal;font-size:11.5px;padding:2px 8px;border-radius:99px;background:var(--ac2);color:var(--ac3);font-weight:600}
+.row2{display:grid;grid-template-columns:5fr 7fr;gap:14px;margin-top:14px}
+.row2b{display:grid;grid-template-columns:7fr 5fr;gap:14px;margin-top:14px}
+.box{border:1px solid var(--line);border-radius:16px;padding:18px 20px 20px;background:#fff;position:relative}
+.box h3{margin:0 0 12px;font-size:15px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.box h3 i{font-style:normal;font-size:11px;letter-spacing:.14em;color:var(--ac);font-weight:800}
+/* 사이트 구성 */
+.smap .root{margin:0 auto;width:fit-content;min-width:150px;text-align:center;padding:10px 18px;border-radius:12px;background:var(--ac);color:#fff;font-weight:800;font-size:15px;position:relative}
+.smap .root small{display:block;font-weight:500;font-size:11px;opacity:.85;margin-top:2px}
+.smap .root::after{content:"";position:absolute;left:50%;bottom:-18px;width:2px;height:18px;background:var(--ac)}
+.smap .kids{display:grid;grid-template-columns:repeat(var(--n,5),1fr);gap:8px;position:relative;padding-top:18px;margin-top:18px}
+.smap .kids::before{content:"";position:absolute;top:0;left:10%;right:10%;height:2px;background:var(--ac)}
+.smap .kid{position:relative;border:1.5px solid var(--ac);border-radius:12px;padding:10px 9px 10px;background:var(--ac2);min-height:112px}
+.smap .kid::before{content:"";position:absolute;top:-18px;left:50%;width:2px;height:18px;background:var(--ac)}
+.smap .kid b{display:block;font-size:13px;letter-spacing:-.01em;color:var(--ac3);margin-bottom:6px}
+.smap .kid ul{list-style:none;margin:0;padding:0;font-size:11.5px;color:var(--ink2);line-height:1.5}
+.smap .kid li::before{content:"· "}
+.smap.one .kids{grid-template-columns:1fr 1fr;gap:8px 10px}
+.smap.one .kid{min-height:0;display:flex;gap:9px;align-items:center;padding:9px 11px}
+.smap.one .kid::before{display:none}
+.smap.one .kids::before{display:none}
+.smap.one .kid b{margin:0;font-size:13.5px;color:var(--ink)}
+.smap.one .kid .no{width:22px;height:22px;border-radius:50%;background:var(--ac);color:#fff;font-size:11.5px;font-weight:800;display:grid;place-items:center;flex:none}
+.smap .auto{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--gold-soft);font-size:12.5px;color:var(--ink);line-height:1.55}
+.smap .auto b{color:var(--gold)}
+/* 첫 화면 */
+.home{display:grid;grid-template-columns:250px 1fr;gap:18px;align-items:start}
+.home h3{grid-column:1/-1}
+.phone{width:250px;height:500px;border-radius:30px;border:6px solid #17181C;background:#F7F7F5;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 14px 34px -18px rgba(0,0,0,.45)}
+.ph-top{display:flex;align-items:center;gap:6px;padding:10px 12px 8px;background:#fff;border-bottom:1px solid var(--hair)}
+.ph-top i{width:9px;height:9px;border-radius:50%;background:var(--ac)}
+.ph-top b{font-size:9.5px;letter-spacing:-.01em;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ph-top s{width:14px;height:8px;border-top:1.5px solid #333;border-bottom:1.5px solid #333;text-decoration:none;position:relative}
+.ph-top s::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px solid #333;transform:translateY(-50%)}
+.ph-hero{background:linear-gradient(160deg,var(--ac3),var(--ac));color:#fff;padding:16px 13px 14px;min-height:118px;position:relative}
+.ph-hero::before{content:"";position:absolute;right:-20px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.12)}
+.ph-hero em{display:block;font-style:normal;font-size:8.5px;letter-spacing:.16em;opacity:.8}
+.ph-hero b{display:block;font-size:13.5px;line-height:1.3;margin:5px 0 8px;letter-spacing:-.02em;text-wrap:balance}
+.ph-hero span{display:inline-block;font-size:9px;font-weight:800;padding:5px 10px;border-radius:99px;background:#fff;color:var(--ac3)}
+.ph-sec{display:flex;gap:8px;align-items:center;padding:9px 11px;background:#fff;border-bottom:1px solid var(--hair)}
+.ph-sec i{width:26px;height:26px;border-radius:7px;background:var(--ac2);flex:none;display:grid;place-items:center;color:var(--ac3);font-size:10px;font-weight:800;font-style:normal}
+.ph-sec div{flex:1;min-width:0}
+.ph-sec b{display:block;font-size:9.5px;letter-spacing:-.01em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ph-sec u{display:block;height:4px;border-radius:2px;background:#E5E4DE;margin-top:4px;text-decoration:none}
+.ph-sec u+u{width:70%;margin-top:3px}
+.ph-more{flex:1;display:grid;place-items:center;color:var(--ink3);font-size:9px}
+.ph-bar{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px;background:#fff;border-top:1px solid var(--hair)}
+.ph-bar span{font-size:9px;font-weight:800;text-align:center;padding:7px 4px;border-radius:8px;border:1px solid var(--line);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ph-bar span+span{background:var(--ac);color:#fff;border-color:var(--ac)}
+.btips{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.btips li{padding:11px 13px;background:var(--bg);border-radius:12px;font-size:13px;line-height:1.5;color:var(--ink)}
+.btips li::before{content:"✦ ";color:var(--ac);font-weight:800}
+.btips .cta{background:var(--ac2);color:var(--ac3);font-weight:700}
+/* 준비 */
+.prep{margin-top:14px}
+.pchips{display:flex;flex-wrap:wrap;gap:8px}
+.pchips span{display:inline-flex;align-items:center;gap:8px;padding:8px 12px 8px 9px;border:1px solid var(--line);border-radius:99px;font-size:13px;background:#fff}
+.pchips span i{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink3);display:grid;place-items:center;font-size:11px;font-style:normal;color:var(--ink3);flex:none}
+.pchips span.have{border-color:var(--ac);background:var(--ac2)}
+.pchips span.have i{background:var(--ac);border-color:var(--ac);color:#fff}
+.prep .hint{margin:10px 0 0;font-size:12px;color:var(--ink3)}
+/* 일정 */
+.steps{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:relative}
+.steps::before{content:"";position:absolute;left:12%;right:12%;top:15px;height:2px;background:var(--line)}
+.steps li{text-align:center;position:relative;padding-top:38px;font-size:12.5px;line-height:1.45;color:var(--ink2)}
+.steps li::before{content:"";position:absolute;left:50%;top:6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;border:3px solid var(--ac)}
+.steps li:last-child::before{background:var(--ac)}
+.steps li b{display:block;color:var(--ac3);font-size:14px;margin-bottom:2px}
+.steps li:last-child b{color:var(--ac)}
+.tl-note{margin:12px 0 0;font-size:12.5px;color:var(--ink2);line-height:1.5}
+/* 비용 */
+.cost .line{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--hair)}
+.cost .line small{display:block;color:var(--ink2);font-size:12px;margin-top:2px}
+.cost .line b{font-size:24px;letter-spacing:-.02em;white-space:nowrap}
+.cost .line b small{display:inline;color:var(--ink2);font-size:12px;font-weight:600;margin-left:3px}
+.cost .vat{margin:10px 0 0;font-size:11.5px;color:var(--ink3);line-height:1.5}
+.cost .badge{position:absolute;top:16px;right:18px;font-size:11px;font-weight:800;letter-spacing:.06em;padding:4px 10px;border-radius:99px;background:var(--ac);color:#fff}
+/* 마감 */
+.bf{margin-top:22px;padding:22px 48px 26px;background:var(--ink);color:#fff;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.bf b{font-size:19px;letter-spacing:-.02em}
+.bf .sp{flex:1}
+.bf .tel{font-size:24px;font-weight:900;letter-spacing:-.02em;color:#FFD37A}
+.bf small{display:block;font-size:11.5px;opacity:.7;margin-top:2px}
+@media print{
+  @page{size:A4;margin:10mm}
+  .topbar,aside,.cta,.toast{display:none!important}.layout{display:block;padding:0}.doc{border:0;box-shadow:none;padding:0}body{background:#fff}
+  .boardwrap{border:0;border-radius:0;overflow:visible}.board{zoom:.62!important}   /* A4 한 장(277mm ≈ 1047px)에 1600px 보드가 들어가는 배율 */
+}
 </style>
   <script defer src="https://www.ai-make.co.kr/stats/stats.js" data-site="ai-make"></script>
 </head>
@@ -99,8 +219,10 @@ textarea{min-height:70px;resize:vertical}
   <a class="brand" href="./"><i></i>큰길브리지 <span style="font-weight:500;color:var(--ink3)">· 기획서</span></a>
   <span class="mode" id="mode">작성 화면</span>
   <span class="sp"></span>
+  <div class="seg" id="view"><button type="button" data-v="board" aria-pressed="true">🖼 한 장 보기</button><button type="button" data-v="doc" aria-pressed="false">📝 글로 보기</button></div>
   <button class="btn" id="b-link" type="button">🔗 링크 복사</button>
   <button class="btn" id="b-prompt" type="button" title="이 내용으로 Claude 에게 더 다듬어 달라고 할 때">✎ 프롬프트 복사</button>
+  <button class="btn" id="b-img" type="button" title="카톡으로 보낼 그림 한 장">⬇ 이미지로 저장</button>
   <button class="btn" id="b-print" type="button">🖨 인쇄 · PDF</button>
   <button class="btn gold" id="b-quote" type="button">📄 이 기획서로 견적서 만들기</button>
 </div></div>
@@ -132,7 +254,7 @@ textarea{min-height:70px;resize:vertical}
     <p class="hint">칸을 채우는 대로 오른쪽 문서가 바뀝니다. 「링크 복사」로 보내면 상대도 같은 문서를 봅니다.</p>
   </aside>
 
-  <main class="doc" id="doc"></main>
+  <div id="right"><section class="boardwrap" id="boardwrap"><div class="board" id="board"></div></section><p class="bhint">폰에서는 두 손가락으로 벌려 확대하거나, 위의 「⬇ 이미지로 저장」으로 받아 크게 보세요. 글로 읽으려면 「📝 글로 보기」.</p><main class="doc" id="doc"></main></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -333,6 +455,7 @@ function 그리기(){
   h += '<div class="foot">이 기획서는 ' + esc(org) + '의 이야기를 듣고 정리한 것입니다. 만들면서 바뀔 수 있고, 바뀌면 이 문서도 같이 고칩니다. — 큰길브리지 (주식회사 브리지미디어) · www.ai-make.co.kr</div>';
 
   $('#doc').innerHTML = h;
+  보드그리기();
   if (MODE==='admin') { try { history.replaceState(null,'', location.pathname + '?admin=1#p=' + b64u(JSON.stringify(P))); } catch(e){} }
 }
 
@@ -373,6 +496,139 @@ $('#b-quote').addEventListener('click', function(){
     meta:{ no:'', date:오늘(), valid:'발행일로부터 30일' }
   };
   window.open(location.pathname.replace(/plan\.html$/, 'quote.html') + '?admin=1#q=' + b64u(JSON.stringify(S)), '_blank', 'noopener');
+});
+
+
+/* ══ 보드 — 기획서 한 장 그림 ══════════════════════════════
+   글 문서(그리기)와 같은 자료로 그린다. 폭 1080 고정, 화면엔 zoom 으로 맞추고
+   「이미지로 저장」은 zoom 을 1로 되돌린 채 2배로 찍는다. */
+var 업종색 = { daycare:'#2F9E6A', event:'#C22E7B', singer:'#B8860B', salon:'#D9457F', interior:'#3D5A80', pension:'#1F8A8A', academy:'#2D6CDF', clinic:'#1B7F9E', cafe:'#8B5A2B', etc:'#1E5EFF' };
+function 보드그리기(){
+  var B = 업종들[P.biz], org = P.org || '(상호)', 손님 = P.target || B.손님, pk = P.plan || B.plan, PL = PLANS[pk];
+  var 방향 = B.방향.replace(/\{org\}/g, org);
+  var 헤드 = P.tag || 방향.split(/[.。]/)[0];
+  var b = '';
+  b += '<header class="bh"><div><div class="eyebrow">홈페이지 기획서 · ' + esc(B.이름) + (P.region ? ' · ' + esc(P.region) : '') + '</div>';
+  b += '<h1>' + esc(org) + '<small>홈페이지, 이렇게 만들겠습니다</small></h1><p class="lead">' + esc(방향) + '</p></div>';
+  b += '<div class="bh-r"><b>큰길브리지</b><small>KEUNGIL BRIDGE · www.ai-make.co.kr</small>' + 오늘().replace(/-/g,'.') + '<br>' + (P.owner ? esc(P.owner) + ' 님께<br>' : '') + '담당 김효민 · 1533-7295</div></header>';
+
+  b += '<div class="bin">';
+  /* 네 칸 */
+  var 목표 = P.goals.length ? P.goals : ['문의 · 상담 받기', '믿음 주기 (실적 · 후기)', '검색에 나오기'];
+  var 페이지수 = pk === 'basic' ? '원페이지 · 섹션 ' + B.섹션.length + '개' : pk === 'premium' ? '홈 + ' + B.페이지.length + '페이지' : '홈 + ' + B.페이지.length + '페이지 + 자동 장치';
+  b += '<section class="tiles">';
+  b += '<div class="tile"><span>누가 봅니까</span><b>' + esc(손님) + '</b></div>';
+  b += '<div class="tile"><span>홈페이지로 하고 싶은 것</span><div class="gl">' + 목표.map(function(g){ return '<i>' + esc(g) + '</i>'; }).join('') + '</div></div>';
+  b += '<div class="tile"><span>규모</span><b>' + PL.name + '</b><small>' + esc(페이지수) + '</small></div>';
+  b += '<div class="tile"><span>오픈</span><b>' + (P.open ? esc(날짜말(P.open)) : '자료 받은 뒤 7일') + '</b><small>' + (P.open ? '자료는 ' + esc(날짜말(더하기(P.open, -10))) + '까지' : '시안은 4일째 보여드립니다') + '</small></div>';
+  b += '</section>';
+
+  /* 구성 + 첫 화면 */
+  b += '<section class="row2"><div class="box"><h3><i>01</i>사이트 구성</h3>';
+  if (pk === 'basic') {
+    b += '<div class="smap one"><div class="root">' + esc(org) + ' 홈<small>한 페이지 · 엄지로 내려보며 3분</small></div><div class="kids">' +
+      B.섹션.map(function(sname, i){ return '<div class="kid"><span class="no">' + (i + 1) + '</span><b>' + esc(sname) + '</b></div>'; }).join('') + '</div></div>';
+  } else {
+    b += '<div class="smap" style="--n:' + B.페이지.length + '"><div class="root">홈<small>' + esc(B.섹션.slice(0, 3).join(' · ')) + '</small></div><div class="kids">' +
+      B.페이지.map(function(pg){ return '<div class="kid"><b>' + esc(pg[0]) + '</b><ul>' + pg[1].slice(0, 3).map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</div>';
+    if (pk === 'enterprise') b += '<div class="auto"><b>자동으로 굴러가는 것</b> — 사진 한 장 올리면 갤러리 글 + 블로그 · 밴드 공유 + 검색 등록 / 문의 → 견적서 → 전자계약 → PDF / 지역별 검색 페이지 / 누가 봤는지 알림</div>';
+    b += '</div>';
+  }
+  b += '</div>';
+  b += '<div class="box home"><h3><i>02</i>첫 화면은 이렇게 보입니다</h3>';
+  b += '<div class="phone"><div class="ph-top"><i></i><b>' + esc(org) + '</b><s></s></div>';
+  b += '<div class="ph-hero"><em>' + esc(B.이름.toUpperCase()) + '</em><b>' + esc(헤드) + '</b><span>' + esc(B.cta) + ' →</span></div>';
+  b += B.섹션.slice(1, 5).map(function(sname, i){ return '<div class="ph-sec"><i>' + (i + 2) + '</i><div><b>' + esc(sname) + '</b><u></u><u></u></div></div>'; }).join('');
+  b += '<div class="ph-more">· · ·</div><div class="ph-bar"><span>' + esc(P.tel || '전화') + '</span><span>' + esc(B.cta) + '</span></div></div>';
+  b += '<ul class="btips">' + B.문구.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join('') + '<li class="cta">화면 어디서나 보이는 단추 하나: ' + esc(B.cta) + (P.tel ? ' · ' + esc(P.tel) : '') + '</li></ul>';
+  b += '</div></section>';
+
+  /* 준비 */
+  var 있 = function(k){ return P.assets.indexOf(k) >= 0; };
+  b += '<section class="box prep"><h3><i>03</i>사장님이 주실 것 <span style="font-weight:500;color:var(--ink3);font-size:12.5px">— 휴대폰 사진이면 됩니다. 밝기와 크기는 저희가 맞춥니다</span></h3><div class="pchips">';
+  b += B.사진.map(function(x){ return '<span' + (있('사진') ? ' class="have"' : '') + '><i>' + (있('사진') ? '✓' : '📷') + '</i>' + esc(x) + '</span>'; }).join('');
+  b += '<span' + (있('로고') ? ' class="have"' : '') + '><i>' + (있('로고') ? '✓' : 'L') + '</i>로고 (없으면 상호 글자로 만듭니다)</span>';
+  b += '<span><i>i</i>전화 · 주소 · 영업시간 · 계좌</span>';
+  if (있('기존 홈페이지')) b += '<span class="have"><i>✓</i>기존 홈페이지 — 쓸 만한 글 · 사진은 옮겨옵니다</span>';
+  if (있('인스타 · 블로그')) b += '<span class="have"><i>✓</i>인스타 · 블로그 연결</span>';
+  if (있('후기')) b += '<span class="have"><i>✓</i>후기 — 사진과 함께</span>';
+  b += '</div></section>';
+
+  /* 일정 + 비용 */
+  var d = function(n){ return P.open ? esc(날짜말(더하기(P.open, n))) : ''; };
+  b += '<section class="row2b"><div class="box"><h3><i>04</i>일정' + (P.open ? ' <span style="font-weight:500;color:var(--ink3);font-size:12.5px">— ' + esc(날짜말(P.open)) + ' 오픈 기준</span>' : '') + '</h3><ol class="steps">';
+  b += '<li><b>' + (P.open ? d(-10) : '1일차') + '</b>자료 받기<br>이야기 30분</li>';
+  b += '<li><b>' + (P.open ? d(-7) : '4일차') + '</b>시안 보기<br>휴대폰 링크로</li>';
+  b += '<li><b>' + (P.open ? d(-3) : '7일차') + '</b>고칠 것 반영<br>수정 2회 포함</li>';
+  b += '<li><b>' + (P.open ? esc(날짜말(P.open)) : '오픈') + '</b>도메인 연결<br>검색 등록</li></ol>';
+  b += '<p class="tl-note">오픈 뒤에는 사장님이 글자와 사진을 <b>직접 고칠 수 있는 열쇠</b>를 드립니다. 전화번호 하나 바뀌었다고 연락 주실 필요가 없습니다.</p></div>';
+  b += '<div class="box cost"><h3><i>05</i>비용</h3><span class="badge">' + PL.name + '</span>';
+  b += '<div class="line"><div>' + PL.name + ' 홈페이지 제작<small>' + esc(PL.설명) + '</small></div><b>' + 원(PL.price) + '</b></div>';
+  b += '<div class="line"><div>월 관리<small>호스팅 · 도메인 · 보안 · 수정 지원' + (PL.free ? ' · 첫 ' + PL.free + ' 무료' : '') + '</small></div><b>' + 원(PL.monthly) + '<small>/월</small></b></div>';
+  b += '<p class="vat">부가세 별도 · 대행비 · 숨은 비용 없음 · 시안이 마음에 안 들면 그 단계에서 그냥 멈추셔도 됩니다</p></div></section>';
+  b += '</div>';
+
+  b += '<footer class="bf"><div><b>이 기획서대로 만들어 볼까요?</b><small>' + esc(org) + ' 이야기를 듣고 정리한 것입니다. 만들면서 바뀌면 이 문서도 같이 고칩니다.</small></div><span class="sp"></span><div class="tel">1533-7295<small>큰길브리지 · 주식회사 브리지미디어 · www.ai-make.co.kr</small></div></footer>';
+
+  var el = $('#board'), ac = 업종색[P.biz] || '#1E5EFF';
+  el.style.setProperty('--ac', ac);
+  el.style.setProperty('--ac2', 섞기(ac, '#FFFFFF', .12));   /* 연한 배경 */
+  el.style.setProperty('--ac3', 섞기(ac, '#000000', .55));   /* 짙은 글자·그라데이션 끝 */
+  el.style.setProperty('--ac4', 섞기(ac, '#FFD37A', .7));    /* 머리 그라데이션의 따뜻한 끝 */
+  el.innerHTML = b;
+  맞추기();
+}
+/* 두 색을 섞는다. r = 앞 색의 비율. html2canvas 가 color-mix() 를 못 읽어 직접 계산한다. */
+function 섞기(a, b, r){
+  var A = parseInt(a.slice(1), 16), Bc = parseInt(b.slice(1), 16), out = '#';
+  for (var i = 16; i >= 0; i -= 8) {
+    var v = Math.round(((A >> i) & 255) * r + ((Bc >> i) & 255) * (1 - r));
+    out += (v < 16 ? '0' : '') + v.toString(16);
+  }
+  return out;
+}
+function 맞추기(){
+  var w = $('#boardwrap').clientWidth || 1080;
+  $('#board').style.zoom = String(Math.min(1, w / 1080));
+}
+window.addEventListener('resize', 맞추기);
+
+/* 보기 전환 */
+function 보기(v){
+  document.body.classList.toggle('v-board', v === 'board');
+  document.body.classList.toggle('v-doc', v === 'doc');
+  document.querySelectorAll('#view button').forEach(function(x){ x.setAttribute('aria-pressed', x.dataset.v === v ? 'true' : 'false'); });
+  if (v === 'board') 맞추기();
+}
+document.querySelectorAll('#view button').forEach(function(x){ x.addEventListener('click', function(){ 보기(x.dataset.v); }); });
+보기('board');
+
+/* 이미지로 저장 — 카톡으로 보낼 PNG 한 장 */
+function 도구(src, cb){
+  if (window.html2canvas) return cb();
+  var t = document.createElement('script'); t.src = src; t.onload = cb;
+  t.onerror = function(){ toast('그림 도구를 못 불러왔어요. 인터넷을 확인해 주세요'); };
+  document.head.appendChild(t);
+}
+$('#b-img').addEventListener('click', function(){
+  var el = $('#board'), wrap = $('#boardwrap');
+  if (!el.innerHTML) return;
+  보기('board');
+  toast('그림을 만드는 중… 2~3초');
+  도구('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', function(){
+    var z = el.style.zoom, o = wrap.style.overflow;
+    el.style.zoom = '1'; wrap.style.overflow = 'visible';
+    html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false, windowWidth: 1080 }).then(function(cv){
+      el.style.zoom = z; wrap.style.overflow = o;
+      cv.toBlob(function(blob){
+        var a = document.createElement('a');
+        a.download = '기획서-' + (P.org || '홈페이지').replace(/[\\/:*?"<>|]/g, '') + '-' + 오늘() + '.png';
+        a.href = URL.createObjectURL(blob); document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(a.href); }, 8000);
+        toast('그림을 저장했어요 — 카톡으로 바로 보내세요');
+      }, 'image/png');
+    }).catch(function(){ el.style.zoom = z; wrap.style.overflow = o; toast('그림 만들기에 실패했어요. 「인쇄 · PDF」를 써주세요'); });
+  });
 });
 
 /* ══ 시작 ══ */
