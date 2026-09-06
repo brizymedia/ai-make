@@ -217,9 +217,10 @@ table.t tr.total td.num{color:#8A6A16}
       <div class="body">
         <div><label class="f">상호 · 단체명</label><input class="in" data-k="cl.org" placeholder="예) 바닐라 헤어"></div>
         <div class="row2">
-          <div><label class="f">대표 · 담당자 (서명자)</label><input class="in" data-k="cl.name" placeholder="홍길동"></div>
-          <div><label class="f">연락처</label><input class="in" data-k="cl.tel" placeholder="010-0000-0000" inputmode="tel"></div>
+          <div><label class="f">대표자</label><input class="in" data-k="cl.rep" placeholder="홍길동"></div>
+          <div><label class="f">담당자 (서명자)</label><input class="in" data-k="cl.name" placeholder="대표와 다르면"></div>
         </div>
+        <div><label class="f">연락처</label><input class="in" data-k="cl.tel" placeholder="010-0000-0000" inputmode="tel"></div>
         <div><label class="f">이메일</label><input class="in" data-k="cl.email" placeholder="name@example.com" inputmode="email"></div>
         <div><label class="f">주소</label><input class="in" data-k="cl.addr" placeholder="선택"></div>
         <div><label class="f">사업자등록번호</label><input class="in" data-k="cl.biz" placeholder="선택"></div>
@@ -356,7 +357,8 @@ table.t tr.total td.num{color:#8A6A16}
           <span class="tag">발주자 (갑)</span>
           <dl>
             <dt>상호</dt><dd id="d-cl-org">—</dd>
-            <dt>대표 · 담당</dt><dd id="d-cl-name">—</dd>
+            <dt>대표</dt><dd id="d-cl-rep">—</dd>
+            <dt>담당 (서명)</dt><dd id="d-cl-name">—</dd>
             <dt>연락처</dt><dd id="d-cl-tel">—</dd>
             <dt>이메일</dt><dd id="d-cl-email">—</dd>
             <dt>주소</dt><dd id="d-cl-addr">—</dd>
@@ -576,7 +578,7 @@ var unb64u = function(s){ var t=String(s).replace(/-/g,'+').replace(/_/g,'/');
 
 /* ── 상태 ────────────────────────────── */
 var S = {
-  cl:{org:'',name:'',tel:'',email:'',addr:'',biz:''},
+  cl:{org:'',rep:'',name:'',tel:'',email:'',addr:'',biz:''},
   pj:{title:'',domain:'',biztype:'',purpose:'',plan:''},
   items:[], attach:[],
   fin:{vat:'none',deposit:'50'},
@@ -624,8 +626,8 @@ function 그리기(){
   var v = function(x){ return x && String(x).trim() ? esc(x) : '—'; };
   $('#d-no').textContent = '계약번호 ' + (S.meta.no || '—');
   $('#d-title').textContent = S.pj.title || '—';
-  ['org','name','tel','email','addr','biz'].forEach(function(k){
-    var el=$('#d-cl-'+k); if(el) el.textContent = S.cl[k] || '—';
+  ['org','rep','name','tel','email','addr','biz'].forEach(function(k){
+    var el=$('#d-cl-'+k); if(el) el.textContent = S.cl[k] || (k==='name' ? (S.cl.rep || '—') : '—');
   });
   $('#d-cl-org2').textContent = S.cl.org || '—';
   $('#d-pj-title').textContent = S.pj.title || '—';

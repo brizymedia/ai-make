@@ -207,16 +207,24 @@ body.cust .cust-cta{display:flex}
   <aside class="panel no-cust" id="panel">
 
     <h3>고객 정보</h3>
-    <label class="f" for="i-org">상호 · 이름</label>
+    <label class="f" for="i-org">상호</label>
     <input class="in" id="i-org" data-k="cl.org" placeholder="예) 순천 바닐라헤어">
     <div class="two">
+      <div><label class="f" for="i-rep">대표자</label>
+        <input class="in" id="i-rep" data-k="cl.rep" placeholder="김대표"></div>
       <div><label class="f" for="i-name">담당자</label>
-        <input class="in" id="i-name" data-k="cl.name" placeholder="김바닐"></div>
+        <input class="in" id="i-name" data-k="cl.name" placeholder="대표와 다르면"></div>
+    </div>
+    <div class="two">
       <div><label class="f" for="i-tel">연락처</label>
         <input class="in" id="i-tel" data-k="cl.tel" placeholder="010-0000-0000"></div>
+      <div><label class="f" for="i-email">이메일</label>
+        <input class="in" id="i-email" data-k="cl.email" placeholder="quote@example.com"></div>
     </div>
-    <label class="f" for="i-email">이메일</label>
-    <input class="in" id="i-email" data-k="cl.email" placeholder="quote@example.com">
+    <label class="f" for="i-addr">주소</label>
+    <input class="in" id="i-addr" data-k="cl.addr" placeholder="계약서에 그대로 들어갑니다">
+    <label class="f" for="i-biz">사업자등록번호</label>
+    <input class="in" id="i-biz" data-k="cl.biz" placeholder="000-00-00000">
 
     <h3>프로젝트</h3>
     <label class="f" for="i-title">사이트명 · 프로젝트명</label>
@@ -310,9 +318,12 @@ body.cust .cust-cta{display:flex}
         <span class="tag">수신</span>
         <dl>
           <dt>상호</dt><dd id="d-cl-org">—</dd>
+          <dt>대표</dt><dd id="d-cl-rep">—</dd>
           <dt>담당</dt><dd id="d-cl-name">—</dd>
           <dt>연락처</dt><dd id="d-cl-tel">—</dd>
           <dt>이메일</dt><dd id="d-cl-email">—</dd>
+          <dt>주소</dt><dd id="d-cl-addr">—</dd>
+          <dt>사업자번호</dt><dd id="d-cl-biz">—</dd>
         </dl>
       </div>
       <div class="pbox">
@@ -443,7 +454,7 @@ var unb64u = function(s){ var t=String(s).replace(/-/g,'+').replace(/_/g,'/');
 /* ── 상태 ──────────────────────────────
    계약서(contract.html)의 상태와 모양을 맞춰 뒀다. 그래야 넘길 때 그대로 옮겨진다. */
 var S = {
-  cl:{org:'',name:'',tel:'',email:''},
+  cl:{org:'',rep:'',name:'',tel:'',email:'',addr:'',biz:''},
   pj:{title:'',domain:'',biztype:'',purpose:'',plan:''},
   items:[],
   fin:{vat:'none',deposit:'50'},
@@ -524,7 +535,7 @@ function 그리기(){
   $('#d-no').textContent = '견적번호 ' + (S.meta.no || '—');
   $('#d-dates').textContent = '발행일 ' + (S.meta.date || '—') + ' · 유효기간 ' + (S.meta.valid || '—');
 
-  ['org','name','tel','email'].forEach(function(k){
+  ['org','rep','name','tel','email','addr','biz'].forEach(function(k){
     var el = $('#d-cl-'+k); if(el) el.innerHTML = v(S.cl[k]);
   });
   ['title','biztype','domain'].forEach(function(k){
@@ -688,7 +699,7 @@ $('#i-api-save').addEventListener('change', function(){
 /* 이 견적으로 계약서 작성 → contract.html?admin=1#c=… */
 $('#btn-contract').addEventListener('click', function(){
   var C = {
-    cl:{ org:S.cl.org, name:S.cl.name, tel:S.cl.tel, email:S.cl.email, addr:'', biz:'' },
+    cl:{ org:S.cl.org, rep:S.cl.rep||'', name:S.cl.name || S.cl.rep || '', tel:S.cl.tel, email:S.cl.email, addr:S.cl.addr||'', biz:S.cl.biz||'' },
     pj:{ title:S.pj.title, domain:S.pj.domain, biztype:S.pj.biztype,
          purpose:S.pj.purpose, plan:S.pj.plan },
     items: S.items.map(function(it){ return { n:it.n, q:it.q, p:it.p }; }),

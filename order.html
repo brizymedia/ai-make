@@ -426,7 +426,7 @@ function 주문링크(admin){ return location.origin + location.pathname + (admi
 
 /* ══ 기획서 · 견적서로 넘기기 (plan.html 의 P · quote.html 의 S 와 같은 모양) ══ */
 function 기획서링크(){
-  var P = { biz:O.biz, org:O.org, region:(O.addr||'').split(/[\s,]/)[0]||'', owner:O.owner, tel:O.tel, tag:O.slogan,
+  var P = { biz:O.biz, org:O.org, region:(O.addr||'').split(/[\s,]/)[0]||'', owner:O.owner, tel:O.tel, email:O.email, addr:O.addr, bizno:O.bizno, domain:O.domainname, tag:O.slogan,
     goals:O.goals.filter(function(g){ return 목적들.indexOf(g)>=0; }), target:O.target, assets:O.assets.filter(function(a){ return 자료들.indexOf(a)>=0; }),
     plan:플랜()||'', open:O.open,
     note:[O.pages.length?'넣을 내용: '+O.pages.join(', '):'', O.refs.filter(Boolean).length?'참고 사이트: '+O.refs.filter(Boolean).join(' , ')+(O.refwhy?' — '+O.refwhy:''):'', O.domain?'도메인: '+O.domain+(O.domainname?' ('+O.domainname+')':''):'', O.mood.length?'분위기: '+O.mood.join(', '):'', O.colors?'색: '+O.colors:'', O.avoid?'피할 것: '+O.avoid:'', O.note].filter(Boolean).join('\n') };
@@ -434,7 +434,7 @@ function 기획서링크(){
 }
 function 견적서링크(){
   var pk = 플랜() || 'basic', PL = PLANS[pk];
-  var S = { cl:{ org:O.org, name:O.owner, tel:O.tel, email:O.email },
+  var S = { cl:{ org:O.org, rep:O.owner, name:O.owner, tel:O.tel, email:O.email, addr:O.addr, biz:O.bizno },
     pj:{ title:O.org + ' 홈페이지', domain:O.domainname||'', biztype:업종들[O.biz][0], purpose:O.goals.join(', '), plan:pk },
     items: 항목들().length ? 항목들() : [{ n:PL.name+' 홈페이지 제작', q:1, p:PL.price }],
     fin:{ vat:'none', deposit:'50' }, care:{ monthly:String(PL.monthly), free:PL.free }, sch:{ start:'', open:O.open },

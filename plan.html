@@ -225,9 +225,13 @@ textarea{min-height:70px;resize:vertical}
     <label>업종</label>
     <select id="f-biz"></select>
     <label>상호</label><input type="text" id="f-org" placeholder="예: 한아름노인주간보호센터">
-    <label>지역</label><input type="text" id="f-region" placeholder="예: 순천">
-    <label>대표·담당</label><input type="text" id="f-owner" placeholder="예: 김효민 원장">
-    <label>전화</label><input type="text" id="f-tel" placeholder="예: 061-000-0000">
+    <label>대표자</label><input type="text" id="f-owner" placeholder="예: 김효민">
+    <label>담당자 <span class="hint" style="display:inline">(대표와 다르면)</span></label><input type="text" id="f-contact" placeholder="예: 박실장">
+    <label>전화</label><input type="text" id="f-tel" placeholder="예: 010-0000-0000">
+    <label>이메일 <span class="hint" style="display:inline">(견적서 · 계약서 받을 주소)</span></label><input type="text" id="f-email" placeholder="예: name@example.com">
+    <label>주소</label><input type="text" id="f-addr" placeholder="예: 순천시 조례동 ○○로 12">
+    <label>사업자등록번호 <span class="hint" style="display:inline">(계약서용 · 나중에도 됨)</span></label><input type="text" id="f-bizno" placeholder="000-00-00000">
+    <label>도메인 <span class="hint" style="display:inline">(있으면)</span></label><input type="text" id="f-domain" placeholder="예: example.co.kr">
     <label>한 줄 소개 <span class="hint" style="display:inline">(있으면)</span></label><input type="text" id="f-tag" placeholder="사장님이 늘 하는 그 말">
 
     <h3>홈페이지로 하고 싶은 것</h3>
@@ -337,7 +341,9 @@ var PLANS = {
 };
 
 /* ══ 상태 ══ */
-var P = { biz:'daycare', org:'', region:'', owner:'', tel:'', tag:'', goals:[], target:'', assets:[], plan:'', open:'', note:'' };
+var P = { biz:'daycare', org:'', region:'', owner:'', contact:'', tel:'', email:'', addr:'', bizno:'', domain:'', tag:'', goals:[], target:'', assets:[], plan:'', open:'', note:'' };
+/* 지역 — 옛 링크의 region 이 있으면 그것, 없으면 주소의 첫 낱말 */
+function 지역(){ return P.region || (P.addr||'').split(/[\s,]/)[0] || ''; }
 var Q = new URLSearchParams(location.search);
 var MODE = Q.get('admin')==='1' ? 'admin' : 'customer';
 function $(s){ return document.querySelector(s); }
@@ -360,7 +366,7 @@ function 폼그리기(){
   $('#f-plans').innerHTML = Object.keys(PLANS).map(function(k){ var p=PLANS[k]; return '<label class="plan" data-k="'+k+'"><input type="radio" name="plan" value="'+k+'"><span><b>'+p.name+'</b><small>'+esc(p.설명)+'</small></span><span class="pr">'+원(p.price)+'</span></label>'; }).join('');
 
   $('#f-biz').addEventListener('change', function(){ P.biz=this.value; if(!P.targetTouched) P.target=''; if(!P.planTouched) P.plan=''; 폼채우기(); 그리기(); });
-  ['org','region','owner','tel','tag','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ P[k]=this.value; 그리기(); }); });
+  ['org','owner','contact','tel','email','addr','bizno','domain','tag','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ P[k]=this.value; if(k==='addr') P.region=''; 그리기(); }); });
   $('#f-target').addEventListener('input', function(){ P.target=this.value; P.targetTouched=true; 그리기(); });
   $('#f-open').addEventListener('change', function(){ P.open=this.value; 그리기(); });
   document.querySelectorAll('#f-goals input').forEach(function(c){ c.addEventListener('change', function(){ P.goals=[].map.call(document.querySelectorAll('#f-goals input:checked'),function(x){return x.value;}); 칩색(); 그리기(); }); });
@@ -369,7 +375,8 @@ function 폼그리기(){
 }
 function 폼채우기(){
   $('#f-biz').value = P.biz;
-  ['org','region','owner','tel','tag','note','open'].forEach(function(k){ $('#f-'+k).value = P[k]||''; });
+  ['org','owner','contact','tel','email','addr','bizno','domain','tag','note','open'].forEach(function(k){ $('#f-'+k).value = P[k]||''; });
+  if (!P.addr && P.region) $('#f-addr').value = P.region;   /* 옛 링크 */
   $('#f-target').value = P.target || 업종들[P.biz].손님;
   $('#f-target').placeholder = 업종들[P.biz].손님;
   document.querySelectorAll('#f-goals input').forEach(function(c){ c.checked = P.goals.indexOf(c.value)>=0; });
@@ -402,7 +409,7 @@ $('#b-print').addEventListener('click', function(){ window.print(); });
 $('#b-prompt').addEventListener('click', function(){
   var B = 업종들[P.biz], pk = P.plan || B.plan;
   var t = ['아래 정보로 홈페이지 기획서를 더 다듬어 줘. 사장님이 읽을 문서라 쉬운 말로, 단정하게.','',
-    '업종: ' + B.이름, '상호: ' + (P.org||'(미정)'), '지역: ' + (P.region||'(미정)'),
+    '업종: ' + B.이름, '상호: ' + (P.org||'(미정)'), '지역: ' + (지역()||'(미정)'),
     '웹사이트 목적: ' + (P.goals.length ? P.goals.join(', ') : '(미정)'), '타겟 고객: ' + (P.target||B.손님),
     '보유 콘텐츠: ' + (P.assets.length ? P.assets.join(', ') : '없음'), '규모: ' + PLANS[pk].name + ' (' + PLANS[pk].설명 + ')',
     '사장님이 한 말: ' + (P.tag||'') , '메모: ' + (P.note||''), '',
@@ -417,8 +424,8 @@ $('#b-quote').addEventListener('click', function(){
   var B = 업종들[P.biz], pk = P.plan || B.plan, PL = PLANS[pk];
   /* quote.html 의 S 와 똑같은 모양이어야 한다. 키 하나라도 빠지면 거기서 죽는다. */
   var S = {
-    cl:{ org:P.org, name:P.owner, tel:P.tel, email:'' },
-    pj:{ title:P.org + ' 홈페이지', domain:'', biztype:B.이름, purpose:P.goals.join(', '), plan:pk },
+    cl:{ org:P.org, rep:P.owner, name:P.contact || P.owner, tel:P.tel, email:P.email, addr:P.addr || P.region, biz:P.bizno },
+    pj:{ title:P.org + ' 홈페이지', domain:P.domain, biztype:B.이름, purpose:P.goals.join(', '), plan:pk },
     items:[{ n:PL.name + ' 홈페이지 제작', q:1, p:PL.price }],
     fin:{ vat:'none', deposit:'50' },
     care:{ monthly:String(PL.monthly), free:PL.free },
@@ -439,9 +446,9 @@ function 보드그리기(){
   var 방향 = B.방향.replace(/\{org\}/g, org);
   var 헤드 = P.tag || 방향.split(/[.。]/)[0];
   var b = '';
-  b += '<header class="bh"><div><div class="eyebrow">홈페이지 기획서 · ' + esc(B.이름) + (P.region ? ' · ' + esc(P.region) : '') + '</div>';
+  b += '<header class="bh"><div><div class="eyebrow">홈페이지 기획서 · ' + esc(B.이름) + (지역() ? ' · ' + esc(지역()) : '') + '</div>';
   b += '<h1>' + esc(org) + '<small>홈페이지, 이렇게 만들겠습니다</small></h1><p class="lead">' + esc(방향) + '</p></div>';
-  b += '<div class="bh-r"><b>큰길브리지</b><small>KEUNGIL BRIDGE · www.ai-make.co.kr</small>' + 오늘().replace(/-/g,'.') + '<br>' + (P.owner ? esc(P.owner) + ' 님께<br>' : '') + '담당 김효민 · 1533-7295</div></header>';
+  b += '<div class="bh-r"><b>큰길브리지</b><small>KEUNGIL BRIDGE · www.ai-make.co.kr</small>' + 오늘().replace(/-/g,'.') + '<br>' + ((P.contact || P.owner) ? esc(P.contact || P.owner) + ' 님께<br>' : '') + '담당 김효민 · 1533-7295</div></header>';
 
   b += '<div class="bin">';
   /* 네 칸 */
@@ -563,7 +570,7 @@ $('#b-img').addEventListener('click', function(){
 /* 기획서 → 주문서: 상호·담당·업종·목적·자료·규모·오픈일을 들고 간다 (order.html 의 O 와 같은 이름) */
 $('#b-order').addEventListener('click', function(){
   var B = 업종들[P.biz], pk = P.plan || B.plan;
-  var O = { v:1, org:P.org, biz:P.biz, owner:P.owner, tel:P.tel, email:'', addr:P.region, plan:pk, goals:P.goals, target:P.target, assets:P.assets, slogan:P.tag, open:P.open, note:P.note };
+  var O = { v:1, org:P.org, biz:P.biz, owner:P.owner, tel:P.tel, email:P.email, addr:P.addr || P.region, bizno:P.bizno, domainname:P.domain, plan:pk, goals:P.goals, target:P.target, assets:P.assets, slogan:P.tag, open:P.open, note:P.note };
   window.open(location.pathname.replace(/plan\.html$/, 'order.html') + '#o=' + b64u(JSON.stringify(O)), '_blank', 'noopener');
 });
 
