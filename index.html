@@ -2617,7 +2617,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   if(toOrder) toOrder.addEventListener('click', e=>{
     e.preventDefault();
     const addons = [];
-    $('.opt input[type=checkbox]:checked').forEach(c=>{ if(!c.disabled && !c.closest('.opt').hidden) addons.push({ n: c.dataset.addon }); });
+    $$('.opt input[type=checkbox]:checked').forEach(c=>{ if(!c.disabled && !c.closest('.opt').hidden) addons.push({ n: c.dataset.addon }); });
     qtyRows.forEach(row=>{ const q = +$('[data-q]',row).textContent; if(q>0 && !row.closest('.opt').hidden) addons.push({ n: row.dataset.addon, q: q }); });
     const o = { site: { plan: planKey(), addons: addons } };
     const code = btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
