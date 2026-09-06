@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>홈페이지 주문서 — 큰길브리지</title>
+<meta name="description" content="큰길브리지 홈페이지 주문서. 상호·업종·규모·옵션·자료·일정을 적어 보내면 기획서와 데모를 만들어 드립니다.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/*
+  홈페이지 주문서.
+  손님이 칸을 채워 「주문 보내기」를 누르면 문의 서버(FORM_ENDPOINT)로 가서 형님 메일로 온다.
+  내용은 주소(#o=) 안에 통째로 담겨서, 링크만 있으면 같은 주문서가 열린다.
+
+  그냥 열면      → 손님 화면 (폼)
+  ?admin=1#o=… → 우리 화면 (읽기용 요약 + 기획서 · 견적서 만들기 단추)
+
+  흐름: 문의 접수 → 주문서 → 이메일 접수 → 기획서 · 데모 → 전달 · 확인 → 견적서 · 계약서 → 서명 → 양측 전달 → 완료
+*/
+:root{--paper:#fff;--bg:#F3F2EE;--ink:#1A1A1A;--ink2:#5C5C57;--ink3:#8B8B84;--line:#E2E0D8;--hair:#EDEBE4;
+      --acc:#1E5EFF;--acc-soft:#E8EEFF;--gold:#8F6828;--gold-soft:#FBF3E1;--bad:#C8412B;--good:#1F8A5B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,sans-serif;font-size:15px;line-height:1.65;word-break:keep-all;overflow-wrap:break-word}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;letter-spacing:-.02em}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--acc);display:inline-block}
+.mode{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--acc-soft);color:var(--acc);font-weight:700}
+.mode.adm{background:var(--gold-soft);color:var(--gold)}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:99px;border:1px solid var(--line);background:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn.big{padding:14px 22px;font-size:16px;font-weight:800}
+.btn:disabled{opacity:.45;cursor:default}
+[hidden]{display:none!important}   /* .btn 의 display:inline-flex 가 hidden 을 이기지 않게 */
+
+/* 진행 순서 */
+.flow{max-width:1180px;margin:18px auto 0;padding:0 20px}
+.steps{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.step{flex:none;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.step i{width:20px;height:20px;border-radius:50%;background:var(--bg);color:var(--ink3);font-size:11px;font-weight:800;font-style:normal;display:grid;place-items:center}
+.step.now{border-color:var(--acc);background:var(--acc-soft);color:var(--acc);font-weight:700}
+.step.now i{background:var(--acc);color:#fff}
+.step.done i{background:var(--good);color:#fff}
+.flow p{margin:2px 0 0;font-size:12.5px;color:var(--ink3)}
+
+/* 판 */
+.layout{max-width:1180px;margin:0 auto;padding:16px 20px 60px;display:grid;grid-template-columns:1fr minmax(280px,340px);gap:22px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding-bottom:110px}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.card h2 i{font-style:normal;font-size:11px;letter-spacing:.14em;color:var(--acc);font-weight:800}
+.card .sub{margin:0 0 14px;font-size:13px;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;color:var(--ink2);margin:10px 0 4px}
+label b{color:var(--bad);font-weight:700;margin-left:2px}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px;border-color:var(--acc)}
+input.bad,select.bad{border-color:var(--bad);background:#FFF6F4}
+textarea{min-height:80px;resize:vertical}
+.hint{font-size:12px;color:var(--ink3);margin-top:5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line);border-radius:99px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none}
+.chip input{margin:0;accent-color:var(--acc)}
+.chip.on{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-weight:600}
+.plans{display:grid;gap:8px;margin-top:6px}
+.plan{display:flex;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;cursor:pointer;align-items:flex-start}
+.plan.on{border-color:var(--acc);background:var(--acc-soft)}
+.plan input{margin-top:4px;accent-color:var(--acc)}
+.plan b{display:block;font-size:15px}.plan small{color:var(--ink2);font-size:12.5px}
+.plan .pr{margin-left:auto;font-weight:800;white-space:nowrap}
+.opts{display:grid;gap:6px;margin-top:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;cursor:pointer;background:#fff}
+.opt.on{border-color:var(--acc);background:var(--acc-soft)}
+.opt input{accent-color:var(--acc);margin:0}
+.opt .n{flex:1}.opt .p{font-size:13px;color:var(--gold);font-weight:700;white-space:nowrap}
+.opt[hidden]{display:none}
+.qty{display:flex;align-items:center;gap:6px;margin-left:auto}
+.qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#fff;font:inherit;font-size:16px;cursor:pointer}
+.qty span{min-width:22px;text-align:center;font-weight:800}
+.radios{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.radios label{margin:0;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--line);border-radius:99px;font-size:13.5px;color:var(--ink);cursor:pointer;background:#fff}
+.radios label.on{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-weight:600}
+.radios input{margin:0;accent-color:var(--acc)}
+.agree{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:13.5px;line-height:1.6;margin-top:8px}
+.agree input{margin-top:4px;accent-color:var(--acc)}
+.agree.bad{border-color:var(--bad)}
+.note{font-size:13.5px;margin-top:12px;min-height:1.4em}
+.note.bad{color:var(--bad)}
+.note.ok{color:var(--good)}
+
+/* 오른쪽 요약 */
+aside{position:sticky;top:66px}
+.sum{background:var(--ink);color:#fff;border-radius:16px;padding:20px}
+.sum .k{font-size:11px;letter-spacing:.16em;opacity:.7;font-weight:700}
+.sum .org{font-size:20px;font-weight:900;letter-spacing:-.02em;margin:6px 0 12px;min-height:1.3em}
+.sum ul{list-style:none;margin:0;padding:0;font-size:13.5px}
+.sum li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid rgba(255,255,255,.12)}
+.sum li span:last-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+.sum .tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:12px;border-top:2px solid rgba(255,255,255,.35)}
+.sum .tot b{font-size:24px;letter-spacing:-.02em}
+.sum .vat{font-size:11.5px;opacity:.65;margin-top:4px}
+.sum .mo{font-size:12.5px;opacity:.85;margin-top:8px}
+.sum .btn{width:100%;justify-content:center;margin-top:14px;border-color:transparent}
+.sum .tel{margin-top:12px;font-size:12.5px;opacity:.75;text-align:center}
+.sum .tel a{color:#FFD37A;font-weight:800;text-decoration:none}
+@media(max-width:900px){
+  aside{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:30}
+  .sum{border-radius:16px 16px 0 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+  .sum .k,.sum ul,.sum .vat,.sum .mo,.sum .tel{display:none}
+  .sum .org{font-size:14px;margin:0;grid-column:1}
+  .sum .tot{margin:0;padding:0;border:0;grid-column:1;justify-content:flex-start;gap:8px}
+  .sum .tot b{font-size:18px}
+  .sum .btn{margin:0;grid-column:2;grid-row:1/3;width:auto}
+}
+
+/* 접수 완료 · 관리자 요약 */
+.done{display:none}
+.done.on{display:block}
+.done .big{font-size:24px;font-weight:900;letter-spacing:-.02em;margin:0 0 8px}
+.done ol{margin:12px 0 0;padding-left:22px;color:var(--ink2)}
+.done ol li{margin:6px 0}
+.done ol li b{color:var(--ink)}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:8px 14px;font-size:14px}
+.kv dt{color:var(--ink3);margin:0}.kv dd{margin:0}
+@media(max-width:560px){.kv{grid-template-columns:1fr}.kv dt{margin-top:6px;font-size:12px}}
+.adm-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);opacity:0;transition:.25s;background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:99;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.toast{bottom:96px}}
+@media print{.topbar,aside,.flow,.toast{display:none!important}.layout{display:block;padding:0}.card{border:0;padding:0 0 16px}}
+</style>
+  <script defer src="https://www.ai-make.co.kr/stats/stats.js" data-site="ai-make"></script>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-in">
+  <a class="brand" href="./"><i></i>큰길브리지 <span style="font-weight:500;color:var(--ink3)">· 홈페이지 주문서</span></a>
+  <span class="mode" id="mode">주문서</span>
+  <span class="sp"></span>
+  <button class="btn" id="b-link" type="button">🔗 주문서 링크 복사</button>
+  <button class="btn" id="b-plan" type="button" hidden>📐 기획서 만들기</button>
+  <button class="btn gold" id="b-quote" type="button" hidden>📄 견적서 만들기</button>
+</div></div>
+
+<div class="flow">
+  <div class="steps" id="steps"></div>
+  <p id="flow-p">지금은 <b>주문서</b> 단계입니다. 보내주시면 이메일로 접수되고, 기획서와 데모를 만들어 링크로 보내드립니다.</p>
+</div>
+
+<div class="layout" id="layout">
+  <main id="main">
+    <form id="form" novalidate>
+
+      <section class="card">
+        <h2><i>01</i>업체</h2>
+        <p class="sub">기획서 · 견적서 · 계약서에 그대로 들어갑니다.</p>
+        <div class="grid2">
+          <div><label>상호 (회사 · 가게 이름)<b>*</b></label><input type="text" id="f-org" placeholder="예: 별빛이벤트" autocomplete="organization"></div>
+          <div><label>업종<b>*</b></label><select id="f-biz"></select></div>
+          <div><label>대표 · 담당자 이름<b>*</b></label><input type="text" id="f-owner" placeholder="예: 김대표" autocomplete="name"></div>
+          <div><label>휴대폰<b>*</b></label><input type="tel" id="f-tel" placeholder="010-0000-0000" inputmode="numeric" autocomplete="tel"></div>
+          <div><label>이메일<b>*</b> <span class="hint" style="display:inline">기획서 · 견적서 · 계약서를 받을 주소</span></label><input type="email" id="f-email" placeholder="name@example.com" inputmode="email" autocomplete="email"></div>
+          <div><label>지역 · 주소</label><input type="text" id="f-addr" placeholder="예: 순천시 조례동 (지역 검색에 씁니다)" autocomplete="street-address"></div>
+          <div><label>사업자 구분</label><div class="radios" id="f-kind"></div></div>
+          <div><label>사업자등록번호 <span class="hint" style="display:inline">(계약서 · 세금계산서용, 나중에 주셔도 됩니다)</span></label><input type="text" id="f-bizno" placeholder="000-00-00000" inputmode="numeric"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><i>02</i>홈페이지</h2>
+        <p class="sub">규모를 고르고 필요한 옵션을 켜세요. 오른쪽(폰은 아래)에 금액이 바로 계산됩니다.</p>
+        <label>규모<b>*</b></label>
+        <div class="plans" id="f-plans"></div>
+        <label style="margin-top:16px">옵션</label>
+        <div class="opts" id="f-opts"></div>
+        <label style="margin-top:16px">홈페이지로 하고 싶은 것</label>
+        <div class="chips" id="f-goals"></div>
+        <label>누가 볼 페이지인가요</label><input type="text" id="f-target" placeholder="업종을 고르면 자동으로 채워져요. 고쳐도 됩니다">
+        <label>꼭 들어갈 내용</label>
+        <div class="chips" id="f-pages"></div>
+      </section>
+
+      <section class="card">
+        <h2><i>03</i>자료</h2>
+        <p class="sub">있는 것만 고르세요. 없는 건 저희가 만들거나 상호 글자로 대신합니다.</p>
+        <label>가진 자료</label>
+        <div class="chips" id="f-assets"></div>
+        <label>기존 홈페이지 · 인스타 · 블로그 주소</label><input type="url" id="f-sns" placeholder="https:// (여러 개면 쉼표로)">
+        <label>참고하고 싶은 사이트 <span class="hint" style="display:inline">(동종 업체 · 마음에 든 사이트, 최대 3개)</span></label>
+        <input type="url" id="f-ref1" placeholder="https://"><input type="url" id="f-ref2" placeholder="https://" style="margin-top:6px"><input type="url" id="f-ref3" placeholder="https://" style="margin-top:6px">
+        <label>그 사이트에서 좋았던 점</label><input type="text" id="f-refwhy" placeholder="예: 첫 화면 사진이 크고, 가격표가 바로 보여서">
+      </section>
+
+      <section class="card">
+        <h2><i>04</i>도메인</h2>
+        <p class="sub">주소(www.○○○.co.kr)입니다. 없으면 저희가 잡아 드립니다(옵션 「도메인 등록 + 연결」).</p>
+        <div class="radios" id="f-domain"></div>
+        <input type="text" id="f-domainname" placeholder="가지고 있는 주소 또는 원하는 이름 (예: starlight-event.co.kr)" style="margin-top:8px">
+      </section>
+
+      <section class="card">
+        <h2><i>05</i>글 · 디자인</h2>
+        <p class="sub">완벽하지 않아도 됩니다. 사장님 말투 그대로 적어 주시면 저희가 다듬습니다.</p>
+        <label>한 줄 소개 (첫 화면 큰 글씨)</label><input type="text" id="f-slogan" placeholder="예: 행사가 끝난 뒤에도 이야기되는 자리를 만듭니다">
+        <label>회사 · 대표 소개 (3~5줄)</label><textarea id="f-intro" placeholder="언제 시작했고, 무엇을 잘하고, 어떤 손님이 많은지"></textarea>
+        <label>하는 일 · 메뉴 · 서비스 (한 줄에 하나)</label><textarea id="f-services" placeholder="예:&#10;축제 · 기념식 기획&#10;무대 · 음향 · 조명&#10;LED 전광판 · 영상 중계"></textarea>
+        <label>분위기</label>
+        <div class="chips" id="f-mood"></div>
+        <div class="grid2">
+          <div><label>좋아하는 색 · 로고 색</label><input type="text" id="f-colors" placeholder="예: 남색 + 금색, 로고가 빨강"></div>
+          <div><label>피하고 싶은 것</label><input type="text" id="f-avoid" placeholder="예: 너무 화려한 것, 검은 배경"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><i>06</i>일정 · 결제 · 연락</h2>
+        <div class="grid2">
+          <div><label>오픈 희망일</label><input type="date" id="f-open"><p class="hint">자료 받은 날부터 베이직 5영업일 · 고급형 10영업일이 기본입니다.</p></div>
+          <div><label>결제</label><div class="radios" id="f-pay"></div><p class="hint">계약 뒤 선금 50%, 오픈 확인 뒤 잔금 50%. 부가세 별도.</p></div>
+          <div><label>연락은 이렇게</label><div class="radios" id="f-contact"></div></div>
+          <div><label>연락 편한 시간</label><input type="text" id="f-time" placeholder="예: 평일 오후 2~6시, 행사 없는 날"></div>
+        </div>
+        <label>그 밖에 하실 말씀</label><textarea id="f-note" placeholder="꼭 넣고 싶은 것, 걱정되는 것, 궁금한 것"></textarea>
+        <label class="agree" id="agree-box"><input type="checkbox" id="f-agree"><span><b>개인정보 수집 · 이용 동의</b><br>수집 항목: 상호 · 이름 · 연락처 · 이메일 · 주소 · 사업자번호와 위에 적은 내용. 목적: 홈페이지 제작 상담 · 기획서 · 견적 · 계약. 보유 기간: 계약 종료 후 3년(전자상거래법), 미계약 시 1년. 주식회사 브리지미디어 · 1533-7295</span></label>
+        <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn primary big" type="submit" id="b-send">주문 보내기 →</button>
+          <span class="hint" style="margin:0">보내면 접수 메일이 가고, 기획서 · 데모 링크를 만들어 연락드립니다.</span>
+        </div>
+        <div class="note" id="note"></div>
+      </section>
+    </form>
+
+    <!-- 접수 완료 -->
+    <section class="card done" id="done">
+      <p class="big">접수되었습니다. 감사합니다.</p>
+      <p style="margin:0;color:var(--ink2)"><b id="done-org"></b> 홈페이지 주문서가 큰길브리지에 들어왔습니다. 이제 이렇게 진행됩니다.</p>
+      <ol>
+        <li><b>이메일 접수</b> — 지금 저희 메일로 들어왔습니다. 확인하면 문자 한 통 드립니다.</li>
+        <li><b>기획서 · 데모 작성</b> — 적어 주신 내용으로 기획서 한 장과 실제로 열리는 데모 홈페이지를 만듭니다. 자료 받은 뒤 3~4일.</li>
+        <li><b>전달 · 확인</b> — 링크로 보내드립니다. 휴대폰으로 보시고 고칠 것을 말씀해 주세요.</li>
+        <li><b>견적서 · 계약서</b> — 확정된 구성으로 견적서와 전자계약서를 보냅니다. 링크에서 손가락으로 서명하시면 됩니다.</li>
+        <li><b>서명 → 양측 전달</b> — 서명본 PDF 가 두 분 메일로 자동 발송됩니다. 선금 입금 뒤 제작에 들어갑니다.</li>
+        <li><b>오픈 · 완료</b> — 도메인 연결과 검색 등록까지 마치고, 글자 · 사진을 직접 고칠 수 있는 열쇠를 드립니다.</li>
+      </ol>
+      <div class="adm-acts">
+        <button class="btn" type="button" id="b-copy2">🔗 내 주문서 링크 복사</button>
+        <a class="btn" href="tel:15337295">📞 1533-7295</a>
+        <a class="btn" href="./">큰길브리지 홈으로</a>
+      </div>
+      <p class="hint" style="margin-top:12px">링크를 저장해 두시면 나중에 같은 내용을 다시 보거나 고쳐 보낼 수 있습니다.</p>
+    </section>
+
+    <!-- 관리자 요약 -->
+    <section class="card done" id="adm">
+      <p class="big" id="adm-title">주문서</p>
+      <dl class="kv" id="adm-kv"></dl>
+      <div class="adm-acts">
+        <button class="btn primary" type="button" id="b-plan2">📐 기획서 만들기</button>
+        <button class="btn gold" type="button" id="b-quote2">📄 견적서 만들기</button>
+        <a class="btn" id="b-sms" href="#">💬 접수 문자 보내기</a>
+        <a class="btn" id="b-mail" href="#">✉ 메일 쓰기</a>
+        <button class="btn" type="button" id="b-edit">✎ 폼으로 열기</button>
+      </div>
+      <p class="hint" style="margin-top:12px">기획서는 이 내용이 채워진 채 열립니다. 다듬고 「링크 복사」로 손님에게. 견적서에는 규모 · 옵션이 항목으로 들어갑니다.</p>
+    </section>
+  </main>
+
+  <aside id="aside">
+    <div class="sum">
+      <div class="k">주문 요약</div>
+      <div class="org" id="s-org">상호를 적어 주세요</div>
+      <ul id="s-items"></ul>
+      <div class="tot"><span>합계 (VAT 별도)</span><b id="s-total">0원</b></div>
+      <div class="vat" id="s-vat"></div>
+      <div class="mo" id="s-mo"></div>
+      <button class="btn primary" type="button" id="b-send2">주문 보내기 →</button>
+      <div class="tel">궁금하면 <a href="tel:15337295">1533-7295</a></div>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ 기준 자료 — index.html 계산기 · plan.html 기획서 · quote.html 견적서와 같은 값을 쓴다 ══ */
+var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwvQ4UJRZklRX7bZB6C0s1yZgSvBAMCVccT580L_1BtiVDyh0DIxShCAvN9McZIB0b7FA/exec';   /* 문의 접수 서버 (index.html 과 같은 것) */
+var SMS_TO = '010-7635-7886';
+var PLANS = {
+  basic:{ name:'베이직', price:100000, monthly:10000, free:'', 설명:'원페이지 · 섹션 6개 · 모바일 대응 · 5영업일' },
+  premium:{ name:'고급형', price:500000, monthly:20000, free:'', 설명:'5페이지 · 맞춤 디자인 · 갤러리 · 자동 견적서 · 10영업일' },
+  enterprise:{ name:'기업형', price:1000000, monthly:50000, free:'1개월', 설명:'페이지 무제한 · 관리자 페이지 · CMS 교육 · 일정 협의' }
+};
+var 옵션들 = [
+  { n:'도메인 등록 + 연결', p:30000, plans:'basic premium enterprise' },
+  { n:'갤러리 + 인스타·블로그 자동 연동', p:50000, plans:'basic' },
+  { n:'네이버·구글 AI 검색 세팅', p:50000, plans:'basic' },
+  { n:'자동 계약서 작성·서명', p:50000, plans:'basic premium enterprise' },
+  { n:'모바일 명함 + 콜백 문자', p:50000, plans:'basic premium' },
+  { n:'온라인 예약·신청 시스템', p:150000, plans:'basic' },
+  { n:'쇼핑몰·결제 연동', p:300000, plans:'premium enterprise' },
+  { n:'AI 챗봇 상담', p:200000, plans:'premium enterprise' },
+  { n:'다국어(영·중·일)', p:200000, plans:'premium enterprise' },
+  { n:'로고 + 브랜드 키트', p:150000, plans:'basic premium' },
+  { n:'상세 촬영 대행', p:250000, plans:'basic premium enterprise' }
+];
+var 수량들 = [
+  { k:'page', n:'페이지 추가', p:30000, unit:'P', plans:'basic premium' },
+  { k:'video', n:'숏폼 홍보영상', p:100000, unit:'편', plans:'basic premium enterprise' },
+  { k:'class', n:'AI 활용 1:1 강의', p:100000, unit:'시간', plans:'basic premium enterprise' }
+];
+/* plan.html 의 업종 · 목적 · 자료 목록과 글자까지 같아야 기획서에 그대로 들어간다 */
+var 업종들 = { daycare:['주간보호센터 · 요양','부모님을 모실 곳을 찾는 자녀(보호자)'], event:['이벤트 · 행사 기획','행사를 맡길 담당자 (기업 · 관공서 · 단체)'], singer:['가수 · MC · 공연자','섭외 담당자 (행사 기획사 · 지자체) + 팬'], salon:['미용실 · 뷰티','동네 손님 (20~50대), 예약할지 고민 중'], interior:['인테리어 · 시공','집 · 매장 공사를 앞둔 30~50대, 견적 비교 중'], pension:['펜션 · 숙박','주말 여행을 계획하는 가족 · 커플'], academy:['학원 · 교육','학부모 · 수강 희망자'], clinic:['병원 · 의원','증상으로 검색한 환자'], cafe:['카페 · 식당','근처에서 검색한 손님 · 단체 예약'], etc:['기타 업종','서비스를 찾는 손님'] };
+var 목적들 = ['문의 · 상담 받기','예약 받기','믿음 주기 (실적 · 후기)','작업물 보여주기','검색에 나오기','직원 뽑기','물건 · 서비스 팔기'];
+var 자료들 = ['로고','사진','기존 홈페이지','인스타 · 블로그','후기','명함 · 전단'];
+var 내용들 = ['회사 · 대표 소개','하는 일 · 메뉴','가격표','사진 갤러리','후기','예약 · 문의 폼','오시는 길 · 지도','공지 · 블로그','채용','영상'];
+var 분위기들 = ['깔끔 · 신뢰','따뜻 · 친근','고급 · 차분','활기 · 컬러풀','다크 · 강렬','밝고 넓게'];
+var 구분들 = ['개인사업자','법인','기관 · 단체','개인'];
+var 도메인들 = ['가지고 있어요','없어요 — 새로 잡아주세요','잘 모르겠어요 — 맡길게요'];
+var 결제들 = ['계좌이체 (선금 50 · 잔금 50)','세금계산서 필요','현금영수증 필요'];
+var 연락들 = ['전화','카톡','문자','이메일'];
+var 흐름 = ['문의 접수','주문서','이메일 접수','기획서 · 데모','전달 · 확인','견적서 · 계약서','서명','양측 전달','완료'];
+
+/* ══ 상태 ══ */
+var O = { v:1, org:'', biz:'event', owner:'', tel:'', email:'', addr:'', kind:'', bizno:'', plan:'', opts:[], qty:{page:0,video:0,class:0}, goals:[], target:'', pages:[], assets:[], sns:'', refs:['','',''], refwhy:'', domain:'', domainname:'', slogan:'', intro:'', services:'', mood:[], colors:'', avoid:'', open:'', pay:'', contact:'', time:'', note:'', at:'' };
+var Q = new URLSearchParams(location.search);
+var MODE = Q.get('admin') === '1' ? 'admin' : 'customer';
+function $(s){ return document.querySelector(s); }
+function $$(s){ return [].slice.call(document.querySelectorAll(s)); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64(t){ t=t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; return decodeURIComponent(escape(atob(t))); }
+function 원(n){ return (Number(n)||0).toLocaleString('ko-KR')+'원'; }
+function 날짜글(d){ var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+function 오늘(){ return 날짜글(new Date()); }
+function toast(m){ var t=$('#toast'); t.textContent=m; t.className='toast on'; clearTimeout(toast.t); toast.t=setTimeout(function(){t.className='toast';},2600); }
+function 플랜(){ return PLANS[O.plan] ? O.plan : ''; }
+
+/* ══ 항목 계산 — 견적서(quote.html) items 와 같은 모양 {n,q,p} ══ */
+function 항목들(){
+  var pk = 플랜(), out = [];
+  if (!pk) return out;
+  out.push({ n: PLANS[pk].name + ' 홈페이지 제작', q:1, p: PLANS[pk].price });
+  옵션들.forEach(function(o){ if (O.opts.indexOf(o.n) >= 0 && o.plans.indexOf(pk) >= 0) out.push({ n:o.n, q:1, p:o.p }); });
+  수량들.forEach(function(s){ var q = Number(O.qty[s.k])||0; if (q > 0 && s.plans.indexOf(pk) >= 0) out.push({ n:s.n, q:q, p:s.p }); });
+  return out;
+}
+function 합계(){ return 항목들().reduce(function(a,i){ return a + i.q*i.p; }, 0); }
+
+/* ══ 폼 그리기 ══ */
+function 칩(id, list, key, single){
+  $('#'+id).innerHTML = list.map(function(v){ return '<label class="chip"><input type="'+(single?'radio':'checkbox')+'" name="'+id+'" value="'+esc(v)+'">'+esc(v)+'</label>'; }).join('');
+  $$('#'+id+' input').forEach(function(c){ c.addEventListener('change', function(){
+    if (single) O[key] = c.value; else O[key] = $$('#'+id+' input:checked').map(function(x){ return x.value; });
+    색(); 그리기(); }); });
+}
+function 라디오(id, list, key){
+  $('#'+id).innerHTML = list.map(function(v){ return '<label><input type="radio" name="'+id+'" value="'+esc(v)+'">'+esc(v)+'</label>'; }).join('');
+  $$('#'+id+' input').forEach(function(r){ r.addEventListener('change', function(){ O[key] = r.value; 색(); 그리기(); }); });
+}
+function 폼그리기(){
+  $('#f-biz').innerHTML = Object.keys(업종들).map(function(k){ return '<option value="'+k+'">'+esc(업종들[k][0])+'</option>'; }).join('');
+  $('#f-plans').innerHTML = Object.keys(PLANS).map(function(k){ var p=PLANS[k]; return '<label class="plan" data-k="'+k+'"><input type="radio" name="plan" value="'+k+'"><span><b>'+p.name+'</b><small>'+esc(p.설명)+'</small></span><span class="pr">'+원(p.price)+'~</span></label>'; }).join('');
+  $('#f-opts').innerHTML = 옵션들.map(function(o){ return '<label class="opt" data-plans="'+o.plans+'"><input type="checkbox" value="'+esc(o.n)+'"><span class="n">'+esc(o.n)+'</span><span class="p">+'+원(o.p)+'</span></label>'; }).join('') +
+    수량들.map(function(s){ return '<div class="opt" data-plans="'+s.plans+'" data-qty="'+s.k+'"><span class="n">'+esc(s.n)+' <span class="p">'+s.unit+'당 +'+원(s.p)+'</span></span><span class="qty"><button type="button" data-step="-1" aria-label="줄이기">−</button><span data-q>0</span><button type="button" data-step="1" aria-label="늘리기">+</button></span></div>'; }).join('');
+  칩('f-goals', 목적들, 'goals'); 칩('f-pages', 내용들, 'pages'); 칩('f-assets', 자료들, 'assets'); 칩('f-mood', 분위기들, 'mood');
+  라디오('f-kind', 구분들, 'kind'); 라디오('f-domain', 도메인들, 'domain'); 라디오('f-pay', 결제들, 'pay'); 라디오('f-contact', 연락들, 'contact');
+
+  $('#f-biz').addEventListener('change', function(){ O.biz = this.value; if (!O.targetTouched) { O.target=''; $('#f-target').value=''; } $('#f-target').placeholder = 업종들[O.biz][1]; 그리기(); });
+  ['org','owner','tel','email','addr','bizno','sns','refwhy','domainname','slogan','intro','services','colors','avoid','time','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ O[k] = this.value; this.classList.remove('bad'); 그리기(); }); });
+  ['ref1','ref2','ref3'].forEach(function(k,i){ $('#f-'+k).addEventListener('input', function(){ O.refs[i] = this.value; 그리기(); }); });
+  $('#f-target').addEventListener('input', function(){ O.target = this.value; O.targetTouched = true; 그리기(); });
+  $('#f-open').addEventListener('change', function(){ O.open = this.value; 그리기(); });
+  $$('#f-plans input').forEach(function(r){ r.addEventListener('change', function(){ O.plan = r.value; 색(); 옵션보이기(); 그리기(); }); });
+  $$('#f-opts input[type=checkbox]').forEach(function(c){ c.addEventListener('change', function(){ O.opts = $$('#f-opts input[type=checkbox]:checked').map(function(x){ return x.value; }); 색(); 그리기(); }); });
+  $$('#f-opts [data-qty]').forEach(function(row){
+    var k = row.dataset.qty, q = row.querySelector('[data-q]');
+    $$('button', row).forEach(function(b){ b.addEventListener('click', function(){ O.qty[k] = Math.max(0, Math.min(50, (Number(O.qty[k])||0) + Number(b.dataset.step))); q.textContent = O.qty[k]; row.classList.toggle('on', O.qty[k] > 0); 그리기(); }); });
+  });
+  $('#f-tel').addEventListener('input', function(){ var d=this.value.replace(/[^0-9]/g,'').slice(0,11); if (d.length>=10 && d.indexOf('01')===0) { this.value = d.length>10 ? d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7) : d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6); O.tel=this.value; } });
+}
+function 폼채우기(){
+  $('#f-biz').value = O.biz; $('#f-target').placeholder = 업종들[O.biz][1];
+  ['org','owner','tel','email','addr','bizno','sns','refwhy','domainname','slogan','intro','services','colors','avoid','time','note','target','open'].forEach(function(k){ $('#f-'+k).value = O[k]||''; });
+  ['ref1','ref2','ref3'].forEach(function(k,i){ $('#f-'+k).value = O.refs[i]||''; });
+  $$('#f-plans input').forEach(function(r){ r.checked = r.value === O.plan; });
+  $$('#f-opts input[type=checkbox]').forEach(function(c){ c.checked = O.opts.indexOf(c.value) >= 0; });
+  $$('#f-opts [data-qty]').forEach(function(row){ var k=row.dataset.qty; row.querySelector('[data-q]').textContent = O.qty[k]||0; row.classList.toggle('on', (O.qty[k]||0) > 0); });
+  [['f-goals','goals'],['f-pages','pages'],['f-assets','assets'],['f-mood','mood']].forEach(function(x){ $$('#'+x[0]+' input').forEach(function(c){ c.checked = (O[x[1]]||[]).indexOf(c.value) >= 0; }); });
+  [['f-kind','kind'],['f-domain','domain'],['f-pay','pay'],['f-contact','contact']].forEach(function(x){ $$('#'+x[0]+' input').forEach(function(r){ r.checked = r.value === O[x[1]]; }); });
+  색(); 옵션보이기();
+}
+function 색(){
+  $$('.chip,.radios label').forEach(function(l){ var i=l.querySelector('input'); l.classList.toggle('on', !!(i && i.checked)); });
+  $$('.plan').forEach(function(l){ l.classList.toggle('on', l.querySelector('input').checked); });
+  $$('.opt').forEach(function(l){ var i=l.querySelector('input[type=checkbox]'); if (i) l.classList.toggle('on', i.checked); });
+}
+/* 규모에 없는 옵션은 감추고 선택도 푼다 (계산기와 같은 규칙) */
+function 옵션보이기(){
+  var pk = 플랜();
+  $$('#f-opts .opt').forEach(function(row){
+    var on = !pk || row.dataset.plans.indexOf(pk) >= 0;
+    row.hidden = !on;
+    if (!on) { var c=row.querySelector('input[type=checkbox]'); if (c) c.checked=false; if (row.dataset.qty) { O.qty[row.dataset.qty]=0; row.querySelector('[data-q]').textContent='0'; row.classList.remove('on'); } }
+  });
+  O.opts = $$('#f-opts input[type=checkbox]:checked').map(function(x){ return x.value; });
+}
+
+/* ══ 요약 · 주소 ══ */
+function 그리기(){
+  var items = 항목들(), sum = 합계(), pk = 플랜();
+  $('#s-org').textContent = O.org || '상호를 적어 주세요';
+  $('#s-items').innerHTML = items.length ? items.map(function(i){ return '<li><span>'+esc(i.n)+(i.q>1?' ×'+i.q:'')+'</span><span>'+원(i.q*i.p)+'</span></li>'; }).join('') : '<li><span style="opacity:.6">규모를 고르면 계산됩니다</span><span></span></li>';
+  $('#s-total').textContent = 원(sum);
+  $('#s-vat').textContent = sum ? '부가세 포함 ' + 원(Math.round(sum*1.1)) + ' · 선금 50% ' + 원(Math.round(sum/2)) : '';
+  $('#s-mo').textContent = pk ? '월 관리 ' + 원(PLANS[pk].monthly) + ' (호스팅 · 도메인 · 보안 · 수정 지원' + (PLANS[pk].free ? ' · 첫 '+PLANS[pk].free+' 무료' : '') + ')' : '';
+  try { history.replaceState(null, '', location.pathname + (MODE==='admin'?'?admin=1':'') + '#o=' + b64u(JSON.stringify(O))); } catch(e){}
+}
+function 주문링크(admin){ return location.origin + location.pathname + (admin?'?admin=1':'') + '#o=' + b64u(JSON.stringify(O)); }
+
+/* ══ 기획서 · 견적서로 넘기기 (plan.html 의 P · quote.html 의 S 와 같은 모양) ══ */
+function 기획서링크(){
+  var P = { biz:O.biz, org:O.org, region:(O.addr||'').split(/[\s,]/)[0]||'', owner:O.owner, tel:O.tel, tag:O.slogan,
+    goals:O.goals.filter(function(g){ return 목적들.indexOf(g)>=0; }), target:O.target, assets:O.assets.filter(function(a){ return 자료들.indexOf(a)>=0; }),
+    plan:플랜()||'', open:O.open,
+    note:[O.pages.length?'넣을 내용: '+O.pages.join(', '):'', O.refs.filter(Boolean).length?'참고 사이트: '+O.refs.filter(Boolean).join(' , ')+(O.refwhy?' — '+O.refwhy:''):'', O.domain?'도메인: '+O.domain+(O.domainname?' ('+O.domainname+')':''):'', O.mood.length?'분위기: '+O.mood.join(', '):'', O.colors?'색: '+O.colors:'', O.avoid?'피할 것: '+O.avoid:'', O.note].filter(Boolean).join('\n') };
+  return location.pathname.replace(/order\.html$/, 'plan.html') + '?admin=1#p=' + b64u(JSON.stringify(P));
+}
+function 견적서링크(){
+  var pk = 플랜() || 'basic', PL = PLANS[pk];
+  var S = { cl:{ org:O.org, name:O.owner, tel:O.tel, email:O.email },
+    pj:{ title:O.org + ' 홈페이지', domain:O.domainname||'', biztype:업종들[O.biz][0], purpose:O.goals.join(', '), plan:pk },
+    items: 항목들().length ? 항목들() : [{ n:PL.name+' 홈페이지 제작', q:1, p:PL.price }],
+    fin:{ vat:'none', deposit:'50' }, care:{ monthly:String(PL.monthly), free:PL.free }, sch:{ start:'', open:O.open },
+    note:'주문서 기준으로 작성. 주문서: ' + 주문링크(true), meta:{ no:'', date:오늘(), valid:'발행일로부터 30일' } };
+  return location.pathname.replace(/order\.html$/, 'quote.html') + '?admin=1#q=' + b64u(JSON.stringify(S));
+}
+
+/* ══ 보내기 ══ */
+function 요약글(){
+  var pk = 플랜(), L = [];
+  L.push('[홈페이지 주문서] ' + (O.org||'') + ' · ' + (pk?PLANS[pk].name:'규모 미정') + ' · ' + 원(합계()) + ' (VAT 별도)');
+  L.push('▶ 관리자 주문서 열기 (기획서 · 견적서 만들기 단추 있음):'); L.push(주문링크(true)); L.push('');
+  L.push('■ 업체'); L.push('상호: '+O.org); L.push('업종: '+업종들[O.biz][0]); L.push('담당: '+O.owner+' · '+O.tel+' · '+O.email); if(O.addr) L.push('지역·주소: '+O.addr); if(O.kind) L.push('구분: '+O.kind+(O.bizno?' · '+O.bizno:''));
+  L.push(''); L.push('■ 홈페이지'); L.push('규모: '+(pk?PLANS[pk].name+' '+원(PLANS[pk].price):'미정'));
+  항목들().slice(1).forEach(function(i){ L.push('옵션: '+i.n+(i.q>1?' ×'+i.q:'')+' — '+원(i.q*i.p)); });
+  if(O.goals.length) L.push('목적: '+O.goals.join(', ')); if(O.target) L.push('타깃: '+O.target); if(O.pages.length) L.push('넣을 내용: '+O.pages.join(', '));
+  L.push(''); L.push('■ 자료'); if(O.assets.length) L.push('가진 자료: '+O.assets.join(', ')); if(O.sns) L.push('기존 사이트·SNS: '+O.sns); var refs=O.refs.filter(Boolean); if(refs.length) L.push('참고 사이트: '+refs.join(' , ')); if(O.refwhy) L.push('좋았던 점: '+O.refwhy);
+  L.push(''); L.push('■ 도메인: '+(O.domain||'미정')+(O.domainname?' — '+O.domainname:''));
+  L.push(''); L.push('■ 글·디자인'); if(O.slogan) L.push('한 줄 소개: '+O.slogan); if(O.intro) L.push('소개: '+O.intro.replace(/\n/g,' / ')); if(O.services) L.push('하는 일: '+O.services.replace(/\n/g,' / ')); if(O.mood.length) L.push('분위기: '+O.mood.join(', ')); if(O.colors) L.push('색: '+O.colors); if(O.avoid) L.push('피할 것: '+O.avoid);
+  L.push(''); L.push('■ 일정·결제·연락'); if(O.open) L.push('오픈 희망: '+O.open); if(O.pay) L.push('결제: '+O.pay); if(O.contact) L.push('연락: '+O.contact+(O.time?' · '+O.time:'')); if(O.note) L.push('하실 말씀: '+O.note.replace(/\n/g,' / '));
+  L.push(''); L.push('▶ 기획서 바로 열기: ' + location.origin + 기획서링크()); L.push('▶ 견적서 바로 열기: ' + location.origin + 견적서링크());
+  return L.join('\n');
+}
+function 검사(){
+  var bad = [];
+  if (!O.org) bad.push('f-org'); if (!O.owner) bad.push('f-owner');
+  if (!/^01[016789][0-9]{7,8}$/.test((O.tel||'').replace(/[^0-9]/g,''))) bad.push('f-tel');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(O.email||'')) bad.push('f-email');
+  $$('input.bad').forEach(function(i){ i.classList.remove('bad'); });
+  bad.forEach(function(id){ $('#'+id).classList.add('bad'); });
+  var plan = !!플랜(); var agree = $('#f-agree').checked;
+  $('#agree-box').classList.toggle('bad', !agree);
+  if (bad.length) { $('#'+bad[0]).focus(); return '상호 · 담당자 · 휴대폰 · 이메일을 확인해 주세요'; }
+  if (!plan) { $('#f-plans').scrollIntoView({block:'center'}); return '규모(베이직 · 고급형 · 기업형)를 골라 주세요'; }
+  if (!agree) return '개인정보 수집 · 이용에 동의해 주세요';
+  return '';
+}
+var 보내는중 = false;
+function 보내기(){
+  if (보내는중) return;
+  var msg = 검사(); var note = $('#note');
+  if (msg) { note.className='note bad'; note.textContent = msg; return; }
+  O.at = new Date().toLocaleString('ko-KR', { timeZone:'Asia/Seoul' });
+  var items = 항목들();
+  var payload = {
+    name: O.org + ' / ' + O.owner, phone: O.tel, email: O.email, service: '홈페이지 주문서 (' + PLANS[플랜()].name + ')',
+    message: 요약글(), total: 원(합계()) + ' (VAT 별도)',
+    quote: items.map(function(i){ return '· ' + i.n + (i.q>1?' ×'+i.q:'') + ' — ' + 원(i.q*i.p); }).join('\n'),
+    plan: 플랜(), items: items.map(function(i){ return { n: i.n + (i.q>1?' ×'+i.q:''), p: i.q*i.p }; }),
+    at: O.at, page: 주문링크(true), website: ''
+  };
+  보내는중 = true; note.className='note'; note.textContent = '보내는 중…';
+  $('#b-send').disabled = true; $('#b-send2').disabled = true;
+  fetch(FORM_ENDPOINT, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    .then(function(r){ return r.json().catch(function(){ return { ok: r.ok }; }); })
+    .then(function(out){ if (out && out.ok) 완료(); else 실패(out && out.error); })
+    .catch(function(){ 실패(''); })
+    .finally(function(){ 보내는중 = false; $('#b-send').disabled = false; $('#b-send2').disabled = false; });
+}
+function 완료(){
+  $('#form').style.display = 'none'; $('#aside').style.display = 'none';
+  $('#done').classList.add('on'); $('#done-org').textContent = O.org;
+  $$('.step').forEach(function(s,i){ s.classList.toggle('done', i < 2); s.classList.toggle('now', i === 2); });
+  $('#flow-p').innerHTML = '접수됐습니다. 다음은 <b>기획서 · 데모</b> 차례입니다.';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function 실패(err){
+  var note = $('#note'); note.className = 'note bad';
+  var 글 = '[홈페이지 주문] ' + O.org + ' / ' + O.owner + ' / ' + PLANS[플랜()].name + '\n주문서: ' + 주문링크(true);
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  note.innerHTML = '접수 서버가 응답하지 않습니다' + (err ? ' (' + esc(err) + ')' : '') + '. 잠시 뒤 다시 누르시거나, <a href="sms:' + SMS_TO.replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(글) + '">문자로 주문서 링크 보내기</a> · 또는 위의 「주문서 링크 복사」로 카톡에 붙여 보내 주세요. 링크 안에 내용이 다 들어 있습니다.';
+}
+
+/* ══ 관리자 화면 ══ */
+function 관리자그리기(){
+  var pk = 플랜(), rows = [
+    ['접수', O.at || '-'], ['상호', O.org], ['업종', 업종들[O.biz][0]], ['담당', O.owner + ' · ' + O.tel + ' · ' + O.email], ['지역·주소', O.addr], ['구분', (O.kind||'') + (O.bizno ? ' · ' + O.bizno : '')],
+    ['규모', pk ? PLANS[pk].name + ' ' + 원(PLANS[pk].price) : '미정'], ['옵션', 항목들().slice(1).map(function(i){ return i.n + (i.q>1?' ×'+i.q:'') + ' (' + 원(i.q*i.p) + ')'; }).join(', ')], ['합계', 원(합계()) + ' (VAT 별도) · 부가세 포함 ' + 원(Math.round(합계()*1.1))],
+    ['목적', O.goals.join(', ')], ['타깃', O.target], ['넣을 내용', O.pages.join(', ')], ['가진 자료', O.assets.join(', ')], ['기존 사이트·SNS', O.sns], ['참고 사이트', O.refs.filter(Boolean).join(' , ') + (O.refwhy ? ' — ' + O.refwhy : '')],
+    ['도메인', (O.domain||'') + (O.domainname ? ' — ' + O.domainname : '')], ['한 줄 소개', O.slogan], ['소개', O.intro], ['하는 일', O.services], ['분위기', O.mood.join(', ') + (O.colors ? ' · 색: ' + O.colors : '') + (O.avoid ? ' · 피할 것: ' + O.avoid : '')],
+    ['오픈 희망', O.open], ['결제', O.pay], ['연락', (O.contact||'') + (O.time ? ' · ' + O.time : '')], ['하실 말씀', O.note]
+  ];
+  $('#adm-title').textContent = (O.org || '(상호 없음)') + ' 주문서';
+  $('#adm-kv').innerHTML = rows.filter(function(r){ return r[1] && String(r[1]).trim(); }).map(function(r){ return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]).replace(/\n/g,'<br>') + '</dd>'; }).join('');
+  var 문자 = '[큰길브리지] ' + O.owner + ' 님, ' + O.org + ' 홈페이지 주문서 잘 받았습니다. 기획서와 데모 링크를 만들어 3~4일 안에 보내드립니다. 김효민 1533-7295';
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  $('#b-sms').href = 'sms:' + (O.tel||'').replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(문자);
+  $('#b-mail').href = 'mailto:' + encodeURIComponent(O.email||'') + '?subject=' + encodeURIComponent('[큰길브리지] ' + O.org + ' 홈페이지 기획서 · 데모') + '&body=' + encodeURIComponent(O.owner + ' 님, 큰길브리지 김효민입니다.\n주문서 잘 받았습니다.\n\n기획서: (링크)\n데모: (링크)\n\n보시고 고칠 것을 말씀해 주세요. 1533-7295');
+}
+function 복사(text, msg){
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ toast(msg); }, function(){ 폴백(); }); else 폴백();
+  function 폴백(){ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast(msg); }catch(e){ prompt('복사해서 쓰세요', text); } document.body.removeChild(ta); }
+}
+
+/* ══ 단추 ══ */
+$('#form').addEventListener('submit', function(e){ e.preventDefault(); 보내기(); });
+$('#b-send2').addEventListener('click', 보내기);
+$('#b-link').addEventListener('click', function(){ 복사(주문링크(MODE==='admin'), '주문서 링크를 복사했어요'); });
+$('#b-copy2').addEventListener('click', function(){ 복사(주문링크(false), '주문서 링크를 복사했어요'); });
+$('#b-plan').addEventListener('click', function(){ window.open(기획서링크(), '_blank', 'noopener'); });
+$('#b-plan2').addEventListener('click', function(){ window.open(기획서링크(), '_blank', 'noopener'); });
+$('#b-quote').addEventListener('click', function(){ window.open(견적서링크(), '_blank', 'noopener'); });
+$('#b-quote2').addEventListener('click', function(){ window.open(견적서링크(), '_blank', 'noopener'); });
+$('#b-edit').addEventListener('click', function(){ $('#adm').classList.remove('on'); $('#form').style.display=''; $('#aside').style.display=''; 폼채우기(); 그리기(); });
+$('#f-agree').addEventListener('change', function(){ $('#agree-box').classList.remove('bad'); });
+
+/* ══ 시작 ══ */
+(function(){
+  $('#steps').innerHTML = 흐름.map(function(s,i){ return '<span class="step'+(i===1?' now':'')+(i===0?' done':'')+'"><i>'+(i+1)+'</i>'+esc(s)+'</span>'; }).join('');
+  var h = location.hash.indexOf('#o=')===0 ? location.hash.slice(3) : '';
+  if (h) { try { var o = JSON.parse(unb64(h)); if (o && typeof o === 'object') {
+    /* 계산기에서 넘어온 짧은 형태 {site:{plan,addons:[{n,p,q}]}} 도 받는다 */
+    if (o.site) { if (PLANS[o.site.plan]) O.plan = o.site.plan; (o.site.addons||[]).forEach(function(a){ var q = 수량들.filter(function(s){ return a.n.indexOf(s.n)===0; })[0]; if (q) O.qty[q.k] = Number(a.q)||1; else if (옵션들.some(function(x){ return x.n===a.n; })) O.opts.push(a.n); }); }
+    else { Object.keys(O).forEach(function(k){ if (o[k]!==undefined) O[k]=o[k]; }); if (!업종들[O.biz]) O.biz='etc'; if (!Array.isArray(O.refs)) O.refs=['','','']; O.qty = Object.assign({page:0,video:0,class:0}, O.qty||{}); }
+  } } catch(e){} }
+  폼그리기(); 폼채우기(); 그리기();
+  if (MODE==='admin') {
+    $('#mode').textContent='관리자'; $('#mode').classList.add('adm');
+    $('#b-plan').hidden = false; $('#b-quote').hidden = false;
+    $('#form').style.display='none'; $('#aside').style.display='none';
+    $('#adm').classList.add('on'); 관리자그리기();
+    $$('.step').forEach(function(s,i){ s.classList.toggle('done', i < 2); s.classList.toggle('now', i === 2); });
+    $('#flow-p').innerHTML = '주문서가 들어왔습니다. 다음은 <b>기획서 · 데모</b> — 아래 단추로 기획서와 견적서를 바로 만듭니다.';
+  }
+})();
+</script>
+</body>
+</html>
