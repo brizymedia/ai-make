@@ -59,6 +59,8 @@ input,textarea,select,button{font:inherit;color:inherit}
 .wrap{max-width:1400px;margin:0 auto;padding:22px 20px 80px;display:grid;
   grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;align-items:start}
 @media(max-width:1080px){.wrap{grid-template-columns:1fr}}
+/* 손님 화면(작성 패널 없음)은 문서 한 칸으로 — 안 그러면 문서가 왼쪽 380px 칸에 갇혀 글자가 세로로 쪼개진다 */
+.wrap.cust{grid-template-columns:minmax(0,1fr);max-width:980px}
 
 /* ── 작성 패널 ──────────────────────── */
 #admin{position:sticky;top:74px;max-height:calc(100vh - 96px);overflow-y:auto;
@@ -1109,6 +1111,7 @@ function 화면준비(){
     $('#mode-pill').textContent = MODE==='preview' ? '미리보기' : '계약서 확인 · 서명';
     $('#mode-pill').className = 'pill cust';
     $$('.no-cust').forEach(function(el){ el.style.display='none'; });
+    var 판 = document.querySelector('.wrap'); if(판) 판.classList.add('cust');   /* 문서 한 칸 배치 */
     if(MODE==='customer' && !S.sig.img){
       $('#padwrap').hidden = false;
       setTimeout(패드크기, 60);

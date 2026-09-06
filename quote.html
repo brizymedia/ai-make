@@ -46,6 +46,8 @@ img{max-width:100%;height:auto;display:block}
 .wrap{max-width:1400px;margin:0 auto;padding:22px 20px 80px;display:grid;
   grid-template-columns:minmax(320px,420px) 1fr;gap:22px;align-items:start}
 @media(max-width:1080px){ .wrap{grid-template-columns:1fr} }
+/* 손님 화면(작성 패널 없음)은 문서 한 칸으로 — 안 그러면 문서가 왼쏙 좁은 칸에 갇힌다 */
+.wrap.cust{grid-template-columns:minmax(0,1fr);max-width:980px}
 
 /* ── 작성 패널 ───────────────────────── */
 .panel{background:var(--ink-2);border:1px solid var(--line);border-radius:16px;padding:20px;
@@ -747,6 +749,7 @@ $('#btn-contract').addEventListener('click', function(){
     $('#mode-pill').textContent = '견적서';
     $('#mode-pill').className = 'pill cust';
     $$('.no-cust').forEach(function(el){ el.style.display = 'none'; });
+    var 판 = document.querySelector('.wrap'); if(판) 판.classList.add('cust');   /* 문서 한 칸 배치 */
   }
   그리기();
 })();
