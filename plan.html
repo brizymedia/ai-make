@@ -230,6 +230,7 @@ textarea{min-height:70px;resize:vertical}
     <label>전화</label><input type="text" id="f-tel" placeholder="예: 010-0000-0000">
     <label>이메일 <span class="hint" style="display:inline">(견적서 · 계약서 받을 주소)</span></label><input type="text" id="f-email" placeholder="예: name@example.com">
     <label>주소</label><input type="text" id="f-addr" placeholder="예: 순천시 조례동 ○○로 12">
+    <label>접수 지역 <span class="hint" style="display:inline">(일을 받는 지역 · 지역 페이지가 됩니다)</span></label><input type="text" id="f-areas" placeholder="예: 광주 · 전남 · 경남">
     <label>사업자등록번호 <span class="hint" style="display:inline">(계약서용 · 나중에도 됨)</span></label><input type="text" id="f-bizno" placeholder="000-00-00000">
     <label>도메인 <span class="hint" style="display:inline">(있으면)</span></label><input type="text" id="f-domain" placeholder="예: example.co.kr">
     <label>한 줄 소개 <span class="hint" style="display:inline">(있으면)</span></label><input type="text" id="f-tag" placeholder="사장님이 늘 하는 그 말">
@@ -270,7 +271,7 @@ var 업종들 = {
   event:{ 이름:'이벤트 · 행사 기획', 손님:'행사를 맡길 담당자 (기업 · 관공서 · 단체)',
     방향:'{org}는 무대 · 음향 · 진행을 한 번에 맡는 회사입니다. 홈페이지는 담당자가 「이런 행사도 했구나」를 30초 안에 확인하고 견적을 요청하게 만듭니다.',
     섹션:['대표 행사 영상 · 사진','하는 일 (기획 · 무대 · 음향 · 영상 · 진행)','실적 (행사 수 · 연도 · 주요 고객)','보유 장비','진행 절차 · 견적 안내','견적 문의'],
-    페이지:[['회사 소개',['인사말 · 연혁','팀 · 장비','오시는 길']],['하는 일',['행사 기획','무대 · 음향 · 조명','영상 · 중계','사회 · 공연 섭외']],['행사 이야기',['최근 행사 갤러리','행사별 후기']],['지역별 안내',['순천 · 여수 · 광양 등 지역 페이지']],['견적 문의',['견적 요청 폼','진행 절차','자주 묻는 질문']]],
+    페이지:[['회사 소개',['인사말 · 연혁','팀 · 장비','오시는 길']],['하는 일',['행사 기획','무대 · 음향 · 조명','영상 · 중계','사회 · 공연 섭외']],['행사 이야기',['최근 행사 갤러리','행사별 후기']],['지역별 안내',['{areas} 지역 페이지']],['견적 문의',['견적 요청 폼','진행 절차','자주 묻는 질문']]],
     사진:['무대 전경 (관객 있는) 3장','장비 세팅 사진','사회자 · 공연 사진','팀 작업 사진','대표 행사 현수막 · 로고 보이는 것'],
     문구:['첫 화면은 「가장 큰 행사」 사진 한 장. 규모가 신뢰입니다','실적은 숫자로: 행사 수 · 연도 · 기관명','견적 문의는 항목 체크 방식으로 — 담당자는 뭘 물어야 할지 모릅니다'],
     cta:'견적 문의', plan:'premium' },
@@ -341,9 +342,16 @@ var PLANS = {
 };
 
 /* ══ 상태 ══ */
-var P = { biz:'daycare', org:'', region:'', owner:'', contact:'', tel:'', email:'', addr:'', bizno:'', domain:'', tag:'', goals:[], target:'', assets:[], plan:'', open:'', note:'' };
+var P = { biz:'daycare', org:'', region:'', owner:'', contact:'', tel:'', email:'', addr:'', areas:'', bizno:'', domain:'', tag:'', goals:[], target:'', assets:[], plan:'', open:'', note:'' };
 /* 지역 — 옛 링크의 region 이 있으면 그것, 없으면 주소의 첫 낱말 */
 function 지역(){ return P.region || (P.addr||'').split(/[\s,]/)[0] || ''; }
+/* 접수 지역 문구 — 「광주 · 전남 · 경남 등」. 칸이 비면 주소의 지역, 그것도 없으면 「인근」 */
+function 지역들(){
+  var a = (P.areas||'').split(/[,·\/]+/).map(function(x){ return x.trim(); }).filter(Boolean);
+  if (!a.length && 지역()) a = [지역()];
+  return a.length ? a.slice(0, 4).join(' · ') + (a.length > 4 ? ' 등' : '') : '인근';
+}
+function 채움(s){ return String(s).replace(/\{areas\}/g, 지역들()); }
 var Q = new URLSearchParams(location.search);
 var MODE = Q.get('admin')==='1' ? 'admin' : 'customer';
 function $(s){ return document.querySelector(s); }
@@ -366,7 +374,7 @@ function 폼그리기(){
   $('#f-plans').innerHTML = Object.keys(PLANS).map(function(k){ var p=PLANS[k]; return '<label class="plan" data-k="'+k+'"><input type="radio" name="plan" value="'+k+'"><span><b>'+p.name+'</b><small>'+esc(p.설명)+'</small></span><span class="pr">'+원(p.price)+'</span></label>'; }).join('');
 
   $('#f-biz').addEventListener('change', function(){ P.biz=this.value; if(!P.targetTouched) P.target=''; if(!P.planTouched) P.plan=''; 폼채우기(); 그리기(); });
-  ['org','owner','contact','tel','email','addr','bizno','domain','tag','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ P[k]=this.value; if(k==='addr') P.region=''; 그리기(); }); });
+  ['org','owner','contact','tel','email','addr','areas','bizno','domain','tag','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ P[k]=this.value; if(k==='addr') P.region=''; 그리기(); }); });
   $('#f-target').addEventListener('input', function(){ P.target=this.value; P.targetTouched=true; 그리기(); });
   $('#f-open').addEventListener('change', function(){ P.open=this.value; 그리기(); });
   document.querySelectorAll('#f-goals input').forEach(function(c){ c.addEventListener('change', function(){ P.goals=[].map.call(document.querySelectorAll('#f-goals input:checked'),function(x){return x.value;}); 칩색(); 그리기(); }); });
@@ -375,7 +383,7 @@ function 폼그리기(){
 }
 function 폼채우기(){
   $('#f-biz').value = P.biz;
-  ['org','owner','contact','tel','email','addr','bizno','domain','tag','note','open'].forEach(function(k){ $('#f-'+k).value = P[k]||''; });
+  ['org','owner','contact','tel','email','addr','areas','bizno','domain','tag','note','open'].forEach(function(k){ $('#f-'+k).value = P[k]||''; });
   if (!P.addr && P.region) $('#f-addr').value = P.region;   /* 옛 링크 */
   $('#f-target').value = P.target || 업종들[P.biz].손님;
   $('#f-target').placeholder = 업종들[P.biz].손님;
@@ -414,7 +422,7 @@ $('#b-prompt').addEventListener('click', function(){
     '보유 콘텐츠: ' + (P.assets.length ? P.assets.join(', ') : '없음'), '규모: ' + PLANS[pk].name + ' (' + PLANS[pk].설명 + ')',
     '사장님이 한 말: ' + (P.tag||'') , '메모: ' + (P.note||''), '',
     '지금 뼈대:', '- 방향: ' + B.방향.replace(/\{org\}/g, P.org||'이 업체'),
-    '- 섹션: ' + B.섹션.join(' / '), '- 페이지: ' + B.페이지.map(function(p){return p[0]+'('+p[1].join(', ')+')';}).join(' / '),
+    '- 섹션: ' + B.섹션.join(' / '), '- 페이지: ' + B.페이지.map(function(p){return p[0]+'('+p[1].map(채움).join(', ')+')';}).join(' / '),
     '- 필요한 사진: ' + B.사진.join(' / '), '',
     '다음 셋을 포함해서 제안해 줘:', '1) 트리 구조 사이트맵 (depth 최대 2)', '2) 페이지별 콘텐츠 구성과 첫 문장 후보', '3) CTA 위치와 이유'].join('\n');
   복사(t, '프롬프트를 복사했어요. Claude 에 붙여넣으세요');
@@ -468,7 +476,7 @@ function 보드그리기(){
       B.섹션.map(function(sname, i){ return '<div class="kid"><span class="no">' + (i + 1) + '</span><b>' + esc(sname) + '</b></div>'; }).join('') + '</div></div>';
   } else {
     b += '<div class="smap" style="--n:' + B.페이지.length + '"><div class="root">홈<small>' + esc(B.섹션.slice(0, 3).join(' · ')) + '</small></div><div class="kids">' +
-      B.페이지.map(function(pg){ return '<div class="kid"><b>' + esc(pg[0]) + '</b><ul>' + pg[1].slice(0, 3).map(function(x){ return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</div>';
+      B.페이지.map(function(pg){ return '<div class="kid"><b>' + esc(pg[0]) + '</b><ul>' + pg[1].slice(0, 3).map(function(x){ return '<li>' + esc(채움(x)) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</div>';
     if (pk === 'enterprise') b += '<div class="auto"><b>자동으로 굴러가는 것</b> — 사진 한 장 올리면 갤러리 글 + 블로그 · 밴드 공유 + 검색 등록 / 문의 → 견적서 → 전자계약 → PDF / 지역별 검색 페이지 / 누가 봤는지 알림</div>';
     b += '</div>';
   }
@@ -570,7 +578,7 @@ $('#b-img').addEventListener('click', function(){
 /* 기획서 → 주문서: 상호·담당·업종·목적·자료·규모·오픈일을 들고 간다 (order.html 의 O 와 같은 이름) */
 $('#b-order').addEventListener('click', function(){
   var B = 업종들[P.biz], pk = P.plan || B.plan;
-  var O = { v:1, org:P.org, biz:P.biz, owner:P.owner, tel:P.tel, email:P.email, addr:P.addr || P.region, bizno:P.bizno, domainname:P.domain, plan:pk, goals:P.goals, target:P.target, assets:P.assets, slogan:P.tag, open:P.open, note:P.note };
+  var O = { v:1, org:P.org, biz:P.biz, owner:P.owner, tel:P.tel, email:P.email, addr:P.addr || P.region, areas:P.areas, bizno:P.bizno, domainname:P.domain, plan:pk, goals:P.goals, target:P.target, assets:P.assets, slogan:P.tag, open:P.open, note:P.note };
   window.open(location.pathname.replace(/plan\.html$/, 'order.html') + '#o=' + b64u(JSON.stringify(O)), '_blank', 'noopener');
 });
 

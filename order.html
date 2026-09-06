@@ -168,6 +168,7 @@ aside{position:sticky;top:66px}
           <div><label>휴대폰<b>*</b></label><input type="tel" id="f-tel" placeholder="010-0000-0000" inputmode="numeric" autocomplete="tel"></div>
           <div><label>이메일<b>*</b> <span class="hint" style="display:inline">기획서 · 견적서 · 계약서를 받을 주소</span></label><input type="email" id="f-email" placeholder="name@example.com" inputmode="email" autocomplete="email"></div>
           <div><label>지역 · 주소</label><input type="text" id="f-addr" placeholder="예: 순천시 조례동 (지역 검색에 씁니다)" autocomplete="street-address"></div>
+          <div><label>일을 받는 지역 <span class="hint" style="display:inline">(지역 검색 페이지가 됩니다)</span></label><input type="text" id="f-areas" placeholder="예: 광주 · 전남 · 경남"></div>
           <div><label>사업자 구분</label><div class="radios" id="f-kind"></div></div>
           <div><label>사업자등록번호 <span class="hint" style="display:inline">(계약서 · 세금계산서용, 나중에 주셔도 됩니다)</span></label><input type="text" id="f-bizno" placeholder="000-00-00000" inputmode="numeric"></div>
         </div>
@@ -328,7 +329,7 @@ var 연락들 = ['전화','카톡','문자','이메일'];
 var 흐름 = ['문의 접수','주문서','이메일 접수','기획서 · 데모','전달 · 확인','견적서 · 계약서','서명','양측 전달','완료'];
 
 /* ══ 상태 ══ */
-var O = { v:1, org:'', biz:'event', owner:'', tel:'', email:'', addr:'', kind:'', bizno:'', plan:'', opts:[], qty:{page:0,video:0,class:0}, goals:[], target:'', pages:[], assets:[], sns:'', refs:['','',''], refwhy:'', domain:'', domainname:'', slogan:'', intro:'', services:'', mood:[], colors:'', avoid:'', open:'', pay:'', contact:'', time:'', note:'', at:'' };
+var O = { v:1, org:'', biz:'event', owner:'', tel:'', email:'', addr:'', areas:'', kind:'', bizno:'', plan:'', opts:[], qty:{page:0,video:0,class:0}, goals:[], target:'', pages:[], assets:[], sns:'', refs:['','',''], refwhy:'', domain:'', domainname:'', slogan:'', intro:'', services:'', mood:[], colors:'', avoid:'', open:'', pay:'', contact:'', time:'', note:'', at:'' };
 var Q = new URLSearchParams(location.search);
 var MODE = Q.get('admin') === '1' ? 'admin' : 'customer';
 function $(s){ return document.querySelector(s); }
@@ -373,7 +374,7 @@ function 폼그리기(){
   라디오('f-kind', 구분들, 'kind'); 라디오('f-domain', 도메인들, 'domain'); 라디오('f-pay', 결제들, 'pay'); 라디오('f-contact', 연락들, 'contact');
 
   $('#f-biz').addEventListener('change', function(){ O.biz = this.value; if (!O.targetTouched) { O.target=''; $('#f-target').value=''; } $('#f-target').placeholder = 업종들[O.biz][1]; 그리기(); });
-  ['org','owner','tel','email','addr','bizno','sns','refwhy','domainname','slogan','intro','services','colors','avoid','time','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ O[k] = this.value; this.classList.remove('bad'); 그리기(); }); });
+  ['org','owner','tel','email','addr','areas','bizno','sns','refwhy','domainname','slogan','intro','services','colors','avoid','time','note'].forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ O[k] = this.value; this.classList.remove('bad'); 그리기(); }); });
   ['ref1','ref2','ref3'].forEach(function(k,i){ $('#f-'+k).addEventListener('input', function(){ O.refs[i] = this.value; 그리기(); }); });
   $('#f-target').addEventListener('input', function(){ O.target = this.value; O.targetTouched = true; 그리기(); });
   $('#f-open').addEventListener('change', function(){ O.open = this.value; 그리기(); });
@@ -387,7 +388,7 @@ function 폼그리기(){
 }
 function 폼채우기(){
   $('#f-biz').value = O.biz; $('#f-target').placeholder = 업종들[O.biz][1];
-  ['org','owner','tel','email','addr','bizno','sns','refwhy','domainname','slogan','intro','services','colors','avoid','time','note','target','open'].forEach(function(k){ $('#f-'+k).value = O[k]||''; });
+  ['org','owner','tel','email','addr','areas','bizno','sns','refwhy','domainname','slogan','intro','services','colors','avoid','time','note','target','open'].forEach(function(k){ $('#f-'+k).value = O[k]||''; });
   ['ref1','ref2','ref3'].forEach(function(k,i){ $('#f-'+k).value = O.refs[i]||''; });
   $$('#f-plans input').forEach(function(r){ r.checked = r.value === O.plan; });
   $$('#f-opts input[type=checkbox]').forEach(function(c){ c.checked = O.opts.indexOf(c.value) >= 0; });
@@ -426,7 +427,7 @@ function 주문링크(admin){ return location.origin + location.pathname + (admi
 
 /* ══ 기획서 · 견적서로 넘기기 (plan.html 의 P · quote.html 의 S 와 같은 모양) ══ */
 function 기획서링크(){
-  var P = { biz:O.biz, org:O.org, region:(O.addr||'').split(/[\s,]/)[0]||'', owner:O.owner, tel:O.tel, email:O.email, addr:O.addr, bizno:O.bizno, domain:O.domainname, tag:O.slogan,
+  var P = { biz:O.biz, org:O.org, region:(O.addr||'').split(/[\s,]/)[0]||'', owner:O.owner, tel:O.tel, email:O.email, addr:O.addr, areas:O.areas, bizno:O.bizno, domain:O.domainname, tag:O.slogan,
     goals:O.goals.filter(function(g){ return 목적들.indexOf(g)>=0; }), target:O.target, assets:O.assets.filter(function(a){ return 자료들.indexOf(a)>=0; }),
     plan:플랜()||'', open:O.open,
     note:[O.pages.length?'넣을 내용: '+O.pages.join(', '):'', O.refs.filter(Boolean).length?'참고 사이트: '+O.refs.filter(Boolean).join(' , ')+(O.refwhy?' — '+O.refwhy:''):'', O.domain?'도메인: '+O.domain+(O.domainname?' ('+O.domainname+')':''):'', O.mood.length?'분위기: '+O.mood.join(', '):'', O.colors?'색: '+O.colors:'', O.avoid?'피할 것: '+O.avoid:'', O.note].filter(Boolean).join('\n') };
@@ -447,7 +448,7 @@ function 요약글(){
   var pk = 플랜(), L = [];
   L.push('[홈페이지 주문서] ' + (O.org||'') + ' · ' + (pk?PLANS[pk].name:'규모 미정') + ' · ' + 원(합계()) + ' (VAT 별도)');
   L.push('▶ 관리자 주문서 열기 (기획서 · 견적서 만들기 단추 있음):'); L.push(주문링크(true)); L.push('');
-  L.push('■ 업체'); L.push('상호: '+O.org); L.push('업종: '+업종들[O.biz][0]); L.push('담당: '+O.owner+' · '+O.tel+' · '+O.email); if(O.addr) L.push('지역·주소: '+O.addr); if(O.kind) L.push('구분: '+O.kind+(O.bizno?' · '+O.bizno:''));
+  L.push('■ 업체'); L.push('상호: '+O.org); L.push('업종: '+업종들[O.biz][0]); L.push('담당: '+O.owner+' · '+O.tel+' · '+O.email); if(O.addr) L.push('지역·주소: '+O.addr); if(O.areas) L.push('일 받는 지역: '+O.areas); if(O.kind) L.push('구분: '+O.kind+(O.bizno?' · '+O.bizno:''));
   L.push(''); L.push('■ 홈페이지'); L.push('규모: '+(pk?PLANS[pk].name+' '+원(PLANS[pk].price):'미정'));
   항목들().slice(1).forEach(function(i){ L.push('옵션: '+i.n+(i.q>1?' ×'+i.q:'')+' — '+원(i.q*i.p)); });
   if(O.goals.length) L.push('목적: '+O.goals.join(', ')); if(O.target) L.push('타깃: '+O.target); if(O.pages.length) L.push('넣을 내용: '+O.pages.join(', '));
@@ -511,7 +512,7 @@ function 실패(err){
 /* ══ 관리자 화면 ══ */
 function 관리자그리기(){
   var pk = 플랜(), rows = [
-    ['접수', O.at || '-'], ['상호', O.org], ['업종', 업종들[O.biz][0]], ['담당', O.owner + ' · ' + O.tel + ' · ' + O.email], ['지역·주소', O.addr], ['구분', (O.kind||'') + (O.bizno ? ' · ' + O.bizno : '')],
+    ['접수', O.at || '-'], ['상호', O.org], ['업종', 업종들[O.biz][0]], ['담당', O.owner + ' · ' + O.tel + ' · ' + O.email], ['지역·주소', O.addr], ['일 받는 지역', O.areas], ['구분', (O.kind||'') + (O.bizno ? ' · ' + O.bizno : '')],
     ['규모', pk ? PLANS[pk].name + ' ' + 원(PLANS[pk].price) : '미정'], ['옵션', 항목들().slice(1).map(function(i){ return i.n + (i.q>1?' ×'+i.q:'') + ' (' + 원(i.q*i.p) + ')'; }).join(', ')], ['합계', 원(합계()) + ' (VAT 별도) · 부가세 포함 ' + 원(Math.round(합계()*1.1))],
     ['목적', O.goals.join(', ')], ['타깃', O.target], ['넣을 내용', O.pages.join(', ')], ['가진 자료', O.assets.join(', ')], ['기존 사이트·SNS', O.sns], ['참고 사이트', O.refs.filter(Boolean).join(' , ') + (O.refwhy ? ' — ' + O.refwhy : '')],
     ['도메인', (O.domain||'') + (O.domainname ? ' — ' + O.domainname : '')], ['한 줄 소개', O.slogan], ['소개', O.intro], ['하는 일', O.services], ['분위기', O.mood.join(', ') + (O.colors ? ' · 색: ' + O.colors : '') + (O.avoid ? ' · 피할 것: ' + O.avoid : '')],
