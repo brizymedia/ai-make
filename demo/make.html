@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>데모 만들기 — 큰길브리지</title>
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/*
+  무료 데모 만들기 (우리 화면).
+  문의 메일을 붙여넣으면 상호 · 이름 · 전화 · 이메일 · 업종 · 지역을 읽어 칸을 채우고,
+  오른쪽에 데모 홈페이지(index.html#d=…)가 바로 그려진다. 「링크 복사」 또는 「문자로 보내기」로 끝.
+*/
+:root{--bg:#F3F2EE;--ink:#1A1A1A;--ink2:#5C5C57;--ink3:#8B8B84;--line:#E2E0D8;--acc:#1E5EFF;--acc-soft:#E8EEFF;--gold:#8F6828;--gold-soft:#FBF3E1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",sans-serif;font-size:14.5px;line-height:1.6;word-break:keep-all}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1500px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:800}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--acc);display:inline-block}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:99px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;color:inherit}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.layout{max-width:1500px;margin:0 auto;padding:16px 18px;display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:18px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+aside{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;position:sticky;top:60px;max-height:calc(100vh - 76px);overflow:auto}
+h3{margin:14px 0 6px;font-size:11.5px;letter-spacing:.12em;color:var(--ink3);font-weight:700}
+h3:first-child{margin-top:0}
+label{display:block;font-size:12px;color:var(--ink2);margin:8px 0 3px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;font-size:14px;background:#fff}
+textarea{min-height:64px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.paste{background:var(--gold-soft);border:1px dashed var(--gold);border-radius:12px;padding:12px}
+.paste textarea{min-height:90px;background:#fff}
+.paste .hint{font-size:12px;color:var(--gold);margin:6px 0 0}
+.hint{font-size:12px;color:var(--ink3);margin-top:4px}
+.frame{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;position:sticky;top:60px}
+.frame .bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink3)}
+.frame .bar b{color:var(--ink)}
+.frame .bar .seg{margin-left:auto;display:inline-flex;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.frame .bar .seg button{border:0;background:#fff;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.frame .bar .seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.frame iframe{display:block;width:100%;height:calc(100vh - 120px);border:0;background:#fff;transition:width .2s;margin:0 auto}
+.frame.phone iframe{width:390px}
+.out{margin-top:10px;font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink3);word-break:break-all;max-height:60px;overflow:auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);opacity:0;transition:.25s;background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:99;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="brand" href="../"><i></i>큰길브리지 <span style="font-weight:500;color:var(--ink3)">· 무료 데모 만들기</span></a>
+  <span class="sp"></span>
+  <button class="btn" id="b-link" type="button">🔗 데모 링크 복사</button>
+  <a class="btn" id="b-sms" href="#">💬 문자로 보내기</a>
+  <a class="btn" id="b-mail" href="#">✉ 메일로 보내기</a>
+  <a class="btn" id="b-open" href="#" target="_blank" rel="noopener">↗ 새 창에서 열기</a>
+  <a class="btn gold" id="b-plan" href="#" target="_blank" rel="noopener">📐 기획서로</a>
+</div></div>
+
+<div class="layout">
+  <aside>
+    <div class="paste">
+      <label style="margin:0 0 4px;color:var(--gold);font-weight:700">문의 메일 붙여넣기 → 칸이 저절로 채워집니다</label>
+      <textarea id="paste" placeholder="[큰길브리지 문의] 메일 본문을 그대로 붙여넣으세요 (성함/상호 · 연락처 · 이메일 · 문의 내용)"></textarea>
+      <p class="hint">업종과 지역은 문의 내용에서 짐작합니다. 틀리면 아래에서 고치세요.</p>
+    </div>
+
+    <h3>업체</h3>
+    <label>업종</label><select id="f-biz"></select>
+    <label>상호</label><input id="f-org" placeholder="예: 이에스컴퍼니">
+    <div class="two">
+      <div><label>대표 · 담당</label><input id="f-owner" placeholder="예: 박미배"></div>
+      <div><label>전화</label><input id="f-tel" placeholder="010-0000-0000" inputmode="tel"></div>
+    </div>
+    <label>이메일</label><input id="f-email" placeholder="name@example.com">
+    <div class="two">
+      <div><label>주소 · 지역</label><input id="f-addr" placeholder="예: 충북 청주"></div>
+      <div><label>일 받는 지역</label><input id="f-areas" placeholder="예: 충북 · 대전 · 세종"></div>
+    </div>
+
+    <h3>첫 화면 글</h3>
+    <label>큰 글씨 한 줄 <span class="hint" style="display:inline">(비우면 업종 기본)</span></label><input id="f-slogan" placeholder="예: 행사 하루, 필요한 건 다 실어다 드립니다">
+    <label>작은 글 두 줄</label><textarea id="f-sub" placeholder="비우면 업종 기본 문구"></textarea>
+    <label>실적 숫자 3개 <span class="hint" style="display:inline">(숫자|설명, 줄마다)</span></label><textarea id="f-stats" placeholder="10년+|현장 경험&#10;당일|배송 · 설치&#10;1,000회+|행사 지원"></textarea>
+
+    <h3>하는 일 · 소개</h3>
+    <label>하는 일 <span class="hint" style="display:inline">(줄마다 「이름|설명」, 비우면 업종 기본 6개)</span></label><textarea id="f-services" placeholder="천막 · 몽골텐트|3×3 · 3×6 · 대형 천막&#10;테이블 · 의자|행사용 접이식"></textarea>
+    <label>소개 글</label><textarea id="f-about" placeholder="비우면 자리 문구가 들어갑니다"></textarea>
+    <div class="two">
+      <div><label>영업시간</label><input id="f-hours" placeholder="평일 09~18시"></div>
+      <div><label>카톡 채널 주소</label><input id="f-kakao" placeholder="https://pf.kakao.com/…"></div>
+    </div>
+    <label>인스타 · 기존 홈페이지</label><input id="f-insta" placeholder="https://">
+    <div class="out" id="out"></div>
+  </aside>
+
+  <div class="frame" id="frame">
+    <div class="bar"><b id="fr-title">데모 미리보기</b><span>칸을 채우는 대로 바뀝니다</span>
+      <span class="seg"><button type="button" data-w="pc" aria-pressed="true">PC</button><button type="button" data-w="phone" aria-pressed="false">폰</button></span></div>
+    <iframe id="pv" title="데모 미리보기"></iframe>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var 업종들 = { rental:'행사용품 렌탈 · 대여', event:'이벤트 · 행사 기획', singer:'가수 · MC · 공연자', daycare:'주간보호센터 · 요양', salon:'미용실 · 뷰티', interior:'인테리어 · 시공', pension:'펜션 · 숙박', academy:'학원 · 교육', clinic:'병원 · 의원', cafe:'카페 · 식당', etc:'기타 업종' };
+var 짐작 = [['rental',/렌탈|렌털|대여|임대/],['event',/행사|이벤트|축제|기획사|무대|음향|조명/],['singer',/가수|mc|엠씨|사회자|공연|밴드|트로트/i],['daycare',/요양|주간보호|어르신|데이케어/],['salon',/미용|헤어|네일|뷰티|피부/],['interior',/인테리어|시공|리모델링|도배/],['pension',/펜션|숙박|풀빌라|캠핑|게스트/],['academy',/학원|교습|교육|과외|레슨/],['clinic',/병원|의원|치과|한의원|클리닉/],['cafe',/카페|식당|음식|커피|베이커리|맛집/]];
+var D = { biz:'etc', org:'', owner:'', tel:'', email:'', addr:'', areas:'', slogan:'', sub:'', stats:[], services:[], about:'', hours:'', kakao:'', insta:'' };
+function $(s){ return document.querySelector(s); }
+function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64(t){ t=t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; return decodeURIComponent(escape(atob(t))); }
+function toast(m){ var t=$('#toast'); t.textContent=m; t.className='toast on'; clearTimeout(toast.t); toast.t=setTimeout(function(){t.className='toast';},2600); }
+function 줄들(s){ return String(s||'').split(/\n+/).map(function(x){ return x.trim(); }).filter(Boolean); }
+
+$('#f-biz').innerHTML = Object.keys(업종들).map(function(k){ return '<option value="'+k+'">'+업종들[k]+'</option>'; }).join('');
+['biz','org','owner','tel','email','addr','areas','slogan','sub','about','hours','kakao','insta'].forEach(function(k){
+  $('#f-'+k).addEventListener('input', function(){ D[k] = this.value; 갱신(); });
+});
+$('#f-stats').addEventListener('input', function(){ D.stats = 줄들(this.value).map(function(l){ var p=l.split('|'); return { n:p[0].trim(), l:(p[1]||'').trim() }; }); 갱신(); });
+$('#f-services').addEventListener('input', function(){ D.services = 줄들(this.value).map(function(l){ var p=l.split('|'); return { n:p[0].trim(), d:(p[1]||'').trim() }; }); 갱신(); });
+$('#f-tel').addEventListener('input', function(){ var d=this.value.replace(/[^0-9]/g,'').slice(0,11); if (d.length>=10 && d.indexOf('01')===0) { this.value = d.length>10 ? d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7) : d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6); D.tel=this.value; 갱신(); } });
+
+/* 문의 메일 붙여넣기 → 읽기 */
+$('#paste').addEventListener('input', function(){
+  var t = this.value;
+  var m;
+  if ((m = /성함\s*\/\s*상호\s*[:：]?\s*(.+)/.exec(t))) { var parts = m[1].trim().split(/\s*[\/·]\s*|\s{1,}/); D.org = parts[0]; if (parts[1] && !/님/.test(parts[1])) D.owner = parts.slice(1).join(' ').replace(/님.*/,''); }
+  if ((m = /연락처\s*[:：]?\s*([0-9\-\s]{9,})/.exec(t))) { var d = m[1].replace(/[^0-9]/g,''); D.tel = d.length>10 ? d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7) : d; }
+  if ((m = /이메일\s*[:：]?\s*([^\s]+@[^\s]+)/.exec(t))) D.email = m[1];
+  var 내용 = (m = /문의\s*내용\s*[:：]?\s*([\s\S]*?)(?:접수시각|견적 상세|$)/.exec(t)) ? m[1].trim() : t;
+  for (var i = 0; i < 짐작.length; i++) if (짐작[i][1].test(내용)) { D.biz = 짐작[i][0]; break; }
+  if ((m = /([가-힣]{2,6}(?:시|군|구)?)\s*에서/.exec(내용))) D.addr = m[1].replace(/^(충북|충남|전북|전남|경북|경남|경기|강원)([가-힣]+)/, '$1 $2');
+  if (내용 && 내용.length < 300) D.about = '';   /* 문의 글은 소개가 아니다 — 참고만 */
+  폼채우기(); 갱신(); toast('문의 내용을 읽었습니다. 업종 · 지역을 확인하세요');
+});
+function 폼채우기(){
+  ['biz','org','owner','tel','email','addr','areas','slogan','sub','about','hours','kakao','insta'].forEach(function(k){ $('#f-'+k).value = D[k]||''; });
+  $('#f-stats').value = (D.stats||[]).map(function(s){ return s.n + (s.l ? '|' + s.l : ''); }).join('\n');
+  $('#f-services').value = (D.services||[]).map(function(s){ return s.n + (s.d ? '|' + s.d : ''); }).join('\n');
+}
+function 링크(){
+  var o = {}; Object.keys(D).forEach(function(k){ var v = D[k]; if (v && (!Array.isArray(v) || v.length)) o[k] = v; });
+  return location.origin + location.pathname.replace(/make\.html$/, '') + '#d=' + b64u(JSON.stringify(o));
+}
+var 타이머;
+function 갱신(){
+  clearTimeout(타이머);
+  타이머 = setTimeout(function(){
+    var u = 링크();
+    $('#pv').src = u.replace('#d=', '?v=' + Date.now() + '#d=');
+    $('#out').textContent = u;
+    $('#fr-title').textContent = (D.org || '(상호)') + ' · ' + 업종들[D.biz];
+    $('#b-open').href = u;
+    var 글 = '안녕하세요 ' + (D.owner ? D.owner + ' 님, ' : '') + '큰길브리지 김효민입니다.\n요청하신 ' + (D.org||'') + ' 무료 데모 홈페이지를 만들었습니다. 폰으로 열어 보세요.\n' + u + '\n사진과 글만 사장님 것으로 바꾸면 이대로 오픈됩니다. 고칠 점 말씀해 주세요. 1533-7295';
+    var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+    $('#b-sms').href = 'sms:' + (D.tel||'').replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(글);
+    $('#b-mail').href = 'mailto:' + encodeURIComponent(D.email||'') + '?subject=' + encodeURIComponent('[큰길브리지] ' + (D.org||'') + ' 무료 데모 홈페이지') + '&body=' + encodeURIComponent(글);
+    var P = { biz:(D.biz in {daycare:1,event:1,singer:1,salon:1,interior:1,pension:1,academy:1,clinic:1,cafe:1,etc:1}) ? D.biz : 'etc', org:D.org, owner:D.owner, tel:D.tel, email:D.email, addr:D.addr, areas:D.areas, tag:D.slogan, note:'데모: ' + u };
+    $('#b-plan').href = '../plan.html?admin=1#p=' + b64u(JSON.stringify(P));
+    try { history.replaceState(null, '', location.pathname + '#d=' + b64u(JSON.stringify(D))); } catch(e){}
+  }, 350);
+}
+$('#b-link').addEventListener('click', function(){
+  if (!D.org) { toast('상호부터 넣어 주세요'); return; }
+  var u = 링크();
+  (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast('데모 링크를 복사했어요 — 카톡에 붙여 보내세요'); }, function(){ prompt('복사해서 쓰세요', u); });
+});
+document.querySelectorAll('.frame .seg button').forEach(function(b){ b.addEventListener('click', function(){ document.querySelectorAll('.frame .seg button').forEach(function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); }); $('#frame').classList.toggle('phone', b.dataset.w === 'phone'); }); });
+
+/* 시작 — #d= 가 있으면 (주문서 관리자 화면에서 넘어온 것) 채워서 */
+(function(){
+  var h = location.hash.indexOf('#d=')===0 ? location.hash.slice(3) : '';
+  if (h) { try { var o = JSON.parse(unb64(h)); Object.keys(D).forEach(function(k){ if (o[k] !== undefined) D[k] = o[k]; }); } catch(e){} }
+  if (!업종들[D.biz]) D.biz = 'etc';
+  폼채우기(); 갱신();
+})();
+</script>
+</body>
+</html>
