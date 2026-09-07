@@ -95,6 +95,13 @@ textarea{min-height:64px;resize:vertical}
       <div><label>카톡 채널 주소</label><input id="f-kakao" placeholder="https://pf.kakao.com/…"></div>
     </div>
     <label>인스타 · 기존 홈페이지</label><input id="f-insta" placeholder="https://">
+
+    <h3>짧은 주소 (ai-make.co.kr/demo/○○/)</h3>
+    <div class="two" style="align-items:end">
+      <div><label>영문 이름 <span class="hint" style="display:inline">(짧게)</span></label><input id="f-slug" placeholder="예: es, camino" autocapitalize="off"></div>
+      <div><button class="btn primary" type="button" id="b-short" style="width:100%;justify-content:center">GitHub 에 파일 만들기</button></div>
+    </div>
+    <p class="hint">누르면 GitHub 새 파일 화면이 내용이 채워진 채로 열립니다. 아래 초록 「Commit changes」 두 번이면 1분 뒤 <b id="short-url">ai-make.co.kr/demo/○○/</b> 가 살아납니다. 긴 링크는 그 전에도 됩니다.</p>
     <div class="out" id="out"></div>
   </aside>
 
@@ -177,6 +184,25 @@ $('#b-link').addEventListener('click', function(){
   if (!D.org) { toast('상호부터 넣어 주세요'); return; }
   var u = 링크();
   (navigator.clipboard ? navigator.clipboard.writeText(u) : Promise.reject()).then(function(){ toast('데모 링크를 복사했어요 — 카톡에 붙여 보내세요'); }, function(){ prompt('복사해서 쓰세요', u); });
+});
+/* 짧은 주소 — demo/<slug>/index.html 을 GitHub 새 파일 화면에 채워서 연다 (형님 계정으로 Commit 두 번) */
+$('#f-slug').addEventListener('input', function(){ this.value = this.value.toLowerCase().replace(/[^a-z0-9-]/g, ''); $('#short-url').textContent = 'ai-make.co.kr/demo/' + (this.value || '○○') + '/'; });
+$('#b-short').addEventListener('click', function(){
+  var slug = $('#f-slug').value.trim();
+  if (!D.org) { toast('상호부터 넣어 주세요'); return; }
+  if (!/^[a-z0-9][a-z0-9-]{0,30}$/.test(slug)) { toast('영문 소문자 · 숫자로 짧은 이름을 넣어 주세요 (예: es)'); $('#f-slug').focus(); return; }
+  var o = {}; Object.keys(D).forEach(function(k){ var v = D[k]; if (v && (!Array.isArray(v) || v.length)) o[k] = v; });
+  var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var html = '<!doctype html>\n<html lang="ko">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta name="robots" content="noindex, nofollow, noarchive">\n' +
+    '<title>' + esc(D.org) + ' 홈페이지 시안 — 큰길브리지</title>\n<meta property="og:type" content="website">\n<meta property="og:title" content="' + esc(D.org) + ' 홈페이지 시안">\n' +
+    '<meta property="og:description" content="큰길브리지가 상호만 듣고 만든 ' + esc(업종들[D.biz]) + ' 홈페이지 시안입니다. 폰으로 열어 보시고 고칠 점을 말씀해 주세요. 1533-7295">\n' +
+    '<meta property="og:image" content="https://www.ai-make.co.kr/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<link rel="icon" href="/favicon.svg">\n' +
+    '<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">\n<link rel="stylesheet" href="../demo.css">\n' +
+    '<script>window.DEMO = ' + JSON.stringify(o).replace(/<\//g, '<\\/') + ';<\/script>\n</head>\n<body>\n' +
+    '<div class="ribbon"><span><b>큰길브리지</b>가 상호만 듣고 만든 제안용 시안입니다 · 사진과 글을 사장님 것으로 바꾸면 이대로 오픈됩니다</span><a href="#go">이 시안으로 진행하기</a></div>\n<div id="app"></div>\n<div class="toast" id="toast"></div>\n<script src="../demo.js"><\/script>\n</body>\n</html>\n';
+  var u = 'https://github.com/brizymedia/ai-make/new/main?filename=' + encodeURIComponent('demo/' + slug + '/index.html') + '&value=' + encodeURIComponent(html);
+  window.open(u, '_blank', 'noopener');
+  toast('GitHub 화면에서 「Commit changes」를 두 번 누르세요. 주소: ai-make.co.kr/demo/' + slug + '/');
 });
 document.querySelectorAll('.frame .seg button').forEach(function(b){ b.addEventListener('click', function(){ document.querySelectorAll('.frame .seg button').forEach(function(x){ x.setAttribute('aria-pressed', x===b ? 'true' : 'false'); }); $('#frame').classList.toggle('phone', b.dataset.w === 'phone'); }); });
 
