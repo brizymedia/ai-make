@@ -107,8 +107,8 @@ textarea{min-height:64px;resize:vertical}
 <div class="toast" id="toast"></div>
 
 <script>
-var 업종들 = { rental:'행사용품 렌탈 · 대여', event:'이벤트 · 행사 기획', singer:'가수 · MC · 공연자', daycare:'주간보호센터 · 요양', salon:'미용실 · 뷰티', interior:'인테리어 · 시공', pension:'펜션 · 숙박', academy:'학원 · 교육', clinic:'병원 · 의원', cafe:'카페 · 식당', etc:'기타 업종' };
-var 짐작 = [['rental',/렌탈|렌털|대여|임대/],['event',/행사|이벤트|축제|기획사|무대|음향|조명/],['singer',/가수|mc|엠씨|사회자|공연|밴드|트로트/i],['daycare',/요양|주간보호|어르신|데이케어/],['salon',/미용|헤어|네일|뷰티|피부/],['interior',/인테리어|시공|리모델링|도배/],['pension',/펜션|숙박|풀빌라|캠핑|게스트/],['academy',/학원|교습|교육|과외|레슨/],['clinic',/병원|의원|치과|한의원|클리닉/],['cafe',/카페|식당|음식|커피|베이커리|맛집/]];
+var 업종들 = { rental:'행사용품 렌탈 · 대여', event:'이벤트 · 행사 기획', mc:'MC · 사회자 · 진행', singer:'가수 · 공연자', daycare:'주간보호센터 · 요양', salon:'미용실 · 뷰티', interior:'인테리어 · 시공', pension:'펜션 · 숙박', academy:'학원 · 교육', clinic:'병원 · 의원', cafe:'카페 · 식당', etc:'기타 업종' };
+var 짐작 = [['rental',/렌탈|렌털|대여|임대/],['mc',/\bmc\b|엠씨|사회자|진행자|아나운서/i],['singer',/가수|공연|밴드|트로트|축가/],['event',/행사|이벤트|축제|기획사|무대|음향|조명/],['daycare',/요양|주간보호|어르신|데이케어/],['salon',/미용|헤어|네일|뷰티|피부/],['interior',/인테리어|시공|리모델링|도배/],['pension',/펜션|숙박|풀빌라|캠핑|게스트/],['academy',/학원|교습|교육|과외|레슨/],['clinic',/병원|의원|치과|한의원|클리닉/],['cafe',/카페|식당|음식|커피|베이커리|맛집/]];
 var D = { biz:'etc', org:'', owner:'', tel:'', email:'', addr:'', areas:'', slogan:'', sub:'', stats:[], services:[], about:'', hours:'', kakao:'', insta:'' };
 function $(s){ return document.querySelector(s); }
 function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
@@ -128,7 +128,16 @@ $('#f-tel').addEventListener('input', function(){ var d=this.value.replace(/[^0-
 $('#paste').addEventListener('input', function(){
   var t = this.value;
   var m;
-  if ((m = /성함\s*\/\s*상호\s*[:：]?\s*(.+)/.exec(t))) { var parts = m[1].trim().split(/\s*[\/·]\s*|\s{1,}/); D.org = parts[0]; if (parts[1] && !/님/.test(parts[1])) D.owner = parts.slice(1).join(' ').replace(/님.*/,''); }
+  if ((m = /성함\s*\/\s*상호\s*[:：]?\s*(.+)/.exec(t))) {
+    /* 「이에스컴퍼니 박미배」도 「조윤하/까미노커뮤니케이션」도 온다 — 긴 쪽이 상호, 2~4자 한글이 사람 */
+    var parts = m[1].trim().replace(/님.*$/,'').split(/\s*[\/·,]\s*|\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      var 사람 = parts.filter(function(p){ return /^[가-힣]{2,4}$/.test(p) && !/컴퍼니|기획|이벤트|샵|헤어|학원|의원|병원|카페|센터|펜션|스튜디오|커뮤니케이션|그룹|상사|산업|건설|인테리어|렌탈|미디어|엔터/.test(p); });
+      var 회사 = parts.filter(function(p){ return 사람.indexOf(p) < 0; });
+      D.org = (회사.length ? 회사 : parts.slice(0, 1)).join(' ');
+      D.owner = 사람.length ? 사람[0] : (회사.length ? '' : parts.slice(1).join(' '));
+    } else { D.org = parts[0] || ''; }
+  }
   if ((m = /연락처\s*[:：]?\s*([0-9\-\s]{9,})/.exec(t))) { var d = m[1].replace(/[^0-9]/g,''); D.tel = d.length>10 ? d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7) : d; }
   if ((m = /이메일\s*[:：]?\s*([^\s]+@[^\s]+)/.exec(t))) D.email = m[1];
   var 내용 = (m = /문의\s*내용\s*[:：]?\s*([\s\S]*?)(?:접수시각|견적 상세|$)/.exec(t)) ? m[1].trim() : t;
