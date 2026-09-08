@@ -4,6 +4,10 @@ Allow: /
 Disallow: /contract.html
 # 유입 현황판은 내부용
 Disallow: /stats/
+# 명함 사진은 검색에 걸릴 이유가 없다
+Disallow: /card/img/
+Disallow: /card/bg/
+Disallow: /card/og/
 
 # AI 검색·요약 크롤러 명시 허용
 User-agent: GPTBot
