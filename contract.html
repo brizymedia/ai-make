@@ -82,7 +82,9 @@ input,textarea,select,button{font:inherit;color:inherit}
 .in::placeholder{color:var(--txt-mute)}
 textarea.in{min-height:74px;resize:vertical;line-height:1.65}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.row3{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.row2>div,.row3>div{min-width:0}
+.row2 .in,.row3 .in{min-width:0}
 
 /* 플랜 고르기 */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
