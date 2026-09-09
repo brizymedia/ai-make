@@ -41,6 +41,7 @@
     font-family:inherit; font-size:.95rem;
   }
   textarea{ resize:vertical; min-height:64px; line-height:1.6; }
+  input[type="checkbox"],input[type="radio"]{ width:auto; padding:0; }
   input::placeholder,textarea::placeholder{ color:#57503F; }
   input:focus,textarea:focus{ outline:none; border-color:rgba(245,165,36,.6); background:rgba(245,165,36,.06); }
   .two{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
@@ -121,16 +122,6 @@
 
   <div class="cols">
     <div>
-      <div class="box">
-        <h2>이미 만든 명함 고치기</h2>
-        <p class="sub">주소만 넣으면 그때 넣은 내용이 그대로 올라옵니다. 고칠 데만 고쳐서 다시 발행하세요.</p>
-        <div style="display:flex;gap:.6rem;align-items:center;">
-          <span class="hint" style="margin:0;flex:none;">/card/</span>
-          <input id="f-load" placeholder="khm" autocapitalize="off" spellcheck="false" style="flex:1;">
-          <button class="btn" id="btn-load" style="flex:none;">불러오기</button>
-        </div>
-        <p class="hint" id="load-msg" hidden></p>
-      </div>
 
       <div class="box">
         <h2>사진</h2>
@@ -252,6 +243,17 @@
           </div>
         </div>
         <p class="hint" id="pub-msg" hidden></p>
+      </div>
+
+      <div class="box">
+        <h2>이미 만든 명함 고치기</h2>
+        <p class="sub">주소만 넣으면 그때 넣은 내용이 그대로 올라옵니다. 고칠 데만 고쳐서 다시 발행하세요.</p>
+        <div style="display:flex;gap:.6rem;align-items:center;">
+          <span class="hint" style="margin:0;flex:none;">/card/</span>
+          <input id="f-load" placeholder="khm" autocapitalize="off" spellcheck="false" style="flex:1;">
+          <button class="btn" id="btn-load" style="flex:none;">불러오기</button>
+        </div>
+        <p class="hint" id="load-msg" hidden></p>
       </div>
     </div>
 
