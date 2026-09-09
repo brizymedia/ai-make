@@ -1,5 +1,5 @@
 /**
- * 큰길이벤트기획 — 전자명함 서버 (Google Apps Script)
+ * 큰길브리지 — 전자명함 서버 (Google Apps Script)
  *
  * card/index.html 에서 「명함 발행하기」를 누르면 여기로 옵니다.
  * 받은 것을 깃허브 main 브랜치에 파일로 써 넣습니다. 그러면 깃허브 페이지가
