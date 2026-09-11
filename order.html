@@ -383,7 +383,8 @@ function 폼그리기(){
   $$('#f-opts input[type=checkbox]').forEach(function(c){ c.addEventListener('change', function(){ O.opts = $$('#f-opts input[type=checkbox]:checked').map(function(x){ return x.value; }); 색(); 그리기(); }); });
   $$('#f-opts [data-qty]').forEach(function(row){
     var k = row.dataset.qty, q = row.querySelector('[data-q]');
-    $$('button', row).forEach(function(b){ b.addEventListener('click', function(){ O.qty[k] = Math.max(0, Math.min(50, (Number(O.qty[k])||0) + Number(b.dataset.step))); q.textContent = O.qty[k]; row.classList.toggle('on', O.qty[k] > 0); 그리기(); }); });
+    /* 이 줄의 단추만. $$ 는 두 번째 인자를 안 받아서 문서의 모든 단추(주문 보내기까지)에 붙던 버그가 있었다 */
+    [].slice.call(row.querySelectorAll('button')).forEach(function(b){ b.addEventListener('click', function(){ O.qty[k] = Math.max(0, Math.min(50, (Number(O.qty[k])||0) + (Number(b.dataset.step)||0))); q.textContent = O.qty[k]; row.classList.toggle('on', O.qty[k] > 0); 그리기(); }); });
   });
   $('#f-tel').addEventListener('input', function(){ var d=this.value.replace(/[^0-9]/g,'').slice(0,11); if (d.length>=10 && d.indexOf('01')===0) { this.value = d.length>10 ? d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7) : d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6); O.tel=this.value; } });
 }
