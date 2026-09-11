@@ -94,6 +94,9 @@ textarea{min-height:80px;resize:vertical}
 .note{font-size:13.5px;margin-top:12px;min-height:1.4em}
 .note.bad{color:var(--bad)}
 .note.ok{color:var(--good)}
+.sum .note{margin-top:10px;min-height:0;text-align:center;font-weight:700;line-height:1.5}
+.sum .note.bad{color:#FFB3A6}
+.sum .note.ok{color:#8BE0B4}
 
 /* 오른쪽 요약 */
 aside{position:sticky;top:66px}
@@ -283,6 +286,7 @@ aside{position:sticky;top:66px}
       <div class="vat" id="s-vat"></div>
       <div class="mo" id="s-mo"></div>
       <button class="btn primary" type="button" id="b-send2">주문 보내기 →</button>
+      <div class="note" id="note2" hidden></div>
       <div class="tel">궁금하면 <a href="tel:15337295">1533-7295</a></div>
     </div>
   </aside>
@@ -472,14 +476,20 @@ function 검사(){
   $('#agree-box').classList.toggle('bad', !agree);
   if (bad.length) { $('#'+bad[0]).focus(); return '상호 · 담당자 · 휴대폰 · 이메일을 확인해 주세요'; }
   if (!plan) { $('#f-plans').scrollIntoView({block:'center'}); return '규모(베이직 · 고급형 · 기업형)를 골라 주세요'; }
-  if (!agree) return '개인정보 수집 · 이용에 동의해 주세요';
+  if (!agree) { $('#agree-box').scrollIntoView({ block:'center' }); return '개인정보 수집 · 이용에 동의해 주세요'; }
   return '';
+}
+/* 안내는 두 곳에 같이 띄운다 — 본문 단추 아래(#note)와 오른쪽 요약 판(#note2). 판에서 눌렀을 때 반응이 없어 보이던 문제 */
+function 알림(cls, html){
+  var a = $('#note'), b = $('#note2');
+  a.className = 'note' + (cls ? ' ' + cls : ''); a.innerHTML = html;
+  b.className = a.className; b.innerHTML = html; b.hidden = !html;
 }
 var 보내는중 = false;
 function 보내기(){
   if (보내는중) return;
   var msg = 검사(); var note = $('#note');
-  if (msg) { note.className='note bad'; note.textContent = msg; return; }
+  if (msg) { 알림('bad', esc(msg)); return; }
   O.at = new Date().toLocaleString('ko-KR', { timeZone:'Asia/Seoul' });
   var items = 항목들();
   var payload = {
@@ -489,7 +499,7 @@ function 보내기(){
     plan: 플랜(), items: items.map(function(i){ return { n: i.n + (i.q>1?' ×'+i.q:''), p: i.q*i.p }; }),
     at: O.at, page: 주문링크(true), website: ''
   };
-  보내는중 = true; note.className='note'; note.textContent = '보내는 중…';
+  보내는중 = true; 알림('', '보내는 중…');
   $('#b-send').disabled = true; $('#b-send2').disabled = true;
   fetch(FORM_ENDPOINT, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
     .then(function(r){ return r.json().catch(function(){ return { ok: r.ok }; }); })
@@ -508,7 +518,7 @@ function 실패(err){
   var note = $('#note'); note.className = 'note bad';
   var 글 = '[홈페이지 주문] ' + O.org + ' / ' + O.owner + ' / ' + PLANS[플랜()].name + '\n주문서: ' + 주문링크(true);
   var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
-  note.innerHTML = '접수 서버가 응답하지 않습니다' + (err ? ' (' + esc(err) + ')' : '') + '. 잠시 뒤 다시 누르시거나, <a href="sms:' + SMS_TO.replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(글) + '">문자로 주문서 링크 보내기</a> · 또는 위의 「주문서 링크 복사」로 카톡에 붙여 보내 주세요. 링크 안에 내용이 다 들어 있습니다.';
+  알림('bad', '접수 서버가 응답하지 않습니다' + (err ? ' (' + esc(err) + ')' : '') + '. 잠시 뒤 다시 누르시거나, <a href="sms:' + SMS_TO.replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(글) + '">문자로 주문서 링크 보내기</a> · 또는 위의 「주문서 링크 복사」로 카톡에 붙여 보내 주세요. 링크 안에 내용이 다 들어 있습니다.');
 }
 
 /* ══ 관리자 화면 ══ */
@@ -538,6 +548,7 @@ function 복사(text, msg){
 /* ══ 단추 ══ */
 $('#form').addEventListener('submit', function(e){ e.preventDefault(); 보내기(); });
 $('#b-send2').addEventListener('click', 보내기);
+$('#f-agree').addEventListener('change', function(){ if (this.checked) { $('#agree-box').classList.remove('bad'); if ($('#note').textContent.indexOf('동의해 주세요') >= 0) 알림('', ''); } });
 $('#b-link').addEventListener('click', function(){ 복사(주문링크(MODE==='admin'), '주문서 링크를 복사했어요'); });
 $('#b-copy2').addEventListener('click', function(){ 복사(주문링크(false), '주문서 링크를 복사했어요'); });
 $('#b-plan').addEventListener('click', function(){ window.open(기획서링크(), '_blank', 'noopener'); });
