@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>홈페이지 제작 자료 제출서 — 큰길브리지</title>
+<meta name="description" content="계약하신 분이 홈페이지에 들어갈 회사 정보 · 글 · 사진 · 연결 주소 · 디자인 취향을 한 번에 적어 보내는 곳입니다.">
+<meta name="robots" content="noindex, follow">
+<meta property="og:title" content="홈페이지 제작 자료 제출서 — 큰길브리지">
+<meta property="og:description" content="홈페이지에 들어갈 회사 정보 · 글 · 사진 · 연결 주소 · 디자인 취향을 적어 보내 주세요. 10~15분이면 됩니다.">
+<meta property="og:image" content="https://www.ai-make.co.kr/og.png">
+<meta property="og:url" content="https://www.ai-make.co.kr/start/">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/*
+  홈페이지 제작 자료 제출서 (계약한 손님용).
+  주문서(order.html)는 「의뢰」를 받는 폼이고, 이것은 계약 뒤 「제작에 필요한 것」을 받는 폼이다.
+  손님이 채워 「자료 보내기」를 누르면 문의 서버(FORM_ENDPOINT)로 가서 형님 메일로 온다.
+  내용은 주소(#m=)에 적은 것만 담기고, 폰·PC 의 저장소에도 임시 저장되어 나중에 이어 쓸 수 있다.
+
+  그냥 열면      → 손님 화면 (폼)
+  ?admin=1#m=… → 우리 화면 (읽기용 요약 + 복사 · 문자 · 메일 단추)
+
+  짧은 주소: https://www.ai-make.co.kr/start/
+*/
+:root{--paper:#fff;--bg:#F3F2EE;--ink:#1A1A1A;--ink2:#5C5C57;--ink3:#8B8B84;--line:#E2E0D8;--hair:#EDEBE4;
+      --acc:#1E5EFF;--acc-soft:#E8EEFF;--gold:#8F6828;--gold-soft:#FBF3E1;--bad:#C8412B;--good:#1F8A5B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,sans-serif;font-size:15px;line-height:1.65;word-break:keep-all;overflow-wrap:break-word}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;letter-spacing:-.02em}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--acc);display:inline-block}
+.mode{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--acc-soft);color:var(--acc);font-weight:700}
+.mode.adm{background:var(--gold-soft);color:var(--gold)}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:99px;border:1px solid var(--line);background:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#fff}
+.btn.big{padding:14px 22px;font-size:16px;font-weight:800}
+.btn:disabled{opacity:.45;cursor:default}
+[hidden]{display:none!important}
+
+/* 진행 순서 */
+.flow{max-width:1180px;margin:18px auto 0;padding:0 20px}
+.steps{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;scrollbar-width:none}
+.steps::-webkit-scrollbar{display:none}
+.step{flex:none;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.step i{width:20px;height:20px;border-radius:50%;background:var(--bg);color:var(--ink3);font-size:11px;font-weight:800;font-style:normal;display:grid;place-items:center}
+.step.now{border-color:var(--acc);background:var(--acc-soft);color:var(--acc);font-weight:700}
+.step.now i{background:var(--acc);color:#fff}
+.step.done i{background:var(--good);color:#fff}
+.flow p{margin:2px 0 0;font-size:12.5px;color:var(--ink3)}
+
+/* 판 */
+.layout{max-width:1180px;margin:0 auto;padding:16px 20px 60px;display:grid;grid-template-columns:1fr minmax(280px,340px);gap:22px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding-bottom:120px}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:18px;letter-spacing:-.02em;display:flex;align-items:center;gap:10px}
+.card h2 i{font-style:normal;font-size:11px;letter-spacing:.14em;color:var(--acc);font-weight:800}
+.card .sub{margin:0 0 14px;font-size:13px;color:var(--ink3)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+label{display:block;font-size:12.5px;color:var(--ink2);margin:10px 0 4px}
+label b{color:var(--bad);font-weight:700;margin-left:2px}
+label .hint{display:inline;margin:0}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:1px;border-color:var(--acc)}
+input.bad,select.bad,textarea.bad{border-color:var(--bad);background:#FFF6F4}
+textarea{min-height:80px;resize:vertical}
+textarea.tall{min-height:120px}
+.hint{font-size:12px;color:var(--ink3);margin-top:5px}
+.tip{font-size:13px;color:var(--ink2);background:var(--gold-soft);border-radius:10px;padding:10px 12px;margin-top:10px;line-height:1.6}
+.tip b{color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line);border-radius:99px;font-size:13.5px;cursor:pointer;background:#fff;user-select:none}
+.chip input{margin:0;accent-color:var(--acc)}
+.chip.on{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-weight:600}
+.radios{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.radios label{margin:0;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--line);border-radius:99px;font-size:13.5px;color:var(--ink);cursor:pointer;background:#fff}
+.radios label.on{background:var(--acc-soft);border-color:var(--acc);color:var(--acc);font-weight:600}
+.radios input{margin:0;accent-color:var(--acc)}
+.agree{display:flex;gap:10px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:13.5px;line-height:1.6;margin-top:8px}
+.agree input{margin-top:4px;accent-color:var(--acc)}
+.agree.bad{border-color:var(--bad)}
+.note{font-size:13.5px;margin-top:12px;min-height:1.4em}
+.note.bad{color:var(--bad)}
+.note.ok{color:var(--good)}
+.sum .note{margin-top:10px;min-height:0;text-align:center;font-weight:700;line-height:1.5}
+.sum .note.bad{color:#FFB3A6}
+.sum .note.ok{color:#8BE0B4}
+.sendrow{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* 오른쪽 요약 */
+aside{position:sticky;top:66px}
+.sum{background:var(--ink);color:#fff;border-radius:16px;padding:20px}
+.sum .k{font-size:11px;letter-spacing:.16em;opacity:.7;font-weight:700}
+.sum .org{font-size:20px;font-weight:900;letter-spacing:-.02em;margin:6px 0 12px;min-height:1.3em}
+.sum .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+.sum .bar i{display:block;height:100%;width:0;background:#8BE0B4;border-radius:99px;transition:width .3s}
+.sum .prog{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:13.5px}
+.sum .prog b{font-size:22px;letter-spacing:-.02em}
+.sum ul{list-style:none;margin:10px 0 0;padding:0;font-size:13px;opacity:.85}
+.sum li{padding:5px 0;border-top:1px solid rgba(255,255,255,.12);display:flex;gap:8px}
+.sum li i{font-style:normal;width:16px;flex:none;text-align:center}
+.sum li.ok{opacity:.55}
+.sum .files{margin-top:12px;padding-top:12px;border-top:2px solid rgba(255,255,255,.35);font-size:12.5px;line-height:1.6;opacity:.9}
+.sum .files a{color:#FFD37A;font-weight:800;text-decoration:none}
+.sum .btn{width:100%;justify-content:center;margin-top:14px;border-color:transparent}
+.sum .tel{margin-top:12px;font-size:12.5px;opacity:.75;text-align:center}
+.sum .tel a{color:#FFD37A;font-weight:800;text-decoration:none}
+@media(max-width:900px){
+  aside{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:30}
+  .sum{border-radius:16px 16px 0 0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+  .sum .k,.sum ul,.sum .files,.sum .tel,.sum .bar{display:none}
+  .sum .org{font-size:14px;margin:0;grid-column:1}
+  .sum .prog{margin:0;grid-column:1;justify-content:flex-start;gap:8px;font-size:12.5px}
+  .sum .prog b{font-size:16px}
+  .sum .btn{margin:0;grid-column:2;grid-row:1/3;width:auto}
+  .sum .note{grid-column:1/3;margin-top:4px}
+}
+
+/* 완료 · 관리자 */
+.done{display:none}
+.done.on{display:block}
+.done .big{font-size:24px;font-weight:900;letter-spacing:-.02em;margin:0 0 8px}
+.done ol{margin:12px 0 0;padding-left:22px;color:var(--ink2)}
+.done ol li{margin:6px 0}
+.done ol li b{color:var(--ink)}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:14px}
+.kv dt{color:var(--ink3);margin:0}.kv dd{margin:0;white-space:pre-wrap}
+.kv dt.h{grid-column:1/3;margin-top:14px;padding-top:10px;border-top:1px solid var(--line);color:var(--acc);font-weight:800;font-size:12px;letter-spacing:.12em}
+@media(max-width:560px){.kv{grid-template-columns:1fr}.kv dt{margin-top:6px;font-size:12px}.kv dt.h{grid-column:1}}
+.adm-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);opacity:0;transition:.25s;background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:99;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.toast{bottom:110px}}
+@media print{.topbar,aside,.flow,.toast{display:none!important}.layout{display:block;padding:0}.card{border:0;padding:0 0 16px}}
+</style>
+  <script defer src="https://www.ai-make.co.kr/stats/stats.js" data-site="ai-make"></script>
+</head>
+<body>
+
+<div class="topbar"><div class="topbar-in">
+  <a class="brand" href="../"><i></i>큰길브리지 <span style="font-weight:500;color:var(--ink3)">· 제작 자료 제출서</span></a>
+  <span class="mode" id="mode">자료 제출</span>
+  <span class="sp"></span>
+  <button class="btn" id="b-link" type="button">🔗 링크 복사</button>
+</div></div>
+
+<div class="flow">
+  <div class="steps" id="steps"></div>
+  <p id="flow-p">계약 감사합니다. 지금은 <b>자료 제출</b> 단계입니다. 아래를 채워 보내 주시면 그 내용으로 시안을 만듭니다. 사진 · 로고 파일은 카톡이나 이메일로 따로 보내 주세요.</p>
+</div>
+
+<div class="layout" id="layout">
+  <main id="main">
+    <form id="form" novalidate>
+
+      <section class="card">
+        <h2><i>01</i>기본 정보</h2>
+        <p class="sub">홈페이지 아래쪽 · 연락처 · 지도에 그대로 들어갑니다. 계약서와 같게 적어 주세요.</p>
+        <div class="grid2">
+          <div><label>상호 (홈페이지에 표시할 이름)<b>*</b></label><input type="text" id="f-org" placeholder="예: 별빛이벤트" autocomplete="organization"></div>
+          <div><label>대표자 성함 <span class="hint">(아래쪽 사업자 정보에 표시)</span></label><input type="text" id="f-rep" placeholder="예: 김대표"></div>
+          <div><label>담당자 이름 (연락 받을 분)<b>*</b></label><input type="text" id="f-owner" placeholder="예: 김대표" autocomplete="name"></div>
+          <div><label>담당자 휴대폰<b>*</b></label><input type="tel" id="f-tel" placeholder="010-0000-0000" inputmode="numeric" autocomplete="tel"></div>
+          <div><label>이메일<b>*</b> <span class="hint">시안 링크를 받을 주소</span></label><input type="email" id="f-email" placeholder="name@example.com" inputmode="email" autocomplete="email"></div>
+          <div><label>홈페이지에 표시할 전화 <span class="hint">(대표번호 · 매장 전화)</span></label><input type="tel" id="f-tel2" placeholder="예: 061-000-0000 (없으면 휴대폰)"></div>
+          <div><label>주소<b>*</b> <span class="hint">지도 · 오시는 길에 씁니다</span></label><input type="text" id="f-addr" placeholder="예: 전남 순천시 조례동 000-0 2층" autocomplete="street-address"></div>
+          <div><label>영업시간 · 휴무</label><input type="text" id="f-hours" placeholder="예: 평일 09:00~18:00 · 토 10~14 · 일 휴무"></div>
+          <div><label>사업자등록번호 <span class="hint">(홈페이지 하단 표기 · 세금계산서)</span></label><input type="text" id="f-bizno" placeholder="000-00-00000" inputmode="numeric"></div>
+          <div><label>통신판매업 신고번호 <span class="hint">(쇼핑몰 · 결제가 있을 때만)</span></label><input type="text" id="f-mailorder" placeholder="예: 2026-전남순천-0000"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><i>02</i>로고 · 사진 · 파일</h2>
+        <p class="sub">파일은 이 폼에 붙일 수 없습니다. 여기서는 <b>무엇을 보낼지</b>만 고르고, 파일은 카톡 · 이메일 · 공유 링크로 주세요.</p>
+        <label>로고</label>
+        <div class="radios" id="f-logo"></div>
+        <label>보내 주실 사진 <span class="hint">(있는 것만)</span></label>
+        <div class="chips" id="f-photos"></div>
+        <div class="grid2">
+          <div><label>파일은 이렇게 보낼게요</label><div class="radios" id="f-files"></div></div>
+          <div><label>사진 분량</label><div class="radios" id="f-amount"></div></div>
+        </div>
+        <label>공유 링크 <span class="hint">(구글 드라이브 · 네이버 MYBOX · 드롭박스 폴더 주소)</span></label><input type="url" id="f-share" placeholder="https://">
+        <div class="tip"><b>사진 팁</b> — 가로로 찍은 큰 사진이 좋습니다. 카톡으로 보내실 땐 사진 고르고 「원본」에 체크해 주세요. 작게 보내면 홈페이지에서 흐려집니다. 남의 사진(인터넷에서 받은 것)은 쓸 수 없습니다.</div>
+      </section>
+
+      <section class="card">
+        <h2><i>03</i>글</h2>
+        <p class="sub">완벽하지 않아도 됩니다. 사장님 말투 그대로 적어 주시면 저희가 다듬어서 씁니다.</p>
+        <label>한 줄 소개 <span class="hint">(첫 화면 큰 글씨. 비우면 저희가 제안합니다)</span></label><input type="text" id="f-slogan" placeholder="예: 행사가 끝난 뒤에도 이야기되는 자리를 만듭니다">
+        <label>회사 · 가게 소개<b>*</b> <span class="hint">(3~5줄. 언제 시작했고 · 무엇을 잘하고 · 어떤 손님이 많은지)</span></label><textarea id="f-intro" class="tall" placeholder="예: 2011년부터 순천 · 광양에서 행사를 해 왔습니다. 축제 · 기념식 · 체육대회가 많고, 무대 · 음향 · 조명 장비를 직접 가지고 있어 급한 행사도 바로 갑니다."></textarea>
+        <label>하는 일 · 메뉴 · 서비스<b>*</b> <span class="hint">(한 줄에 하나. 가격 · 설명이 있으면 「이름 | 가격 | 설명」)</span></label><textarea id="f-services" class="tall" placeholder="예:&#10;축제 · 기념식 기획 | 상담 후 견적 | 기획부터 진행까지&#10;무대 · 음향 · 조명 | 50만원~ | 100명 규모 기준&#10;LED 전광판 · 영상 중계"></textarea>
+        <label>우리만의 강점 3가지 <span class="hint">(손님이 여길 골라야 하는 이유)</span></label><textarea id="f-strengths" placeholder="예:&#10;15년 경력, 지자체 행사 200회&#10;장비 직접 보유 — 당일 대응&#10;견적서 · 계약서 바로 발행"></textarea>
+        <label>자주 묻는 질문 <span class="hint">(「질문 | 답」 한 줄에 하나)</span></label><textarea id="f-faq" placeholder="예: 예약은 얼마나 미리 해야 하나요? | 보통 2주 전, 급하면 전화 주세요"></textarea>
+        <label>후기 · 실적 <span class="hint">(고객사 이름, 진행 건수, 손님 말 한마디)</span></label><textarea id="f-reviews" placeholder="예: 순천시청 · 광양제철소 · ○○초등학교 / 연 80회"></textarea>
+        <div class="grid2">
+          <div><label>자격 · 수상 · 인증</label><input type="text" id="f-certs" placeholder="예: 행사 안전관리자, 2025 우수업체"></div>
+          <div><label>대표 인사말 <span class="hint">(선택, 2~3줄)</span></label><input type="text" id="f-greet" placeholder="예: 작은 행사도 정성껏 하겠습니다"></div>
+        </div>
+        <label>홈페이지에 넣을 내용</label>
+        <div class="chips" id="f-pages"></div>
+      </section>
+
+      <section class="card">
+        <h2><i>04</i>연결 · 채널</h2>
+        <p class="sub">있는 것만 적어 주세요. 홈페이지 단추와 연결됩니다.</p>
+        <div class="grid2">
+          <div><label>인스타그램</label><input type="url" id="f-insta" placeholder="https://instagram.com/..."></div>
+          <div><label>네이버 블로그</label><input type="url" id="f-blog" placeholder="https://blog.naver.com/..."></div>
+          <div><label>유튜브</label><input type="url" id="f-youtube" placeholder="https://youtube.com/@..."></div>
+          <div><label>페이스북</label><input type="url" id="f-facebook" placeholder="https://facebook.com/..."></div>
+          <div><label>네이버 플레이스 (지도)</label><input type="url" id="f-place" placeholder="https://naver.me/..."></div>
+          <div><label>카카오톡 채널</label><input type="url" id="f-kakao" placeholder="https://pf.kakao.com/..."></div>
+          <div><label>기존 홈페이지</label><input type="url" id="f-site" placeholder="https://"></div>
+          <div><label>예약 · 문의 받을 방법</label><div class="chips" id="f-channels"></div></div>
+        </div>
+        <label>홈페이지 문의를 받을 이메일 <span class="hint">(위 이메일과 다르면)</span></label><input type="email" id="f-formmail" placeholder="name@example.com" inputmode="email">
+      </section>
+
+      <section class="card">
+        <h2><i>05</i>도메인 (홈페이지 주소)</h2>
+        <p class="sub">www.○○○.co.kr 같은 주소입니다. 비밀번호는 여기에 적지 마시고 전화로 알려 주세요.</p>
+        <div class="radios" id="f-domain"></div>
+        <div class="grid2">
+          <div><label>가진 주소 · 원하는 이름</label><input type="text" id="f-domainname" placeholder="예: starlight-event.co.kr (없으면 후보 2~3개)"></div>
+          <div><label>등록한 곳 <span class="hint">(가지고 있을 때)</span></label><input type="text" id="f-registrar" placeholder="예: 가비아 · 후이즈 · 카페24 · 호스팅케이알"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><i>06</i>디자인 취향</h2>
+        <p class="sub">고르기만 하세요. 계약 시안은 이 취향으로 만들고, 수정 2회 안에서 다듬습니다.</p>
+        <label>분위기</label>
+        <div class="chips" id="f-mood"></div>
+        <div class="grid2">
+          <div><label>좋아하는 색 · 로고 색</label><input type="text" id="f-colors" placeholder="예: 남색 + 금색, 로고가 빨강"></div>
+          <div><label>피하고 싶은 것</label><input type="text" id="f-avoid" placeholder="예: 너무 화려한 것, 검은 배경"></div>
+        </div>
+        <label>참고하고 싶은 사이트 <span class="hint">(동종 업체 · 마음에 든 사이트, 최대 3개)</span></label>
+        <input type="url" id="f-ref1" placeholder="https://"><input type="url" id="f-ref2" placeholder="https://" style="margin-top:6px"><input type="url" id="f-ref3" placeholder="https://" style="margin-top:6px">
+        <label>그 사이트에서 좋았던 점</label><input type="text" id="f-refwhy" placeholder="예: 첫 화면 사진이 크고, 가격표가 바로 보여서">
+        <div class="grid2">
+          <div><label>꼭 넣어 주세요</label><textarea id="f-must" placeholder="예: 첫 화면에 전화 단추, 카카오톡 상담"></textarea></div>
+          <div><label>넣지 말아 주세요</label><textarea id="f-never" placeholder="예: 가격표는 빼 주세요"></textarea></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2><i>07</i>일정 · 연락</h2>
+        <div class="grid2">
+          <div><label>오픈 희망일</label><input type="date" id="f-open"><p class="hint">자료가 다 모인 날부터 베이직 5영업일 · 고급형 10영업일이 기본입니다.</p></div>
+          <div><label>연락은 이렇게</label><div class="radios" id="f-contactvia"></div></div>
+          <div><label>연락 편한 시간</label><input type="text" id="f-time" placeholder="예: 평일 오후 2~6시, 행사 없는 날"></div>
+        </div>
+        <label>그 밖에 하실 말씀</label><textarea id="f-note" placeholder="꼭 넣고 싶은 것, 걱정되는 것, 궁금한 것"></textarea>
+        <label class="agree" id="agree-box"><input type="checkbox" id="f-agree"><span><b>개인정보 수집 · 이용 동의</b><br>수집 항목: 상호 · 이름 · 연락처 · 이메일 · 주소 · 사업자번호와 위에 적은 내용. 목적: 계약한 홈페이지 제작 · 유지관리. 보유 기간: 계약 종료 후 3년(전자상거래법). 주식회사 브리지미디어 · 1533-7295</span></label>
+        <div class="sendrow">
+          <button class="btn primary big" type="submit" id="b-send">자료 보내기 →</button>
+          <span class="hint" style="margin:0">보내면 접수 메일이 가고, 확인 문자를 드립니다. 파일은 따로 카톡 · 이메일로.</span>
+        </div>
+        <div class="note" id="note"></div>
+      </section>
+    </form>
+
+    <!-- 접수 완료 -->
+    <section class="card done" id="done">
+      <p class="big">자료가 접수되었습니다. 감사합니다.</p>
+      <p style="margin:0;color:var(--ink2)"><b id="done-org"></b> 홈페이지 제작 자료가 큰길브리지에 들어왔습니다. 이제 이렇게 진행됩니다.</p>
+      <ol>
+        <li><b>파일 보내기</b> — 로고 · 사진은 아래 단추로 카톡이나 이메일에 붙여 보내 주세요. 사진은 「원본」으로.</li>
+        <li><b>시안 제작</b> — 자료가 다 모이면 시안을 만들어 링크로 보냅니다. 휴대폰으로 보시면 됩니다.</li>
+        <li><b>수정 2회</b> — 고칠 것을 말씀해 주시면 두 번까지 다듬습니다. 그 뒤엔 건당 협의.</li>
+        <li><b>오픈</b> — 도메인 연결 · 검색 등록까지 마치고, 글자 · 사진을 직접 고칠 수 있는 열쇠를 드립니다.</li>
+      </ol>
+      <div class="adm-acts">
+        <a class="btn primary" id="d-sms" href="#">💬 카톡 · 문자로 파일 보내기</a>
+        <a class="btn" id="d-mail" href="#">✉ 이메일로 파일 보내기</a>
+        <button class="btn" type="button" id="b-copy2">🔗 내 제출 내용 링크 복사</button>
+        <a class="btn" href="tel:15337295">📞 1533-7295</a>
+      </div>
+      <p class="hint" style="margin-top:12px">링크를 저장해 두시면 나중에 같은 내용을 다시 열어 고쳐 보낼 수 있습니다.</p>
+    </section>
+
+    <!-- 관리자 요약 -->
+    <section class="card done" id="adm">
+      <p class="big" id="adm-title">제작 자료</p>
+      <dl class="kv" id="adm-kv"></dl>
+      <div class="adm-acts">
+        <button class="btn primary" type="button" id="b-copyall">📋 전체 글 복사</button>
+        <a class="btn" id="b-sms" href="#">💬 접수 문자 보내기</a>
+        <a class="btn" id="b-mail" href="#">✉ 메일 쓰기</a>
+        <button class="btn" type="button" id="b-edit">✎ 폼으로 열기</button>
+      </div>
+      <p class="hint" style="margin-top:12px">「전체 글 복사」는 시안 만들 때 그대로 붙여 넣는 용도입니다. 파일은 손님이 카톡 · 메일로 따로 보냅니다.</p>
+    </section>
+  </main>
+
+  <aside id="aside">
+    <div class="sum">
+      <div class="k">자료 제출</div>
+      <div class="org" id="s-org">상호를 적어 주세요</div>
+      <div class="bar"><i id="s-bar"></i></div>
+      <div class="prog"><span>필수 항목</span><b id="s-prog">0 / 7</b></div>
+      <ul id="s-list"></ul>
+      <div class="files">사진 · 로고 파일은 <a href="sms:01076357886">카톡 · 문자 010-7635-7886</a> 또는 <a href="mailto:gilauto325@gmail.com">이메일</a>로.</div>
+      <button class="btn primary" type="button" id="b-send2">자료 보내기 →</button>
+      <div class="note" id="note2" hidden></div>
+      <div class="tel">궁금하면 <a href="tel:15337295">1533-7295</a></div>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var FORM_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwvQ4UJRZklRX7bZB6C0s1yZgSvBAMCVccT580L_1BtiVDyh0DIxShCAvN9McZIB0b7FA/exec';   /* 문의 접수 서버 (index.html · order.html 과 같은 것) */
+var SMS_TO = '010-7635-7886';
+var MAIL_TO = 'gilauto325@gmail.com';
+var 저장열쇠 = 'kb-start-draft';
+
+/* 고르는 목록 — order.html · plan.html 과 글자를 맞춘다 */
+var 로고들 = ['로고 파일 있어요 (AI · PNG · JPG)', '간판 · 명함 사진뿐이에요', '없어요 — 상호 글자로 해 주세요', '없어요 — 만들어 주세요 (옵션 · 로고 + 브랜드 키트)'];
+var 사진들 = ['외관 · 간판', '내부 · 매장', '제품 · 메뉴', '작업 · 시공 · 행사 사례', '대표 · 직원', '인증서 · 자격증', '없어요 — 대신 골라 주세요'];
+var 보내기들 = ['카톡으로', '이메일로', '공유 링크로 (아래 칸)'];
+var 분량들 = ['10장 이하', '10~30장', '30장 이상'];
+var 내용들 = ['회사 · 대표 소개','하는 일 · 메뉴','가격표','사진 갤러리','후기','예약 · 문의 폼','오시는 길 · 지도','공지 · 블로그','채용','영상'];
+var 채널들 = ['전화', '카카오톡 채널', '문자', '홈페이지 문의 폼 → 이메일', '네이버 예약'];
+var 도메인들 = ['가지고 있어요','없어요 — 새로 잡아주세요','잘 모르겠어요 — 맡길게요'];
+var 분위기들 = ['깔끔 · 신뢰','따뜻 · 친근','고급 · 차분','활기 · 컬러풀','다크 · 강렬','밝고 넓게'];
+var 연락들 = ['전화','카톡','문자','이메일'];
+var 흐름 = ['계약 · 선금', '자료 제출', '시안 제작', '수정 (2회)', '오픈', '검색 등록 · 인수인계'];
+
+/* 글 입력칸 (id = f-키) */
+var 글칸 = ['org','rep','owner','tel','email','tel2','addr','hours','bizno','mailorder','share','slogan','intro','services','strengths','faq','reviews','certs','greet','insta','blog','youtube','facebook','place','kakao','site','formmail','domainname','registrar','colors','avoid','refwhy','must','never','time','note'];
+var 필수 = [['org','상호'],['owner','담당자 이름'],['tel','담당자 휴대폰'],['email','이메일'],['addr','주소'],['intro','회사 · 가게 소개'],['services','하는 일 · 메뉴']];
+
+/* ══ 상태 ══ */
+var M = { v:1, at:'' };
+글칸.forEach(function(k){ M[k] = ''; });
+M.open = ''; M.refs = ['','','']; M.logo = ''; M.files = ''; M.amount = ''; M.domain = ''; M.contactvia = '';
+M.photos = []; M.pages = []; M.channels = []; M.mood = [];
+
+var Q = new URLSearchParams(location.search);
+var MODE = Q.get('admin') === '1' ? 'admin' : 'customer';
+function $(s){ return document.querySelector(s); }
+function $$(s){ return [].slice.call(document.querySelectorAll(s)); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64(t){ t=t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; return decodeURIComponent(escape(atob(t))); }
+function toast(m){ var t=$('#toast'); t.textContent=m; t.className='toast on'; clearTimeout(toast.t); toast.t=setTimeout(function(){t.className='toast';},2600); }
+function 휴대폰맞나(v){ return /^01[016789][0-9]{7,8}$/.test((v||'').replace(/[^0-9]/g,'')); }
+function 이메일맞나(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v||''); }
+
+/* 주소에는 적은 것만 담는다 (빈 칸을 다 담으면 링크가 너무 길다) */
+function 압축(o){
+  var out = {};
+  Object.keys(o).forEach(function(k){
+    var v = o[k];
+    if (k === 'v' || v === '' || v === null || v === undefined) return;
+    if (Array.isArray(v)) { if (!v.some(function(x){ return x !== '' && x != null; })) return; out[k] = k === 'refs' ? v.map(function(x){ return x || ''; }) : v.filter(function(x){ return x !== '' && x != null; }); return; }
+    out[k] = v;
+  });
+  return out;
+}
+function 주소해시(){ var c = 압축(M); return Object.keys(c).length ? '#m=' + b64u(JSON.stringify(c)) : ''; }
+function 제출링크(admin){ return location.origin + location.pathname + (admin?'?admin=1':'') + 주소해시(); }
+function 읽기(o){
+  Object.keys(M).forEach(function(k){ if (o[k] !== undefined) M[k] = o[k]; });
+  if (!Array.isArray(M.refs)) M.refs = ['','',''];
+  while (M.refs.length < 3) M.refs.push('');
+  ['photos','pages','channels','mood'].forEach(function(k){ if (!Array.isArray(M[k])) M[k] = []; });
+}
+
+/* ══ 폼 그리기 ══ */
+function 칩(id, list, key){
+  $('#'+id).innerHTML = list.map(function(v){ return '<label class="chip"><input type="checkbox" name="'+id+'" value="'+esc(v)+'">'+esc(v)+'</label>'; }).join('');
+  $$('#'+id+' input').forEach(function(c){ c.addEventListener('change', function(){ M[key] = $$('#'+id+' input:checked').map(function(x){ return x.value; }); 색(); 그리기(); }); });
+}
+function 라디오(id, list, key){
+  $('#'+id).innerHTML = list.map(function(v){ return '<label><input type="radio" name="'+id+'" value="'+esc(v)+'">'+esc(v)+'</label>'; }).join('');
+  $$('#'+id+' input').forEach(function(r){ r.addEventListener('change', function(){ M[key] = r.value; 색(); 그리기(); }); });
+}
+function 폼그리기(){
+  라디오('f-logo', 로고들, 'logo'); 칩('f-photos', 사진들, 'photos'); 라디오('f-files', 보내기들, 'files'); 라디오('f-amount', 분량들, 'amount');
+  칩('f-pages', 내용들, 'pages'); 칩('f-channels', 채널들, 'channels'); 라디오('f-domain', 도메인들, 'domain'); 칩('f-mood', 분위기들, 'mood'); 라디오('f-contactvia', 연락들, 'contactvia');
+  글칸.forEach(function(k){ $('#f-'+k).addEventListener('input', function(){ M[k] = this.value; this.classList.remove('bad'); 그리기(); }); });
+  ['ref1','ref2','ref3'].forEach(function(k,i){ $('#f-'+k).addEventListener('input', function(){ M.refs[i] = this.value; 그리기(); }); });
+  $('#f-open').addEventListener('change', function(){ M.open = this.value; 그리기(); });
+  $('#f-tel').addEventListener('input', function(){ var d=this.value.replace(/[^0-9]/g,'').slice(0,11); if (d.length>=10 && d.indexOf('01')===0) { this.value = d.length>10 ? d.slice(0,3)+'-'+d.slice(3,7)+'-'+d.slice(7) : d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6); M.tel=this.value; } });
+}
+function 폼채우기(){
+  글칸.forEach(function(k){ $('#f-'+k).value = M[k]||''; });
+  $('#f-open').value = M.open || '';
+  ['ref1','ref2','ref3'].forEach(function(k,i){ $('#f-'+k).value = M.refs[i]||''; });
+  [['f-photos','photos'],['f-pages','pages'],['f-channels','channels'],['f-mood','mood']].forEach(function(x){ $$('#'+x[0]+' input').forEach(function(c){ c.checked = (M[x[1]]||[]).indexOf(c.value) >= 0; }); });
+  [['f-logo','logo'],['f-files','files'],['f-amount','amount'],['f-domain','domain'],['f-contactvia','contactvia']].forEach(function(x){ $$('#'+x[0]+' input').forEach(function(r){ r.checked = r.value === M[x[1]]; }); });
+  색();
+}
+function 색(){ $$('.chip,.radios label').forEach(function(l){ var i=l.querySelector('input'); l.classList.toggle('on', !!(i && i.checked)); }); }
+
+/* ══ 요약 · 저장 ══ */
+function 빠진필수(){
+  return 필수.filter(function(f){
+    var v = M[f[0]];
+    if (f[0] === 'tel') return !휴대폰맞나(v);
+    if (f[0] === 'email') return !이메일맞나(v);
+    return !(v && String(v).trim());
+  });
+}
+function 그리기(){
+  var 빠짐 = 빠진필수(), 채움 = 필수.length - 빠짐.length;
+  $('#s-org').textContent = M.org || '상호를 적어 주세요';
+  $('#s-prog').textContent = 채움 + ' / ' + 필수.length;
+  $('#s-bar').style.width = Math.round(채움 / 필수.length * 100) + '%';
+  $('#s-list').innerHTML = 필수.map(function(f){ var ok = !빠짐.some(function(b){ return b[0] === f[0]; }); return '<li class="'+(ok?'ok':'')+'"><i>'+(ok?'✓':'·')+'</i>'+esc(f[1])+'</li>'; }).join('');
+  try { history.replaceState(null, '', location.pathname + (MODE==='admin'?'?admin=1':'') + 주소해시()); } catch(e){}
+  try { if (MODE !== 'admin') localStorage.setItem(저장열쇠, JSON.stringify(압축(M))); } catch(e){}
+}
+
+/* ══ 보내기 ══ */
+function 줄(제목, 값){ return 값 && String(값).trim() ? 제목 + ': ' + String(값).trim() : ''; }
+function 요약글(){
+  var L = [];
+  L.push('[홈페이지 제작 자료] ' + (M.org||'') + ' — 담당 ' + (M.owner||'') + ' · ' + (M.tel||''));
+  L.push('▶ 관리자 화면 (전체 글 복사 단추 있음):'); L.push(제출링크(true)); L.push('');
+  L.push('■ 기본 정보');
+  [줄('상호', M.org), 줄('대표자', M.rep), 줄('담당자', M.owner), 줄('휴대폰', M.tel), 줄('이메일', M.email), 줄('표시할 전화', M.tel2), 줄('주소', M.addr), 줄('영업시간 · 휴무', M.hours), 줄('사업자번호', M.bizno), 줄('통신판매업', M.mailorder)].filter(Boolean).forEach(function(x){ L.push(x); });
+  L.push(''); L.push('■ 로고 · 사진 · 파일');
+  [줄('로고', M.logo), 줄('사진', M.photos.join(', ')), 줄('파일 보내는 방법', M.files), 줄('분량', M.amount), 줄('공유 링크', M.share)].filter(Boolean).forEach(function(x){ L.push(x); });
+  L.push(''); L.push('■ 글');
+  [줄('한 줄 소개', M.slogan), 줄('소개', M.intro), 줄('하는 일 · 메뉴', M.services), 줄('강점', M.strengths), 줄('FAQ', M.faq), 줄('후기 · 실적', M.reviews), 줄('자격 · 수상', M.certs), 줄('대표 인사말', M.greet), 줄('넣을 내용', M.pages.join(', '))].filter(Boolean).forEach(function(x){ L.push(x); });
+  L.push(''); L.push('■ 연결 · 채널');
+  [줄('인스타', M.insta), 줄('블로그', M.blog), 줄('유튜브', M.youtube), 줄('페이스북', M.facebook), 줄('네이버 플레이스', M.place), 줄('카카오 채널', M.kakao), 줄('기존 홈페이지', M.site), 줄('문의 받을 방법', M.channels.join(', ')), 줄('문의 받을 이메일', M.formmail)].filter(Boolean).forEach(function(x){ L.push(x); });
+  L.push(''); L.push('■ 도메인');
+  [줄('도메인', M.domain), 줄('주소 · 이름', M.domainname), 줄('등록한 곳', M.registrar)].filter(Boolean).forEach(function(x){ L.push(x); });
+  L.push(''); L.push('■ 디자인');
+  [줄('분위기', M.mood.join(', ')), 줄('색', M.colors), 줄('피할 것', M.avoid), 줄('참고 사이트', M.refs.filter(Boolean).join(' , ')), 줄('좋았던 점', M.refwhy), 줄('꼭 넣을 것', M.must), 줄('넣지 말 것', M.never)].filter(Boolean).forEach(function(x){ L.push(x); });
+  L.push(''); L.push('■ 일정 · 연락');
+  [줄('오픈 희망', M.open), 줄('연락', M.contactvia), 줄('편한 시간', M.time), 줄('하실 말씀', M.note)].filter(Boolean).forEach(function(x){ L.push(x); });
+  return L.join('\n');
+}
+function 검사(){
+  var 빠짐 = 빠진필수();
+  $$('.bad').forEach(function(i){ i.classList.remove('bad'); });
+  빠짐.forEach(function(f){ $('#f-'+f[0]).classList.add('bad'); });
+  var agree = $('#f-agree').checked;
+  $('#agree-box').classList.toggle('bad', !agree);
+  if (빠짐.length) { var el = $('#f-'+빠짐[0][0]); el.scrollIntoView({ block:'center' }); el.focus({ preventScroll:true }); return '필수 항목을 채워 주세요: ' + 빠짐.map(function(f){ return f[1]; }).join(' · '); }
+  if (!agree) { $('#agree-box').scrollIntoView({ block:'center' }); return '개인정보 수집 · 이용에 동의해 주세요'; }
+  return '';
+}
+/* 안내는 두 곳에 같이 — 본문 단추 아래(#note)와 오른쪽 판(#note2) */
+function 알림(cls, html){
+  var a = $('#note'), b = $('#note2');
+  a.className = 'note' + (cls ? ' ' + cls : ''); a.innerHTML = html;
+  b.className = a.className; b.innerHTML = html; b.hidden = !html;
+}
+var 보내는중 = false;
+function 보내기(){
+  if (보내는중) return;
+  var msg = 검사();
+  if (msg) { 알림('bad', esc(msg)); return; }
+  M.at = new Date().toLocaleString('ko-KR', { timeZone:'Asia/Seoul' });
+  var payload = {
+    name: M.org + ' / ' + M.owner, phone: M.tel, email: M.email, service: '홈페이지 제작 자료 제출',
+    message: 요약글(), total: '', quote: '', plan: '', items: [],
+    at: M.at, page: 제출링크(true), website: ''
+  };
+  보내는중 = true; 알림('', '보내는 중…');
+  $('#b-send').disabled = true; $('#b-send2').disabled = true;
+  fetch(FORM_ENDPOINT, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    .then(function(r){ return r.json().catch(function(){ return { ok: r.ok }; }); })
+    .then(function(out){ if (out && out.ok) 완료(); else 실패(out && out.error); })
+    .catch(function(){ 실패(''); })
+    .finally(function(){ 보내는중 = false; $('#b-send').disabled = false; $('#b-send2').disabled = false; });
+}
+function 완료(){
+  $('#form').style.display = 'none'; $('#aside').style.display = 'none';
+  $('#done').classList.add('on'); $('#done-org').textContent = M.org;
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  var 글 = '[자료] ' + M.org + ' — 로고 · 사진 보냅니다 (' + M.owner + ')';
+  $('#d-sms').href = 'sms:' + SMS_TO.replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(글);
+  $('#d-mail').href = 'mailto:' + MAIL_TO + '?subject=' + encodeURIComponent(글) + '&body=' + encodeURIComponent('로고 · 사진 파일을 첨부합니다.\n\n' + M.org + ' / ' + M.owner + ' / ' + M.tel);
+  $$('.step').forEach(function(s,i){ s.classList.toggle('done', i < 2); s.classList.toggle('now', i === 2); });
+  $('#flow-p').innerHTML = '접수됐습니다. 파일까지 오면 <b>시안 제작</b>에 들어갑니다.';
+  try { localStorage.removeItem(저장열쇠); } catch(e){}
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function 실패(err){
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  var 글 = '[홈페이지 자료] ' + M.org + ' / ' + M.owner + '\n제출 내용: ' + 제출링크(true);
+  알림('bad', '접수 서버가 응답하지 않습니다' + (err ? ' (' + esc(err) + ')' : '') + '. 잠시 뒤 다시 누르시거나, <a href="sms:' + SMS_TO.replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(글) + '">문자로 링크 보내기</a>를 눌러 주세요. 적은 내용은 이 기기에 저장돼 있습니다.');
+}
+
+/* ══ 관리자 화면 ══ */
+function 관리자그리기(){
+  var 묶음 = [
+    ['기본 정보', [['접수', M.at], ['상호', M.org], ['대표자', M.rep], ['담당자', M.owner + (M.tel ? ' · ' + M.tel : '') + (M.email ? ' · ' + M.email : '')], ['표시할 전화', M.tel2], ['주소', M.addr], ['영업시간 · 휴무', M.hours], ['사업자번호', M.bizno], ['통신판매업', M.mailorder]]],
+    ['로고 · 사진 · 파일', [['로고', M.logo], ['사진', M.photos.join(', ')], ['보내는 방법', M.files], ['분량', M.amount], ['공유 링크', M.share]]],
+    ['글', [['한 줄 소개', M.slogan], ['소개', M.intro], ['하는 일 · 메뉴', M.services], ['강점', M.strengths], ['FAQ', M.faq], ['후기 · 실적', M.reviews], ['자격 · 수상', M.certs], ['대표 인사말', M.greet], ['넣을 내용', M.pages.join(', ')]]],
+    ['연결 · 채널', [['인스타', M.insta], ['블로그', M.blog], ['유튜브', M.youtube], ['페이스북', M.facebook], ['네이버 플레이스', M.place], ['카카오 채널', M.kakao], ['기존 홈페이지', M.site], ['문의 받을 방법', M.channels.join(', ')], ['문의 받을 이메일', M.formmail]]],
+    ['도메인', [['도메인', M.domain], ['주소 · 이름', M.domainname], ['등록한 곳', M.registrar]]],
+    ['디자인', [['분위기', M.mood.join(', ')], ['색', M.colors], ['피할 것', M.avoid], ['참고 사이트', M.refs.filter(Boolean).join(' , ')], ['좋았던 점', M.refwhy], ['꼭 넣을 것', M.must], ['넣지 말 것', M.never]]],
+    ['일정 · 연락', [['오픈 희망', M.open], ['연락', M.contactvia], ['편한 시간', M.time], ['하실 말씀', M.note]]]
+  ];
+  $('#adm-title').textContent = (M.org || '(상호 없음)') + ' 제작 자료';
+  $('#adm-kv').innerHTML = 묶음.map(function(g){
+    var rows = g[1].filter(function(r){ return r[1] && String(r[1]).trim(); });
+    if (!rows.length) return '';
+    return '<dt class="h">' + esc(g[0]) + '</dt>' + rows.map(function(r){ return '<dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd>'; }).join('');
+  }).join('');
+  var 문자 = '[큰길브리지] ' + M.owner + ' 님, ' + M.org + ' 홈페이지 자료 잘 받았습니다. 로고 · 사진 파일은 이 번호로 보내 주세요. 다 모이면 시안 만들어 링크로 드립니다. 김효민 1533-7295';
+  var sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+  $('#b-sms').href = 'sms:' + (M.tel||'').replace(/[^0-9]/g,'') + sep + 'body=' + encodeURIComponent(문자);
+  $('#b-mail').href = 'mailto:' + encodeURIComponent(M.email||'') + '?subject=' + encodeURIComponent('[큰길브리지] ' + M.org + ' 홈페이지 자료 확인') + '&body=' + encodeURIComponent(M.owner + ' 님, 큰길브리지 김효민입니다.\n자료 잘 받았습니다. 로고 · 사진 파일을 이 메일에 답장으로 붙여 보내 주세요.\n\n제출 내용: ' + 제출링크(false));
+}
+function 복사(text, msg){
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ toast(msg); }, function(){ 폴백(); }); else 폴백();
+  function 폴백(){ var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); toast(msg); }catch(e){ prompt('복사해서 쓰세요', text); } document.body.removeChild(ta); }
+}
+
+/* ══ 단추 ══ */
+$('#form').addEventListener('submit', function(e){ e.preventDefault(); 보내기(); });
+$('#b-send2').addEventListener('click', 보내기);
+$('#f-agree').addEventListener('change', function(){ if (this.checked) { $('#agree-box').classList.remove('bad'); if ($('#note').textContent.indexOf('동의해 주세요') >= 0) 알림('', ''); } });
+$('#b-link').addEventListener('click', function(){ 복사(제출링크(MODE==='admin'), MODE==='admin' ? '관리자 링크를 복사했어요' : '이 폼 링크를 복사했어요'); });
+$('#b-copy2').addEventListener('click', function(){ 복사(제출링크(false), '제출 내용 링크를 복사했어요'); });
+$('#b-copyall').addEventListener('click', function(){ 복사(요약글(), '전체 글을 복사했어요'); });
+$('#b-edit').addEventListener('click', function(){ $('#adm').classList.remove('on'); $('#form').style.display=''; $('#aside').style.display=''; 폼채우기(); 그리기(); });
+
+/* ══ 시작 ══ */
+(function(){
+  $('#steps').innerHTML = 흐름.map(function(s,i){ return '<span class="step'+(i===1?' now':'')+(i===0?' done':'')+'"><i>'+(i+1)+'</i>'+esc(s)+'</span>'; }).join('');
+  var h = location.hash.indexOf('#m=')===0 ? location.hash.slice(3) : '', 불러옴 = false;
+  if (h) { try { var o = JSON.parse(unb64(h)); if (o && typeof o === 'object') { 읽기(o); 불러옴 = true; } } catch(e){} }
+  if (!불러옴 && MODE !== 'admin') {
+    try { var d = JSON.parse(localStorage.getItem(저장열쇠) || 'null'); if (d && typeof d === 'object' && Object.keys(d).length) { 읽기(d); 불러옴 = 'draft'; } } catch(e){}
+  }
+  폼그리기(); 폼채우기(); 그리기();
+  if (불러옴 === 'draft') toast('전에 적던 내용을 불러왔습니다');
+  if (MODE === 'admin') {
+    $('#mode').textContent = '우리 화면'; $('#mode').classList.add('adm');
+    $('#form').style.display='none'; $('#aside').style.display='none';
+    $('#adm').classList.add('on'); 관리자그리기();
+    $$('.step').forEach(function(s,i){ s.classList.toggle('done', i < 2); s.classList.toggle('now', i === 2); });
+    $('#flow-p').innerHTML = '손님이 보낸 제작 자료입니다. 「전체 글 복사」로 시안 만들 때 붙여 넣으세요.';
+  }
+})();
+</script>
+</body>
+</html>

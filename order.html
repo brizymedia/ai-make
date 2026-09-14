@@ -427,9 +427,23 @@ function 그리기(){
   $('#s-total').textContent = 원(sum);
   $('#s-vat').textContent = sum ? '부가세 포함 ' + 원(Math.round(sum*1.1)) + ' · 선금 50% ' + 원(Math.round(sum/2)) : '';
   $('#s-mo').textContent = pk ? '월 관리 ' + 원(PLANS[pk].monthly) + ' (호스팅 · 도메인 · 보안 · 수정 지원' + (PLANS[pk].free ? ' · 첫 '+PLANS[pk].free+' 무료' : '') + ')' : '';
-  try { history.replaceState(null, '', location.pathname + (MODE==='admin'?'?admin=1':'') + '#o=' + b64u(JSON.stringify(O))); } catch(e){}
+  try { history.replaceState(null, '', location.pathname + (MODE==='admin'?'?admin=1':'') + 주소해시()); } catch(e){}
 }
-function 주문링크(admin){ return location.origin + location.pathname + (admin?'?admin=1':'') + '#o=' + b64u(JSON.stringify(O)); }
+/* 주소에는 적은 것만 담는다 — 빈 칸까지 통째로 담으면 링크가 수백 글자가 된다. 빠진 키는 열 때 기본값으로 채워진다 */
+function 압축(o){
+  var out = {};
+  Object.keys(o).forEach(function(k){
+    var v = o[k];
+    if (k === 'v' || k === 'targetTouched' || v === '' || v === null || v === undefined) return;
+    if (Array.isArray(v)) { if (!v.some(function(x){ return x !== '' && x != null; })) return; out[k] = k === 'refs' ? v.map(function(x){ return x || ''; }) : v.filter(function(x){ return x !== '' && x != null; }); return; }
+    if (typeof v === 'object') { var q = {}; Object.keys(v).forEach(function(j){ if (Number(v[j])) q[j] = Number(v[j]); }); if (Object.keys(q).length) out[k] = q; return; }
+    if (k === 'biz' && v === 'event') return;
+    out[k] = v;
+  });
+  return out;
+}
+function 주소해시(){ var c = 압축(O); return Object.keys(c).length ? '#o=' + b64u(JSON.stringify(c)) : ''; }
+function 주문링크(admin){ return location.origin + location.pathname + (admin?'?admin=1':'') + 주소해시(); }
 
 /* ══ 기획서 · 견적서로 넘기기 (plan.html 의 P · quote.html 의 S 와 같은 모양) ══ */
 function 기획서링크(){
