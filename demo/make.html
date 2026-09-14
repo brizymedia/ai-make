@@ -212,6 +212,9 @@ document.querySelectorAll('.frame .seg button').forEach(function(b){ b.addEventL
   if (h) { try { var o = JSON.parse(unb64(h)); Object.keys(D).forEach(function(k){ if (o[k] !== undefined) D[k] = o[k]; }); } catch(e){} }
   if (!업종들[D.biz]) D.biz = 'etc';
   폼채우기(); 갱신();
+  /* #t= 는 문의 메일의 「무료 데모 만들기」 단추가 넘기는 문의 글 — 메일 본문을 붙여넣은 것과 똑같이 읽는다 */
+  var t = location.hash.indexOf('#t=')===0 ? location.hash.slice(3) : '';
+  if (t) { try { $('#paste').value = unb64(t); $('#paste').dispatchEvent(new Event('input')); } catch(e){} }
 })();
 </script>
 </body>

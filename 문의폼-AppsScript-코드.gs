@@ -59,6 +59,27 @@ function 견적서주소(d) {
   return SITE + '/quote.html?admin=1#q=' + 코드;
 }
 
+/**
+ * 문의 내용을 데모 만들기 화면(demo/make.html)으로 넘긴다.
+ * 메일 본문을 붙여넣은 것과 같은 글을 #t= 에 담아 보내면, 그 화면이 상호 · 연락처 · 업종 · 지역을 알아서 읽는다.
+ */
+function 데모주소(d) {
+  const 줄바꿈 = String.fromCharCode(10);
+  const 글 = ['성함/상호: ' + String(d.name || '').trim(), '연락처: ' + String(d.phone || '').trim(),
+              '이메일: ' + String(d.email || '').trim(), '문의 내용: ' + String(d.message || '').trim()].join(줄바꿈);
+  return SITE + '/demo/make.html#t=' + Utilities.base64EncodeWebSafe(글, Utilities.Charset.UTF_8);
+}
+
+/** 다음 단계 단추 둘 — 데모 신청이면 데모가 앞(노랑), 아니면 견적서가 앞 */
+function 다음단추(d) {
+  const 데모 = /데모/.test(String(d.service || '') + ' ' + String(d.message || ''));
+  const 노랑 = 'display:inline-block;background:#E8B84B;color:#07090F;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin:0 8px 8px 0';
+  const 흰색 = 'display:inline-block;background:#fff;border:1px solid #E8B84B;color:#8A6512;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:10px;margin:0 8px 8px 0';
+  const 데모단추 = '<a href="' + 데모주소(d) + '" style="' + (데모 ? 노랑 : 흰색) + '">🎨 무료 데모 만들기</a>';
+  const 견적단추 = '<a href="' + 견적서주소(d) + '" style="' + (데모 ? 흰색 : 노랑) + '">📄 이 문의로 견적서 작성</a>';
+  return 데모 ? 데모단추 + 견적단추 : 견적단추 + 데모단추;
+}
+
 
 /**
  * 손님이 계산기에서 고른 항목을 견적서 형식으로 바꾼다.
@@ -160,11 +181,10 @@ function doPost(e) {
         /* 다음에 할 일 — 문의를 받고 나서 바로 견적서로 넘어갈 수 있게 */
         '<div style="margin-top:22px;background:#FDF8EC;border:1px solid #F0DFB4;border-radius:12px;padding:16px 18px">' +
           '<div style="font-size:12px;color:#8A6512;font-weight:bold;letter-spacing:.04em;margin-bottom:10px">다음 단계</div>' +
-          '<a href="' + 견적서주소(d) + '" style="display:inline-block;background:#E8B84B;color:#07090F;' +
-          'text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px">📄 이 문의로 견적서 작성</a>' +
-          '<div style="font-size:12.5px;color:#8A7B57;margin-top:10px;line-height:1.6">' +
-            '고객 정보가 채워진 채로 열립니다. 요금제와 옵션만 고르면 견적서가 됩니다.<br>' +
-            '견적서 화면에서 <b>「이 견적으로 계약서 작성」</b>을 누르면 계약서로 그대로 넘어갑니다.' +
+          다음단추(d) +
+          '<div style="font-size:12.5px;color:#8A7B57;margin-top:6px;line-height:1.6">' +
+            '<b>무료 데모 만들기</b> — 문의 내용이 채워진 채 열립니다. 업종 · 지역만 확인하고 「문자로 보내기」.<br>' +
+            '<b>견적서 작성</b> — 고객 정보가 채워진 채 열립니다. 요금제와 옵션만 고르고, 「이 견적으로 계약서 작성」으로 계약서까지.' +
           '</div>' +
         '</div>' +
 
