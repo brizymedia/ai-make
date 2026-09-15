@@ -348,7 +348,7 @@ const esc = (s) => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;
 
 /* 명함 서버 (apps-script/card/Code.gs 를 배포한 주소).
    배포하고 한 번 넣으면 이 브라우저가 기억한다. 주소를 여기 박아두면 그 뒤로는 물어보지 않는다. */
-const 서버기본 = '';
+const 서버기본 = 'https://script.google.com/macros/s/AKfycbxSIKrM5evBd7EBh21h6H42Jr6_H0bH9bhM6F5qx7tGS4J8RvI91rs9jflneEmQNFRt/exec';   /* 2026-09-15 형님이 배포한 명함 서버 (GET → {ok:true, service:keungil-card}) */
 const 서버 = () => 서버기본 || localStorage.getItem('keungil-card-api') || '';
 /* 명함은 큰길브리지(분양 브랜드) 아래 둔다. 행사팀에게 파는 물건이라 큰길이벤트가 아니다. */
 const 집   = 'https://www.ai-make.co.kr';
