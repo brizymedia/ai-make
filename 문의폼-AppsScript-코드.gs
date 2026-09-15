@@ -77,6 +77,12 @@ function 다음단추(d) {
   const 흰색 = 'display:inline-block;background:#fff;border:1px solid #E8B84B;color:#8A6512;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:10px;margin:0 8px 8px 0';
   const 데모단추 = '<a href="' + 데모주소(d) + '" style="' + (데모 ? 노랑 : 흰색) + '">🎨 무료 데모 만들기</a>';
   const 견적단추 = '<a href="' + 견적서주소(d) + '" style="' + (데모 ? 흰색 : 노랑) + '">📄 이 문의로 견적서 작성</a>';
+  /* 전자명함 발행 신청이면 「비밀번호 문자 보내기」가 맨 앞 — 눌러서 빈칸에 비밀번호만 채워 보낸다 */
+  const 명함 = /명함/.test(String(d.service || ''));
+  const 번호 = String(d.phone || '').replace(/[^0-9]/g, '');
+  const 문자 = '[큰길브리지] ' + String(d.name || '').trim() + '님, 전자명함 발행 비밀번호는 ____ 입니다. 만들기: ' + SITE + '/card/  (발행 칸에 넣으세요. 궁금하면 1533-7295)';
+  const 명함단추 = (명함 && 번호) ? '<a href="sms:' + 번호 + '?body=' + encodeURIComponent(문자) + '" style="' + 노랑 + '">💬 비밀번호 문자 보내기</a>' : '';
+  if (명함) return 명함단추 + 데모단추.replace(노랑, 흰색) + 견적단추.replace(노랑, 흰색);
   return 데모 ? 데모단추 + 견적단추 : 견적단추 + 데모단추;
 }
 
@@ -183,6 +189,7 @@ function doPost(e) {
           '<div style="font-size:12px;color:#8A6512;font-weight:bold;letter-spacing:.04em;margin-bottom:10px">다음 단계</div>' +
           다음단추(d) +
           '<div style="font-size:12.5px;color:#8A7B57;margin-top:6px;line-height:1.6">' +
+            '<b>비밀번호 문자 보내기</b>(명함 신청일 때) — 문자 창이 열리면 빈칸(____)에 발행 비밀번호를 넣어 보내세요.<br>' +
             '<b>무료 데모 만들기</b> — 문의 내용이 채워진 채 열립니다. 업종 · 지역만 확인하고 「문자로 보내기」.<br>' +
             '<b>견적서 작성</b> — 고객 정보가 채워진 채 열립니다. 요금제와 옵션만 고르고, 「이 견적으로 계약서 작성」으로 계약서까지.' +
           '</div>' +
