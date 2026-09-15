@@ -219,5 +219,13 @@ $('#lockbtn').addEventListener('click', function(){ try { localStorage.removeIte
 if (cmd === 'decrypt') { console.log(JSON.stringify(load(), null, 2)); }
 else if (cmd === 'encrypt') { const obj = JSON.parse(fs.readFileSync(0, 'utf8')); save(obj); console.log('봉함 →', ENC); }
 else if (cmd === 'build') { build(load()); }
-else if (cmd === 'check') { const L = load(); const changed = await check(L); save(L); build(L); console.log(changed ? '바뀐 것 있음' : '바뀐 것 없음', '· 확인일', L.checked); }
+else if (cmd === 'check') {
+  const L = load(); const before = new Set(L.sections.filter(s => s.todo).flatMap(s => s.items.filter(i => i.done).map(i => i.t)));
+  const changed = await check(L); save(L); build(L);
+  const todo = L.sections.filter(s => s.todo).flatMap(s => s.items);
+  const newlyDone = todo.filter(i => i.done && !before.has(i.t)).map(i => i.t);
+  console.log(changed ? '바뀐 것 있음' : '바뀐 것 없음', '· 확인일', L.checked);
+  console.log('✅ 끝남으로 바뀐 것: ' + (newlyDone.length ? newlyDone.join(', ') : '없음'));
+  console.log('⏳ 남은 것: ' + todo.filter(i => !i.done).length + '개');
+}
 else { console.error('모르는 명령:', cmd); process.exit(1); }
