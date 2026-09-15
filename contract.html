@@ -290,6 +290,13 @@ table.t tr.total td.num{color:#8A6A16}
             <select class="in" data-k="fin.deposit"><option value="50">50%</option><option value="30">30%</option><option value="100">전액 선금</option><option value="0">없음 (완료 후 일시불)</option></select>
           </div>
         </div>
+        <div><label class="f">입금 계좌</label>
+          <div class="row2">
+            <select class="in" id="i-bankpick"><option value="corp">사업자 계좌 (주식회사 브리지미디어)</option><option value="custom">직접 입력</option><option value="none">계약서에 안 적음 (따로 안내)</option></select>
+            <input class="in" data-k="fin.bank" placeholder="은행 계좌번호 (예금주)">
+          </div>
+          <p class="hint">부가세 「별도(10%)」를 고르면 세금계산서 발행용 <b>사업자 계좌</b>로 자동 바뀝니다. 다른 계좌는 「직접 입력」.</p>
+        </div>
         <div class="sum"><span>합계</span><b id="sum-total">0원</b></div>
       </div>
     </details>
@@ -417,7 +424,7 @@ table.t tr.total td.num{color:#8A6A16}
       <h2>제4조 (대금의 지급)</h2>
       <ol>
         <li id="d-pay1">계약금은 계약 체결일로부터 7일 이내에 지급하고, 잔금은 홈페이지 오픈일로부터 7일 이내에 지급한다.</li>
-        <li>대금은 을이 지정하는 계좌로 입금하며, 입금 수수료는 갑이 부담한다.</li>
+        <li id="d-pay2">대금은 을이 지정하는 계좌로 입금하며, 입금 수수료는 갑이 부담한다.</li>
         <li>갑이 지급 기일을 지나 대금을 지급하지 않는 경우 을은 연 6%의 지연이자를 청구할 수 있으며, 지급이 완료될 때까지 오픈 또는 자료 인계를 보류할 수 있다.</li>
       </ol>
 
@@ -597,13 +604,17 @@ var S = {
   cl:{org:'',rep:'',name:'',tel:'',email:'',addr:'',biz:''},
   pj:{title:'',domain:'',biztype:'',purpose:'',plan:''},
   items:[], attach:[],
-  fin:{vat:'none',deposit:'50'},
+  fin:{vat:'none',deposit:'50',bank:''},
   care:{monthly:'',fix:'2',free:''},
   sch:{start:'',draft:'',open:'',material:''},
   special:'', meta:{no:'',date:'',api:''},
   sig:{img:'',at:'',name:''}
 };
 
+/* 사업자 계좌 — 통장 사본(주식회사 브리지미디어, KB국민) 기준. 계좌가 바뀌면 여기 한 줄만 고친다 */
+var 계좌_사업자 = 'KB국민은행 788101-01-397776 (예금주: 주식회사 브리지미디어)';
+function 계좌글(v){ return String(v==null?'':v).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function 계좌고르기(){ var sel = document.getElementById('i-bankpick'); if(!sel) return; sel.value = !S.fin.bank ? 'none' : (S.fin.bank === 계좌_사업자 ? 'corp' : 'custom'); }
 function get(path){ var p=path.split('.'), o=S; for(var i=0;i<p.length;i++){ o=o[p[i]]; if(o===undefined) return ''; } return o; }
 function set(path,v){ var p=path.split('.'), o=S; for(var i=0;i<p.length-1;i++) o=o[p[i]]; o[p[p.length-1]]=v; }
 
@@ -680,6 +691,10 @@ function 그리기(){
       : '계약금 <b>' + 원(계약금) + '</b>(' + d + '%)은 계약 체결일로부터 7일 이내에, ' +
         '잔금 <b>' + 원(총액()-계약금) + '</b>은 홈페이지 오픈일로부터 7일 이내에 지급한다.');
 
+  $('#d-pay2').innerHTML = S.fin.bank
+    ? '대금은 아래 계좌로 입금하며, 입금 수수료는 갑이 부담한다.' + (S.fin.vat==='excl' ? ' 을은 입금 확인 후 세금계산서를 발행한다.' : '') + '<br><b>' + 계좌글(S.fin.bank) + '</b>'
+    : '대금은 을이 지정하는 계좌로 입금하며, 입금 수수료는 갑이 부담한다.';
+
   /* 일정 */
   var 날 = function(s){ if(!s) return '협의'; var p=s.split('-'); return p[0]+'년 '+Number(p[1])+'월 '+Number(p[2])+'일'; };
   $('#d-sch-start').textContent = 날(S.sch.start);
@@ -724,6 +739,7 @@ function 그리기(){
 /* ══ 입력 연결 ══ */
 function 값채우기(){
   $$('[data-k]').forEach(function(el){ el.value = get(el.dataset.k) || ''; });
+  계좌고르기();
   $$('.planbtn').forEach(function(b){ b.classList.toggle('on', b.dataset.plan===S.pj.plan); });
   항목그리기(); 별첨그리기(); 그리기();
 }
@@ -737,10 +753,19 @@ function 해시저장(){
   }, 400);
 }
 
+document.addEventListener('change', function(e){
+  if(e.target && e.target.id === 'i-bankpick'){
+    var v = e.target.value, bi = $('[data-k="fin.bank"]');
+    if(v === 'corp') S.fin.bank = 계좌_사업자; else if(v === 'none') S.fin.bank = ''; else { S.fin.bank = (S.fin.bank === 계좌_사업자) ? '' : S.fin.bank; if(bi) bi.focus(); }
+    if(bi) bi.value = S.fin.bank; 그리기(); 해시저장();
+  }
+});
 document.addEventListener('input', function(e){
   var t = e.target;
   if(t.dataset && t.dataset.k){
     set(t.dataset.k, t.value);
+    if(t.dataset.k === 'fin.vat' && t.value === 'excl' && S.fin.bank !== 계좌_사업자){ S.fin.bank = 계좌_사업자; var bi = $('[data-k="fin.bank"]'); if(bi) bi.value = 계좌_사업자; }
+    if(t.dataset.k === 'fin.vat' || t.dataset.k === 'fin.bank') 계좌고르기();
     if(t.dataset.k === 'meta.api') 서버안내();
     그리기(); 해시저장(); return;
   }
@@ -1082,6 +1107,8 @@ function 상태합치기(loaded){
   }
 
   var h = location.hash.indexOf('#c=')===0 ? location.hash.slice(3) : '';
+  /* 새 계약서(주소에 내용 없음)는 사업자 계좌가 기본. 이미 만든 · 서명한 계약서는 저장된 그대로 보인다 */
+  if(!h && MODE==='admin') S.fin.bank = 계좌_사업자;
   if(h){
     try{ 상태합치기(JSON.parse(unb64u(h))); }
     catch(e){ 알림('링크가 손상되었습니다. 보내주신 분께 다시 요청해 주세요'); }
