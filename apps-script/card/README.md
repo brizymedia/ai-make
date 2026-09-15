@@ -139,6 +139,7 @@ function 명함지우기() {
 | 「깃허브 저장 실패 (401)」 | 토큰이 틀렸거나 만료됨 → 1단계 다시 |
 | 「깃허브 저장 실패 (403)」 | 토큰에 `Contents: Read and write` 가 없음 |
 | 「깃허브 저장 실패 (404)」 | `GITHUB_REPO` 오타 — `brizymedia/ai-make` |
+| 「깃허브 저장 실패 (403) Resource not accessible by personal access token」 | 토큰이 이 저장소에 쓸 권한이 없음 — 다른 계정으로 로그인한 채 만들었거나, 다른 저장소(keungil-event)만 고른 토큰이거나, Contents 권한이 Read-only. **brizymedia 로 로그인해서** 1단계대로 새 토큰(ai-make 선택, Contents → Read and write)을 만들어 `GITHUB_TOKEN` 에 넣고 「점검」 실행 → 「쓰기 권한 정상」 확인 |
 | 발행은 됐는데 주소가 안 열림 | 깃허브 페이지 배포 중. 1~2분 기다렸다 새로고침 |
 | 카톡 미리보기가 안 뜸 | 카톡이 한 번 본 주소는 기억합니다. 주소 뒤에 `?1` 을 붙여 보내보세요 |
 | 「다른 발행이 진행 중」 | 20초 뒤 다시 |

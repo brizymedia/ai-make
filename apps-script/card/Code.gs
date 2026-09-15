@@ -237,6 +237,27 @@ function 점검() {
   } catch (err) {
     Logger.log('깃허브를 읽지 못했습니다: ' + err.message);
   }
+  쓸권한점검();
+}
+
+/* 읽기는 공개 저장소라 아무 토큰이나 되지만, 쓰기는 토큰이 이 저장소에 「Contents: Read and write」 권한을 가져야 한다.
+   발행 때 「403 Resource not accessible by personal access token」 이 나오는 것이 바로 이 경우 — 미리 잡는다 */
+function 쓸권한점검() {
+  try {
+    const 응 = UrlFetchApp.fetch('https://api.github.com/repos/' + 설정('GITHUB_REPO'), {
+      headers: { Authorization: 'Bearer ' + 설정('GITHUB_TOKEN'), Accept: 'application/vnd.github+json', 'User-Agent': 'keungil-card' },
+      muteHttpExceptions: true,
+    });
+    const 코드 = 응.getResponseCode();
+    if (코드 === 401) { Logger.log('── 토큰이 틀렸거나 만료됐습니다 (401). GITHUB_TOKEN 을 다시 넣어 주세요'); return; }
+    if (코드 === 404) { Logger.log('── 저장소 이름이 틀렸습니다 (404). GITHUB_REPO 는 brizymedia/ai-make'); return; }
+    let 권한 = null;
+    try { 권한 = JSON.parse(응.getContentText()).permissions || null; } catch (err) { /* 무시 */ }
+    if (권한 && 권한.push) Logger.log('쓰기 권한 정상 — 이 토큰으로 명함을 올릴 수 있습니다');
+    else Logger.log('── 이 토큰은 ' + 설정('GITHUB_REPO') + ' 에 쓸 권한이 없습니다. 발행하면 403 이 납니다. brizymedia 계정으로 로그인해서 토큰을 새로 만들고(Only select repositories → brizymedia/ai-make, Contents → Read and write) GITHUB_TOKEN 에 넣어 주세요');
+  } catch (err) {
+    Logger.log('권한 확인 실패: ' + err.message);
+  }
 }
 
 
