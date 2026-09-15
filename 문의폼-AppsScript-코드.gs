@@ -25,6 +25,7 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
+const VERSION    = '2026-09-15c';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
 
 
@@ -225,7 +226,9 @@ function doPost(e) {
 }
 
 /* 브라우저에서 URL 을 직접 열었을 때 — 동작 확인 + 시트 바로가기 */
-function doGet() {
+function doGet(e) {
+  // 배포가 최신인지 확인: …/exec?ping=1 → {"ok":true,"version":"…"}
+  if (e && e.parameter && e.parameter.ping) return json({ ok: true, service: BRAND + ' 문의', version: VERSION, buttons: ['견적서', '데모', '명함 비밀번호 문자'] });
   let 시트주소 = '';
   try { 시트주소 = SpreadsheetApp.getActiveSpreadsheet().getUrl(); } catch (e) {}
   const html =
