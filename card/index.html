@@ -114,6 +114,13 @@
   .brandline a{ color:var(--amber); font-weight:700; }
   .intro h2.big{ font-size:1.35rem; font-weight:900; letter-spacing:-.03em; margin:1rem 0 .3rem; line-height:1.35; }
   .intro h2.big em{ font-style:normal; color:var(--amber); }
+  .samples{ display:grid; gap:.9rem; margin-top:1.1rem; align-items:start; }
+  @media (min-width:700px){ .samples{ grid-template-columns:1.7fr 1fr; } }
+  .samples figure{ margin:0; }
+  .samples img{ display:block; width:100%; height:auto; border-radius:.9rem; border:1px solid var(--line); background:#000; }
+  .samples .scr{ height:18rem; overflow:hidden; border-radius:.9rem; border:1px solid var(--line); background:#000; }
+  .samples .scr img{ border:0; border-radius:0; }
+  .samples figcaption{ font-size:.79rem; color:var(--ink3); margin-top:.45rem; text-align:center; }
   .steps{ list-style:none; margin:1rem 0 0; padding:0; display:grid; gap:.6rem; }
   @media (min-width:700px){ .steps{ grid-template-columns:1fr 1fr 1fr; } }
   .steps li{ display:flex; gap:.7rem; align-items:flex-start; padding:.8rem .9rem; border:1px solid var(--line); border-radius:.85rem; background:rgba(0,0,0,.25); font-size:.88rem; line-height:1.55; color:var(--ink2); }
@@ -134,7 +141,7 @@
 <body>
 <div class="wrap">
   <div class="eyebrow">행사팀 · 소상공인 · 영업인을 위한 무료 전자명함 만들기</div>
-  <h1>사진 한 장이 이름을 기억시킵니다</h1>
+  <h1>명함 한 장이 이름을 기억시킵니다</h1>
   <p class="lead">
     만들면 <b style="color:#F6F1E7;">짧은 주소</b>가 나옵니다. 카톡에 보내면 사진이 크게 뜨고,
     받은 분은 한 번 눌러 폰에 저장합니다. <b style="color:#F6F1E7;">비용은 없습니다.</b>
@@ -147,8 +154,12 @@
       <b>홈페이지 제작 전문 · 10만원부터</b>
       <span>행사팀 · 소상공인 · 영업인의 홈페이지를 실제로 만들어 납품합니다. <a href="../" target="_blank" rel="noopener">큰길브리지 보기 →</a></span>
     </div>
-    <h2 class="big">전자명함은 큰길브리지가 드리는 <em>무료 도구</em>입니다</h2>
-    <p class="sub" style="margin-bottom:0;">이름 · 휴대폰만 남기시면 발행 비밀번호를 문자로 보내드립니다. 비밀번호는 아무나 올리지 못하게 막는 용도이고, 비용은 없습니다.</p>
+    <h2 class="big">월 3만원씩 내던 모바일 명함, <em>무료</em>로 만들어 드리겠습니다</h2>
+    <p class="sub" style="margin-bottom:0;">전자명함은 큰길브리지가 행사팀 · 소상공인 · 영업인에게 드리는 무료 도구입니다. 이름 · 휴대폰만 남기시면 발행 비밀번호를 문자로 보내드립니다. 비밀번호는 아무나 올리지 못하게 막는 용도이고, 비용은 없습니다.</p>
+    <div class="samples">
+      <figure><img src="sample-og.webp" alt="카톡 미리보기 예시 — 사진과 이름이 크게 보이는 명함" width="880" height="462"><figcaption>카톡에 보내면 이렇게 뜹니다</figcaption></figure>
+      <figure class="phone"><div class="scr"><img src="sample-phone.webp" alt="명함을 열었을 때 화면 예시 — 이름 · 하는 일 · 연락처 · 저장 단추" width="416" height="972"></div><figcaption>받은 분이 누르면 이렇게 열립니다 · 「연락처 저장」 한 번</figcaption></figure>
+    </div>
     <ol class="steps">
       <li><i>1</i><span>이름 · 휴대폰을 남기고 <b>신청</b></span></li>
       <li><i>2</i><span>보통 30분 안에 <b>발행 비밀번호</b>가 문자로 옵니다</span></li>
@@ -275,11 +286,15 @@
           <p class="hint">
             카톡·문자에 이 주소만 보내면 됩니다. <b>미리보기가 뜨기까지 1~2분</b> 걸립니다.
           </p>
-          <p class="hint" style="margin-top:.9rem;padding:.8rem .95rem;border-left:3px solid var(--amber);background:rgba(245,165,36,.08);">
-            <b style="color:var(--ink);">명함 다음은 홈페이지입니다.</b> 이 명함처럼 링크 하나로 실적·장비·견적 문의까지 —
-            <a href="https://www.ai-make.co.kr/#demo" target="_blank" rel="noopener" style="color:var(--amber);">내 업종 무료 시안 보기</a> ·
-            <a href="https://www.event-korea.co.kr/" target="_blank" rel="noopener" style="color:var(--amber);">이벤트 코리아</a>
-          </p>
+          <div id="next" style="margin-top:1rem;padding:1rem 1.05rem;border:1px solid rgba(245,165,36,.45);background:rgba(245,165,36,.08);border-radius:.9rem;">
+            <p class="hint" style="margin:0 0 .6rem;font-weight:800;color:var(--ink);font-size:.92rem;">명함이 끝났습니다. 이제 이 둘을 시작할 수 있습니다.</p>
+            <p class="hint" style="margin:0;"><b style="color:var(--ink);">① 자동 콜백 문자</b> — 통화가 끝나면 이 명함 링크가 상대 폰으로 <b style="color:var(--ink);">자동으로 문자</b>가 갑니다. 전화 한 통이 그대로 명함 전달이 됩니다. (안드로이드 앱 · 큰길브리지 옵션 5만원)</p>
+            <p class="hint" style="margin:.45rem 0 0;"><b style="color:var(--ink);">② 홈페이지 제작</b> — 이 명함처럼 링크 하나로 실적 · 장비 · 견적 문의까지 받습니다. 10만원부터, <b style="color:var(--ink);">무료 데모</b>를 먼저 보여드립니다.</p>
+            <div class="row-btn" style="margin-top:.8rem;">
+              <a class="btn" href="https://www.ai-make.co.kr/#namecard" target="_blank" rel="noopener">📲 콜백 문자 알아보기</a>
+              <a class="btn pri" href="https://www.ai-make.co.kr/#demo" target="_blank" rel="noopener">🎨 홈페이지 무료 데모</a>
+            </div>
+          </div>
 
           <div id="again" hidden>
             <p class="hint" style="margin-top:1.1rem;">
