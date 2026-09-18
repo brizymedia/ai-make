@@ -261,7 +261,7 @@ table.t tr.total td.num{color:#8A6A16}
         <div class="plans">
           <button class="planbtn" data-plan="basic"><b>베이직</b><small>10만원~</small></button>
           <button class="planbtn" data-plan="premium"><b>고급형</b><small>50만원~</small></button>
-          <button class="planbtn" data-plan="enterprise"><b>기업형</b><small>100만원~</small></button>
+          <button class="planbtn" data-plan="enterprise"><b>회사형</b><small>100만원~</small></button>
         </div>
         <p class="hint" style="margin:0">고르면 해당 요금제의 <b>포함 내역과 금액</b>이 계약 항목에 자동으로 들어갑니다.</p>
       </div>
@@ -308,7 +308,7 @@ table.t tr.total td.num{color:#8A6A16}
           <div><label class="f">월 관리비</label><input class="in" data-k="care.monthly" placeholder="10000" inputmode="numeric"></div>
           <div><label class="f">월 수정 횟수</label><input class="in" data-k="care.fix" placeholder="2"></div>
         </div>
-        <div><label class="f">무상 유지보수 기간</label><input class="in" data-k="care.free" placeholder="예) 1개월 (기업형)  ·  없으면 비워두세요"></div>
+        <div><label class="f">무상 유지보수 기간</label><input class="in" data-k="care.free" placeholder="예) 1개월 (회사형)  ·  없으면 비워두세요"></div>
       </div>
     </details>
 
@@ -572,16 +572,33 @@ var PLANS = {
     inc:['베이직 전체 포함 + 5페이지 구성','맞춤 생성형 디자인 제안','스크롤 애니메이션 · 갤러리',
          '문의 · 예약 폼 + 알림 연동','자동 견적서 생성 및 발송','네이버 · 구글 검색등록',
          '블로그 · 인스타 홍보글 자동생성'] },
-  enterprise: { name:'기업형', price:1000000, monthly:50000, fix:2, free:'1개월',
+  enterprise: { name:'회사형', price:1000000, monthly:50000, fix:2, free:'1개월',
+    inc:['고급형 전체 포함 + 페이지 무제한 설계','브랜드 컨설팅 · 로고 리터치',
+         '공지 · 게시판 · 자료실 관리자 페이지','직접 수정 가능한 CMS 세팅 + 교육',
+         '1개월 무상 유지보수','AI 활용 실무 강의 4회','매월 자체 블로그 홍보기사 10회'] }
+};
+/* 요금제 이름 · 포함 내역은 계약서를 만들 때 계약서 안(pj.planName · pj.planInc)에 박아 둔다.
+   요금표를 바꿔도 이미 보낸 · 서명한 계약서의 글이 따라 바뀌면 안 되기 때문이다.
+   박아 둔 것이 없는 옛 계약서(2026-09-18 이전)는 아래 옛 표로 그린다. */
+var PLANS_옛 = {
+  enterprise: { name:'기업형',
     inc:['고급형 전체 포함 + 페이지 무제한 설계','브랜드 컨설팅 · 로고 리터치',
          '공지 · 게시판 · 자료실 관리자 페이지','직접 수정 가능한 CMS 세팅 + 교육',
          '1개월 무상 유지보수','AI 활용 실무 강의 2회'] }
 };
+function 플랜박기(){ var p = PLANS[S.pj.plan]; if(!p) return; S.pj.planName = p.name; S.pj.planInc = p.inc.slice(); }
+function 플랜글(){
+  var 옛 = PLANS_옛[S.pj.plan] || PLANS[S.pj.plan]; if(!옛) return null;
+  var 박힘 = S.pj.planInc && S.pj.planInc.length;
+  return { name: 박힘 ? (S.pj.planName || 옛.name) : 옛.name, inc: 박힘 ? S.pj.planInc : 옛.inc };
+}
 var OPTIONS = [
   ['도메인 등록 + 연결', 30000], ['갤러리 + 인스타·블로그 자동 연동', 50000],
   ['네이버·구글 AI 검색 세팅', 50000], ['자동 계약서 작성·서명', 50000],
   ['온라인 예약·신청 시스템', 150000], ['쇼핑몰·결제 연동', 300000],
   ['AI 챗봇 상담', 200000], ['다국어(영·중·일)', 200000],
+  ['모바일 명함 + 콜백 문자', 50000], ['AI 검색 최적화 작업 (블로그글 10개 추가)', 50000],
+  ['3D 무대시안 만들기', 100000],
   ['로고 + 브랜드 키트', 150000], ['상세 촬영 대행', 250000],
   ['페이지 추가', 30000], ['숏폼 홍보영상', 100000], ['AI 1:1 강의', 100000]
 ];
@@ -602,7 +619,7 @@ var unb64u = function(s){ var t=String(s).replace(/-/g,'+').replace(/_/g,'/');
 /* ── 상태 ────────────────────────────── */
 var S = {
   cl:{org:'',rep:'',name:'',tel:'',email:'',addr:'',biz:''},
-  pj:{title:'',domain:'',biztype:'',purpose:'',plan:''},
+  pj:{title:'',domain:'',biztype:'',purpose:'',plan:'',planName:'',planInc:null},
   items:[], attach:[],
   fin:{vat:'none',deposit:'50',bank:''},
   care:{monthly:'',fix:'2',free:''},
@@ -660,8 +677,8 @@ function 그리기(){
   $('#d-pj-title').textContent = S.pj.title || '—';
   $('#d-pj-domain').textContent = S.pj.domain || '오픈 시점에 협의';
   $('#d-pj-biztype').textContent = S.pj.biztype || '—';
-  $('#d-pj-plan').innerHTML = S.pj.plan && PLANS[S.pj.plan]
-    ? '<b>' + PLANS[S.pj.plan].name + '</b> — ' + PLANS[S.pj.plan].inc.join(' · ') : '—';
+  var 플 = S.pj.plan ? 플랜글() : null;   /* 주소로 들어온 글이라 반드시 esc */
+  $('#d-pj-plan').innerHTML = 플 ? '<b>' + esc(플.name) + '</b> — ' + 플.inc.map(function(x){ return esc(x); }).join(' · ') : '—';
   $('#d-pj-purpose').innerHTML = S.pj.purpose ? 줄바꿈(S.pj.purpose) : '—';
 
   /* 항목표 */
@@ -788,7 +805,7 @@ document.addEventListener('click', function(e){
 $$('.planbtn').forEach(function(b){
   b.addEventListener('click', function(){
     var k = b.dataset.plan, p = PLANS[k];
-    S.pj.plan = k;
+    S.pj.plan = k; 플랜박기();
     /* 요금제 항목은 하나만 유지한다. 다시 고르면 갈아끼운다. */
     S.items = S.items.filter(function(it){ return !it.plan; });
     S.items.unshift({ n: p.name + ' 홈페이지 제작', q:1, p:p.price, plan:true });
@@ -1112,6 +1129,8 @@ function 상태합치기(loaded){
   if(h){
     try{ 상태합치기(JSON.parse(unb64u(h))); }
     catch(e){ 알림('링크가 손상되었습니다. 보내주신 분께 다시 요청해 주세요'); }
+    /* 우리가 작성 중인(서명 전) 계약서에 요금제 글이 아직 안 박혀 있으면 지금 요금표로 박는다. 견적서에서 넘어온 경우가 이것 */
+    if(MODE==='admin' && S.pj.plan && !(S.pj.planInc && S.pj.planInc.length) && !(S.sig && (S.sig.img || S.sig.at))) 플랜박기();
   }
   화면준비();
 })();

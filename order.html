@@ -300,7 +300,7 @@ var SMS_TO = '010-7635-7886';
 var PLANS = {
   basic:{ name:'베이직', price:100000, monthly:10000, free:'', 설명:'원페이지 · 섹션 6개 · 모바일 대응 · 5영업일' },
   premium:{ name:'고급형', price:500000, monthly:20000, free:'', 설명:'5페이지 · 맞춤 디자인 · 갤러리 · 자동 견적서 · 10영업일' },
-  enterprise:{ name:'기업형', price:1000000, monthly:50000, free:'1개월', 설명:'페이지 무제한 · 관리자 페이지 · CMS 교육 · 일정 협의' }
+  enterprise:{ name:'회사형', price:1000000, monthly:50000, free:'1개월', 설명:'페이지 무제한 · 관리자 페이지 · CMS 교육 · 매월 블로그 홍보기사 10회 · 일정 협의' }
 };
 var 옵션들 = [
   { n:'도메인 등록 + 연결', p:30000, plans:'basic premium enterprise' },
@@ -313,6 +313,7 @@ var 옵션들 = [
   { n:'쇼핑몰·결제 연동', p:300000, plans:'premium enterprise' },
   { n:'AI 챗봇 상담', p:200000, plans:'premium enterprise' },
   { n:'다국어(영·중·일)', p:200000, plans:'premium enterprise' },
+  { n:'3D 무대시안 만들기', p:100000, plans:'enterprise' },
   { n:'로고 + 브랜드 키트', p:150000, plans:'basic premium' },
   { n:'상세 촬영 대행', p:250000, plans:'basic premium enterprise' }
 ];
@@ -489,7 +490,7 @@ function 검사(){
   var plan = !!플랜(); var agree = $('#f-agree').checked;
   $('#agree-box').classList.toggle('bad', !agree);
   if (bad.length) { $('#'+bad[0]).focus(); return '상호 · 담당자 · 휴대폰 · 이메일을 확인해 주세요'; }
-  if (!plan) { $('#f-plans').scrollIntoView({block:'center'}); return '규모(베이직 · 고급형 · 기업형)를 골라 주세요'; }
+  if (!plan) { $('#f-plans').scrollIntoView({block:'center'}); return '규모(베이직 · 고급형 · 회사형)를 골라 주세요'; }
   if (!agree) { $('#agree-box').scrollIntoView({ block:'center' }); return '개인정보 수집 · 이용에 동의해 주세요'; }
   return '';
 }
