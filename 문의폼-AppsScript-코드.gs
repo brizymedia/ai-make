@@ -25,7 +25,7 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
-const VERSION    = '2026-09-15c';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
+const VERSION    = '2026-09-20a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
 
 
@@ -78,11 +78,11 @@ function 다음단추(d) {
   const 흰색 = 'display:inline-block;background:#fff;border:1px solid #E8B84B;color:#8A6512;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:10px;margin:0 8px 8px 0';
   const 데모단추 = '<a href="' + 데모주소(d) + '" style="' + (데모 ? 노랑 : 흰색) + '">🎨 무료 데모 만들기</a>';
   const 견적단추 = '<a href="' + 견적서주소(d) + '" style="' + (데모 ? 흰색 : 노랑) + '">📄 이 문의로 견적서 작성</a>';
-  /* 전자명함 발행 신청이면 「비밀번호 문자 보내기」가 맨 앞 — 눌러서 빈칸에 비밀번호만 채워 보낸다 */
+  /* 전자명함 발행 신청이면 「접수 문자 보내기」가 맨 앞 — 비밀번호 없이 바로 만들 수 있음을 알려준다 */
   const 명함 = /명함/.test(String(d.service || ''));
   const 번호 = String(d.phone || '').replace(/[^0-9]/g, '');
-  const 문자 = '[큰길브리지] ' + String(d.name || '').trim() + '님, 전자명함 발행 비밀번호는 ____ 입니다. 만들기: ' + SITE + '/card/  (발행 칸에 넣으세요. 궁금하면 1533-7295)';
-  const 명함단추 = (명함 && 번호) ? '<a href="sms:' + 번호 + '?body=' + encodeURIComponent(문자) + '" style="' + 노랑 + '">💬 비밀번호 문자 보내기</a>' : '';
+  const 문자 = '[큰길브리지] ' + String(d.name || '').trim() + '님, 명함 신청 접수됐습니다. 비밀번호 없이 바로 만들어 발행하실 수 있어요: ' + SITE + '/card/  (궁금하면 1533-7295)';
+  const 명함단추 = (명함 && 번호) ? '<a href="sms:' + 번호 + '?body=' + encodeURIComponent(문자) + '" style="' + 노랑 + '">💬 접수 문자 보내기</a>' : '';
   if (명함) return 명함단추 + 데모단추.replace(노랑, 흰색) + 견적단추.replace(노랑, 흰색);
   return 데모 ? 데모단추 + 견적단추 : 견적단추 + 데모단추;
 }
@@ -190,7 +190,7 @@ function doPost(e) {
           '<div style="font-size:12px;color:#8A6512;font-weight:bold;letter-spacing:.04em;margin-bottom:10px">다음 단계</div>' +
           다음단추(d) +
           '<div style="font-size:12.5px;color:#8A7B57;margin-top:6px;line-height:1.6">' +
-            '<b>비밀번호 문자 보내기</b>(명함 신청일 때) — 문자 창이 열리면 빈칸(____)에 발행 비밀번호를 넣어 보내세요.<br>' +
+            '<b>접수 문자 보내기</b>(명함 신청일 때) — 문자 창이 열리면 그대로 보내면 됩니다.<br>' +
             '<b>무료 데모 만들기</b> — 문의 내용이 채워진 채 열립니다. 업종 · 지역만 확인하고 「문자로 보내기」.<br>' +
             '<b>견적서 작성</b> — 고객 정보가 채워진 채 열립니다. 요금제와 옵션만 고르고, 「이 견적으로 계약서 작성」으로 계약서까지.' +
           '</div>' +
@@ -228,7 +228,7 @@ function doPost(e) {
 /* 브라우저에서 URL 을 직접 열었을 때 — 동작 확인 + 시트 바로가기 */
 function doGet(e) {
   // 배포가 최신인지 확인: …/exec?ping=1 → {"ok":true,"version":"…"}
-  if (e && e.parameter && e.parameter.ping) return json({ ok: true, service: BRAND + ' 문의', version: VERSION, buttons: ['견적서', '데모', '명함 비밀번호 문자'] });
+  if (e && e.parameter && e.parameter.ping) return json({ ok: true, service: BRAND + ' 문의', version: VERSION, buttons: ['견적서', '데모', '명함 접수 문자'] });
   let 시트주소 = '';
   try { 시트주소 = SpreadsheetApp.getActiveSpreadsheet().getUrl(); } catch (e) {}
   const html =

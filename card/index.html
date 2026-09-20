@@ -155,30 +155,30 @@
       <span>행사팀 · 소상공인 · 영업인의 홈페이지를 실제로 만들어 납품합니다. <a href="../" target="_blank" rel="noopener">큰길브리지 보기 →</a></span>
     </div>
     <h2 class="big">월 3만원씩 내던 모바일 명함, <em>무료</em>로 만들어 드리겠습니다</h2>
-    <p class="sub" style="margin-bottom:0;">전자명함은 큰길브리지가 행사팀 · 소상공인 · 영업인에게 드리는 무료 도구입니다. 이름 · 휴대폰만 남기시면 발행 비밀번호를 문자로 보내드립니다. 비밀번호는 아무나 올리지 못하게 막는 용도이고, 비용은 없습니다.</p>
+    <p class="sub" style="margin-bottom:0;">전자명함은 큰길브리지가 행사팀 · 소상공인 · 영업인에게 드리는 무료 도구입니다. 이름 · 휴대폰만 남기시면 접수 문자를 보내드리고, 비밀번호 없이 바로 만들어 발행할 수 있습니다. 비용은 없습니다.</p>
     <div class="samples">
       <figure><img src="sample-og.webp" alt="카톡 미리보기 예시 — 사진과 이름이 크게 보이는 명함" width="880" height="462"><figcaption>카톡에 보내면 이렇게 뜹니다</figcaption></figure>
       <figure class="phone"><div class="scr"><img src="sample-phone.webp" alt="명함을 열었을 때 화면 예시 — 이름 · 하는 일 · 연락처 · 저장 단추" width="416" height="972"></div><figcaption>받은 분이 누르면 이렇게 열립니다 · 「연락처 저장」 한 번</figcaption></figure>
     </div>
     <ol class="steps">
       <li><i>1</i><span>이름 · 휴대폰을 남기고 <b>신청</b></span></li>
-      <li><i>2</i><span>보통 30분 안에 <b>발행 비밀번호</b>가 문자로 옵니다</span></li>
-      <li><i>3</i><span>기다리는 동안 명함을 만들고, 비밀번호로 <b>발행</b></span></li>
+      <li><i>2</i><span>접수 문자를 받는 동안 바로 명함을 만듭니다</span></li>
+      <li><i>3</i><span>다 만들면 비밀번호 없이 바로 <b>발행</b></span></li>
     </ol>
     <form id="req" novalidate>
       <div class="two" style="margin-top:1rem;">
         <div><label class="f" for="r-name">이름 <b style="color:#F0A98F;">*</b></label><input id="r-name" placeholder="홍길동" autocomplete="name"></div>
         <div><label class="f" for="r-org">상호 · 팀 이름 <b style="color:#F0A98F;">*</b></label><input id="r-org" placeholder="○○이벤트 · ○○미용실 · 개인이면 이름" autocomplete="organization"></div>
-        <div><label class="f" for="r-tel">휴대폰 <b style="color:#F0A98F;">*</b> <span class="hint" style="display:inline;margin:0;">(비밀번호 받을 번호)</span></label><input id="r-tel" placeholder="010-0000-0000" inputmode="tel" autocomplete="tel"></div>
+        <div><label class="f" for="r-tel">휴대폰 <b style="color:#F0A98F;">*</b> <span class="hint" style="display:inline;margin:0;">(접수 문자 받을 번호)</span></label><input id="r-tel" placeholder="010-0000-0000" inputmode="tel" autocomplete="tel"></div>
         <div><label class="f" for="r-email">이메일 <b style="color:#F0A98F;">*</b></label><input id="r-email" placeholder="name@example.com" inputmode="email" autocomplete="email"></div>
       </div>
       <label class="f">하시는 일</label>
       <div class="picks" id="r-job"></div>
-      <label class="agree" id="r-agree-box"><input type="checkbox" id="r-agree"><span><b>개인정보 수집 · 이용 동의</b> — 항목: 이름 · 휴대폰 · 하시는 일. 목적: 전자명함 발행 비밀번호 안내, 홈페이지 제작 상담. 보유: 1년. 주식회사 브리지미디어 · 1533-7295</span></label>
+      <label class="agree" id="r-agree-box"><input type="checkbox" id="r-agree"><span><b>개인정보 수집 · 이용 동의</b> — 항목: 이름 · 휴대폰 · 하시는 일. 목적: 전자명함 신청 접수 안내, 홈페이지 제작 상담. 보유: 1년. 주식회사 브리지미디어 · 1533-7295</span></label>
       <label class="agree" style="margin-top:.5rem;"><input type="checkbox" id="f-consent"><span>새 행사 입찰 · 일감 소식을 <b>문자</b>로 받겠습니다 <small style="color:var(--ink3);">(이벤트 코리아 · 주 1회 안팎 · 언제든 거부 · 선택)</small></span></label>
       <button class="btn pri wide" id="r-send" type="submit" style="margin-top:.9rem;">명함 신청하기</button>
       <p class="hint" id="r-msg" hidden></p>
-      <p class="hint" style="text-align:center;">비밀번호를 이미 받으셨나요? <a href="#" id="r-skip" style="color:var(--amber);font-weight:700;">바로 만들기 →</a></p>
+      <p class="hint" style="text-align:center;">이미 신청하셨나요? <a href="#" id="r-skip" style="color:var(--amber);font-weight:700;">바로 만들기 →</a></p>
     </form>
   </section>
 
@@ -274,9 +274,6 @@
           <input id="f-api" placeholder="https://script.google.com/macros/s/.../exec" autocapitalize="off" spellcheck="false">
           <p class="hint">한 번만 넣으면 이 브라우저가 기억합니다. 관리자에게 받으세요.</p>
         </div>
-        <label class="f" for="f-pw">발행 비밀번호</label>
-        <input id="f-pw" type="password" placeholder="문자로 받은 비밀번호" autocomplete="current-password">
-        <p class="hint">신청하시면 문자로 보내드립니다. 아직 안 왔으면 잠시 뒤 다시 눌러 주세요 · 1533-7295</p>
         <button class="btn pri wide" id="btn-pub" style="margin-top:.9rem;">명함 발행하기</button>
         <div id="done" hidden>
           <p class="hint" style="margin-top:1rem;"><b>내 명함 주소</b></p>
@@ -724,8 +721,6 @@ async function 발행(){
   const d = 지금값();
   if (!d.n) { toast('이름을 적어주세요'); $('#f-nm').focus(); return; }
   if (!d.p) { toast('휴대폰 번호를 적어주세요'); $('#f-p').focus(); return; }
-  const pw = $('#f-pw').value.trim();
-  if (!pw) { toast('발행 비밀번호를 넣어주세요'); $('#f-pw').focus(); return; }
 
   const api = ($('#f-api').value.trim() || 서버()).trim();
   if (!api) { if (관리자) { $('#api-box').hidden = false; $('#f-api').focus(); toast('명함 서버 주소를 먼저 넣어주세요'); } else toast('발행 준비 중입니다. 관리자에게 문의해 주세요 (1533-7295)'); return; }
@@ -754,7 +749,7 @@ async function 발행(){
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },  // 미리 확인 요청을 피한다
       body: JSON.stringify({
-        action: 'card', pw: pw, slug: slug,
+        action: 'card', slug: slug,
         html: html,
         photo: 사진 ? 사진.split(',')[1] : '',
         bg: 배경 ? 배경.split(',')[1] : '',
@@ -782,7 +777,7 @@ async function 발행(){
     const m = $('#pub-msg');
     m.hidden = false;
     m.innerHTML = '<span class="warn"><b>발행하지 못했습니다.</b><br>' + esc(e.message || e) +
-      '<br>비밀번호가 맞는지, 인터넷이 되는지 확인해 주세요.</span>';
+      '<br>인터넷이 되는지 확인해 주세요.</span>';
   } finally {
     btn.disabled = false; btn.textContent = '명함 발행하기';
   }
@@ -948,7 +943,7 @@ function 만들기열기(reg){
   $('#intro').hidden = true; $('#maker').hidden = false;
   if (reg && reg.n) {
     $('#regbar').hidden = false;
-    $('#regbar-text').innerHTML = '<b>' + esc(reg.n) + '</b>님, 신청됐습니다. 비밀번호는 <b>' + esc(reg.p || '') + '</b>로 문자 드립니다 — 맨 아래 「발행」 칸에 넣으세요. 그동안 명함을 만들어 두세요.';
+    $('#regbar-text').innerHTML = '<b>' + esc(reg.n) + '</b>님, 신청됐습니다. <b>' + esc(reg.p || '') + '</b>로 접수 문자를 보내드립니다 — 비밀번호 없이 바로 명함을 만들어 발행하세요.';
     if (!D.n) { D.n = reg.n; $('#f-nm').value = reg.n; }
     if (!D.p && reg.p) { D.p = reg.p; $('#f-p').value = reg.p; }
     if (!D.c && reg.o) { D.c = reg.o; $('#f-co').value = reg.o; }
@@ -957,7 +952,7 @@ function 만들기열기(reg){
     미리보기();
   } else if (reg && reg.skip) {
     $('#regbar').hidden = false;
-    $('#regbar-text').innerHTML = '문자로 받은 비밀번호를 맨 아래 「발행」 칸에 넣으세요.';
+    $('#regbar-text').innerHTML = '비밀번호 없이 바로 명함을 만들어 발행하세요.';
   }
 }
 $('#r-job').innerHTML = 일들.map(j => '<button type="button" class="pick" aria-pressed="false">' + esc(j) + '</button>').join('');
@@ -978,7 +973,7 @@ $('#req').addEventListener('submit', async (e) => {
   const btn = $('#r-send'); btn.disabled = true; btn.textContent = '보내는 중…'; 말('신청을 보내는 중입니다…');
   const at = new Date().toLocaleString('ko-KR', { timeZone:'Asia/Seoul' });
   const payload = { name: n, phone: p, email: em, service: '전자명함 발행 신청', total: '', quote: '', plan: '', items: [],
-    message: ['상호: ' + o, '하시는 일: ' + (일 || '(안 고름)'), '문자 소식 동의: ' + (consent ? 'Y' : 'N'), '신청 시각: ' + at, '→ 「비밀번호 문자 보내기」 단추로 발행 비밀번호를 보내 주세요.'].join(String.fromCharCode(10)),
+    message: ['상호: ' + o, '하시는 일: ' + (일 || '(안 고름)'), '문자 소식 동의: ' + (consent ? 'Y' : 'N'), '신청 시각: ' + at, '→ 접수 문자만 보내 주세요 (비밀번호 없이 바로 발행 가능).'].join(String.fromCharCode(10)),
     at: at, page: 집 + '/card/', website: '' };
   try {
     const r = await fetch(신청서버, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
@@ -986,7 +981,7 @@ $('#req').addEventListener('submit', async (e) => {
     if (!out || !out.ok) throw new Error(out && out.error ? out.error : '');
     const reg = { n: n, o: o, p: p, e: em, job: 일, consent: consent, at: at };
     try { localStorage.setItem(신청열쇠, JSON.stringify(reg)); } catch (err) {}
-    만들기열기(reg); toast('신청됐습니다. 비밀번호는 문자로 보내드립니다'); window.scrollTo({ top: 0, behavior: 'smooth' });
+    만들기열기(reg); toast('신청됐습니다. 접수 문자를 보내드립니다'); window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (err) {
     const 글 = '[명함 신청] ' + n + ' / ' + o + ' / ' + p + ' / ' + em + ' / ' + (일 || '') + (consent ? ' / 문자 소식 동의' : '');
     const sep = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
@@ -997,7 +992,7 @@ $('#req').addEventListener('submit', async (e) => {
 $('#r-skip').addEventListener('click', (e) => { e.preventDefault(); try { localStorage.setItem(신청열쇠, JSON.stringify({ skip: true })); } catch (err) {} 만들기열기({ skip: true }); });
 $('#r-again').addEventListener('click', (e) => { e.preventDefault(); try { localStorage.removeItem(신청열쇠); } catch (err) {} location.href = location.pathname; });
 
-/* 관리자(?admin=1)만 서버 주소 칸을 본다. 손님은 비밀번호만 넣는다 */
+/* 관리자(?admin=1)만 서버 주소 칸을 본다. 손님에게는 보이지 않는다 */
 if (관리자) $('#api-box').hidden = false;
 $('#f-api').value = 서버();
 (function(){ const reg = 신청상태(); if (reg || 관리자) 만들기열기(reg); })();

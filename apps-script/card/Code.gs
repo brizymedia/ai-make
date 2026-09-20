@@ -12,8 +12,7 @@
  *
  * ── 설치 ────────────────────────────────────────────────
  * 1. script.google.com → 새 프로젝트 → 이 파일 내용을 붙여넣기
- * 2. 프로젝트 설정 → 스크립트 속성에 세 가지를 넣습니다
- *      UPLOAD_PW      명함을 발행할 때 넣을 비밀번호 (아무 문자열)
+ * 2. 프로젝트 설정 → 스크립트 속성에 두 가지를 넣습니다
  *      GITHUB_TOKEN   깃허브 토큰 (Contents 쓰기 권한)
  *      GITHUB_REPO    brizymedia/ai-make
  *    ※ 갤러리 스크립트에 넣어둔 값과 같은 것을 쓰면 됩니다.
@@ -27,6 +26,7 @@
 
 const 브랜치 = 'main';          // 깃허브 페이지가 보고 있는 브랜치
 const 주소틀 = /^[a-z0-9][a-z0-9-]{1,38}$/;   // 명함 주소로 쓸 수 있는 글자
+const 버전  = '2026-09-20a';    // 배포 확인용 — 코드를 고칠 때마다 올린다
 
 /* ══════════════════════════════════════════════════════════════
    진입점
@@ -34,16 +34,12 @@ const 주소틀 = /^[a-z0-9][a-z0-9-]{1,38}$/;   // 명함 주소로 쓸 수 있
 function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.check) return 응답(쓸수있나(p.check));
-  return 응답({ ok: true, service: 'keungil-card', version: 1 });
+  return 응답({ ok: true, service: 'keungil-card', version: 버전 });
 }
 
 function doPost(e) {
   try {
     const 요청 = JSON.parse(e.postData.contents);
-
-    if (요청.pw !== 설정('UPLOAD_PW')) {
-      return 응답({ ok: false, error: '비밀번호가 다릅니다' });
-    }
 
     if (요청.action === 'card')   return 응답(잠그고(function () { return 명함발행(요청); }));
     if (요청.action === 'delete') return 응답(잠그고(function () { return 명함삭제(요청); }));
@@ -219,7 +215,7 @@ function 권한받기() {
 
 function 점검() {
   const 속성 = PropertiesService.getScriptProperties();
-  ['UPLOAD_PW', 'GITHUB_TOKEN', 'GITHUB_REPO'].forEach(function (k) {
+  ['GITHUB_TOKEN', 'GITHUB_REPO'].forEach(function (k) {
     Logger.log(k + ': ' + (속성.getProperty(k) ? '있음' : '── 없음 ──'));
   });
   try {
