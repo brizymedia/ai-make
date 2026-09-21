@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 검색 시대 — 이벤트 코리아 1~10번과 4주 과정 · 강의 발표 자료</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/*
+  줌 화면 공유용 발표 자료 (가로 16:9 · 1920×1080 무대를 창 크기에 맞춰 줄여서 보여 준다).
+  큐시트 모양: 슬라이드 번호 = 큐 번호.
+  → ↓ 스페이스 = 다음(항목이 하나씩 나옴)  ← ↑ = 이전  F = 전체화면  N = 대본 띠
+  P = 발표자 창(대본·다음 장·타이머, 공유하지 않는 화면에 띄우세요)  T = 목차  Home/End = 처음/끝
+  인쇄(Ctrl+P) = 슬라이드 한 장이 한 쪽인 PDF (인터넷이 끊길 때를 대비한 백업)
+*/
+:root{
+  --bg:#07090F; --bg2:#0B0F18; --card:#111725; --line:rgba(237,234,227,.14);
+  --fg:#F4F1EA; --dim:#A9B1C0; --mute:#6A7385;
+  --gold:#E8B84B; --teal:#3FD3C6; --coral:#FF6B4A;
+  --f:"Pretendard Variable",Pretendard,-apple-system,"Malgun Gothic",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --serif:"Instrument Serif","Pretendard Variable",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:var(--fg);font-family:var(--f);word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased;overflow:hidden}
+a{color:inherit}
+[hidden]{display:none!important}
+
+#frame{position:fixed;inset:0;background:#000;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center;transform:translate(-50%,-50%) scale(.5);background:var(--bg);overflow:hidden}
+
+/* ── 슬라이드 ── */
+.slide{position:absolute;inset:0;padding:150px 140px 120px;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transform:translateX(60px);transition:opacity .5s ease, transform .5s ease, visibility 0s .5s;overflow:hidden}
+.slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .5s ease, transform .5s ease}
+.slide.past{transform:translateX(-60px)}
+.slide::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(90% 70% at 85% 8%,rgba(63,211,198,.10),transparent 60%),radial-gradient(80% 70% at 5% 100%,rgba(232,184,75,.10),transparent 60%)}
+.slide::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(237,234,227,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(237,234,227,.045) 1px,transparent 1px);background-size:96px 96px;
+  -webkit-mask-image:radial-gradient(80% 70% at 50% 40%,#000 20%,transparent 78%);mask-image:radial-gradient(80% 70% at 50% 40%,#000 20%,transparent 78%)}
+.slide > *{position:relative;z-index:2}
+aside.notes{display:none!important}
+
+/* 큐시트 머리·발 */
+.cue{position:absolute!important;top:54px;left:140px;right:140px;display:flex;justify-content:space-between;align-items:center;font:700 22px var(--mono);letter-spacing:.2em;color:var(--mute);z-index:3}
+.cue b{color:var(--gold);font-weight:700}
+.cue .sec{color:var(--dim)}
+.foot{position:absolute!important;bottom:42px;left:140px;right:140px;display:flex;justify-content:space-between;font-size:21px;color:var(--mute);z-index:3}
+.src{position:absolute!important;bottom:84px;left:140px;right:200px;font-size:19px;color:var(--mute);line-height:1.45;z-index:3}
+
+/* 글자 */
+.big{font-size:132px;line-height:1.08;font-weight:900;letter-spacing:-.045em;text-wrap:balance}
+.title{font-size:82px;line-height:1.14;font-weight:900;letter-spacing:-.04em;text-wrap:balance}
+.title.sm{font-size:68px}
+.lead{font-size:42px;line-height:1.55;color:var(--dim);font-weight:500;max-width:1500px}
+.lead b,.lead .k{color:var(--fg);font-weight:800}
+.txt{font-size:38px;line-height:1.6;color:var(--dim)}
+.txt b{color:var(--fg)}
+.sm{font-size:28px}
+.gold{color:var(--gold)}.teal{color:var(--teal)}.coral{color:var(--coral)}.dim{color:var(--dim)}.mute{color:var(--mute)}
+em.it{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--gold);letter-spacing:-.01em}
+mark{background:none;color:var(--fg);background-image:linear-gradient(transparent 62%,rgba(232,184,75,.55) 62%,rgba(232,184,75,.55) 92%,transparent 92%);padding:0 .08em}
+.tag{display:inline-block;font:700 24px var(--mono);letter-spacing:.16em;color:var(--ink,#07090F);background:var(--gold);color:#07090F;padding:8px 18px;border-radius:99px}
+.tag,.pill{align-self:flex-start}
+.tag.line{background:none;border:2px solid var(--gold);color:var(--gold)}
+.mt1{margin-top:18px}.mt2{margin-top:36px}.mt3{margin-top:60px}.mt4{margin-top:90px}
+
+/* 나타나기 */
+.f{opacity:0;transform:translateY(22px);transition:opacity .45s ease, transform .45s ease}
+.f.in{opacity:1;transform:none}
+
+/* 레이아웃 조각 */
+.row{display:grid;gap:34px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:40px 42px}
+.card h3{font-size:44px;line-height:1.25;font-weight:800;letter-spacing:-.03em}
+.card p{font-size:31px;line-height:1.55;color:var(--dim);margin-top:14px}
+.card .n{font:700 22px var(--mono);letter-spacing:.16em;color:var(--gold);margin-bottom:14px;display:block}
+.card.g{border-color:rgba(232,184,75,.55);background:linear-gradient(180deg,rgba(232,184,75,.10),rgba(232,184,75,.02))}
+.card.t{border-color:rgba(63,211,198,.5);background:linear-gradient(180deg,rgba(63,211,198,.10),rgba(63,211,198,.02))}
+.card.c{border-color:rgba(255,107,74,.5);background:linear-gradient(180deg,rgba(255,107,74,.10),rgba(255,107,74,.02))}
+.stat{font-size:118px;font-weight:900;letter-spacing:-.05em;line-height:1;color:var(--gold)}
+.stat small{font-size:44px;font-weight:700;letter-spacing:-.02em;margin-left:6px;color:var(--fg)}
+.list{list-style:none;display:grid;gap:22px}
+.list li{font-size:40px;line-height:1.45;padding-left:54px;position:relative;color:var(--fg);font-weight:600}
+.list li::before{content:"";position:absolute;left:6px;top:.5em;width:22px;height:22px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 7px rgba(63,211,198,.16)}
+.list.x li::before{background:var(--coral);box-shadow:0 0 0 7px rgba(255,107,74,.16)}
+.list.g li::before{background:var(--gold);box-shadow:0 0 0 7px rgba(232,184,75,.18)}
+.list li span{color:var(--dim);font-weight:500}
+.quote{font-size:66px;line-height:1.32;font-weight:800;letter-spacing:-.035em;text-wrap:balance}
+.quote::before{content:"“";display:block;font-family:var(--serif);font-size:170px;line-height:.6;color:var(--gold);margin-bottom:10px}
+.card .quote::before{display:none}
+.by{margin-top:36px;font:700 26px var(--mono);letter-spacing:.14em;color:var(--gold)}
+.pill{display:inline-flex;align-items:center;gap:12px;font-size:30px;font-weight:700;padding:12px 26px;border-radius:99px;border:2px solid var(--line);color:var(--dim)}
+.pill.ok{border-color:rgba(63,211,198,.6);color:var(--teal)}
+.pill.no{border-color:rgba(255,107,74,.6);color:var(--coral)}
+.steps7{display:grid;grid-template-columns:repeat(7,1fr);gap:18px;margin-top:70px}
+.steps7 .s{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:28px 18px 30px;text-align:center}
+.steps7 .s i{display:block;font:700 22px var(--mono);font-style:normal;color:var(--gold);letter-spacing:.14em;margin-bottom:12px}
+.steps7 .s b{display:block;font-size:34px;line-height:1.28;font-weight:800;letter-spacing:-.03em}
+.steps7 .s span{display:block;margin-top:12px;font-size:23px;line-height:1.4;color:var(--dim)}
+.weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;margin-top:50px}
+.weeks .w{background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:34px 34px 36px;position:relative}
+.weeks .w i{font:700 24px var(--mono);font-style:normal;color:var(--gold);letter-spacing:.18em}
+.weeks .w h3{font-size:44px;line-height:1.22;font-weight:900;letter-spacing:-.035em;margin:12px 0 16px}
+.weeks .w li{list-style:none;font-size:27px;line-height:1.45;color:var(--dim);padding-left:26px;position:relative;margin-top:9px}
+.weeks .w li::before{content:"";position:absolute;left:2px;top:.55em;width:11px;height:11px;border-radius:50%;background:var(--teal)}
+.weeks .w .out{margin-top:20px;padding-top:16px;border-top:1.5px dashed var(--line);font-size:25px;color:var(--gold);font-weight:700;line-height:1.4}
+.big-price{font-size:190px;font-weight:900;letter-spacing:-.06em;line-height:1;color:var(--gold)}
+.big-price small{font-size:52px;letter-spacing:-.02em;color:var(--dim);font-weight:700;margin-left:12px}
+.qr{width:420px;height:420px;background:#fff;border-radius:26px;padding:26px}
+.qr svg{width:100%;height:100%;display:block}
+.beam{position:absolute!important;top:-20%;width:260px;height:150%;background:linear-gradient(180deg,rgba(232,184,75,.26),rgba(232,184,75,0));transform-origin:50% 0;filter:blur(6px);opacity:.9;z-index:1;animation:sway 9s ease-in-out infinite alternate}
+.beam.b2{background:linear-gradient(180deg,rgba(63,211,198,.22),rgba(63,211,198,0));animation-duration:11s;animation-delay:-3s}
+.beam.b3{background:linear-gradient(180deg,rgba(255,107,74,.18),rgba(255,107,74,0));animation-duration:13s;animation-delay:-6s}
+@keyframes sway{from{transform:rotate(-14deg)}to{transform:rotate(14deg)}}
+table.cmp{width:100%;border-collapse:separate;border-spacing:0 14px}
+table.cmp td{font-size:34px;padding:22px 30px;background:var(--card);vertical-align:middle;line-height:1.4}
+table.cmp td:first-child{border-radius:20px 0 0 20px;font-weight:800;width:23%;color:var(--gold)}
+table.cmp td:last-child{border-radius:0 20px 20px 0}
+table.cmp td.x{color:var(--coral)}table.cmp td.o{color:var(--teal);font-weight:700}
+
+
+/* ── 새 발표자료 전용 조각 ── */
+.chip{display:inline-block;font-size:26px;font-weight:700;padding:8px 20px;border-radius:99px;border:2px solid var(--line);color:var(--dim);white-space:nowrap}
+.chip.gd{color:var(--gold);border-color:rgba(232,184,75,.6)}
+.chip.cr{color:var(--coral);border-color:rgba(255,107,74,.6)}
+.chip.tl{color:var(--teal);border-color:rgba(63,211,198,.6)}
+.chip.wk{background:rgba(63,211,198,.14);color:var(--teal);border-color:rgba(63,211,198,.5)}
+.strip10{display:flex;flex-wrap:wrap;gap:16px;margin-top:64px}
+.strip10 .k{display:inline-flex;align-items:center;gap:14px;font-size:34px;font-weight:800;letter-spacing:-.02em;padding:14px 26px;border-radius:20px;background:var(--card);border:2px solid var(--line)}
+.strip10 .k i{font:800 28px var(--mono);font-style:normal}
+.strip10 .k.ga{border-color:rgba(232,184,75,.55)}.strip10 .k.ga i{color:var(--gold)}
+.strip10 .k.gj{border-color:rgba(255,107,74,.55)}.strip10 .k.gj i{color:var(--coral)}
+.strip10 .k.gw{border-color:rgba(63,211,198,.55)}.strip10 .k.gw i{color:var(--teal)}
+.legend{display:flex;gap:34px;margin-top:34px;font-size:27px;color:var(--dim)}
+.legend i{display:inline-block;width:18px;height:18px;border-radius:50%;margin-right:12px;vertical-align:-1px}
+
+/* 큐 슬라이드 (이벤트 코리아 1~10) */
+.cs{display:grid;grid-template-columns:400px minmax(0,1fr);gap:64px;align-items:center}
+.cs .no{font-size:230px;line-height:.86;font-weight:900;letter-spacing:-.07em;color:var(--gold)}
+.cs.gj .no{color:var(--coral)}.cs.gw .no{color:var(--teal)}
+.cs h3{font-size:64px;line-height:1.16;font-weight:900;letter-spacing:-.04em;margin-top:16px}
+.cs .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.cs .what{font-size:41px;line-height:1.36;font-weight:800;letter-spacing:-.03em;margin-bottom:14px}
+.blk{padding:19px 0;border-top:2px dashed var(--line)}
+.blk .lb{font:800 27px var(--f);color:var(--teal);margin-bottom:7px}
+.blk.think .lb{color:var(--gold)}
+.blk p{font-size:34px;line-height:1.46;color:var(--dim)}
+.blk p b{color:var(--fg)}
+.blk ul{list-style:none;display:grid;gap:7px}
+.blk li{font-size:32px;line-height:1.4;color:var(--dim);padding-left:32px;position:relative}
+.blk li::before{content:"";position:absolute;left:3px;top:.6em;width:12px;height:12px;border-radius:50%;background:var(--gold)}
+.blk li b{color:var(--fg)}
+
+/* 최근 석 달 · 성찰 · 주차 상세 */
+.card.rc{border-color:rgba(255,107,74,.5);background:linear-gradient(180deg,rgba(255,107,74,.10),rgba(255,107,74,.02))}
+.card.rc .n{color:var(--coral)}
+.g3x2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;margin-top:44px}
+.g3x2 .card{padding:30px 34px}
+.g3x2 .card h3{font-size:36px}
+.g3x2 .card p{font-size:27px;margin-top:10px}
+.ref2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px;margin-top:50px}
+.ref2 .card{padding:48px 50px}
+.ref2 .card .num{font:900 100px/1 var(--f);color:var(--gold);letter-spacing:-.05em}
+.ref2 .card h3{font-size:54px;margin-top:18px}
+.ref2 .card p{font-size:36px}
+.wd{display:grid;grid-template-columns:1.15fr 1fr .85fr;gap:30px;margin-top:34px}
+.wd .col{background:var(--card);border:1.5px solid var(--line);border-radius:26px;padding:30px 34px}
+.wd .col h4{font:800 30px var(--f);color:var(--gold);margin-bottom:14px}
+.wd .col li{list-style:none;position:relative;padding-left:28px;font-size:31px;line-height:1.42;color:var(--dim);margin-top:10px}
+.wd .col li::before{content:"";position:absolute;left:2px;top:.6em;width:11px;height:11px;border-radius:50%;background:var(--teal)}
+.wd .col li b{color:var(--fg)}
+.wd .col.out{border-color:rgba(232,184,75,.55);background:linear-gradient(180deg,rgba(232,184,75,.10),rgba(232,184,75,.02))}
+.wd .col.out p{font-size:33px;line-height:1.5;color:var(--fg);font-weight:700}
+.ladder{display:grid;gap:14px;margin-top:40px}
+.ladder .lv{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:24px;padding:24px 32px;background:var(--card);border:1.5px solid var(--line);border-radius:22px;font-size:36px;color:var(--dim)}
+.ladder .lv i{font:800 32px var(--mono);font-style:normal;color:var(--teal)}
+.ladder .lv b{color:var(--fg)}
+.ladder .lv.star{border-color:rgba(232,184,75,.65);background:rgba(232,184,75,.09)}
+.ladder .lv.star i{color:var(--gold)}
+.ladder .lv.no{border-color:rgba(255,107,74,.5)}
+.ladder .lv.no i{color:var(--coral)}
+.sig3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:44px}
+.sig3 .card h3{font-size:42px}
+.sig3 .card p{font-size:31px}
+.flow{display:flex;align-items:stretch;gap:12px;margin-top:50px}
+.flow .st{flex:1;background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:26px 20px;text-align:center;font-size:29px;line-height:1.4;color:var(--dim)}
+.flow .st b{display:block;color:var(--fg);font-size:32px;margin-bottom:6px;letter-spacing:-.02em}
+.flow .st.me{border-color:rgba(232,184,75,.65);background:rgba(232,184,75,.09)}
+.flow .ar{align-self:center;color:var(--gold);font-size:34px}
+.weeks.tight{margin-top:30px}
+.weeks.tight .w h3{font-size:36px;margin:10px 0 12px}
+.weeks.tight .w li{font-size:25px;margin-top:7px}
+.weeks.tight .w .out{font-size:23px;margin-top:16px;padding-top:12px}
+.steps7 .s span{font-size:25px}
+.grp3{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:22px;margin-top:54px}
+.grp3 .card{padding:34px 36px;height:100%}
+.grp3 .card h3{font-size:44px}
+.grp3 .ar{font-size:54px;color:var(--gold)}
+.incl li{list-style:none;font-size:35px;line-height:1.4;padding:13px 0 13px 40px;border-bottom:2px dashed var(--line);position:relative;color:var(--dim)}
+.incl li:last-child{border-bottom:0}
+.incl li::before{content:"";position:absolute;left:4px;top:.85em;width:15px;height:15px;border-radius:50%;background:var(--gold)}
+.incl li b{color:var(--fg)}
+
+/* 진행 표시 */
+#bar{position:absolute;left:0;top:0;height:6px;background:linear-gradient(90deg,var(--gold),var(--teal));width:0;z-index:20;transition:width .4s}
+#hud{position:absolute;right:140px;bottom:40px;font:700 22px var(--mono);letter-spacing:.14em;color:var(--mute);z-index:20}
+#brandmark{position:absolute;left:140px;bottom:40px;font-size:21px;color:var(--mute);z-index:20;font-weight:600;letter-spacing:-.01em}
+
+/* 대본 띠(N) · 목차(T) */
+#notesbar{position:fixed;left:0;right:0;bottom:0;max-height:36vh;overflow:auto;background:rgba(7,9,15,.94);border-top:2px solid var(--gold);color:#F4F1EA;padding:14px 26px 18px;font-size:clamp(15px,1.6vw,22px);line-height:1.65;z-index:50;display:none}
+body.notes #notesbar{display:block}
+#notesbar b{color:var(--gold)}
+#toc{position:fixed;inset:0;background:rgba(0,0,0,.86);z-index:60;overflow:auto;padding:5vh 8vw}
+#toc ol{list-style:none;columns:2;column-gap:4vw;max-width:1400px;margin:0 auto}
+#toc li{break-inside:avoid;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:clamp(15px,1.5vw,21px);color:#F4F1EA;display:flex;gap:14px}
+#toc li:hover,#toc li.cur{background:rgba(232,184,75,.18)}
+#toc li i{font:700 .8em var(--mono);color:var(--gold);font-style:normal;min-width:2.4em}
+#hint{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);font:600 12px var(--mono);letter-spacing:.1em;color:#8B95A8;background:rgba(0,0,0,.6);padding:5px 12px;border-radius:99px;z-index:40;transition:opacity .6s;pointer-events:none}
+
+/* 발표자 창 */
+body.presenter #frame,body.presenter #notesbar,body.presenter #hint{display:none}
+#pres{display:none}
+body.presenter #pres{display:grid;position:fixed;inset:0;background:#0B0F18;color:#F4F1EA;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr auto;gap:18px;padding:18px;overflow:hidden}
+body.presenter{overflow:auto}
+#pres .hd{grid-column:1/3;display:flex;justify-content:space-between;align-items:center;gap:16px;font:700 15px var(--mono);letter-spacing:.1em;color:#A9B1C0}
+#pres .hd b{color:#E8B84B;font-size:22px}
+#pres .notes-box{background:#111725;border:1.5px solid rgba(237,234,227,.16);border-radius:16px;padding:22px 26px;overflow:auto;font-size:21px;line-height:1.75}
+#pres .notes-box h2{font-size:26px;margin-bottom:12px;color:#E8B84B}
+#pres .side{display:grid;grid-template-rows:auto auto 1fr;gap:14px;min-height:0}
+#pres .pv{background:#000;border:1.5px solid rgba(237,234,227,.16);border-radius:12px;overflow:hidden;position:relative;aspect-ratio:16/9}
+#pres .pv > .clone{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0}
+#pres .pv label{position:absolute;left:8px;top:6px;z-index:5;font:700 12px var(--mono);color:#E8B84B;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:99px;letter-spacing:.1em}
+#pres .btns{grid-column:1/3;display:flex;gap:12px;align-items:center}
+#pres button{font:700 16px var(--f);padding:14px 22px;border-radius:12px;border:1.5px solid rgba(237,234,227,.25);background:#111725;color:#F4F1EA;cursor:pointer}
+#pres button.go{background:#E8B84B;color:#07090F;border-color:#E8B84B}
+#pres .timer{margin-left:auto;font:700 30px var(--mono);color:#3FD3C6}
+
+/* 인쇄 = 한 장이 한 쪽 */
+@page{size:1920px 1080px;margin:0}
+@media print{
+  html,body{overflow:visible;height:auto;background:#000}
+  #frame{position:static;overflow:visible;background:none}
+  #stage{position:static;width:auto;height:auto;transform:none!important;background:none;overflow:visible}
+  .slide{position:relative!important;width:1920px;height:1080px;opacity:1!important;visibility:visible!important;transform:none!important;page-break-after:always;break-after:page;transition:none!important}
+  .f{opacity:1!important;transform:none!important}
+  .beam{animation:none!important}
+  #bar,#hud,#brandmark,#hint,#notesbar,#toc,#pres{display:none!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:reduce){.slide,.f{transition:none}.beam{animation:none}}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="stage">
+<!-- ================= 표지 ================= -->
+<section class="slide cover nofoot" data-title="표지 — AI 검색 시대">
+  <span class="beam" style="left:14%"></span><span class="beam b2" style="left:50%"></span><span class="beam b3" style="left:78%"></span>
+  <div style="position:absolute;top:120px;left:140px;right:140px;z-index:3;display:flex;justify-content:space-between;align-items:center">
+    <span class="tag">이벤트인을 위한 특별 강의 · 1기</span>
+    <span class="mute" style="font:700 22px var(--mono);letter-spacing:.2em">2026. 09</span>
+  </div>
+  <div style="position:absolute;left:140px;right:140px;top:250px;z-index:3">
+    <div class="big">AI 검색 시대.<br>우리는 지금 <em class="it">앞서갈</em> 것인가,<br>또 <span class="coral">뒤처질</span> 것인가.</div>
+    <p class="lead mt3" style="max-width:1500px">이벤트 코리아 <b>1번부터 10번까지</b> 만들며 부딪힌 것들 — 그리고 <b>4주 실습 과정</b></p>
+  </div>
+  <div style="position:absolute;left:140px;right:140px;bottom:70px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-size:28px;color:var(--dim)">
+    <span><b style="color:var(--fg)">큰길브리지</b> × 이벤트 코리아</span>
+    <span>발표 · 큰길브리지 대표 <b style="color:var(--fg)">김효민</b></span>
+  </div>
+  <aside class="notes">안녕하세요, 큰길브리지 김효민입니다. 저는 15년째 행사를 하는 사람이고, 이벤트 회사 홈페이지를 직접 만들어 납품하고 있습니다. 오늘 제목이 좀 셉니다 — 「앞서갈 것인가, 또 뒤처질 것인가」. 협박이 아니라 사실입니다. 검색이 어떻게 바뀌었는지, 저희가 이벤트인을 위한 도구를 열 개 만들면서 무엇에 부딪혔는지, 그래서 이벤트인이 어떻게 살아남아야 하는지, 마지막으로 4주 동안 무엇을 같이 해 볼지 말씀드리겠습니다. 오늘 드리는 숫자는 전부 출처가 있는 것만이고, 확인 못 한 것은 못 했다고 말씀드리겠습니다.</aside>
+</section>
+
+<!-- ================= 오늘의 순서 ================= -->
+<section class="slide" data-title="오늘의 순서">
+  <div class="cue"><span><b>CUE 02</b></span><span class="sec">OPENING</span></div>
+  <div class="title">오늘 말씀드릴 <mark>네 가지</mark>.</div>
+  <div class="row c4 mt3" style="margin-top:64px;gap:26px;align-items:stretch">
+    <div class="card f g" style="padding:38px 34px"><span class="n">PART 1</span><h3 style="font-size:46px">시장은 얼마나 빨랐나</h3><p style="font-size:28px">AI 검색이 자리 잡은 속도</p></div>
+    <div class="card f" style="padding:38px 34px"><span class="n">PART 2</span><h3 style="font-size:46px">이벤트 코리아 1~10번</h3><p style="font-size:28px">왜 넣었고, 무엇이 막혔나</p></div>
+    <div class="card f" style="padding:38px 34px"><span class="n">PART 3</span><h3 style="font-size:46px">살아남기 위한 생각</h3><p style="font-size:28px">이벤트인에게 드리는 여덟 가지</p></div>
+    <div class="card f t" style="padding:38px 34px"><span class="n">PART 4</span><h3 style="font-size:46px">4주 실습 과정</h3><p style="font-size:28px">설명 · 실습 · 숙제 · 자료</p></div>
+  </div>
+  <aside class="notes">순서는 이렇습니다. 첫째, 시장이 얼마나 빨리 바뀌었는지 사실로 보겠습니다. 둘째, 저희가 만든 이벤트 코리아의 열 가지 도구를 1번부터 10번까지 — 왜 넣었고 무엇이 막혔는지 — 이야기하겠습니다. 셋째, 그 열 개를 만들며 얻은 이벤트인의 생존 생각 여덟 가지. 넷째, 4주 과정입니다.</aside>
+</section>
+
+<!-- ================= PART 1 · 속도 ================= -->
+<section class="slide" data-title="PART 1 — 이 포털을 만드는 동안에도">
+  <div class="cue"><span><b>CUE 03</b></span><span class="sec">PART 1 · 속도</span></div>
+  <span class="tag line">PART 1</span>
+  <div class="title mt2">이 포털을 만드는 동안에도,<br><mark>검색은 계속 바뀌었습니다.</mark></div>
+  <p class="lead mt2" style="margin-top:44px">2026년 9월 4일 — 이벤트 코리아 첫 판에는 <b>「AI 검색」 칸이 없었습니다.</b><br>다음 날 2번 자리에 끼워 넣었고, <b>뒤의 번호가 전부 밀렸습니다.</b></p>
+  <aside class="notes">파트 1입니다. 시장이 얼마나 빨리 바뀌었는지 사실만 보겠습니다. 시작은 저희 이야기입니다. 이벤트 코리아를 처음 연 9월 4일에는 「AI 검색」이라는 칸이 없었습니다. 홈페이지, 일감, 명함, 입찰, 행사, 서류, 홍보, 프로필 여덟 개였습니다. 그런데 다음 날 AI 검색 칸을 2번 자리에 끼워 넣어야 했고, 뒤의 번호가 전부 하나씩 밀렸습니다. 그리고 9월 13일에는 3D 무대가 들어와 열 개가 됐습니다. 9일 만에 여덟 개에서 열 개입니다. 그만큼 세상이 빨리 움직입니다.</aside>
+</section>
+
+<section class="slide" data-title="세 가지 숫자">
+  <div class="cue"><span><b>CUE 04</b></span><span class="sec">PART 1 · 속도</span></div>
+  <div class="title sm">AI 검색은 <mark>이렇게 빨리</mark> 자리 잡았습니다.</div>
+  <div class="row c3" style="margin-top:50px;gap:26px;align-items:stretch">
+    <div class="card g f" style="padding:36px 38px"><span class="n">네이버 AI 브리핑</span><div class="stat">8<small>개월</small></div><p style="font-size:29px;margin-top:16px">출시(2025.3) 8개월 뒤, 대표가 <b style="color:var(--fg)">「3,000만 명 이상이 사용 중」</b>(2025.11)</p><p class="mute" style="font-size:25px;margin-top:10px">쿼리 적용 범위 15%(2025.9 말) → 약 20%(2026.2)</p></div>
+    <div class="card g f" style="padding:36px 38px"><span class="n">구글 AI 개요 → AI 모드</span><div class="stat">9<small>개월</small></div><p style="font-size:29px;margin-top:16px">한국어 <b style="color:var(--fg)">AI 개요(2024.12)</b> → 한국어 <b style="color:var(--fg)">AI 모드(2025.9)</b></p></div>
+    <div class="card g f" style="padding:36px 38px"><span class="n">ChatGPT 이용 경험</span><div class="stat">+15<small>%p</small></div><p style="font-size:29px;margin-top:16px">최근 3개월 이용 <b style="color:var(--fg)">39.6% → 54.5%</b> (2025.3 → 12)</p><p class="mute" style="font-size:25px;margin-top:10px">오픈서베이 온라인 조사 · 각 1,000명</p></div>
+  </div>
+  <div class="src">출처: 머니투데이(네이버 3분기 컨퍼런스콜 2025.11.5) · 센TV(2026.2.6) · 네이버 보도자료(2026.5.28) · 구글 코리아 블로그 · 오픈서베이 AI 검색 트렌드 리포트(2026.1)</div>
+  <aside class="notes">세 가지 숫자입니다. 첫째, 네이버 AI 브리핑은 2025년 3월에 나왔고, 8개월 뒤인 11월 3분기 컨퍼런스콜에서 최수연 대표가 「이제 3,000만 명 이상이 사용 중」이라고 말했습니다. 그때 통합검색 쿼리의 15%, 이듬해 2월에는 약 20%에 적용 중이라고 전해졌습니다. 둘째, 구글은 AI 개요를 2024년 12월에, AI 모드를 2025년 9월에 한국어로 열었습니다. 9개월 차이입니다. 셋째, 오픈서베이 조사에서 ChatGPT를 최근 3개월 안에 써 봤다는 응답이 2025년 3월 39.6%에서 12월 54.5%로, 9개월 만에 약 15%포인트 늘었습니다. (출처: mt.co.kr 2025-11-05 기사 / sentv.co.kr 2026-02-06 기사 / navercorp.com 보도자료 / blog.google/intl/ko-kr / blog.opensurvey.co.kr ai-search-2026)</aside>
+</section>
+
+<section class="slide" data-title="AI 검색이 자리 잡은 순서">
+  <div class="cue"><span><b>CUE 05</b></span><span class="sec">PART 1 · 속도</span></div>
+  <div class="title sm">시작은 <mark>이렇게</mark> 왔습니다.</div>
+  <div class="steps7" style="margin-top:60px">
+    <div class="s f"><i>2022.11</i><b>ChatGPT 공개</b><span>대화로 묻고 답을 받는 AI</span></div>
+    <div class="s f"><i>2024.05</i><b>구글 AI 개요 (미국)</b><span>검색 맨 위에 AI 요약</span></div>
+    <div class="s f"><i>2024.12</i><b>AI 개요 한국어</b><span>한국 이용자도 AI 요약을 봄</span></div>
+    <div class="s f"><i>2025.03</i><b>네이버 AI 브리핑</b><span>웹문서를 분석해 출처와 요약</span></div>
+    <div class="s f"><i>2025.09</i><b>구글 AI 모드 한국어</b><span>AI와 이어서 묻는 검색</span></div>
+    <div class="s f"><i>2025.11</i><b>「3,000만 명 이상」</b><span>네이버, 출시 8개월 만</span></div>
+    <div class="s f"><i>2026.02</i><b>쿼리 약 20% 적용</b><span>연말까지 두 배 계획 보도</span></div>
+  </div>
+  <p class="txt f mt3" style="margin-top:56px;font-size:36px">여기까지가 <b>3년</b>. 이제부터는 <b class="coral">석 달</b> 단위입니다.</p>
+  <div class="src">출처: OpenAI · 구글 블로그(AI 개요 2024.5 · 한국어 2024.12 · AI 모드 한국어 2025.9) · 네이버 검색 블로그(2025.3) · 머니투데이(2025.11.5) · 센TV(2026.2.6)</div>
+  <aside class="notes">연표로 보면 이렇습니다. 2022년 11월 ChatGPT, 2024년 5월 구글 AI 개요가 미국에서, 12월에 한국어로. 2025년 3월 네이버 AI 브리핑, 9월 구글 AI 모드 한국어. 11월에 네이버가 3,000만 명 이상이라고 밝혔고, 2026년 2월에는 통합검색 쿼리의 약 20%에 적용 중이라고 전해졌습니다. 여기까지가 약 3년입니다. 그런데 최근에는 속도가 석 달 단위로 바뀝니다. 다음 장에서 보겠습니다.</aside>
+</section>
+
+<section class="slide" data-title="최근 석 달에만 여섯 가지">
+  <div class="cue"><span><b>CUE 06</b></span><span class="sec">PART 1 · 속도</span></div>
+  <div class="title sm">최근 석 달(2026.6~8)에만 <mark>여섯 가지</mark>가 바뀌었습니다.</div>
+  <div class="g3x2">
+    <div class="card rc f"><span class="n">06.19</span><h3>ChatGPT, 한국 광고 파일럿</h3><p>무료·Go 요금제 대상. 답변과 분리된 「스폰서 콘텐츠」로 표시</p></div>
+    <div class="card rc f"><span class="n">06.23</span><h3>AI 브라우저 Aside 공개</h3><p>웹 화면을 사람처럼 보고 클릭·입력 — 4주차에서 쓰는 도구</p></div>
+    <div class="card rc f"><span class="n">06.26</span><h3>네이버 AI탭 정식 출시</h3><p>장소 탐색 → 지도 → 예약 시간 확인 → 예약·방문까지 한 흐름</p></div>
+    <div class="card rc f"><span class="n">07월</span><h3>구글 AI 최적화 가이드 갱신</h3><p>생성형 AI 검색 최적화는 결국 SEO — 특별한 비법은 없다</p></div>
+    <div class="card rc f"><span class="n">07.21</span><h3>네이버 AI 브리핑에 검색광고</h3><p>5월부터 2개월 시범 뒤 본격 도입. 광고임을 별도 표시</p></div>
+    <div class="card rc f"><span class="n">08.31</span><h3>구글 서치콘솔 AI 노출 보고</h3><p>AI 개요·AI 모드 노출을 보고, 제외할 수도 있음(전 세계 적용)</p></div>
+  </div>
+  <div class="src">출처: 아시아경제(2026.6.19) · docs.aside.com 변경 이력 · 네이버 보도자료(AI탭 2026.6.26) · Google Search Central(2026.7) · 아이뉴스24(네이버 AI 브리핑 광고) · Google 블로그 ‘new controls for website owners’(2026.6.3, 2026.8.31 전면 적용)</div>
+  <aside class="notes">최근 석 달, 6월부터 8월까지만 봐도 여섯 가지가 바뀌었습니다. 6월 19일 ChatGPT가 한국에서 광고 파일럿을 시작했습니다. 6월 23일에는 웹 화면을 사람처럼 조작하는 AI 브라우저 Aside가 공개됐는데, 4주차에서 쓰는 도구입니다. 6월 26일 네이버 AI탭이 정식으로 나왔는데, 장소를 찾고, 지도를 보고, 예약 가능한 시간을 확인하고, 예약과 방문까지 한 흐름으로 이어집니다. 7월에는 구글이 AI 최적화 가이드를 갱신하면서 결국 SEO라고 정리했고, 7월 21일 네이버가 AI 브리핑에 검색광고를 본격 도입했습니다. 8월 31일에는 구글 서치콘솔에서 AI 검색 노출 보고와 제외 옵션이 전 세계에 적용됐습니다. 그러니 오늘 가르치는 방법도 반년 뒤엔 낡을 수 있습니다. 이 점이 이 강의의 설계 기준입니다.</aside>
+</section>
+
+<section class="slide" data-title="손님의 길이 바뀌었다">
+  <div class="cue"><span><b>CUE 07</b></span><span class="sec">PART 1 · 속도</span></div>
+  <div class="title sm">손님이 우리를 찾는 길도 <mark>바뀌었습니다.</mark></div>
+  <div style="margin-top:44px;display:grid;gap:20px">
+    <div class="f" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap"><span class="pill" style="font-size:26px;min-width:108px;justify-content:center">예전</span>
+      <span class="card" style="padding:14px 24px;font-size:30px;border-radius:18px">네이버 검색</span><span class="gold" style="font-size:36px">→</span><span class="card" style="padding:14px 24px;font-size:30px;border-radius:18px">목록</span><span class="gold" style="font-size:36px">→</span><span class="card" style="padding:14px 24px;font-size:30px;border-radius:18px">여러 곳 비교</span><span class="gold" style="font-size:36px">→</span><span class="card" style="padding:14px 24px;font-size:30px;border-radius:18px">전화</span></div>
+    <div class="f" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap"><span class="pill ok" style="font-size:26px;min-width:108px;justify-content:center">지금</span>
+      <span class="card g" style="padding:14px 24px;font-size:30px;border-radius:18px">네이버·구글·<b>AI에게 질문</b></span><span class="gold" style="font-size:36px">→</span><span class="card g" style="padding:14px 24px;font-size:30px;border-radius:18px"><b>요약 답변</b> + 출처</span><span class="gold" style="font-size:36px">→</span><span class="card g" style="padding:14px 24px;font-size:30px;border-radius:18px">몇 곳만 확인</span><span class="gold" style="font-size:36px">→</span><span class="card g" style="padding:14px 24px;font-size:30px;border-radius:18px">전화</span></div>
+  </div>
+  <ul class="list mt3" style="margin-top:46px;gap:14px">
+    <li class="f" style="font-size:31px">검색 주 이용은 아직 <b>네이버 67.5%</b>·구글 17.0% — 생성형 AI 주 이용은 <b>챗GPT 68.1%</b> <span>(과기정통부 2026.6)</span></li>
+    <li class="f" style="font-size:31px">네이버 AI탭은 <b>장소 → 지도 → 예약·방문</b>까지 한 흐름으로 잇습니다</li>
+    <li class="f" style="font-size:31px;color:var(--gold)">→ 네이버 · 구글 · AI · 지도, <b>네 곳에서 같은 회사</b>여야 합니다</li>
+  </ul>
+  <div class="src">출처: 과학기술정보통신부 ‘2025 부가통신사업 실태조사’(2026.6.3, 만 19~69세 2,500명) · 네이버 보도자료(AI탭 2026.6.26)</div>
+  <aside class="notes">손님의 길이 바뀌었습니다. 예전에는 네이버에 치고, 목록을 보고, 여러 곳을 비교하고, 전화했습니다. 지금은 네이버, 구글, AI에게 묻고, 요약 답변과 출처를 보고, 몇 곳만 확인하고 전화합니다. 과기정통부 2026년 6월 조사를 보면 한국에서 검색 주 이용 서비스는 아직 네이버가 67.5%, 구글이 17.0%입니다. 생성형 AI 이용자의 주 이용 서비스는 챗GPT가 68.1%입니다. 그리고 네이버 AI탭은 장소, 지도, 예약, 방문까지 한 흐름으로 잇습니다. 그래서 네이버, 구글, AI, 지도 — 네 곳에서 우리 회사가 같은 회사로 보여야 합니다. (출처: eiec.kdi.re.kr 정책자료 — 2025 부가통신사업 실태조사 / navercorp.com AI탭 보도자료)</aside>
+</section>
+
+<section class="slide" data-title="확인된 것과 아직 모르는 것">
+  <div class="cue"><span><b>CUE 08</b></span><span class="sec">PART 1 · 속도</span></div>
+  <div class="title sm">확인된 것과, <span class="coral">아직 모르는</span> 것.</div>
+  <div class="row c2" style="margin-top:44px;gap:32px;align-items:stretch">
+    <div class="card t f" style="padding:38px 42px"><span class="n" style="color:var(--teal)">확인됨 · 공식 안내</span>
+      <ul class="list" style="gap:14px;margin-top:6px">
+        <li style="font-size:29px"><b>구글</b> — AI 개요·AI 모드에 나오기 위한 <b>별도 요건이나 특별한 최적화는 없다</b>. llms.txt도 불필요</li>
+        <li style="font-size:29px"><b>구글</b> — “생성형 AI 검색 최적화는 결국 <b>SEO</b>”</li>
+        <li style="font-size:29px"><b>네이버</b> — 수집한 웹문서를 AI가 분석해 출처와 요약. <b>블로그·카페 등 창작자 콘텐츠</b>도 출처</li>
+      </ul></div>
+    <div class="card c f" style="padding:38px 42px"><span class="n" style="color:var(--coral)">단정하지 않는 것 세 가지</span>
+      <ul class="list x" style="gap:14px;margin-top:6px">
+        <li style="font-size:29px"><b>“클릭이 ○% 사라졌다”</b> — 조사마다 다릅니다 (Pew 15%→8%, 구글은 “안정적”)</li>
+        <li style="font-size:29px"><b>“GEO 비법이 효과”</b> — 구글은 특수 파일·마크업 불필요, 대규모 분석에서도 뚜렷한 관계 없음</li>
+        <li style="font-size:29px"><b>“지역 손님 절반이 AI로 찾는다”</b> — 한국 지역업체 통계는 <b>아직 없습니다</b></li>
+      </ul></div>
+  </div>
+  <p class="lead f" style="margin-top:36px;font-size:36px">그래서 이 강의는 <b>‘비법’이 아니라 확인된 기본기</b>를 다룹니다.</p>
+  <div class="src">출처: Google Search Central ‘AI features and your website’(2025.12) · ‘AI optimization guide’(2026.7) · 네이버 고객센터 AI 브리핑 도움말 · Pew Research(2025.7) · Seer Interactive(2026.4) · SE Ranking(2025.11) · BrightLocal(2026.2)</div>
+  <aside class="notes">이 슬라이드는 저희 신뢰를 위해 넣었습니다. 확인된 것부터: 구글 공식 문서는 AI 개요와 AI 모드에 나오기 위한 별도 요건이나 특별한 최적화는 없고, llms.txt 같은 전용 파일도 필요 없다고 합니다. 2026년 7월 가이드는 생성형 AI 검색 최적화는 결국 SEO라고 정리했습니다. 네이버는 수집한 웹문서를 AI가 분석해 출처와 함께 요약하고, 블로그·카페 같은 창작자 콘텐츠도 출처가 된다고 안내합니다. 반대로 단정하지 않는 것 세 가지. 클릭이 몇 퍼센트 사라졌다는 말은 조사마다 다르고 구글은 반박합니다. GEO 비법이 효과라는 말은 공식적으로 뒷받침이 없습니다. 지역 손님의 절반이 AI로 찾는다는 말은, 미국 설문은 있지만 한국 지역업체 통계는 아직 없습니다. 그래서 오늘 강의는 비법이 아니라 확인된 기본기를 다룹니다.</aside>
+</section>
+
+<section class="slide" data-title="그래서 이 강의는 이렇게 설계했다">
+  <div class="cue"><span><b>CUE 09</b></span><span class="sec">PART 1 · 속도</span></div>
+  <div class="title sm">그래서 이 강의는 <mark>이렇게 설계했습니다.</mark></div>
+  <div class="row c3" style="margin-top:56px;gap:28px;align-items:stretch">
+    <div class="card g f" style="padding:42px 40px"><span class="n">01</span><h3 style="font-size:46px">한 번 세팅으로 끝나지 않는다</h3><p>몇 달 간격으로 새 기능이 나옵니다. 그래서 4주 뒤에도 돌아가는 <b style="color:var(--fg)">월간 루틴</b>을 남깁니다.</p></div>
+    <div class="card g f" style="padding:42px 40px"><span class="n">02</span><h3 style="font-size:46px">도구도 계속 바뀐다</h3><p>Claude Code, Aside도 요금·화면·정책이 자주 바뀝니다. <b style="color:var(--fg)">기준일을 적고 공식 문서로 다시 확인</b>하는 법까지 가르칩니다.</p></div>
+    <div class="card g f" style="padding:42px 40px"><span class="n">03</span><h3 style="font-size:46px">비법 대신 기본기와 직접 확인</h3><p>사실 카드, 검색 등록, 현장 사진, <b style="color:var(--fg)">AI에게 직접 물어보고 기록</b>하기. 바뀌어도 남는 것들입니다.</p></div>
+  </div>
+  <aside class="notes">그래서 이 강의는 세 가지를 기준으로 설계했습니다. 첫째, 한 번 세팅으로 끝나지 않는다 — 몇 달 간격으로 새 기능이 나오니, 4주가 끝난 뒤에도 돌아가는 월간 루틴을 남깁니다. 둘째, 도구도 계속 바뀐다 — Claude Code와 Aside도 요금과 화면, 정책이 자주 바뀌니까 기준일을 적어 두고 공식 문서로 다시 확인하는 법까지 가르칩니다. 셋째, 비법 대신 기본기와 직접 확인 — 사실 카드, 검색 등록, 현장 사진, 그리고 AI에게 직접 물어보고 기록하기. 바뀌어도 남는 것들입니다.</aside>
+</section>
+
+<!-- ================= PART 2 · 이벤트 코리아 1~10 ================= -->
+<section class="slide" data-title="PART 2 — 이벤트 코리아 1~10번">
+  <div class="cue"><span><b>CUE 10</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <span class="tag line">PART 2</span>
+  <div class="title mt2">이벤트 코리아 <mark>1번부터 10번까지</mark>.</div>
+  <p class="lead" style="margin-top:34px;font-size:38px">이벤트인이 매일 쓰는 도구를 큐시트 순서로 모았습니다. 전부 실제로 돌아갑니다.<br>칸마다 — <b>왜 넣었고, 무엇이 막혔는지</b> 말씀드립니다.</p>
+  <div class="strip10">
+    <span class="k ga f"><i>01</i>홈페이지</span><span class="k ga f"><i>02</i>검색</span><span class="k gj f"><i>03</i>일감</span><span class="k gw f"><i>04</i>명함</span><span class="k gj f"><i>05</i>입찰</span>
+    <span class="k gj f"><i>06</i>행사</span><span class="k gw f"><i>07</i>서류</span><span class="k ga f"><i>08</i>홍보</span><span class="k ga f"><i>09</i>프로필</span><span class="k gw f"><i>10</i>3D 무대</span>
+  </div>
+  <div class="legend f"><span><i style="background:var(--gold)"></i>알려지기</span><span><i style="background:var(--coral)"></i>일감 찾기</span><span><i style="background:var(--teal)"></i>따내고 진행하기</span></div>
+  <aside class="notes">파트 2입니다. 이벤트 코리아는 이벤트인이 매일 쓰는 도구를 큐시트 순서로 모은 포털입니다. 1번 홈페이지, 2번 검색, 3번 일감 알림, 4번 명함, 5번 입찰, 6번 행사, 7번 서류, 8번 홍보, 9번 프로필, 10번 3D 무대. 색으로 묶어 보면 알려지기, 일감 찾기, 따내고 진행하기 세 덩어리입니다. 하나씩, 왜 넣었고 무엇에 막혔는지 말씀드리겠습니다. 저희 개발 기록에 남은 것만 이야기합니다.</aside>
+</section>
+
+<!-- ===== 01 ===== -->
+<section class="slide" data-title="큐 01 홈페이지">
+  <div class="cue"><span><b>CUE 11</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs ga">
+    <div><div class="no">01</div><h3>홈페이지</h3><div class="chips"><span class="chip gd">알려지기</span><span class="chip wk">1주차</span></div></div>
+    <div>
+      <div class="what">이벤트 회사 홈페이지 제작 — 데모를 먼저 만들어 보내고, 마음에 들 때만 진행합니다.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>담당자는 전화 걸기 전에 검색부터 합니다. <b>나오는 한 곳이 문의를 가져갑니다.</b></p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li><b>사진</b> — 남의 워터마크·AI 그림 ✕, 진짜 현장 사진만</li>
+        <li><b>숫자·후기</b> — 확인 못 한 건 실제 실적으로 바꾸거나 뺐다</li>
+        <li><b>만든 뒤</b> — 문법 검사가 아니라 폰과 PC에서 직접 눌러 확인</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>AI도 웹 문서를 읽고 답합니다. 읽을 <b>‘내 주소의 공식 문서’</b>가 먼저입니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">1번 홈페이지. 저희가 직접 검색해 봤을 때 이벤트 회사 13곳 중 12곳이 홈페이지가 없었습니다 — 이건 통계가 아니라 저희가 포털을 만들 때 자체로 확인한 것입니다. 담당자는 전화 걸기 전에 검색부터 하고, 나오는 한 곳이 문의를 가져갑니다. 그래서 데모를 먼저 만들어 보내고 마음에 들 때만 진행합니다. 만들면서 세 가지가 막혔습니다. 사진 — 어떤 회사는 블로그 글이 수십 편인데 사진이 인포그래픽과 AI 이미지였고, 남의 워터마크가 찍힌 사진은 쓸 수 없었습니다. 그래서 카톡으로 받은 진짜 현장 사진만 썼습니다. 숫자와 후기 — 다른 회사 자료 기준의 숫자와 예시 후기가 들어 있어서 실제 실적으로 바꾸거나 뺐습니다. 만든 뒤 — 문법 검사는 통과했는데 단추가 죽어 있던 적이 있어서, 폰과 PC에서 직접 눌러 확인합니다. AI도 결국 웹에 있는 문서를 읽고 답하니, 읽을 내 주소의 공식 문서가 먼저입니다. 1주차에서 다룹니다.</aside>
+</section>
+
+<!-- ===== 02 ===== -->
+<section class="slide" data-title="큐 02 검색 SEO·GEO">
+  <div class="cue"><span><b>CUE 12</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs ga">
+    <div><div class="no">02</div><h3>검색<br>SEO · GEO</h3><div class="chips"><span class="chip gd">알려지기</span><span class="chip wk">3주차</span></div></div>
+    <div>
+      <div class="what">내 홈페이지가 검색에 잡히는지 24개 항목으로 점검하는 무료 도구, 검색 등록, AI 답변 확인.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>손님이 검색창보다 <b>AI에게 먼저 묻기</b> 시작했기 때문입니다.</p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li>첫 판(9/4)에는 이 칸이 없었다 → <b>다음 날 2번에 끼워 넣음</b></li>
+        <li>처음 문구 「블로그는 근거가 못 된다」 → 확인해 보니 <b>네이버는 블로그·카페도 출처</b></li>
+        <li>그래서 「<b>홈페이지가 본진, 블로그는 함께</b>」로 정리</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>구글은 “특별한 AI 최적화는 없고 기본이 SEO”. <b>비법 대신 기본기 점검.</b></p></div>
+    </div>
+  </div>
+  <aside class="notes">2번 검색. 이 칸은 첫 판에 없었습니다. 손님이 검색창보다 AI에게 먼저 묻기 시작했다는 판단으로 다음 날 2번 자리에 끼워 넣었고 뒤 번호가 밀렸습니다. 그리고 고백할 것이 있습니다. 처음 문구에 저희는 「블로그 글은 그 근거가 되지 못한다」고 썼습니다. 그런데 공식 안내를 확인해 보니 네이버 AI 브리핑은 블로그와 카페 같은 창작자 콘텐츠도 출처로 삼는다고 합니다. 그래서 이 강의에서는 「홈페이지가 본진, 블로그는 함께」로 가르칩니다. 빨리 바뀌는 시장에서는 저희 설명도 확인하며 고쳐야 합니다. 구글은 특별한 AI 최적화는 없고 기본이 SEO라고 하니, 비법을 사는 대신 기본기를 점검합니다. 3주차에서 다룹니다.</aside>
+</section>
+
+<!-- ===== 03 ===== -->
+<section class="slide" data-title="큐 03 일감 알림">
+  <div class="cue"><span><b>CUE 13</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs gj">
+    <div><div class="no">03</div><h3>일감 알림</h3><div class="chips"><span class="chip cr">일감 찾기</span><span class="chip">도구 제공</span></div></div>
+    <div>
+      <div class="what">카톡방의 「구인·섭외·급구」 글만 골라 폰이 울립니다. 새 행사 입찰은 매일 아침 한 번.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>행사 구인은 단톡방 수십 개에 흩어지고, <b>먼저 본 사람이 가져갑니다.</b></p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li><b>개인정보</b> — 카톡 내용을 밖으로 보내지 않고 폰 안에서만 처리 (서버 없음)</li>
+        <li><b>설치</b> — 구글의 설치 보호 기능이 처음엔 막아서, 설치 안내를 따로 만들었다</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>검색이 답을 주는 시대에도 일감은 <b>먼저 아는 사람</b>이 가져갑니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">3번 일감 알림. 행사 구인은 단톡방 수십 개에 흩어져 올라오고 먼저 본 사람이 가져갑니다. 그래서 카톡 알림을 읽어서 구인, 섭외, 급구 글만 골라 폰이 울리게 했습니다. 고민은 두 가지였습니다. 개인정보 — 카톡 내용을 서버로 보내지 않고 폰 안에서만 처리하도록 만들었습니다. 그리고 설치 — 구글의 설치 보호 기능이 처음에는 설치를 막아서 설치 방법을 따로 안내해야 했습니다. 검색이 답을 주는 시대에도 일감은 먼저 아는 사람이 가져갑니다. 이 도구는 수업이 아니라 무료 도구로 제공합니다.</aside>
+</section>
+
+<!-- ===== 04 ===== -->
+<section class="slide" data-title="큐 04 명함·콜백 문자">
+  <div class="cue"><span><b>CUE 14</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs gw">
+    <div><div class="no">04</div><h3>명함<br>콜백 문자</h3><div class="chips"><span class="chip tl">따내고 진행하기</span><span class="chip">도구 제공</span></div></div>
+    <div>
+      <div class="what">링크로 된 전자명함. 통화가 끝나면 명함 링크가 자동으로 문자로 갑니다.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>종이 명함은 지갑에서 사라지지만, <b>링크 명함은 상대 폰에 남습니다.</b></p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li>자동 문자는 잘못하면 스팸 → <b>걸려온 전화만 · 주소록 제외 · 30일 중복 금지 · 하루 30건</b></li>
+        <li>명단은 <b>동의한 사람만</b> 받는다</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>AI 답변에서 이름을 보고 전화한 손님이 <b>통화 뒤에도 우리를 기억</b>하게 하는 장치.</p></div>
+    </div>
+  </div>
+  <aside class="notes">4번 명함. 종이 명함은 지갑에서 사라지지만 링크 명함은 상대 폰에 남습니다. 통화가 끝나면 명함 링크가 자동으로 문자로 갑니다. 여기서 가장 고민한 건 스팸이 되지 않는 것이었습니다. 그래서 걸려온 전화에만 보내고, 주소록에 있는 사람은 제외하고, 30일 안에는 같은 사람에게 다시 보내지 않고, 하루 30건으로 제한했습니다. 그리고 명단은 동의한 사람만 받습니다. AI 답변에서 우리 이름을 보고 전화한 손님이 통화가 끝난 뒤에도 우리를 기억하게 하는 장치입니다.</aside>
+</section>
+
+<!-- ===== 05 ===== -->
+<section class="slide" data-title="큐 05 입찰">
+  <div class="cue"><span><b>CUE 15</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs gj">
+    <div><div class="no">05</div><h3>입찰</h3><div class="chips"><span class="chip cr">일감 찾기</span><span class="chip">도구 제공</span></div></div>
+    <div>
+      <div class="what">나라장터의 행사 용역 공고를 매일 아침 모아, 마감 임박순으로.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>지자체·공공기관의 축제·기념식·박람회 용역은 <b>나라장터 입찰 공고로 나오는 일이 많습니다.</b></p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li><b>무엇을 ‘행사’로 볼지</b> — 키워드를 실제 공고를 보며 계속 손봄</li>
+        <li><b>「광주광역시」와 「경기도 광주시」</b>를 가르는 지역 판정</li>
+        <li>해외 접속을 막는 공공 API → <b>한국 PC에서만 수집</b></li>
+        <li><b>제목·기관·기간·링크까지만</b> 보여 주고 본문은 옮기지 않는다</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>골라 주는 일은 AI가 잘합니다. 이 도구도 <b>AI 비서와 함께</b> 만들었습니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">5번 입찰. 지자체와 공공기관의 축제, 기념식, 박람회 용역은 나라장터 입찰 공고로 나오는 일이 많습니다. 매일 들어가 찾기엔 손이 너무 많이 가서 아침마다 모아 마감 임박순으로 보여 줍니다. 막힌 곳은 네 군데였습니다. 무엇을 행사로 볼지 — 키워드를 실제 공고를 보며 계속 손봐야 합니다. 지역 판정 — 광주광역시와 경기도 광주시를 가르는 문제가 있었고요. 해외 접속을 막는 공공 API 때문에 한국 PC에서만 수집합니다. 그리고 저작권 — 제목, 기관, 기간, 링크까지만 보여 주고 본문은 옮기지 않습니다. 이런 골라 주는 일은 AI가 잘하고, 이 도구도 AI 비서와 함께 만들었습니다.</aside>
+</section>
+
+<!-- ===== 06 ===== -->
+<section class="slide" data-title="큐 06 행사·축제 정보">
+  <div class="cue"><span><b>CUE 16</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs gj">
+    <div><div class="no">06</div><h3>행사<br>축제 정보</h3><div class="chips"><span class="chip cr">일감 찾기</span><span class="chip">도구 제공</span></div></div>
+    <div>
+      <div class="what">한국관광공사 자료로 이번 주 전국 축제·행사를 날짜순으로 한 화면에.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>어디서 무엇이 열리는지 알면 <b>다음 일이 보입니다</b> — 부스·공연 섭외·장비 렌탈·사회자.</p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li>공공 자료라도 <b>이용 조건(공공누리 유형)</b> 확인 — RSS 자료는 「확인 필요」로 표시</li>
+        <li><b>공식 API만</b> — 게시판을 긁지 않고, 요청 간격을 1초 아래로 줄이지 않는다</li>
+        <li>API 버전이 올라가면 어느 날 갑자기 실패 → 첫 확인 위치를 정해 둠</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p><b>출처 표기, 본문 전재 금지</b>는 AI 시대 글쓰기 규칙으로 그대로 이어집니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">6번 행사. 한국관광공사 자료로 이번 주 전국 축제와 행사를 날짜순으로 보여 줍니다. 어디서 무엇이 열리는지 알면 부스, 공연 섭외, 장비 렌탈, 사회자 같은 다음 일이 보입니다. 고민은 이용 조건이었습니다. 공공 자료라도 공공누리 유형을 확인해야 하고, 상업적으로 자유로운 것은 제1유형뿐입니다. 그래서 지자체 RSS에서 가져온 자료는 이용 조건을 확인 필요로 표시합니다. 공식 API만 쓰고 게시판은 긁지 않으며, 요청 간격도 1초 아래로 줄이지 않습니다. 그리고 API 버전이 올라가면 어느 날 갑자기 호출이 실패해서, 그때 가장 먼저 볼 곳을 정해 두었습니다. 이 규칙, 출처를 적고 본문을 옮기지 않는다는 원칙은 AI 시대 글쓰기 규칙으로 그대로 이어집니다.</aside>
+</section>
+
+<!-- ===== 07 ===== -->
+<section class="slide" data-title="큐 07 서류">
+  <div class="cue"><span><b>CUE 17</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs gw">
+    <div><div class="no">07</div><h3>서류</h3><div class="chips"><span class="chip tl">따내고 진행하기</span><span class="chip wk">1주차</span></div></div>
+    <div>
+      <div class="what">문의 → 행사 기획서 → 견적서 → 전자계약서(폰 서명) → PDF가 양쪽 메일로.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>문자로 견적을 주고받다 <b>놓치는 일</b>이 없도록. 문의가 늘수록 답이 빨라야 합니다.</p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li>서명된 계약서는 요금표가 바뀌어도 그대로 → <b>계약할 때의 조건을 문서에 박아 둠</b></li>
+        <li>공개 예시 계약서는 <b>서명이 저장되지 않게</b></li>
+        <li>돈이 걸린 숫자는 한 곳을 고치면 <b>전부 고친다</b></li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>AI가 손님을 데려와도 견적이 늦으면 다른 곳으로 갑니다. <b>답의 속도</b>도 경쟁력.</p></div>
+    </div>
+  </div>
+  <aside class="notes">7번 서류. 문의가 들어오면 행사 기획서, 견적서, 전자계약서, 그리고 서명이 끝나면 PDF가 양쪽 메일로 갑니다. 문자로 견적을 주고받다 놓치는 일을 없애려고 만들었습니다. 고민은 세 가지입니다. 서명이 끝난 계약서는 나중에 요금표가 바뀌어도 달라지면 안 되니까 계약할 때의 조건을 문서에 박아 둡니다. 공개 예시 계약서는 누가 눌러도 서명이 저장되지 않게 했고요. 그리고 돈이 걸린 숫자는 여러 곳에 같은 글자로 있어서 한 곳을 고치면 전부 고칩니다. AI가 손님을 데려와도 견적이 늦으면 다른 곳으로 갑니다. 1주차에서 이 흐름을 다룹니다.</aside>
+</section>
+
+<!-- ===== 08 ===== -->
+<section class="slide" data-title="큐 08 홍보">
+  <div class="cue"><span><b>CUE 18</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs ga">
+    <div><div class="no">08</div><h3>홍보</h3><div class="chips"><span class="chip gd">알려지기</span><span class="chip wk">3주차</span><span class="chip wk">4주차</span></div></div>
+    <div>
+      <div class="what">행사 사진 한 장 → 홍보글 초안(블로그·밴드 문구까지). 카드뉴스·쇼츠는 제작.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>행사 열 번이면 홍보글 열 개. 글감이 가장 신선한 때는 <b>행사가 끝난 날</b>입니다.</p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li><b>자동 발행은 일부러 뺐다</b> — 네이버·인스타 규칙, 계정 안전</li>
+        <li><b>글 규칙 검사기</b> — 가격·1위·연혁·후기·방문객 수 금지, 근거 필수</li>
+        <li>검사 통과용으로 글을 비틀지 않는다 → 안 맞으면 <b>버린다</b></li>
+        <li>홈페이지 글은 네이버용으로 <b>다시 쓴다</b></li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>AI가 대신 찍어 줄 수 없는 것은 <b>진짜 현장</b>입니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">8번 홍보. 행사 사진 한 장을 올리면 홍보글 초안이 됩니다. 행사 열 번이면 홍보글 열 개가 쌓입니다. 여기서 가장 중요한 결정은 자동 발행을 일부러 뺀 것입니다. 네이버 블로그는 자동 발행을 열어 두지 않았고, 인스타그램 약관은 자동화된 접근을 제한합니다. 그래서 AI는 준비하고 발행은 사람이 합니다. 글에는 규칙 검사기를 붙였습니다 — 가격, 1위, 연혁, 후기, 방문객 수는 쓰지 않고 근거를 답니다. 그리고 검사를 통과시키려고 글을 억지로 비틀기 시작하면 기준이 무너지므로, 안 맞는 글은 버립니다. 홈페이지 글을 네이버에 그대로 올리면 유사 문서로 걸러질 수 있어서 네이버용은 다시 씁니다. AI가 대신 찍어 줄 수 없는 것은 진짜 현장입니다. 3주차와 4주차에서 다룹니다.</aside>
+</section>
+
+<!-- ===== 09 ===== -->
+<section class="slide" data-title="큐 09 프로필">
+  <div class="cue"><span><b>CUE 19</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs ga">
+    <div><div class="no">09</div><h3>프로필</h3><div class="chips"><span class="chip gd">알려지기</span><span class="chip">선택 · 해당 업종</span></div></div>
+    <div>
+      <div class="what">가수·MC·공연팀의 원페이지 프로필 + A4 한 장 + 섭외 폼 + QR.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>무대를 아직 못 본 섭외 담당자가 <b>링크 하나로 판단</b>할 수 있게.</p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li>기획사에 바로 보낼 <b>종이(PDF) 한 장</b>이 필요했다</li>
+        <li>카톡 첫인상은 <b>미리보기 그림 한 장</b> — 없으면 엉뚱한 그림(계약서의 인감)이 뜬 적이 있다 → 페이지마다 따로 만든다</li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>AI가 후보를 좁혀 줘도, 마지막에 열어 보는 것은 결국 <b>우리 페이지</b>입니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">9번 프로필은 가수, MC, 공연팀처럼 개인이 섭외되는 업종을 위한 것입니다. 원페이지 프로필과 기획사에 바로 보낼 A4 한 장, 그리고 섭외 폼과 QR입니다. 무대를 아직 못 본 담당자가 링크 하나로 판단할 수 있게 하려는 것입니다. 고민은 두 가지였습니다. 기획사에는 링크보다 종이나 PDF 한 장을 보내는 일이 많아서 A4를 함께 만들었고요. 카톡으로 링크를 보내는 순간 첫인상은 미리보기 그림 한 장이 정합니다. 미리보기 그림을 안 넣었더니 엉뚱한 그림, 계약서의 인감이 뜬 적이 있어서 페이지마다 따로 만들게 되었습니다. AI가 후보를 좁혀 줘도 마지막에 열어 보는 건 결국 우리 페이지입니다.</aside>
+</section>
+
+<!-- ===== 10 ===== -->
+<section class="slide" data-title="큐 10 3D 무대">
+  <div class="cue"><span><b>CUE 20</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="cs gw">
+    <div><div class="no">10</div><h3>3D 무대</h3><div class="chips"><span class="chip tl">따내고 진행하기</span><span class="chip">선택 · 소개</span></div></div>
+    <div>
+      <div class="what">행사 유형과 인원만 고르면 무대·LED·트러스·조명·객석이 3D로 서고, 그대로 견적서가 열립니다.</div>
+      <div class="blk f"><div class="lb">왜 넣었나</div><p>말로 설명하던 무대를 <b>1분 만에 돌려서</b> 보여 드리려고.</p></div>
+      <div class="blk think f"><div class="lb">고민한 것</div><ul>
+        <li>서버 없는 사이트 → 손님용은 <b>브라우저 3D</b>, 고화질은 <b>렌더 의뢰</b>로 나눴다</li>
+        <li>가격은 화면에 표시하지 않고 <b>견적서로</b> 넘긴다</li>
+        <li>시안 품목과 견적서 품목의 <b>번호 체계를 맞췄다</b></li></ul></div>
+      <div class="blk f"><div class="lb">우리 생각</div><p>‘보여 주는 자료’는 AI 요약이 <b>대신하기 어려운</b> 우리의 전문성입니다.</p></div>
+    </div>
+  </div>
+  <aside class="notes">10번 3D 무대. 행사 유형과 인원만 고르면 무대, LED, 트러스, 조명, 객석이 3D로 서고, 그 시안 그대로 견적서가 열립니다. 말로 설명하던 무대를 1분 만에 돌려서 보여 드리려고 만들었습니다. 서버가 없는 사이트라서 손님용은 브라우저 3D로, 고화질은 따로 렌더 의뢰로 나눴고, 가격은 화면에 표시하지 않고 견적서로 넘깁니다. 시안의 품목이 견적서 품목과 어긋나지 않게 번호 체계도 맞췄습니다. 글로는 흉내 내기 어려운 보여 주는 자료는 AI 요약이 대신하기 어려운 우리의 전문성입니다. 이 도구는 해당하는 분께 소개만 드립니다.</aside>
+</section>
+
+<!-- ===== 정리 ===== -->
+<section class="slide" data-title="열 개를 한 문장으로">
+  <div class="cue"><span><b>CUE 21</b></span><span class="sec">PART 2 · 이벤트 코리아 1~10</span></div>
+  <div class="title sm">열 개를 한 문장으로 — <mark>찾게 하고, 찾아 나서고, 따내서 끝까지.</mark></div>
+  <div class="grp3">
+    <div class="card g f"><span class="n">01 · 02 · 08 · 09</span><h3>알려지기</h3><p>홈페이지 · 검색 · 홍보 · 프로필<br><b style="color:var(--fg)">손님이 나를 찾게</b></p></div>
+    <span class="ar f">→</span>
+    <div class="card c f"><span class="n" style="color:var(--coral)">03 · 05 · 06</span><h3>일감 찾기</h3><p>일감 알림 · 입찰 · 행사<br><b style="color:var(--fg)">내가 먼저 찾아 나서게</b></p></div>
+    <span class="ar f">→</span>
+    <div class="card t f"><span class="n" style="color:var(--teal)">04 · 07 · 10</span><h3>따내고 진행하기</h3><p>명함 · 서류 · 3D 무대<br><b style="color:var(--fg)">기억되고, 빨리 답하고</b></p></div>
+  </div>
+  <aside class="notes">열 개를 한 문장으로 줄이면 이렇습니다. 찾게 하고, 찾아 나서고, 따내서 끝까지. 홈페이지, 검색, 홍보, 프로필은 손님이 나를 찾게 하는 것이고요. 일감 알림, 입찰, 행사는 내가 먼저 찾아 나서는 것입니다. 명함, 서류, 3D 무대는 통화 뒤에도 기억되고, 문의에 빨리 답하고, 말로 하던 설명을 보여 주는 것입니다. 이 셋이 다 있어야 일이 한 바퀴 돕니다.</aside>
+</section>
+
+<!-- ================= PART 3 · 성찰 ================= -->
+<section class="slide" data-title="PART 3 — 살아남기 위한 생각">
+  <div class="cue"><span><b>CUE 22</b></span><span class="sec">PART 3 · 살아남기 위한 생각</span></div>
+  <span class="tag line">PART 3</span>
+  <div class="title mt2">이벤트인이 이 시장에서<br><mark>살아남으려면.</mark></div>
+  <p class="lead" style="margin-top:44px;font-size:38px">열 개를 만들며 얻은 <b>저희의 판단</b> 여덟 가지입니다.<br>통계로 증명된 사실이 아니라, 현장에서 부딪히며 정리한 생각입니다.</p>
+  <aside class="notes">파트 3입니다. 열 개를 만들면서 얻은 생각 여덟 가지를 말씀드립니다. 먼저 분명히 해 둘 것이 있습니다. 이건 통계로 증명된 사실이 아니라, 저희가 현장에서 부딪히며 정리한 판단입니다. 그래서 각각 어느 도구에서 나온 생각인지 함께 말씀드리겠습니다.</aside>
+</section>
+
+<section class="slide" data-title="성찰 1·2">
+  <div class="cue"><span><b>CUE 23</b></span><span class="sec">PART 3 · 살아남기 위한 생각</span></div>
+  <div class="ref2">
+    <div class="card g f"><div class="num">1</div><h3>「보이는 순」에서<br>「답변에 나오는 순」으로</h3><p>손님은 목록 대신 <b style="color:var(--fg)">답변</b>을 봅니다. <b style="color:var(--fg)">찾을 수 있게 · 믿을 수 있게 · 도움이 되게</b> — 셋뿐입니다.</p></div>
+    <div class="card g f"><div class="num">2</div><h3>내 땅을 먼저<br>가집니다</h3><p>블로그·인스타·카톡방은 남의 땅입니다. 답변 안에도 광고가 들어오기 시작했습니다. <b style="color:var(--fg)">홈페이지가 본진</b>, 나머지는 통로.</p></div>
+  </div>
+  <aside class="notes">첫째, 보이는 순에서 답변에 나오는 순으로. 손님은 목록 대신 답변을 봅니다. 답변에 나오려면 찾을 수 있게 — 검색 등록, 믿을 수 있게 — 사실, 도움이 되게 — 손님의 질문에 답이 되는 글. 셋뿐입니다. 둘째, 내 땅을 먼저 가집니다. 블로그, 인스타, 카톡방은 남의 땅이고 규칙은 언제든 바뀝니다. 네이버 AI 브리핑도 1년 사이에 생겼고, 이제 답변 안에도 광고가 들어오기 시작했습니다. 자리는 빌려 쓰는 것이고 홈페이지는 내 것입니다. 홈페이지가 본진이고 나머지는 손님이 들어오는 통로입니다. (1·2·3·8번 도구에서 나온 생각)</aside>
+</section>
+
+<section class="slide" data-title="성찰 3·4">
+  <div class="cue"><span><b>CUE 24</b></span><span class="sec">PART 3 · 살아남기 위한 생각</span></div>
+  <div class="ref2">
+    <div class="card g f"><div class="num">3</div><h3>현장 사진과 실적은 AI가 못 만드는 1차 자료</h3><p>행사가 끝난 날 <b style="color:var(--fg)">5분 기록 → 글 한 편</b>. 이 습관이 가장 싼 자산입니다.</p></div>
+    <div class="card g f"><div class="num">4</div><h3>일감은 먼저 아는 쪽이 가져갑니다</h3><p>검색은 손님을, <b style="color:var(--fg)">정보는 일감</b>을 데려옵니다. 입찰·축제·구인을 매일 보는 회사와 아닌 회사는 1년 뒤에 다릅니다.</p></div>
+  </div>
+  <aside class="notes">셋째, 현장 사진과 실적은 AI가 대신 만들 수 없는 1차 자료입니다. 행사가 끝난 날 5분 기록을 하고 그걸로 글 한 편을 만드는 습관, 이게 가장 싼 자산입니다. 남의 사진, 지어낸 후기, 확인 안 된 숫자는 결국 회사 전체의 신뢰를 깎습니다. 넷째, 일감은 먼저 아는 쪽이 가져갑니다. 검색은 손님을 데려오고 정보는 일감을 데려옵니다. 입찰, 축제, 구인을 매일 보는 회사와 아닌 회사는 1년 뒤에 다릅니다. (1·8·9번 / 3·5·6번 도구에서 나온 생각)</aside>
+</section>
+
+<section class="slide" data-title="성찰 5·6">
+  <div class="cue"><span><b>CUE 25</b></span><span class="sec">PART 3 · 살아남기 위한 생각</span></div>
+  <div class="ref2">
+    <div class="card g f"><div class="num">5</div><h3>답의 속도를<br>구조로 만듭니다</h3><p>문의가 늘어도 견적이 늦으면 놓칩니다. 문의를 받은 날 안에 <b style="color:var(--fg)">기획서와 견적으로 답하는 구조</b>를 미리.</p></div>
+    <div class="card g f"><div class="num">6</div><h3>AI는 준비하고,<br>사람이 결정하고 발행</h3><p>사실은 내가 주고, AI가 쓰고, 검증은 눌러서, 발행은 사람 손으로. <b style="color:var(--fg)">사실 · 검증 · 사람.</b></p></div>
+  </div>
+  <aside class="notes">다섯째, 답의 속도를 구조로 만듭니다. 문의가 늘어도 견적이 늦으면 놓칩니다. 문의를 받은 날 안에 기획서와 견적으로 답할 수 있는 구조를 미리 만들어 둡니다. 여섯째, AI는 준비하고 사람이 결정하고 발행합니다. 사실은 내가 주고, AI가 쓰고, 검증은 직접 눌러서 하고, 발행은 사람 손으로 합니다. 저희가 반복해서 지킨 세 단어는 사실, 검증, 사람입니다. (7·10번 / 8번 도구에서 나온 생각)</aside>
+</section>
+
+<section class="slide" data-title="성찰 7·8">
+  <div class="cue"><span><b>CUE 26</b></span><span class="sec">PART 3 · 살아남기 위한 생각</span></div>
+  <div class="ref2">
+    <div class="card c f"><div class="num" style="color:var(--coral)">7</div><h3>지름길을<br>조심합니다</h3><p>순위 보장, 대량 자동 발행, 남의 사진, 가짜 후기. 보장한다는 광고는 <b style="color:var(--fg)">표시광고법</b>에 걸릴 수 있고, 잃은 신뢰는 검색으로 못 살립니다.</p></div>
+    <div class="card g f"><div class="num">8</div><h3>한 번에 끝나는<br>일이 아닙니다</h3><p>몇 달 간격으로 시장이 바뀝니다. <b style="color:var(--fg)">월 1회, AI에게 직접 물어보고</b> 우리 회사가 나오는지·정보가 맞는지 기록합니다.</p></div>
+  </div>
+  <aside class="notes">일곱째, 지름길을 조심합니다. 순위 보장, 대량 자동 발행, 남의 사진, 가짜 후기. 검색 노출은 누구도 보장할 수 없고, 보장한다는 광고는 표시광고법의 부당한 표시·광고 금지에 걸릴 수 있습니다. 한 번 잃은 신뢰는 검색으로 되살릴 수 없습니다. 여덟째, 한 번에 끝나는 일이 아닙니다. 몇 달 간격으로 시장이 바뀌니까 월 1회, AI에게 직접 물어보고 우리 회사가 나오는지, 정보가 맞는지 기록하는 습관이 필요합니다. 도구는 바뀌어도 이 점검은 남습니다. (2·8번 도구에서 나온 생각)</aside>
+</section>
+
+<section class="slide" data-title="정직하게 말씀드립니다">
+  <div class="cue"><span><b>CUE 27</b></span><span class="sec">PART 3 · 살아남기 위한 생각</span></div>
+  <div class="title sm">정직하게 <mark>말씀드립니다.</mark></div>
+  <div class="row c2" style="margin-top:48px;gap:34px;align-items:stretch">
+    <div class="card c f" style="padding:44px 46px"><span class="n" style="color:var(--coral)">저희가 틀릴 뻔한 것</span><h3 style="font-size:44px">「블로그는 근거가 못 된다」</h3><p style="font-size:30px">포털 2번을 처음 쓸 때 그렇게 적었습니다. 공식 안내를 확인하니 <b style="color:var(--fg)">네이버는 블로그·카페도 출처</b>로 삼는다고 했습니다. 빨리 바뀌는 시장에서는 <b style="color:var(--fg)">저희 설명도 확인하며 고쳐야</b> 합니다. 그래서 이 강의는 기준일과 출처를 함께 적습니다.</p></div>
+    <div class="card t f" style="padding:44px 46px"><span class="n" style="color:var(--teal)">저희도 아직 모르는 것</span><h3 style="font-size:44px">우리 손님은 어떤 길로 오는가</h3><p style="font-size:30px">한국 지역 업체의 <b style="color:var(--fg)">AI 유입 통계는 공개된 것이 없습니다.</b> 직접 물어봐야 압니다. 그래서 1주차 숙제가 「문의 손님에게 <b style="color:var(--fg)">어떻게 찾으셨어요?</b> 한 줄 묻기」입니다.</p></div>
+  </div>
+  <aside class="notes">마지막으로 정직하게 말씀드립니다. 저희가 틀릴 뻔한 것 — 포털 2번을 처음 쓸 때 「블로그 글은 그 근거가 되지 못한다」고 적었습니다. 공식 안내를 확인하니 네이버는 블로그와 카페도 출처로 삼는다고 합니다. 빨리 바뀌는 시장에서는 저희 설명도 확인하며 고쳐야 합니다. 그리고 저희도 아직 모르는 것 — 한국 지역 업체의 AI 유입 통계는 공개된 것이 없습니다. 우리 손님이 어떤 길로 오는지는 직접 물어봐야 압니다. 그래서 1주차 숙제가 문의 손님에게 어떻게 찾으셨는지 한 줄 묻는 것입니다.</aside>
+</section>
+
+<!-- ================= PART 4 · 4주 과정 ================= -->
+<section class="slide" data-title="PART 4 — 4주 과정">
+  <div class="cue"><span><b>CUE 28</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag line">PART 4</span>
+  <div class="title sm mt2">4주 — 기본기, 도구, 적용,<br><mark>그리고 채널 자동화.</mark></div>
+  <div class="weeks tight">
+    <div class="w f"><i>WEEK 1</i><h3>홈페이지 기본 기능 익히기</h3><ul><li>내 홈페이지를 열고, 보고, 고치는 법</li><li>문의 → 기획서 → 견적 흐름</li></ul><div class="out">결과물 · 사용 안내 한 장 + 첫 진단표</div></div>
+    <div class="w f"><i>WEEK 2</i><h3>Claude Code 설치와 기본 사용법</h3><ul><li>AI에게 안전하게 일을 시키는 법</li><li>변경 검토 · 되돌리기 · CLAUDE.md</li></ul><div class="out">결과물 · 내 Claude Code + 수정 3건</div></div>
+    <div class="w f"><i>WEEK 3</i><h3>내 홈페이지 AI 최적화 + 블로그 글 자동화</h3><ul><li>사실 카드 · 검색 등록 · 정비</li><li>초안은 자동, 검수와 발행은 사람</li></ul><div class="out">결과물 · 사실 카드 + 글 2편 + AI 질문표</div></div>
+    <div class="w f"><i>WEEK 4</i><h3>Aside로 네이버 블로그·인스타 자동화</h3><ul><li>발행 직전까지 자동</li><li>누르는 것은 사람</li></ul><div class="out">결과물 · 월간 운영표 + Aside 루틴</div></div>
+  </div>
+  <p class="txt f" style="margin-top:26px;font-size:30px">주 1회 · 설명 → 실습 → 숙제. 앞 주에 만든 것을 <b>다음 주에 그대로</b> 씁니다.</p>
+  <aside class="notes">파트 4, 4주 과정입니다. 순서에는 이유가 있습니다. 1주차에 내 홈페이지가 어떻게 생겼는지 알고, 2주차에 AI 도구를 안전하게 쓰는 법을 익히고, 3주차에 둘을 합쳐 홈페이지를 정비하고 글 초안을 자동으로 만들고, 4주차에 블로그와 인스타 채널로 넓힙니다. 주 1회, 설명, 실습, 숙제로 진행하고 앞 주에 만든 것을 다음 주에 그대로 씁니다. 1회 시간과 시작일, 정원은 신청하신 분께 안내드립니다.</aside>
+</section>
+
+<section class="slide" data-title="1주차 홈페이지 기본 기능">
+  <div class="cue"><span><b>CUE 29</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag" style="font-size:22px">WEEK 1</span>
+  <div class="title sm" style="margin-top:14px;font-size:58px">홈페이지 사용에 대한 기본 기능 익히기</div>
+  <p class="lead" style="font-size:34px;margin-top:8px">내 홈페이지를 <b>내 손으로 열고, 보고, 고칠 수 있게.</b></p>
+  <div class="wd">
+    <div class="col f"><h4>배우는 것</h4><ul>
+      <li><b>홈페이지 구조</b> 한눈에</li>
+      <li><b>문의 받기</b> → 기획서 · 견적서 · 전자계약서</li>
+      <li><b>글자·연락처·사진</b> 고치기</li>
+      <li><b>행사 이야기</b>(갤러리) 올리기</li>
+      <li><b>방문 현황</b> + 무료 검색 점검(24항목)</li></ul></div>
+    <div class="col f"><h4>실습 · 숙제</h4><ul>
+      <li>전화번호를 바꾸고 <b>같은 번호가 또 있는지</b> 찾기</li>
+      <li>사진 한 장 바꾸고 <b>폰·PC로 눌러 보기</b></li>
+      <li>시험 문의를 보내 <b>메일 확인</b></li>
+      <li>숙제: 손님 5명에게 <b>「어떻게 찾으셨어요?」</b></li></ul></div>
+    <div class="col out f"><h4>이번 주 결과물</h4><p>내 홈페이지 사용 안내 한 장 + 첫 진단표 + 손님 유입 경로표</p></div>
+  </div>
+  <aside class="notes">1주차, 홈페이지 사용에 대한 기본 기능 익히기. AI에게 일을 시키려면 먼저 내 홈페이지가 어떻게 생겼는지 알아야 무엇을 시킬지 압니다. 홈페이지 구조를 한눈에 보고, 문의가 들어오면 기획서, 견적서, 전자계약서로 넘기는 흐름을 익히고, 글자와 연락처와 사진을 고치는 법, 행사 이야기에 글을 올리는 곳, 방문 현황을 보는 곳, 그리고 무료 검색 점검으로 첫 진단을 합니다. 실습은 전화번호를 바꾸고 같은 번호가 다른 곳에도 있는지 찾아보기, 사진 한 장을 바꾸고 폰과 PC에서 눌러 보기, 시험 문의를 보내 메일이 오는지 확인하기입니다. 숙제는 지난 한 달 문의 손님 다섯 분께 어떻게 저희를 찾으셨는지 묻고 표로 적는 것, 그리고 행사 사진 20장을 한 폴더에 모으는 것입니다. 결과물은 사용 안내 한 장과 첫 진단표, 유입 경로 표입니다. (※ 사장님 편집 기능의 저장 서버는 아직 준비 중이라, 1주차의 ‘글자 고치기’ 방식은 수업 전에 확정합니다.)</aside>
+</section>
+
+<section class="slide" data-title="2주차 Claude Code">
+  <div class="cue"><span><b>CUE 30</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag" style="font-size:22px">WEEK 2</span>
+  <div class="title sm" style="margin-top:14px;font-size:58px">Claude Code 설치와 기본적인 사용법</div>
+  <p class="lead" style="font-size:34px;margin-top:8px">AI에게 폴더를 열어 주고, <b>안전하게 시키고, 언제든 되돌릴 수 있게.</b></p>
+  <div class="wd">
+    <div class="col f"><h4>배우는 것</h4><ul>
+      <li>준비물·요금, <b>설치</b>(데스크톱 앱 Code 탭)</li>
+      <li><b>안전 세팅 6가지</b>, 권한 모드</li>
+      <li><b>좋은 요청 5요소</b> + 변경 검토 루프</li>
+      <li><b>멈추기 · 되돌리기</b></li>
+      <li><b>CLAUDE.md</b> — 폴더의 업무 매뉴얼</li></ul></div>
+    <div class="col f"><h4>실습 · 숙제</h4><ul>
+      <li>설치하고 로그인, 연습 폴더를 <b>「읽기만」</b> 시키기</li>
+      <li>한 가지씩 고치고 <b>검토 → 미리보기 → 되돌리기</b></li>
+      <li>내 <b>CLAUDE.md</b> 만들기</li>
+      <li>숙제: 폴더 <b>통째로 백업</b> + 수정 3건</li></ul></div>
+    <div class="col out f"><h4>이번 주 결과물</h4><p>내 컴퓨터에서 도는 Claude Code + 내 CLAUDE.md + 수정 3건 기록</p></div>
+  </div>
+  <aside class="notes">2주차, Claude Code 설치와 기본적인 사용법. 이 주는 3주차와 4주차 자동화의 엔진입니다. 그리고 이 엔진은 한 번 잘못 쓰면 되돌리기 어려운 곳이 있어서 안전한 습관부터 익힙니다. 준비물과 요금, 설치 — 데스크톱 앱의 Code 탭을 권장합니다 — 그리고 설치 직후 안전 세팅 여섯 가지, 좋은 요청의 다섯 요소, 바뀌는 내용을 보고 승인하는 변경 검토 루프, 중간에 멈추고 되돌리는 법, 폴더에 두는 업무 매뉴얼 CLAUDE.md를 배웁니다. CLAUDE.md에는 시킨 것만 하기, 없는 사실 지어내지 않기, 그리고 건드리면 안 되는 곳 — 문의 서버 주소, 편집 열쇠, 자동으로 만들어지는 파일, robots와 도메인 설정 — 을 적어 둡니다. 실습은 연습 폴더를 열고 먼저 읽기만 시키기, 한 가지씩 고치고 검토, 미리보기, 되돌리기, 그리고 CLAUDE.md 만들기입니다. 교재는 Claude Code 입문교재 45쪽입니다. 요금과 화면은 자주 바뀌니 수업 당일 공식 문서로 기준일을 다시 확인합니다.</aside>
+</section>
+
+<section class="slide" data-title="3주차 ① AI 최적화 7가지">
+  <div class="cue"><span><b>CUE 31</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag" style="font-size:22px">WEEK 3 · ①</span>
+  <div class="title sm" style="margin-top:14px;font-size:58px">내 홈페이지 AI 최적화 — 기본기 7가지</div>
+  <div class="steps7" style="margin-top:50px">
+    <div class="s f"><i>01</i><b>사실 카드</b><span>상호·주소·연락처·서비스·실적</span></div>
+    <div class="s f"><i>02</i><b>홈페이지 정비</b><span>제목·설명, 중요한 건 글자로, 모바일</span></div>
+    <div class="s f"><i>03</i><b>검색 도구 등록</b><span>서치어드바이저·서치콘솔·사이트맵</span></div>
+    <div class="s f"><i>04</i><b>답이 되는 페이지</b><span>지역+행사 체크리스트, FAQ, 내부 연결</span></div>
+    <div class="s f"><i>05</i><b>바깥 정보 맞추기</b><span>플레이스·비즈니스 프로필·SNS 통일</span></div>
+    <div class="s f"><i>06</i><b>진짜 증거</b><span>현장 사진·확인된 실적</span></div>
+    <div class="s f"><i>07</i><b>월 1회 점검</b><span>AI에게 물어보기 + 서치콘솔 보고</span></div>
+  </div>
+  <p class="txt f" style="margin-top:48px;font-size:32px">공식 안내에도 있는 기본기입니다 — <b>특별한 마크업이나 llms.txt는 필요 없습니다.</b></p>
+  <div class="src">근거: Google Search Central ‘AI optimization guide’(2026.7) · 네이버 서치어드바이저 웹마스터 가이드 · 네이버 고객센터. 정책은 자주 바뀌므로 수업 당일 다시 확인합니다.</div>
+  <aside class="notes">3주차 첫 번째, 내 홈페이지 AI 최적화 기본기 일곱 가지입니다. 하나, 사실 카드 — 상호, 주소, 연락처, 서비스, 실적을 확인된 사실만 한 장으로. 모든 글과 채널의 근거가 됩니다. 둘, 홈페이지 정비 — 제목과 설명, 중요한 내용은 이미지가 아니라 글자로, 이미지 설명, 모바일 화면, 검색이 차단돼 있지 않은지. 셋, 검색 도구 등록 — 네이버 서치어드바이저와 구글 서치콘솔에 소유확인과 사이트맵 제출. 등록하지 않아도 수집은 되지만 등록하면 수집 상태와 오류를 볼 수 있습니다. 소유확인 태그는 계속 유지합니다. 넷, 답이 되는 페이지 — ○○시 행사 준비 체크리스트, 자주 묻는 질문, 페이지끼리 서로 연결. 다섯, 바깥 정보 맞추기 — 네이버 플레이스와 구글 비즈니스 프로필, 블로그, SNS의 상호, 주소, 전화를 하나로. 여섯, 진짜 증거 — 현장 사진과 확인된 실적. 일곱, 월 1회 점검 — AI에게 직접 물어보고 기록하고, 구글 서치콘솔의 AI 노출 보고를 확인합니다. 이것들은 공식 안내에도 있는 기본기이고, 구글은 특별한 마크업이나 llms.txt는 필요 없다고 합니다. (출처: developers.google.com/search/docs/fundamentals/ai-optimization-guide, /appearance/ai-features / searchadvisor.naver.com/guide)</aside>
+</section>
+
+<section class="slide" data-title="3주차 ② 블로그 글 자동화">
+  <div class="cue"><span><b>CUE 32</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag" style="font-size:22px">WEEK 3 · ②</span>
+  <div class="title sm" style="margin-top:14px;font-size:58px">블로그 글 자동화 — 초안은 자동, 발행은 사람</div>
+  <div class="flow">
+    <div class="st me f"><b>행사 후 5분 기록</b>사람이 사실을 준다</div><span class="ar">→</span>
+    <div class="st f"><b>홈페이지용 초안</b>Claude Code</div><span class="ar">→</span>
+    <div class="st f"><b>사실 대조표</b>근거 없는 문장 삭제</div><span class="ar">→</span>
+    <div class="st f"><b>네이버용 다시 쓰기</b>같은 글 복사 금지</div><span class="ar">→</span>
+    <div class="st me f"><b>5분 다듬기</b>사람</div><span class="ar">→</span>
+    <div class="st me f"><b>발행</b>사람</div>
+  </div>
+  <div class="row c2 mt3" style="margin-top:44px;gap:30px">
+    <div class="card f" style="padding:30px 36px"><span class="n">스킬로 저장하면</span><p style="font-size:30px;margin-top:0">다음부터는 <b style="color:var(--fg)">한 줄</b>로 초안·검수본·네이버용을 만듭니다.</p></div>
+    <div class="card g f" style="padding:30px 36px"><span class="n">이번 주 결과물</span><p style="font-size:30px;margin-top:0">사실 카드 + 글 2편(홈페이지용·네이버용) + AI 질문표 첫 기록</p></div>
+  </div>
+  <aside class="notes">3주차 두 번째, 블로그 글 자동화입니다. 흐름은 이렇습니다. 행사가 끝난 날 5분 기록을 사람이 씁니다 — 사실은 사람이 줍니다. Claude Code가 그 기록과 사실 카드만 보고 홈페이지용 초안을 씁니다. 그다음 초안에서 사실을 말하는 문장을 전부 뽑아 근거 대조표를 만들고, 근거 없는 문장은 삭제합니다. 그 검수본을 네이버용으로 다시 씁니다 — 홈페이지 글을 그대로 복사하지 않습니다. 사람이 5분 다듬고, 발행은 사람이 합니다. 이걸 스킬로 저장하면 다음부터는 한 줄로 초안과 검수본과 네이버용이 나옵니다. 이번 주 결과물은 사실 카드, 글 두 편, 그리고 AI 질문표 첫 기록입니다. 글에서는 가격, 1위, 최고·유일, 100% 보장, 연혁, 허락 없는 후기, 방문객 수 같은 확인 안 된 숫자, 타사 비교를 쓰지 않습니다.</aside>
+</section>
+
+<section class="slide" data-title="4주차 ① 자동화 5단계 사다리">
+  <div class="cue"><span><b>CUE 33</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag" style="font-size:22px">WEEK 4 · ①</span>
+  <div class="title sm" style="margin-top:14px;font-size:58px">Aside로 자동화 — 어디까지 맡길까 (5단계)</div>
+  <div class="ladder">
+    <div class="lv f"><i>Lv.1</i><span><b>AI는 초안만, 붙여넣기는 사람</b> — 가장 안전한 시작</span></div>
+    <div class="lv star f"><i>Lv.2 ★</i><span><b>Aside가 편집기에 입력, 발행은 사람</b> — 이 수업의 목표 지점</span></div>
+    <div class="lv f"><i>Lv.3</i><span><b>예약 시간까지 세팅, 확정 클릭은 사람</b> — 플랫폼의 공식 예약 기능</span></div>
+    <div class="lv f"><i>Lv.4</i><span><b>루틴이 매주 ‘준비물’을 자동 생성</b> — 주제 후보·조사 메모까지만</span></div>
+    <div class="lv no f"><i>Lv.5</i><span><b>발행까지 완전 자동</b> — 권장하지 않음 (계정 제한, 사실 오류 글이 그대로 나갈 위험)</span></div>
+  </div>
+  <aside class="notes">4주차 첫 번째, Aside로 하는 자동화는 어디까지 맡길지 5단계로 봅니다. Aside는 2026년 6월에 공개된 AI 브라우저로, 사람처럼 화면을 보고 클릭하고 입력합니다. 레벨 1은 AI가 초안만 쓰고 붙여넣기는 사람이 하는 가장 안전한 시작입니다. 레벨 2가 이 수업의 목표입니다 — Aside가 네이버 블로그 편집기에 제목, 본문, 사진 자리, 태그까지 입력하고, 발행 직전에서 멈춥니다. 발행 버튼은 사람이 누릅니다. 레벨 3은 플랫폼의 공식 예약 기능으로 예약 시간까지 세팅하고 확정은 사람이 합니다. 레벨 4는 루틴이 매주 주제 후보와 조사 메모 같은 준비물을 자동으로 만들어 줍니다. 레벨 5, 발행까지 완전 자동은 권장하지 않습니다. 계정이 제한될 위험이 크고, 사실이 틀린 글이 그대로 나갈 수 있기 때문입니다. Aside는 신제품이라 요금과 메뉴가 자주 바뀌니 수업 당일 공식 문서로 기준일을 다시 확인합니다.</aside>
+</section>
+
+<section class="slide" data-title="4주차 ② 인스타 신호등과 발행 전 점검">
+  <div class="cue"><span><b>CUE 34</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <span class="tag" style="font-size:22px">WEEK 4 · ②</span>
+  <div class="title sm" style="margin-top:14px;font-size:58px">인스타 신호등과 발행 전 8가지 점검</div>
+  <div class="sig3">
+    <div class="card t f"><span class="n" style="color:var(--teal)">초록 · 마음 놓고</span><h3>준비·초안·정리</h3><p>캡션·해시태그·릴스 대본 초안, 콘텐츠 캘린더, 댓글·DM 분류, 인사이트 정리</p></div>
+    <div class="card g f"><span class="n">노랑 · 사람 확인 필수</span><h3>확정 직전에 멈춤</h3><p>공식 예약 화면에 입력하고 <b style="color:var(--fg)">확정 직전에 멈춤</b>. 답장 초안은 넣어 두기만</p></div>
+    <div class="card c f"><span class="n" style="color:var(--coral)">빨강 · 하지 마세요</span><h3>계정 제한 위험</h3><p>자동 좋아요·팔로우, 먼저 보내는 대량 DM, 정보 대량 수집, 캡차 우회</p></div>
+  </div>
+  <div class="f" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:40px"><span class="chip">사실</span><span class="chip">저작권</span><span class="chip">광고·협찬 표시</span><span class="chip">개인정보</span><span class="chip">과장·허위</span><span class="chip">AI 활용 표시</span><span class="chip">링크·연락처</span><span class="chip">시간·공개·계정</span></div>
+  <div class="src">신호등 분류는 교재의 안전 기준이며 플랫폼의 공식 등급이 아닙니다. 약관은 자주 바뀌므로 수업 당일 다시 확인합니다.</div>
+  <aside class="notes">4주차 두 번째, 인스타그램은 블로그와 다릅니다. 인스타그램 약관은 자동화된 접근을 제한하고 계정 제한 사례도 있어서, 신호등으로 나눠서 봅니다. 초록은 마음 놓고 해도 되는 준비와 초안과 정리 — 캡션과 해시태그, 릴스 대본 초안, 콘텐츠 캘린더, 댓글 분류, 인사이트 정리입니다. 노랑은 사람 확인이 필수인 것 — 공식 예약 화면에 입력하되 확정 직전에 멈춥니다. 빨강은 하지 마세요 — 자동 좋아요와 팔로우, 먼저 보내는 대량 DM, 다른 계정 정보 대량 수집, 캡차 우회. 이 분류는 교재의 안전 기준이고 플랫폼의 공식 등급은 아닙니다. 그리고 발행 전에 여덟 가지를 점검합니다 — 사실, 저작권, 광고·협찬 표시, 개인정보, 과장·허위, AI 활용 표시, 링크와 연락처, 시간·공개 범위·계정. 실습은 블로그 원고를 발행 직전에서 멈추기, 한 달 인스타 캘린더와 캡션 만들기, 예약 화면을 채우되 확정은 내가 하기, 그리고 루틴 하나 만들기입니다. 교재는 Aside 입문교재 36쪽입니다.</aside>
+</section>
+
+<section class="slide" data-title="4주 뒤에 남는 것">
+  <div class="cue"><span><b>CUE 35</b></span><span class="sec">PART 4 · 4주 과정</span></div>
+  <div class="title sm">4주 뒤, <mark>이것이 남습니다.</mark></div>
+  <div class="row c3" style="margin-top:56px;gap:28px;align-items:stretch">
+    <div class="card g f" style="padding:42px 40px"><span class="n">갖게 되는 것</span><h3 style="font-size:44px">내 손으로 굴리는 홈페이지</h3><p>직접 고치는 힘, AI 도구 두 개(Claude Code · Aside), 사실 카드와 글 양식, 발행 전 점검표</p></div>
+    <div class="card t f" style="padding:42px 40px"><span class="n" style="color:var(--teal)">남는 습관</span><h3 style="font-size:44px">월 1회 · 행사 후 5분</h3><p>월 1회 <b style="color:var(--fg)">AI에게 직접 물어보고 기록</b>, 행사가 끝난 날 <b style="color:var(--fg)">5분 기록</b>, 발행은 언제나 <b style="color:var(--fg)">사람이</b></p></div>
+    <div class="card c f" style="padding:42px 40px"><span class="n" style="color:var(--coral)">약속하지 않는 것</span><h3 style="font-size:44px">순위와 AI 답변 노출</h3><p>특정 순위·1위, AI 답변에 반드시 나온다는 약속은 하지 않습니다. 순위와 답변은 검색엔진과 AI 서비스가 정합니다.</p></div>
+  </div>
+  <aside class="notes">4주가 끝나면 세 가지가 남습니다. 갖게 되는 것 — 내 홈페이지를 직접 고치는 힘, AI 도구 두 개, 사실 카드와 글 양식, 발행 전 점검표. 남는 습관 — 월 1회 AI에게 직접 물어보고 기록하기, 행사가 끝난 날 5분 기록하기, 발행은 언제나 사람이. 그리고 약속하지 않는 것 — 특정 순위나 1위, AI 답변에 반드시 나온다는 약속은 하지 않습니다. 순위와 답변은 검색엔진과 AI 서비스가 정하기 때문입니다.</aside>
+</section>
+
+<!-- ================= 가격 · 신청 · 질문 ================= -->
+<section class="slide" data-title="가격 — 100만원">
+  <div class="cue"><span><b>CUE 36</b></span><span class="sec">PRICE</span></div>
+  <div class="title sm">홈페이지 제작 + 4주 강의, <mark>100만원</mark>입니다.</div>
+  <div class="row c2" style="grid-template-columns:.85fr 1.15fr;gap:40px;margin-top:40px;align-items:stretch">
+    <div class="card g f" style="padding:40px 44px"><span class="tag" style="font-size:22px">회사형 · 1기</span>
+      <div class="big-price" style="font-size:160px;margin-top:22px">100<small>만원</small></div>
+      <p style="font-size:30px;margin-top:8px"><b style="color:var(--fg)">VAT 별도</b> · 선금 50% · 잔금 50% (계약 후)</p>
+      <p style="font-size:27px;margin-top:14px">신청은 <b style="color:var(--fg)">결제가 아닙니다.</b> 확인 후 연락드리고, 기획서·견적서·전자계약서로 내용을 확인한 뒤 진행합니다.</p></div>
+    <div class="card f" style="padding:26px 40px"><span class="n">포함 내용</span>
+      <ul class="incl">
+        <li><b>회사형 홈페이지</b> — 고급형 전체 + 페이지 무제한 설계</li>
+        <li>브랜드 컨설팅 · 로고 리터치</li>
+        <li>관리자 페이지 · <b>직접 수정 CMS</b> 세팅과 교육</li>
+        <li>SSL 보안 · 1개월 무상 유지보수 <span style="font-size:.78em">(이후 월 5만원)</span></li>
+        <li><b>AI 활용 실무 강의 4회 (4주)</b></li>
+        <li>매월 자체 블로그 홍보기사 10회</li>
+      </ul></div>
+  </div>
+  <aside class="notes">가격입니다. 홈페이지 제작과 4주 강의를 합쳐 100만원, 부가세 별도입니다. 선금 50%, 잔금 50%입니다. 회사형 홈페이지 — 고급형 전체에 페이지 무제한 설계, 브랜드 컨설팅과 로고 리터치, 관리자 페이지와 직접 수정 CMS 세팅과 교육, SSL 보안과 1개월 무상 유지보수, 이후에는 월 5만원의 호스팅·관리비가 듭니다. 그리고 AI 활용 실무 강의 4회, 4주, 그리고 매월 자체 블로그 홍보기사 10회가 포함됩니다. 신청은 결제가 아닙니다. 확인 후 연락드리고 기획서, 견적서, 전자계약서로 내용을 확인한 뒤 진행합니다. (수강생이 Claude 유료 요금제와 Aside 크레딧을 직접 부담하는지는 신청 안내 때 확정해서 알려드립니다.)</aside>
+</section>
+
+<section class="slide" data-title="약속하는 것과 하지 않는 것">
+  <div class="cue"><span><b>CUE 37</b></span><span class="sec">PRICE</span></div>
+  <div class="title sm">이렇게 <mark>약속합니다.</mark></div>
+  <div class="row c2" style="margin-top:50px;gap:34px;align-items:stretch">
+    <div class="card t f" style="padding:44px 46px"><span class="n" style="color:var(--teal)">약속하는 것</span>
+      <ul class="list" style="gap:26px;margin-top:14px">
+        <li style="font-size:42px"><b>노출 가능성을 높이는 기본기</b></li>
+        <li style="font-size:42px">계속 관리하는 방법과 <b>습관</b></li>
+        <li style="font-size:42px">함께 점검하고 고치는 <b>4주</b></li>
+        <li style="font-size:42px">확인된 사실과 <b>출처·기준일</b></li></ul></div>
+    <div class="card c f" style="padding:44px 46px"><span class="n" style="color:var(--coral)">약속하지 않는 것</span>
+      <ul class="list x" style="gap:26px;margin-top:14px">
+        <li style="font-size:42px">특정 <b>순위·1위 보장</b></li>
+        <li style="font-size:42px">AI 답변에 <b>반드시 나온다</b>는 약속</li>
+        <li style="font-size:42px">블로그·인스타 <b>자동 발행</b> — 발행은 사람이</li>
+        <li style="font-size:42px">확인 안 된 숫자·후기·<b>남의 사진</b></li></ul></div>
+  </div>
+  <aside class="notes">약속하는 것과 약속하지 않는 것을 분명히 하겠습니다. 약속하는 것은 노출 가능성을 높이는 기본기, 계속 관리하는 방법과 습관, 함께 점검하고 고치는 4주, 그리고 확인된 사실과 출처와 기준일입니다. 약속하지 않는 것은 특정 순위나 1위 보장, AI 답변에 반드시 나온다는 약속, 블로그와 인스타 자동 발행 — 발행은 사람이 합니다 — 그리고 확인 안 된 숫자나 후기, 남의 사진입니다. 순위와 답변은 검색엔진과 AI 서비스가 정하고, 보장한다는 광고는 표시광고법에 걸릴 수 있기 때문입니다.</aside>
+</section>
+
+<section class="slide nofoot" data-title="신청 방법">
+  <div class="cue"><span><b>CUE 38</b></span><span class="sec">APPLY</span></div>
+  <span class="beam" style="left:70%;opacity:.5"></span>
+  <div class="row c2" style="grid-template-columns:1.15fr .85fr;gap:70px;align-items:center;margin-top:10px">
+    <div>
+      <div class="title">지금 <span class="gold">신청</span>하세요.</div>
+      <ul class="list g mt3" style="gap:20px;margin-top:44px">
+        <li class="f" style="font-size:38px">화면의 QR을 폰으로 찍거나</li>
+        <li class="f" style="font-size:38px"><b style="color:var(--gold)">ai-make.co.kr/ai-search</b> 접속</li>
+        <li class="f" style="font-size:38px">전화 <b>1533-7295</b> (큰길브리지 대표번호)</li>
+      </ul>
+      <p class="txt f mt3" style="font-size:28px">신청은 <b>결제가 아닙니다.</b> 확인 후 연락드립니다.<br>1기 일정과 정원은 신청하신 분께 안내합니다.</p>
+    </div>
+    <div class="f" style="text-align:center">
+      <div class="qr" style="margin:0 auto"><svg width="264" height="264" class="segno"><path transform="scale(8)" class="qrline" stroke="#07090f" d="M0 0.5h7m2 0h1m4 0h1m1 0h1m1 0h4m1 0h1m2 0h7m-33 1h1m5 0h1m2 0h2m1 0h1m2 0h4m1 0h1m5 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h3m1 0h2m1 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m5 0h1m2 0h1m1 0h1m3 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h7m2 0h1m2 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m1 0h3m1 0h2m3 0h1m2 0h2m4 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h2m2 0h1m1 0h1m1 0h1m3 0h5m-25 1h1m1 0h5m2 0h2m1 0h3m2 0h2m5 0h1m1 0h5m-31 1h1m2 0h1m1 0h1m1 0h1m1 0h1m3 0h1m4 0h4m1 0h1m2 0h2m1 0h2m1 0h1m-33 1h3m2 0h3m1 0h8m7 0h1m3 0h1m1 0h2m-31 1h5m3 0h3m1 0h1m1 0h1m3 0h5m4 0h3m1 0h1m-29 1h1m1 0h2m1 0h2m1 0h1m1 0h1m1 0h1m1 0h3m2 0h1m1 0h1m2 0h2m-30 1h1m3 0h1m2 0h1m3 0h3m1 0h1m1 0h4m1 0h2m2 0h1m3 0h3m-32 1h1m4 0h7m1 0h4m3 0h2m2 0h3m1 0h1m1 0h1m-32 1h1m1 0h4m1 0h3m1 0h1m2 0h2m2 0h1m1 0h4m1 0h3m1 0h2m-30 1h4m1 0h1m3 0h6m1 0h1m4 0h4m1 0h2m3 0h1m-31 1h3m4 0h3m1 0h2m1 0h1m1 0h2m3 0h5m1 0h4m-33 1h2m1 0h1m2 0h1m1 0h2m1 0h1m3 0h2m1 0h1m1 0h3m2 0h4m1 0h2m-32 1h2m1 0h3m1 0h1m4 0h2m1 0h1m2 0h1m1 0h4m3 0h5m-31 1h2m1 0h3m2 0h1m2 0h2m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m2 0h2m-30 1h1m2 0h1m4 0h1m1 0h1m1 0h1m2 0h6m2 0h4m5 0h1m-33 1h1m2 0h1m1 0h2m1 0h1m2 0h1m2 0h1m2 0h2m1 0h3m2 0h1m4 0h2m-32 1h1m1 0h1m1 0h2m1 0h1m1 0h5m2 0h1m2 0h1m1 0h3m1 0h3m2 0h1m1 0h1m-33 1h1m3 0h1m1 0h1m5 0h3m2 0h1m4 0h7m2 0h1m-24 1h4m4 0h2m1 0h2m2 0h2m3 0h1m1 0h1m1 0h1m-33 1h7m2 0h5m1 0h3m2 0h5m1 0h1m1 0h1m1 0h2m-32 1h1m5 0h1m1 0h2m1 0h2m1 0h1m1 0h4m1 0h1m1 0h2m3 0h4m-32 1h1m1 0h3m1 0h1m1 0h2m1 0h2m3 0h1m2 0h1m2 0h1m1 0h6m1 0h1m-32 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h3m2 0h4m1 0h1m1 0h1m2 0h2m1 0h2m-33 1h1m1 0h3m1 0h1m1 0h1m3 0h7m1 0h2m1 0h5m1 0h1m-30 1h1m5 0h1m3 0h6m2 0h1m1 0h3m3 0h1m1 0h3m-31 1h7m1 0h2m1 0h5m1 0h2m3 0h1m1 0h2m1 0h1m3 0h1"/></svg></div>
+      <p class="txt mt2" style="font-size:26px">신청·접수 페이지 바로가기</p>
+    </div>
+  </div>
+  <aside class="notes">신청은 화면의 QR을 폰으로 찍으시거나, ai-make.co.kr/ai-search로 들어오시면 됩니다. 신청은 결제가 아니고, 남겨 주신 연락처로 제가 확인 후 연락드립니다. 1기 일정과 정원은 신청하신 분께 개별로 안내드립니다. 이미 홈페이지가 있으신 분은 신청서에 주소를 남겨 주시면 먼저 무료로 검색 노출 상태를 점검해 드립니다. (줌 채팅창에도 링크를 붙여 넣어 주세요: https://www.ai-make.co.kr/ai-search/)</aside>
+</section>
+
+<section class="slide nofoot" data-title="질문과 답변">
+  <div class="cue"><span><b>CUE 39</b></span><span class="sec">Q&A</span></div>
+  <span class="beam" style="left:20%"></span><span class="beam b2" style="left:62%"></span>
+  <div style="position:absolute;left:140px;right:140px;top:220px;z-index:3">
+    <span class="tag line">Q &amp; A</span>
+    <div class="big" style="font-size:112px;margin-top:30px">오늘 딱 하나만<br>하신다면,<br>폰으로 <mark>AI에게 물어보세요.</mark></div>
+    <p class="lead mt3" style="margin-top:50px;font-size:44px">“우리 지역 행사 업체 추천해줘.” — 그 답에 <b>우리 회사 이름</b>이 있는지.</p>
+  </div>
+  <div style="position:absolute;left:140px;right:140px;bottom:70px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-size:28px;color:var(--dim)">
+    <span><b style="color:var(--fg)">큰길브리지</b> × 이벤트 코리아</span>
+    <span>전화 <b style="color:var(--fg)">1533-7295</b> · ai-make.co.kr/ai-search</span>
+  </div>
+  <aside class="notes">마무리입니다. 오늘 딱 하나만 하신다면, 지금 폰으로 AI에게 물어보세요. 「우리 지역 행사 업체 추천해줘.」 그 답에 우리 회사 이름이 있는지, 있다면 정보가 맞는지. 그게 오늘의 숙제이자 4주 과정의 출발점입니다. 질문 받겠습니다. (예상 질문: ① 순위를 보장하나요? → 아니요. ② 블로그는 그만해야 하나요? → 아니요, 홈페이지와 함께 씁니다. ③ 이미 홈페이지가 있는데요? → 주소를 남겨 주시면 먼저 무료 점검을 해 드립니다. ④ 컴퓨터를 잘 몰라도 되나요? → 매주 실습과 숙제를 함께 진행합니다. 다만 사진과 실적 같은 사실 자료는 직접 준비하셔야 합니다.)</aside>
+</section>
+
+    <div id="bar"></div>
+    <div id="brandmark">큰길브리지 × 이벤트 코리아</div>
+    <div id="hud"><span id="hud-n">01 / 01</span></div>
+  </div>
+</div>
+<div id="notesbar"></div>
+<div id="toc" hidden><ol></ol></div>
+<div id="hint">→ 다음 · ← 이전 · F 전체화면 · N 대본 · P 발표자 창 · T 목차</div>
+
+<div id="pres">
+  <div class="hd"><span>발표자 창 · <b id="p-n">01 / 01</b></span><span id="p-clock"></span></div>
+  <div class="notes-box"><h2 id="p-title"></h2><div id="p-notes"></div></div>
+  <div class="side">
+    <div class="pv" id="pv-cur"><label>지금</label></div>
+    <div class="pv" id="pv-next"><label>다음</label></div>
+    <div class="notes-box" style="font-size:16px"><b>단축키</b> → 다음 · ← 이전 · 여기서 눌러도 공유 화면이 넘어갑니다.<br>이 창은 <b>화면 공유하지 마세요</b>(대본이 보입니다).</div>
+  </div>
+  <div class="btns"><button id="p-prev">← 이전</button><button id="p-next" class="go">다음 →</button><button id="p-t0">타이머 0</button><span class="timer" id="p-timer">00:00</span></div>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var slides = [].slice.call(stage.querySelectorAll('.slide'));
+  var N = slides.length, idx = 0, frag = 0;
+  var q = new URLSearchParams(location.search);
+  var isPres = q.has('presenter');
+  if (isPres) document.body.classList.add('presenter');
+  var ch = null; try { ch = new BroadcastChannel('kb-aisearch-lecture'); } catch(e){}
+
+  function two(n){ return (n < 10 ? '0' : '') + n; }
+  function frags(s){ return [].slice.call(s.querySelectorAll('.f')); }
+  function fit(){ var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080); stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')'; }
+  function title(s){ return s.getAttribute('data-title') || s.querySelector('.title,.big,.quote,.lead') && s.querySelector('.title,.big,.quote,.lead').textContent.trim().slice(0,40) || ''; }
+
+  function apply(broadcast){
+    slides.forEach(function(s,k){ s.classList.toggle('on', k === idx); s.classList.toggle('past', k < idx); });
+    slides.forEach(function(s,k){ frags(s).forEach(function(el,j){ el.classList.toggle('in', k < idx || (k === idx && j < frag)); }); });
+    document.getElementById('hud-n').textContent = two(idx + 1) + ' / ' + two(N);
+    document.getElementById('bar').style.width = ((idx + 1) / N * 100) + '%';
+    document.getElementById('hud').style.display = slides[idx].classList.contains('nofoot') ? 'none' : '';
+    document.getElementById('brandmark').style.display = slides[idx].classList.contains('nofoot') ? 'none' : '';
+    var nt = slides[idx].querySelector('.notes');
+    document.getElementById('notesbar').innerHTML = nt ? '<b>대본 ' + two(idx + 1) + '</b> · ' + nt.innerHTML : '<b>대본 ' + two(idx + 1) + '</b> · (메모 없음)';
+    if (location.hash !== '#' + (idx + 1)) { try { history.replaceState(null, '', '#' + (idx + 1)); } catch(e){} }
+    if (isPres) presenterUpdate();
+    document.querySelectorAll('#toc li').forEach(function(li,k){ li.classList.toggle('cur', k === idx); });
+    if (broadcast !== false && ch) ch.postMessage({ t:'state', idx: idx, frag: frag });
+  }
+  function next(){ var fs = frags(slides[idx]); if (frag < fs.length) { frag++; apply(); } else if (idx < N - 1) { idx++; frag = 0; apply(); } }
+  function prev(){ if (frag > 0) { frag--; apply(); } else if (idx > 0) { idx--; frag = frags(slides[idx]).length; apply(); } }
+  function go(i){ idx = Math.max(0, Math.min(N - 1, i)); frag = 0; apply(); }
+
+  /* 목차 */
+  (function(){
+    var ol = document.querySelector('#toc ol');
+    slides.forEach(function(s,k){ var li = document.createElement('li'); li.innerHTML = '<i>' + two(k + 1) + '</i><span></span>'; li.lastChild.textContent = title(s); li.onclick = function(){ go(k); document.getElementById('toc').hidden = true; }; ol.appendChild(li); });
+  })();
+
+  /* 발표자 창 */
+  var t0 = Date.now();
+  function clone(s, host){
+    var old = host.querySelector('.clone'); if (old) old.remove();
+    if (!s) return;
+    var c = s.cloneNode(true); c.classList.add('on'); c.classList.remove('past'); c.style.cssText = 'position:absolute;inset:0;opacity:1;visibility:visible;transform:none;transition:none';
+    c.querySelectorAll('.f').forEach(function(f){ f.classList.add('in'); });
+    var box = document.createElement('div'); box.className = 'clone'; box.appendChild(c);
+    host.appendChild(box);
+    var sc = host.clientWidth / 1920; box.style.transform = 'scale(' + sc + ')';
+  }
+  function presenterUpdate(){
+    document.getElementById('p-n').textContent = two(idx + 1) + ' / ' + two(N);
+    document.getElementById('p-title').textContent = title(slides[idx]);
+    var nt = slides[idx].querySelector('.notes');
+    document.getElementById('p-notes').innerHTML = nt ? nt.innerHTML : '(메모 없음)';
+    clone(slides[idx], document.getElementById('pv-cur'));
+    clone(slides[idx + 1], document.getElementById('pv-next'));
+  }
+  if (isPres) {
+    setInterval(function(){ var s = Math.floor((Date.now() - t0) / 1000); document.getElementById('p-timer').textContent = two(Math.floor(s / 60)) + ':' + two(s % 60); document.getElementById('p-clock').textContent = new Date().toLocaleTimeString('ko-KR'); }, 500);
+    document.getElementById('p-t0').onclick = function(){ t0 = Date.now(); };
+    document.getElementById('p-next').onclick = function(){ if (ch) ch.postMessage({ t:'cmd', c:'next' }); next(); };
+    document.getElementById('p-prev').onclick = function(){ if (ch) ch.postMessage({ t:'cmd', c:'prev' }); prev(); };
+    window.addEventListener('resize', presenterUpdate);
+  }
+  if (ch) ch.onmessage = function(e){
+    var m = e.data || {};
+    if (m.t === 'state') { idx = m.idx; frag = m.frag; apply(false); }
+    else if (m.t === 'cmd' && !isPres) { if (m.c === 'next') next(); else if (m.c === 'prev') prev(); }
+  };
+
+  /* 조작 */
+  document.addEventListener('keydown', function(e){
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var k = e.key;
+    if (!document.getElementById('toc').hidden) { if (k === 'Escape' || k === 't' || k === 'T') { document.getElementById('toc').hidden = true; } return; }
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === ' ' || k === 'PageDown' || k === 'Enter') { e.preventDefault(); if (isPres && ch) ch.postMessage({ t:'cmd', c:'next' }); next(); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); if (isPres && ch) ch.postMessage({ t:'cmd', c:'prev' }); prev(); }
+    else if (k === 'Home') { e.preventDefault(); go(0); }
+    else if (k === 'End') { e.preventDefault(); go(N - 1); }
+    else if (k === 'f' || k === 'F') { var d = document, el = d.documentElement; if (!d.fullscreenElement) { if (el.requestFullscreen) el.requestFullscreen(); } else if (d.exitFullscreen) d.exitFullscreen(); }
+    else if (k === 'n' || k === 'N') { document.body.classList.toggle('notes'); }
+    else if (k === 't' || k === 'T') { document.getElementById('toc').hidden = false; }
+    else if ((k === 'p' || k === 'P') && !isPres) { window.open(location.pathname + '?presenter=1#' + (idx + 1), 'kb-presenter', 'width=1180,height=780'); }
+  });
+  var tx = null;
+  stage.addEventListener('touchstart', function(e){ tx = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function(e){ if (tx == null) return; var dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) { if (dx < 0) next(); else prev(); } tx = null; });
+  stage.addEventListener('click', function(e){ if (e.target.closest('a,button')) return; var x = e.clientX / window.innerWidth; if (x > .3) next(); else prev(); });
+  window.addEventListener('resize', fit);
+  window.addEventListener('hashchange', function(){ var n = parseInt(location.hash.slice(1), 10); if (n && n - 1 !== idx) { idx = Math.max(0, Math.min(N - 1, n - 1)); frag = 0; apply(); } });
+  setTimeout(function(){ var h = document.getElementById('hint'); if (h) h.style.opacity = '0'; }, 7000);
+
+  fit();
+  var h0 = parseInt(location.hash.slice(1), 10); if (h0) idx = Math.max(0, Math.min(N - 1, h0 - 1));
+  if (q.has('all')) frag = 999;
+  apply();
+  window.__deck = { showAll: function(i){ idx = Math.max(0, Math.min(N - 1, i)); frag = 999; apply(false); }, count: N, go: go, next: next, prev: prev, state: function(){ return { idx: idx, frag: frag }; } };
+})();
+</script>
+</body>
+</html>

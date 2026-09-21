@@ -28,6 +28,8 @@
     {"@type":"WebPage","@id":"https://www.ai-make.co.kr/ai-search/#page","url":"https://www.ai-make.co.kr/ai-search/","name":"AI 검색 시대, 이벤트인은 앞서갈 것인가 — 홈페이지 제작 + 4주 강의","inLanguage":"ko-KR","isPartOf":{"@type":"WebSite","name":"큰길브리지","url":"https://www.ai-make.co.kr/"}},
     {"@type":"FAQPage","@id":"https://www.ai-make.co.kr/ai-search/#faq","mainEntity":[
       {"@type":"Question","name":"검색 순위나 AI 답변 노출을 보장하나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 순위와 AI 답변은 검색엔진과 AI 서비스가 정하므로 특정 순위나 노출을 보장하지 않습니다. 노출 가능성을 높이는 기본기와 계속 관리하는 방법을 4주 동안 함께 실습합니다."}},
+      {"@type":"Question","name":"블로그·인스타에 자동으로 올려 주나요?","acceptedAnswer":{"@type":"Answer","text":"아니요, 자동 발행은 하지 않습니다. AI는 글과 사진을 준비하고 발행 직전까지만 도와 주고, 발행 버튼은 사람이 누릅니다. 네이버 블로그와 인스타그램의 규칙, 그리고 계정 안전 때문입니다."}},
+      {"@type":"Question","name":"AI 검색이 우리 손님에게도 정말 중요한가요?","acceptedAnswer":{"@type":"Answer","text":"한국 지역 업체의 AI 검색 유입을 직접 측정한 공개 통계는 아직 없습니다. 그래서 1주차 숙제로 문의 손님에게 어떻게 찾으셨는지 묻고 우리 숫자를 만듭니다. 다만 네이버 AI 브리핑은 출시 8개월 만에 3,000만 명 이상이 사용 중이라고 밝혔고(2025.11), 시장은 몇 달 간격으로 바뀌고 있습니다."}},
       {"@type":"Question","name":"블로그는 그만해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 블로그는 홈페이지와 함께 쓰는 채널입니다. 다만 내 이름의 주소를 가진 공식 홈페이지가 있어야 블로그와 SNS가 같은 정보를 가리킬 수 있습니다."}},
       {"@type":"Question","name":"컴퓨터를 잘 몰라도 되나요?","acceptedAnswer":{"@type":"Answer","text":"네. 4주 동안 매주 실습과 과제를 하나씩 함께 진행합니다. 다만 사진과 실적 같은 사실 자료는 직접 준비해 주셔야 합니다."}},
       {"@type":"Question","name":"이미 홈페이지가 있는데 신청할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"신청서에 주소를 남겨 주시면 먼저 무료로 검색 노출 상태를 점검해 드립니다. 그 결과를 보고 새로 만들지, 고쳐서 쓸지 함께 결정합니다."}}
@@ -177,6 +179,8 @@ details p b{color:var(--txt)}
 footer{border-top:1px solid var(--line);padding:26px 0 44px;color:#6A7385;font-size:12.5px;line-height:1.9}
 footer a{color:#8B95A8}
 .note{font-size:12.5px;color:var(--mute);margin-top:20px;line-height:1.7}
+.recent{margin-top:16px;padding:16px 20px;border:1px solid rgba(255,107,74,.5);border-radius:16px;background:rgba(255,107,74,.07);font-size:15px;color:var(--dim);line-height:1.75}
+.recent b{color:var(--txt)}
 @media(prefers-reduced-motion:reduce){.beam,.eyebrow i{animation:none}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -220,15 +224,16 @@ footer a{color:#8B95A8}
     <h2>검색이 <mark>‘목록’</mark>에서 <mark>‘답변’</mark>으로 바뀌고 있습니다.</h2>
     <p class="lede">예전에는 검색창에 <b>「행사 업체」</b>라고 치고 목록을 눌렀습니다. 이제는 AI에게 <b>「추천해 줘」</b>라고 묻고, <b>답변에 나온 곳</b>만 봅니다. 그 답변에 우리 회사 이름이 있어야 합니다.</p>
     <div class="grid g3 facts">
-      <div class="card g"><div class="stat">3,000만<small>명/월</small></div><h3>네이버 AI 브리핑 이용</h3><p>2025년 3월 출시. 네이버는 2026년 5월 월 3,000만 명이 이용한다고 발표했고, 통합검색 쿼리의 약 20%에 적용 중이라고 전해졌습니다(2026.2).</p></div>
-      <div class="card g"><div class="stat">2024·2025<small></small></div><h3>구글 AI 개요 · AI 모드</h3><p>한국어 서비스를 각각 <b>2024년 12월</b>, <b>2025년 9월</b>에 시작했습니다.</p></div>
+      <div class="card g"><div class="stat">8<small>개월</small></div><h3>네이버 AI 브리핑</h3><p>2025년 3월 출시. 8개월 뒤 대표가 컨퍼런스콜에서 <b>「3,000만 명 이상이 사용 중」</b>(2025.11)이라고 밝혔고, 2026년 5월 보도자료에서는 월 3,000만 명 이용으로 발표했습니다. 적용 범위는 통합검색 쿼리의 약 20%(2026.2).</p></div>
+      <div class="card g"><div class="stat">9<small>개월</small></div><h3>구글 AI 개요 → AI 모드</h3><p>한국어 서비스를 각각 <b>2024년 12월</b>, <b>2025년 9월</b>에 시작했습니다. 9개월 만에 대화형으로 넓어졌습니다.</p></div>
       <div class="card g"><div class="stat">8%<small>vs 15%</small></div><h3>AI 요약이 뜨면 링크 클릭이 줄었다 (한 조사)</h3><p>Pew Research, 미국 성인 900명·구글 검색 기록: AI 요약이 뜬 검색의 링크 클릭 <b>8%</b>, 안 뜬 검색 <b>15%</b>. 조사마다 수치는 다르며 구글은 반박합니다.</p></div>
     </div>
+    <div class="recent"><b>최근 석 달(2026.6~8)에만 여섯 가지가 바뀌었습니다.</b> ChatGPT와 네이버 AI 브리핑에 <b>광고</b>가 붙기 시작했고, 네이버 AI탭이 <b>지도·예약</b>까지 이어졌고, 구글 서치콘솔에 <b>AI 노출 보고</b>가 생겼고, 구글의 공식 가이드가 갱신됐고, 사람처럼 화면을 조작하는 <b>새 AI 브라우저(Aside)</b>가 공개됐습니다. 그래서 이 강의는 한 번 세팅이 아니라 <b>4주 뒤에도 돌아가는 월간 루틴</b>을 남깁니다.</div>
     <div class="grid g2" style="margin-top:16px">
       <div class="card t"><span class="n" style="color:var(--teal)">구글의 공식 답</span><h3>특별한 최적화는 필요 없습니다 — 기본기입니다</h3><p>구글은 AI 개요·AI 모드에 나오기 위한 <b>별도 요건이나 특별한 최적화는 필요 없다</b>고 안내합니다. 색인되어 검색에 노출될 수 있는 페이지면 대상이고, llms.txt 같은 AI 전용 파일도 필요 없다고 밝혔습니다.</p></div>
       <div class="card t"><span class="n" style="color:var(--teal)">네이버의 공식 안내</span><h3>웹문서를 분석해 출처와 함께 요약합니다</h3><p>네이버 AI 브리핑은 수집한 웹문서를 AI가 분석해 출처와 함께 요약합니다. <b>블로그·카페 등 창작자 콘텐츠</b>도 출처가 됩니다. 그래서 블로그와 <b>내 주소의 홈페이지를 함께</b> 운영해야 합니다.</p></div>
     </div>
-    <p class="src">출처: 네이버 보도자료(2026.5.28) · 네이버 고객센터 AI 브리핑 도움말 · 구글 코리아 블로그 · Google Search Central ‘AI features and your website’(2025.12) · Pew Research Center(2025.7.22). 한국 지역업체의 AI 검색 유입을 직접 측정한 공개 통계는 아직 확인되지 않았습니다. 그래서 이 강의는 ‘비법’이 아니라 확인된 기본기를 다룹니다.</p>
+    <p class="src">출처: 네이버 보도자료(2026.5.28 · AI탭 2026.6.26) · 머니투데이(네이버 3분기 컨퍼런스콜, 2025.11.5) · 네이버 고객센터 AI 브리핑 도움말 · 구글 코리아 블로그 · Google Search Central ‘AI features and your website’(2025.12) · ‘AI optimization guide’(2026.7) · Google 블로그 ‘new controls for website owners’(2026.6.3) · 아시아경제(2026.6.19) · 아이뉴스24 · Pew Research Center(2025.7.22). 한국 지역업체의 AI 검색 유입을 직접 측정한 공개 통계는 아직 확인되지 않았습니다. 그래서 이 강의는 ‘비법’이 아니라 확인된 기본기를 다룹니다.</p>
   </div>
 </section>
 
@@ -272,14 +277,15 @@ footer a{color:#8B95A8}
 <section class="alt" id="program">
   <div class="wrap">
     <span class="sec-k mono">4 weeks</span>
-    <h2>4주 뒤, 내 홈페이지는<br><mark>이렇게</mark> 달라집니다.</h2>
+    <h2>4주 — 기본기, 도구, 적용,<br><mark>그리고 채널 자동화.</mark></h2>
+    <p class="lede">홈페이지를 알고 → AI 도구를 익히고 → 둘을 합쳐 정비하고 → 블로그·인스타로 넓힙니다. <b>앞 주에 만든 것을 다음 주에 그대로</b> 씁니다.</p>
     <div class="weeks">
-      <div class="week"><i>WEEK 1</i><h3>진단 · 세팅</h3><ul><li>검색 현황 진단 (무료 점검 24항목)</li><li>네이버·구글 검색 등록</li><li>Claude Code 설치·안전 세팅</li></ul><div class="out">결과물 · 진단표 + 등록 완료</div></div>
-      <div class="week"><i>WEEK 2</i><h3>내 홈페이지 다듬기</h3><ul><li>회사 <b>사실 카드</b> 작성</li><li>문구·연락처·실적 직접 수정</li><li>지역+행사 페이지·FAQ 설계</li></ul><div class="out">결과물 · 사실 카드 + 수정 3건</div></div>
-      <div class="week"><i>WEEK 3</i><h3>콘텐츠 만들기</h3><ul><li>행사 기록 → 블로그 초안</li><li>근거 검수 → 네이버용 재작성</li><li>실제 사진·후기 정리</li></ul><div class="out">결과물 · 글 2편 + 실적 정리</div></div>
-      <div class="week"><i>WEEK 4</i><h3>인스타 · 측정 · 루틴</h3><ul><li>캡션·카드뉴스·한 달 캘린더</li><li>AI 답변에 내 회사가 나오는지 점검</li><li>월간 운영표·나만의 스킬</li></ul><div class="out">결과물 · 월간 루틴 + 점검표</div></div>
+      <div class="week"><i>WEEK 1</i><h3>홈페이지 사용에 대한 기본 기능 익히기</h3><ul><li>홈페이지 구조, 문의 받기 → 기획서·견적서·전자계약서</li><li>글자·연락처·사진 직접 고치기</li><li>무료 검색 점검(24항목)으로 첫 진단</li></ul><div class="out">결과물 · 사용 안내 한 장 + 첫 진단표</div></div>
+      <div class="week"><i>WEEK 2</i><h3>Claude Code 설치와 기본적인 사용법</h3><ul><li>설치와 안전 세팅, 좋은 요청 5요소</li><li>변경 검토 · 미리보기 · 되돌리기</li><li>CLAUDE.md — 폴더의 업무 매뉴얼</li></ul><div class="out">결과물 · 내 Claude Code + 수정 3건</div></div>
+      <div class="week"><i>WEEK 3</i><h3>내 홈페이지 AI 최적화와 블로그 글 자동화</h3><ul><li>사실 카드 · 검색 등록 · 홈페이지 정비</li><li>행사 기록 → 초안 → 근거 검수 → 네이버용 다시 쓰기</li><li>월 1회 AI에게 직접 물어보기</li></ul><div class="out">결과물 · 사실 카드 + 글 2편 + AI 질문표</div></div>
+      <div class="week"><i>WEEK 4</i><h3>ASIDE로 네이버 블로그 · 인스타 자동화</h3><ul><li>발행 직전까지 자동, 누르는 것은 사람</li><li>인스타 캘린더·캡션·예약 화면 채우기</li><li>발행 전 8가지 점검</li></ul><div class="out">결과물 · 월간 운영표 + Aside 루틴</div></div>
     </div>
-    <p class="note">주 1회 · 회차별 실습과 과제. 1기 일정과 정원은 신청하신 분께 안내드립니다. 프로그램 구성은 수강생 상황에 맞춰 조정될 수 있습니다.</p>
+    <p class="note">주 1회 · 설명 → 실습 → 숙제. 1회 시간, 1기 일정과 정원은 신청하신 분께 안내드립니다. 설치 화면과 요금은 자주 바뀌므로 수업 당일 공식 문서로 다시 확인합니다. 프로그램 구성은 수강생 상황에 맞춰 조정될 수 있습니다.</p>
   </div>
 </section>
 
@@ -321,6 +327,8 @@ footer a{color:#8B95A8}
     <span class="sec-k mono">FAQ</span>
     <h2>자주 묻는 질문</h2>
     <details><summary>검색 순위나 AI 답변 노출을 보장하나요?</summary><p><b>아니요.</b> 순위와 AI 답변은 검색엔진과 AI 서비스가 정하므로 특정 순위나 노출을 보장하지 않습니다. 대신 노출 가능성을 높이는 기본기와, 계속 관리하는 방법을 4주 동안 함께 실습합니다.</p></details>
+    <details><summary>블로그·인스타에 자동으로 올려 주나요?</summary><p><b>아니요, 자동 발행은 하지 않습니다.</b> AI는 글과 사진을 준비하고 <b>발행 직전까지</b>만 도와 주고, 발행 버튼은 사람이 누릅니다. 네이버 블로그와 인스타그램의 규칙, 그리고 계정 안전 때문입니다.</p></details>
+    <details><summary>AI 검색이 우리 손님에게도 정말 중요한가요?</summary><p>한국 지역 업체의 AI 검색 유입을 직접 측정한 공개 통계는 아직 없습니다. 그래서 1주차 숙제로 문의 손님에게 <b>「어떻게 찾으셨어요?」</b>를 묻고 우리 숫자를 만듭니다. 다만 네이버 AI 브리핑은 출시 8개월 만에 3,000만 명 이상이 사용 중이라고 밝혔고(2025.11), 시장은 몇 달 간격으로 바뀌고 있습니다.</p></details>
     <details><summary>블로그는 그만해야 하나요?</summary><p>아니요. 블로그는 홈페이지와 <b>함께 쓰는 채널</b>입니다. 다만 내 이름의 주소를 가진 공식 홈페이지가 있어야 블로그와 SNS가 같은 정보를 가리킬 수 있습니다.</p></details>
     <details><summary>컴퓨터를 잘 몰라도 되나요?</summary><p>네. 4주 동안 매주 실습과 과제를 하나씩 함께 진행합니다. 다만 <b>사진과 실적 같은 사실 자료</b>는 직접 준비해 주셔야 합니다. Claude Code 사용에는 Claude 유료 요금제(Pro 이상) 결제가 필요합니다.</p></details>
     <details><summary>이미 홈페이지가 있는데 신청할 수 있나요?</summary><p>신청서에 주소를 남겨 주시면 먼저 <b>무료로 검색 노출 상태를 점검</b>해 드립니다. 그 결과를 보고 새로 만들지, 고쳐서 쓸지 함께 결정합니다.</p></details>
