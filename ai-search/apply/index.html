@@ -225,12 +225,12 @@ footer a{color:#8B95A8}
     <aside class="side">
       <div class="card">
         <h3>신청 상품</h3>
-        <div class="price">100만원<small>VAT 별도</small></div>
+        <div class="price">100만원<small>VAT·옵션 별도</small></div>
         <p style="margin-top:8px"><b>회사형 홈페이지 제작 + 4주 AI 검색 노출 강의</b></p>
         <ul>
           <li>홈페이지 제작(회사형) · 관리자 페이지 · 직접 수정 세팅</li>
           <li><b>4주 강의</b> — AI 검색·구글·네이버에서 계속 찾아지게 만드는 방법</li>
-          <li>선금 50% · 잔금 50% (계약 후)</li>
+          <li>전체 결제 (계약 시) · 옵션 추가 시 별도</li>
         </ul>
       </div>
       <div class="card">
@@ -332,7 +332,7 @@ footer a{color:#8B95A8}
     var 유입 = ''; try { var q = new URLSearchParams(location.search); 유입 = ['src','utm_source','utm_medium','utm_campaign'].map(function(k){ return q.get(k) ? k + '=' + q.get(k) : ''; }).filter(Boolean).join(' · '); } catch(e){}
     var L = [];
     L.push('■ 신청: ' + CONFIG.SERVICE + (CONFIG.COHORT.label ? ' (' + CONFIG.COHORT.label + ')' : ''));
-    L.push('■ 상품: 회사형 홈페이지 제작 + 4주 AI 검색 노출 강의 · 100만원(VAT 별도)');
+    L.push('■ 상품: 회사형 홈페이지 제작 + 4주 AI 검색 노출 강의 · 100만원(VAT·옵션 별도) · 전체 결제(계약 시)');
     L.push('');
     L.push('회사: ' + v.org); L.push('성함: ' + v.name);
     if (v.area) L.push('활동 지역: ' + v.area);
