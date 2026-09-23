@@ -29,3 +29,4 @@ User-agent: Bingbot
 Allow: /
 
 Sitemap: https://www.ai-make.co.kr/sitemap.xml
+Sitemap: https://www.ai-make.co.kr/column/sitemap.xml
