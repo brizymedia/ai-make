@@ -542,6 +542,13 @@ $('#b-edit').addEventListener('click', function(){ $('#adm').classList.remove('o
   if (!불러옴 && MODE !== 'admin') {
     try { var d = JSON.parse(localStorage.getItem(저장열쇠) || 'null'); if (d && typeof d === 'object' && Object.keys(d).length) { 읽기(d); 불러옴 = 'draft'; } } catch(e){}
   }
+  /* 우리 화면(?admin=1)인데 손님이 보낸 자료(#m=)가 없으면 — 보여 줄 요약이 없다. 손님이 보는 폼을 그대로 보여 준다.
+     손님이 보낸 자료는 접수 메일의 링크(#m= 가 붙어 있음)로 열어야 요약이 나온다. */
+  if (MODE === 'admin' && !불러옴) {
+    MODE = 'customer';
+    $('#flow-p').innerHTML = '지금 보시는 것이 <b>손님이 보는 폼</b>입니다. 손님이 보낸 자료는 접수 메일의 「우리 화면」 링크로 열면 요약으로 나옵니다. 위 「링크 복사」는 손님에게 보낼 주소를 복사합니다.';
+    try { history.replaceState(null, '', location.pathname); } catch(e){}
+  }
   폼그리기(); 폼채우기(); 그리기();
   if (불러옴 === 'draft') toast('전에 적던 내용을 불러왔습니다');
   if (MODE === 'admin') {
