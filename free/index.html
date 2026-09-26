@@ -3,44 +3,133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 검색 시대, 홈페이지가 없으면 AI가 내 가게를 모릅니다 — 무료 자료 3종 | 큰길브리지</title>
-<meta name="description" content="손님은 이제 검색 대신 AI에게 묻습니다. AI가 추천하는 가게의 조건을 정리한 전자책, 무료 전자명함, 우리 가게 홈페이지 데모까지 무료로 받아 보세요.">
+<title>챗GPT에 우리 가게를 물었더니 경쟁 가게만 나왔다면 — 무료 홈페이지 데모 | 큰길브리지</title>
+<meta name="description" content="손님은 이제 검색 대신 AI에게 묻습니다. 상호만 넣으면 1분 안에 우리 가게 이름이 들어간 홈페이지 데모가 열립니다. 실제 제작 사례, 전자책 「AI가 추천하는 가게의 7가지 조건」까지 무료.">
 <link rel="canonical" href="https://www.ai-make.co.kr/free/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="AI가 내 가게를 추천하게 만드는 법 — 무료 전자책 · 전자명함 · 홈페이지 데모">
-<meta property="og:description" content="챗GPT · 네이버 AI 브리핑 · 구글 AI 개요가 가게를 고르는 기준. 무료로 받아 보세요.">
+<meta property="og:title" content="우리 가게 이름 넣은 홈페이지, 1분 만에 무료로 받아 보세요">
+<meta property="og:description" content="챗GPT · 네이버 AI 브리핑이 추천하는 가게에는 홈페이지가 있습니다. 실제 제작 사례와 무료 데모 · 전자책.">
 <meta property="og:image" content="https://www.ai-make.co.kr/og.png">
 <link rel="icon" href="https://www.ai-make.co.kr/favicon.svg" type="image/svg+xml">
+<link rel="preload" as="image" href="img/demo-cafe.jpg">
 <link rel="stylesheet" href="../funnel.css">
 <style>
-.hero{padding:64px 0 56px;background:radial-gradient(1200px 500px at 70% -10%,rgba(232,184,75,.16),transparent 60%),radial-gradient(900px 500px at 0% 10%,rgba(63,211,198,.10),transparent 60%)}
-.hero .wrap{display:grid;gap:40px;align-items:center}
-@media(min-width:900px){.hero .wrap{grid-template-columns:1.15fr .85fr}}
-.chat{background:#0E1320;border:1px solid var(--line-2);border-radius:18px;padding:18px;font-size:.92rem;box-shadow:0 30px 80px rgba(0,0,0,.45)}
-.chat .q{margin-left:auto;max-width:82%;background:var(--gold);color:var(--ink);padding:10px 14px;border-radius:14px 14px 4px 14px;font-weight:700;width:fit-content}
-.chat .a{margin-top:12px;max-width:92%;background:var(--ink-3);border:1px solid var(--line);padding:12px 14px;border-radius:14px 14px 14px 4px;color:var(--dim)}
+/* ── 휴대폰 틀 ── */
+.phone{position:relative;width:220px;aspect-ratio:390/844;border-radius:34px;padding:9px;background:linear-gradient(145deg,#2a3142,#0d111b);box-shadow:0 40px 80px rgba(0,0,0,.55),inset 0 0 0 1.5px rgba(255,255,255,.08);flex:none}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:26px;background:#111}
+.phone:before{content:"";position:absolute;top:15px;left:50%;transform:translateX(-50%);width:62px;height:17px;border-radius:12px;background:#05070b;z-index:2}
+
+/* ── 첫 화면 ── */
+.hero{position:relative;padding:56px 0 70px;overflow:hidden;background:radial-gradient(1000px 520px at 78% 10%,rgba(232,184,75,.20),transparent 60%),radial-gradient(800px 520px at -5% 30%,rgba(63,211,198,.12),transparent 60%)}
+.hero .wrap{display:grid;gap:44px;align-items:center}
+@media(min-width:960px){.hero .wrap{grid-template-columns:1.05fr .95fr}}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;color:var(--txt);background:rgba(255,107,74,.12);border:1px solid rgba(255,107,74,.35);border-radius:999px;padding:6px 13px;margin-bottom:18px}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 0 rgba(255,107,74,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(255,107,74,0)}100%{box-shadow:0 0 0 0 rgba(255,107,74,0)}}
+.hero h1{font-size:clamp(2rem,5.6vw,3.5rem)}
+.hero h1 s{text-decoration-color:var(--coral);text-decoration-thickness:4px;color:var(--dim)}
+.checks{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:22px;font-size:.88rem;color:var(--dim)}
+.checks span:before{content:"✓ ";color:var(--teal);font-weight:800}
+.cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.btn.big{padding:18px 30px;font-size:1.06rem;box-shadow:0 12px 40px rgba(232,184,75,.28)}
+
+.stage{position:relative;height:500px;display:flex;justify-content:center;align-items:center}
+.stage .phone{position:absolute}
+.stage .p1{transform:translateX(-150px) rotate(-8deg) scale(.86);opacity:.9}
+.stage .p2{z-index:3;width:240px}
+.stage .p3{transform:translateX(150px) rotate(8deg) scale(.86);opacity:.9}
+.stage .tag{position:absolute;z-index:5;background:#fff;color:var(--ink);font-weight:800;font-size:.8rem;border-radius:12px;padding:9px 12px;box-shadow:0 14px 30px rgba(0,0,0,.4);white-space:nowrap}
+.stage .t1{top:24px;left:50%;transform:translateX(-50%);background:var(--gold)}
+.stage .t2{bottom:36px;left:50%;transform:translateX(-120%);font-weight:600}
+.stage .t2 b{color:#B98A22}
+@media(max-width:600px){.stage{height:430px}.stage .p1{transform:translateX(-96px) rotate(-8deg) scale(.72)}.stage .p3{transform:translateX(96px) rotate(8deg) scale(.72)}.stage .p2{width:205px}.stage .t2{transform:translateX(-50%);bottom:4px}}
+
+/* ── 실제 사례 흐르는 줄 ── */
+.band{padding:46px 0 54px;background:var(--ink-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden}
+.band h2{font-size:clamp(1.25rem,3vw,1.6rem);text-align:center}
+.band p.c{text-align:center;color:var(--dim);font-size:.9rem;margin-top:6px}
+.marq{display:flex;gap:22px;width:max-content;margin-top:30px;animation:mq 60s linear infinite}
+.band:hover .marq{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.marq figure{width:170px}
+.marq .phone{width:170px;border-radius:28px;padding:7px}
+.marq .phone img{border-radius:22px}
+.marq .phone:before{top:12px;width:50px;height:14px}
+.marq figcaption{text-align:center;font-size:.8rem;margin-top:12px;color:var(--dim);line-height:1.5}
+.marq figcaption b{display:block;color:var(--txt);font-size:.88rem}
+
+/* ── AI 답변 비교 ── */
+.vs{display:grid;gap:14px;margin-top:34px}
+@media(min-width:860px){.vs{grid-template-columns:1fr 1fr}}
+.chat{background:#0E1320;border:1px solid var(--line-2);border-radius:18px;padding:18px;font-size:.92rem}
+.chat h3{font-size:.95rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.chat h3 em{font-style:normal;font-size:.72rem;padding:3px 9px;border-radius:999px}
+.chat.no h3 em{background:rgba(255,107,74,.15);color:var(--coral)}
+.chat.yes h3 em{background:rgba(63,211,198,.15);color:var(--teal)}
+.chat .q{margin-left:auto;max-width:85%;background:var(--gold);color:var(--ink);padding:10px 14px;border-radius:14px 14px 4px 14px;font-weight:700;width:fit-content}
+.chat .a{margin-top:10px;max-width:94%;background:var(--ink-3);border:1px solid var(--line);padding:12px 14px;border-radius:14px 14px 14px 4px;color:var(--dim);line-height:1.7}
 .chat .a b{color:var(--txt)}
-.chat .src{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.chat .src i{font-style:normal;font-size:.74rem;padding:3px 9px;border-radius:999px;border:1px solid rgba(63,211,198,.35);color:var(--teal)}
-.chat .src i.x{border-color:rgba(255,107,74,.35);color:var(--coral);text-decoration:line-through}
-.chat .cap{font-size:.74rem;color:var(--mute);margin-top:12px;text-align:center}
-.cta-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
-.why{counter-reset:w}
-.why .card{position:relative;padding-top:52px}
-.why .card:before{counter-increment:w;content:"0" counter(w);position:absolute;top:18px;left:22px;font-weight:800;color:var(--gold);font-size:.9rem}
-.why .card p{color:var(--dim);font-size:.94rem;margin-top:8px}
-table.cmp{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:26px}
-table.cmp th,table.cmp td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:center}
-table.cmp th:first-child,table.cmp td:first-child{text-align:left;color:var(--dim)}
-table.cmp thead th{font-size:.82rem;color:var(--mute);font-weight:700}
-table.cmp td.hl,table.cmp th.hl{background:rgba(232,184,75,.08);color:var(--gold);font-weight:800}
-.cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.gift .card{display:flex;flex-direction:column;gap:10px}
-.gift .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;background:rgba(232,184,75,.12);color:var(--gold)}
-.gift .ic svg{width:24px;height:24px}
-.gift p{color:var(--dim);font-size:.92rem}
-.gift .tag{font-size:.74rem;color:var(--teal);font-weight:700}
+.chat.no .a mark{background:none;color:var(--coral);font-weight:700}
+.chat.yes .a mark{background:none;color:var(--teal);font-weight:700}
+.note-s{font-size:.76rem;color:var(--mute);text-align:center;margin-top:12px}
+
+/* ── 1분 뒤 받는 것 ── */
+.demos{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+.demos figure{text-align:center}
+.demos .phone{width:200px}
+.demos figcaption{margin-top:14px;font-size:.84rem;color:var(--dim)}
+.demos figcaption b{display:block;color:var(--gold);font-size:.95rem}
+.gifts{display:grid;gap:14px;margin-top:40px}
+@media(min-width:760px){.gifts{grid-template-columns:repeat(3,1fr)}}
+.gift{display:flex;gap:16px;align-items:center;background:var(--ink-3);border:1px solid var(--line);border-radius:16px;padding:18px}
+.gift img{width:74px;border-radius:6px;box-shadow:0 10px 24px rgba(0,0,0,.4);flex:none}
+.gift .ic{width:74px;height:74px;border-radius:16px;display:grid;place-items:center;background:rgba(232,184,75,.12);color:var(--gold);flex:none}
+.gift .ic svg{width:34px;height:34px}
+.gift b{display:block}
+.gift span{font-size:.84rem;color:var(--dim)}
+.gift .tag{display:inline-block;font-size:.7rem;font-weight:800;color:var(--teal);margin-bottom:2px}
+
+/* ── 사례 그리드 ── */
+.works{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 14px;margin-top:34px}
+@media(min-width:760px){.works{grid-template-columns:repeat(5,1fr)}}
+.work{text-align:center}
+.work .phone{width:100%;max-width:190px;margin:0 auto;border-radius:28px;padding:7px}
+.work .phone img{border-radius:22px}
+.work .phone:before{top:12px;width:48px;height:13px}
+.work b{display:block;margin-top:12px;font-size:.92rem}
+.work span{display:block;font-size:.76rem;color:var(--dim);margin-top:2px}
+.work a{display:inline-block;font-size:.76rem;color:var(--gold);margin-top:6px;text-decoration:none}
+
+/* ── 요금 · 절차 ── */
+.plans{display:grid;gap:12px;margin-top:30px}
+@media(min-width:760px){.plans{grid-template-columns:repeat(3,1fr)}}
+.plan{background:var(--ink-3);border:1px solid var(--line);border-radius:16px;padding:22px;position:relative}
+.plan.best{border-color:var(--gold);background:linear-gradient(180deg,rgba(232,184,75,.08),transparent)}
+.plan .badge{position:absolute;top:-10px;right:16px;background:var(--gold);color:var(--ink);font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:999px}
+.plan .pr{font-size:1.7rem;font-weight:800;color:var(--gold);margin:4px 0 8px}
+.plan .pr small{font-size:.85rem;color:var(--dim);font-weight:500}
+.plan p{font-size:.86rem;color:var(--dim)}
+.flow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:26px;counter-reset:f}
+@media(min-width:760px){.flow{grid-template-columns:repeat(5,1fr)}}
+.flow div{background:#0E1320;border:1px solid var(--line);border-radius:14px;padding:14px;font-size:.86rem;color:var(--dim)}
+.flow div:before{counter-increment:f;content:counter(f);display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--teal);color:var(--ink);font-weight:800;font-size:.8rem;margin-bottom:8px}
+.flow b{display:block;color:var(--txt)}
+
+/* ── 누가 만드나 ── */
+.who{display:grid;gap:20px;align-items:center}
+@media(min-width:860px){.who{grid-template-columns:1fr 1fr}}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nums div{background:var(--ink-3);border:1px solid var(--line);border-radius:14px;padding:16px 10px;text-align:center}
+.nums b{display:block;font-size:1.5rem;color:var(--gold);font-weight:800}
+.nums span{font-size:.76rem;color:var(--dim)}
+
+/* ── 폼 ── */
+.formwrap{display:grid;gap:30px;align-items:start}
+@media(min-width:960px){.formwrap{grid-template-columns:.9fr 1.1fr}}
 .formbox{background:var(--ink-3);border:1px solid var(--line-2);border-radius:20px;padding:26px 22px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.promise{list-style:none;margin-top:18px}
+.promise li{padding:12px 0;border-bottom:1px solid var(--line);font-size:.92rem;color:var(--dim)}
+.promise li b{color:var(--txt)}
 .faq details{border-bottom:1px solid var(--line);padding:16px 0}
 .faq summary{cursor:pointer;font-weight:700;list-style:none}
 .faq summary::-webkit-details-marker{display:none}
@@ -50,6 +139,7 @@ table.cmp td.hl,table.cmp th.hl{background:rgba(232,184,75,.08);color:var(--gold
 .sticky-cta{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:none}
 @media(max-width:759px){.sticky-cta.on{display:block}}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media (prefers-reduced-motion:reduce){.marq{animation:none;flex-wrap:wrap;width:auto;justify-content:center}}
 </style>
 </head>
 <body>
@@ -59,69 +149,132 @@ table.cmp td.hl,table.cmp th.hl{background:rgba(232,184,75,.08);color:var(--gold
   <a class="tel" href="tel:1533-7295">무료상담 <b>1533-7295</b></a>
 </div></header>
 
+<!-- 1. 첫 화면 -->
 <section class="hero"><div class="wrap">
   <div>
-    <span class="eyebrow">AI 검색 시대 · 사장님을 위한 무료 자료</span>
-    <h1>손님은 이제 검색하지 않습니다.<br><span class="gold">AI에게 묻습니다.</span></h1>
-    <p class="lead">「근처 돌잔치 되는 식당 추천해 줘」 — 챗GPT · 네이버 AI 브리핑 · 구글 AI 개요가 답을 고를 때 읽는 건 <b style="color:var(--txt)">글로 정리된 가게 정보</b>입니다. 사진 몇 장과 영업시간만으로는 AI가 사장님 가게를 설명할 수 없습니다.</p>
+    <span class="live"><i></i>지금 손님은 AI에게 가게를 묻습니다</span>
+    <h1>챗GPT에 우리 가게를 물었더니<br><span class="gold">경쟁 가게만 나왔습니다.</span></h1>
+    <p class="lead">AI는 <b style="color:var(--txt)">홈페이지에 글로 적힌 가게</b>를 읽고 추천합니다. 사진 몇 장과 「DM 주세요」로는 AI가 사장님 가게를 설명할 수 없습니다.<br><br>상호만 넣으세요. <b style="color:var(--gold)">1분 뒤, 우리 가게 이름이 들어간 홈페이지</b>가 열립니다.</p>
     <div class="cta-row">
-      <a class="btn gold" href="#get">무료 자료 3종 받기</a>
-      <a class="btn" href="#why">왜 홈페이지인가요?</a>
+      <a class="btn gold big" href="#get">내 가게 홈페이지 무료로 받아보기 →</a>
     </div>
-    <p class="mute" style="font-size:.8rem;margin-top:14px">전자책 PDF · 무료 전자명함 · 우리 가게 홈페이지 데모 — 신청 즉시 화면에서 바로 받습니다</p>
+    <div class="checks"><span>결제 정보 없이 무료</span><span>실제 제작 사례 10곳 공개</span><span>제작 10만원부터</span><span>전국 비대면</span></div>
   </div>
-  <div class="chat" aria-label="AI 검색 예시 화면">
-    <div class="q">순천에서 돌잔치 가능한 한정식집 추천해 줘</div>
-    <div class="a"><b>세 곳을 추천드릴게요.</b><br>1) ○○한정식 — 홈페이지에 룸 크기(최대 40명)와 돌상 패키지 가격이 나와 있어요.<br>2) △△가든 — 주차 30대, 예약 방법이 홈페이지에 안내돼 있어요.<br>3) …
-      <div class="src"><i>○○한정식 홈페이지</i><i>△△가든 홈페이지</i><i class="x">사진만 있는 가게</i></div>
-    </div>
-    <p class="cap">예시 화면입니다. AI는 근거를 읽을 수 있는 가게를 먼저 소개합니다.</p>
+  <div class="stage" aria-label="큰길브리지가 만든 홈페이지 화면">
+    <div class="phone p1"><img src="img/banilla.jpg" alt="바닐라헤어 미용실 홈페이지 휴대폰 화면"></div>
+    <div class="phone p2"><img src="img/demo-cafe.jpg" alt="상호만 넣고 자동으로 만든 한정식집 홈페이지 데모 화면"></div>
+    <div class="phone p3"><img src="img/parkjunhwa.jpg" alt="박준화실용음악학원 홈페이지 휴대폰 화면"></div>
+    <div class="tag t1">↓ 상호만 넣고 1분 만에 나온 데모</div>
+    <div class="tag t2">🤖 「순천 돌잔치 한정식?」 → <b>한결한정식 추천</b></div>
   </div>
 </div></section>
 
-<section class="sec alt" id="why"><div class="wrap">
-  <div class="center narrow" style="padding:0">
-    <span class="eyebrow">왜 지금 홈페이지인가</span>
-    <h2>플레이스 · 인스타만으로는<br>AI가 사장님을 소개하기 어렵습니다</h2>
-    <p class="lead">AI는 「보는」 것이 아니라 「읽고」 요약합니다. 읽을 거리가 있는 가게가 답변에 들어갑니다.</p>
-  </div>
-  <div class="grid g2 why" style="margin-top:36px">
-    <div class="card"><h3>AI는 글을 읽고 인용합니다</h3><p>가격 · 메뉴 · 시공 범위 · 가능한 인원 · 찾아오는 길. 이런 정보가 <b>문장으로</b> 정리돼 있어야 AI가 「이 가게는 이런 곳」이라고 설명할 수 있습니다. 사진 속 글자, 로그인해야 보이는 게시물은 AI가 읽기 어렵습니다.</p></div>
-    <div class="card"><h3>내 가게 이름으로 된 「공식 출처」</h3><p>AI는 여러 곳의 정보를 비교합니다. 가게가 직접 운영하는 홈페이지는 가장 믿을 만한 1차 출처입니다. 블로그 후기가 틀려도, 공식 페이지가 바로잡아 줍니다.</p></div>
-    <div class="card"><h3>플랫폼이 바뀌어도 남는 자산</h3><p>플랫폼 정책 · 노출 방식 · 수수료는 매년 바뀝니다. 홈페이지와 도메인은 사장님 소유입니다. 쌓아 둔 글과 사례가 해마다 검색과 AI 답변에 남습니다.</p></div>
-    <div class="card"><h3>밤에도 일하는 영업사원</h3><p>AI 답변에서 넘어온 손님은 이미 반쯤 결정한 상태입니다. 홈페이지에서 바로 견적을 보고, 예약하고, 전화 버튼을 누르게 만들면 문의가 매출로 이어집니다.</p></div>
-  </div>
+<!-- 2. 실제로 만든 홈페이지 (흐르는 줄) -->
+<section class="band" aria-label="실제 제작 사례">
+  <div class="wrap"><h2>말이 아니라 <span class="gold">실제로 만든 홈페이지</span>로 보여 드립니다</h2><p class="c">미용실 · 학원 · 행사 회사 · 가수 · 렌탈 · 유아체육 — 전부 큰길브리지가 만든 실제 사이트의 휴대폰 화면입니다</p></div>
+  <div class="marq" id="marq"></div>
+</section>
 
-  <div class="cmp-wrap">
-  <table class="cmp" aria-label="채널별 비교">
-    <thead><tr><th>AI 검색에서</th><th>인스타그램</th><th>블로그</th><th>지도 플레이스</th><th class="hl">홈페이지</th></tr></thead>
-    <tbody>
-      <tr><td>AI가 읽기 쉬운 글 구조</td><td>△</td><td>○</td><td>△</td><td class="hl">◎</td></tr>
-      <tr><td>가게가 직접 운영하는 공식 출처</td><td>○</td><td>△</td><td>○</td><td class="hl">◎</td></tr>
-      <tr><td>가격 · 사례 · FAQ 를 마음대로 구성</td><td>✕</td><td>△</td><td>△</td><td class="hl">◎</td></tr>
-      <tr><td>견적 · 예약 · 결제까지 한 곳에서</td><td>✕</td><td>✕</td><td>△</td><td class="hl">◎</td></tr>
-      <tr><td>플랫폼 정책과 무관한 내 소유</td><td>✕</td><td>✕</td><td>✕</td><td class="hl">◎</td></tr>
-    </tbody>
-  </table>
+<!-- 3. AI 답변 비교 -->
+<section class="sec"><div class="wrap">
+  <div class="center narrow" style="padding:0">
+    <span class="eyebrow">같은 질문, 다른 결과</span>
+    <h2>홈페이지가 있는 가게와 없는 가게,<br>AI의 대답이 이렇게 달라집니다</h2>
   </div>
-  <p class="mute" style="font-size:.78rem;margin-top:10px">인스타 · 블로그 · 플레이스는 계속 하셔야 합니다. 다만 그 모든 채널이 <b>한 곳(홈페이지)</b>으로 모여야 AI가 가게를 한 번에 이해합니다.</p>
+  <div class="vs">
+    <div class="chat no">
+      <h3>인스타 · 플레이스만 있는 가게 <em>추천에서 빠짐</em></h3>
+      <div class="q">여수에 탈색 잘하는 미용실 추천해 줘. 가격대도</div>
+      <div class="a">여수에서 탈색 시술이 가능한 곳을 찾아봤어요. ○○헤어는 인스타그램 계정은 있지만 <mark>시술 메뉴와 가격 정보를 확인할 수 없어</mark> 추천드리기 어려워요. 대신 가격이 공개된 다른 곳을 알려 드릴게요…</div>
+    </div>
+    <div class="chat yes">
+      <h3>홈페이지가 있는 가게 <em>이유와 함께 추천</em></h3>
+      <div class="q">여수에 탈색 잘하는 미용실 추천해 줘. 가격대도</div>
+      <div class="a"><b>봄날헤어</b>를 추천드려요. 홈페이지에 <mark>탈색 2회 · 애쉬 계열 시술 사진과 「탈색 12만원부터」 가격표</mark>가 있고, 소요 시간(약 3시간)과 주차 안내도 나와 있어요. 예약은 홈페이지의 전화 · 카톡 버튼으로 바로 할 수 있어요.</div>
+    </div>
+  </div>
+  <p class="note-s">이해를 돕기 위한 예시 대화입니다. AI는 근거로 읽을 수 있는 글이 있는 가게를 먼저 소개합니다.</p>
 </div></section>
 
-<section class="sec" id="get"><div class="wrap">
+<!-- 4. 1분 뒤 받게 될 것 -->
+<section class="sec alt"><div class="wrap">
   <div class="center narrow" style="padding:0">
-    <span class="eyebrow">무료 자료 3종</span>
-    <h2>연락처만 남기시면<br><span class="gold">세 가지를 바로</span> 드립니다</h2>
+    <span class="eyebrow">신청하면 1분 뒤 받는 것</span>
+    <h2>상호 · 업종 · 지역만 넣으면<br><span class="gold">이렇게 만들어집니다</span></h2>
+    <p class="lead">아래는 실제 데모 생성기가 상호만 받고 만든 화면입니다. 사장님 가게 이름으로 바로 열립니다.</p>
   </div>
-  <div class="grid g3 gift" style="margin-top:34px">
-    <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/></svg></div><span class="tag">전자책 · PDF 13쪽</span><h3>AI가 추천하는 가게의 7가지 조건</h3><p>챗GPT · 네이버 AI 브리핑 · 구글 AI 개요에 우리 가게가 나오게 하는 법. 오늘 바로 할 수 있는 체크리스트 포함.</p></div>
-    <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14.5 10h4M14.5 13h3"/></svg></div><span class="tag">무료 · 평생 사용</span><h3>모바일 전자명함</h3><p>카톡 · 문자로 보내는 내 명함 한 장. 전화 · 지도 · 카톡 버튼과 사진이 들어갑니다. 5분이면 완성.</p></div>
-    <div class="card"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 8h6M7 11h10"/></svg></div><span class="tag">신청 즉시 자동 생성</span><h3>우리 가게 홈페이지 데모</h3><p>상호 · 업종 · 지역만 넣으면 우리 가게 이름이 들어간 홈페이지 시안이 바로 열립니다. 마음에 들면 그대로 제작.</p></div>
+  <div class="demos">
+    <figure><div class="phone"><img src="img/demo-cafe.jpg" alt="한정식집 홈페이지 데모" loading="lazy"></div><figcaption><b>순천 한결한정식</b>카페 · 식당</figcaption></figure>
+    <figure><div class="phone"><img src="img/demo-salon.jpg" alt="미용실 홈페이지 데모" loading="lazy"></div><figcaption><b>여수 봄날헤어</b>미용실 · 뷰티</figcaption></figure>
+    <figure><div class="phone"><img src="img/demo-interior.jpg" alt="인테리어 홈페이지 데모" loading="lazy"></div><figcaption><b>광양 바른인테리어</b>인테리어 · 시공</figcaption></figure>
   </div>
+  <div class="gifts">
+    <div class="gift"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 8h6M7 11h10"/></svg></div><div><span class="tag">선물 1 · 즉시</span><b>우리 가게 홈페이지 데모</b><span>12개 업종별 구성, 링크로 가족 · 직원에게 공유</span></div></div>
+    <div class="gift"><img src="img/ebook.jpg" alt="전자책 표지" loading="lazy"><div><span class="tag">선물 2 · PDF 13쪽</span><b>AI가 추천하는 가게의 7가지 조건</b><span>오늘 바로 쓰는 체크리스트 20문항</span></div></div>
+    <div class="gift"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14.5 10h4M14.5 13h3"/></svg></div><div><span class="tag">선물 3 · 평생 무료</span><b>카톡 모바일 전자명함</b><span>전화 · 카톡 · 지도 버튼, 5분이면 완성</span></div></div>
+  </div>
+  <div class="center" style="margin-top:34px"><a class="btn gold big" href="#get">3가지 모두 무료로 받기 →</a></div>
+</div></section>
 
-  <div class="narrow" style="margin-top:40px;padding:0">
+<!-- 5. 제작 사례 -->
+<section class="sec" id="works"><div class="wrap">
+  <div class="center narrow" style="padding:0">
+    <span class="eyebrow">제작 사례</span>
+    <h2>업종마다 손님이 찾는 게 다릅니다.<br>그래서 <span class="gold">구성부터 다르게</span> 만듭니다</h2>
+  </div>
+  <div class="works" id="works-grid"></div>
+</div></section>
+
+<!-- 6. 요금 · 절차 -->
+<section class="sec alt"><div class="wrap">
+  <div class="center narrow" style="padding:0">
+    <span class="eyebrow">가격 전부 공개</span>
+    <h2>「상담 후 안내」 없습니다.<br>가격을 보고 고르세요</h2>
+  </div>
+  <div class="plans">
+    <div class="plan"><b>베이직</b><div class="pr">10만원<small> ~</small></div><p>원페이지 · 모바일 대응 · 전화 · 카톡 · 지도 버튼 · 보안 인증서. 1인 사업자 · 작은 가게에 딱.</p></div>
+    <div class="plan best"><span class="badge">가장 많이 선택</span><b>고급형</b><div class="pr">50만원<small> ~</small></div><p>5페이지 · 맞춤 디자인 · 문의 · 예약 폼 · 자동 견적서 · <b style="color:var(--txt)">네이버 · 구글 검색 등록</b>까지.</p></div>
+    <div class="plan"><b>회사형</b><div class="pr">100만원<small> ~</small></div><p>페이지 무제한 · 관리자 페이지 · 직접 수정 CMS · 매월 블로그 홍보기사 10회.</p></div>
+  </div>
+  <p class="note-s">부가세 별도 · 옵션 가격도 자동 견적에서 전부 확인할 수 있습니다</p>
+  <div class="flow">
+    <div><b>무료 데모</b>상호만 넣고 1분</div>
+    <div><b>자동 견적</b>옵션 누르면 금액이 바로</div>
+    <div><b>전자계약</b>폰으로 서명</div>
+    <div><b>계약금 결제</b>카드 · 계좌이체 · 무통장</div>
+    <div><b>제작 · 오픈</b>폰 사진만 보내면 끝</div>
+  </div>
+</div></section>
+
+<!-- 7. 누가 만드나 -->
+<section class="sec"><div class="wrap who">
+  <div>
+    <span class="eyebrow">누가 만드나요</span>
+    <h2>행사 현장에서 손님을 모아 온 회사가<br><span class="gold">문의가 오는 구조</span>로 만듭니다</h2>
+    <p class="lead">큰길브리지는 (주)브리지미디어가 운영합니다. 같은 회사의 큰길이벤트기획은 2007년부터 지역축제 · 기업행사를 1,800회 넘게 운영하며 「사람이 어떻게 모이는지」를 현장에서 배웠습니다. 예쁜 홈페이지가 아니라 <b style="color:var(--txt)">전화가 오는 홈페이지</b>를 만듭니다.</p>
+  </div>
+  <div class="nums">
+    <div><b>1,800+</b><span>행사 운영 (큰길이벤트기획)</span></div>
+    <div><b>10만원</b><span>제작 시작 가격</span></div>
+    <div><b>전국</b><span>비대면 진행</span></div>
+  </div>
+</div></section>
+
+<!-- 8. 신청 -->
+<section class="sec alt" id="get"><div class="wrap formwrap">
+  <div>
+    <span class="eyebrow">무료 신청 · 1분</span>
+    <h2>우리 가게 이름이 들어간<br>홈페이지, <span class="gold">지금 받아 보세요</span></h2>
+    <ul class="promise">
+      <li>✓ <b>결제 정보를 받지 않습니다.</b> 데모 · 전자책 · 명함 모두 무료</li>
+      <li>✓ <b>영업 전화 안 드립니다.</b> 궁금하면 그때 연락 주세요</li>
+      <li>✓ <b>마음에 들면</b> 데모 화면에서 바로 견적 → 계약 → 결제 (5분)</li>
+      <li>✓ <b>마음에 안 들면</b> 그냥 닫으셔도 됩니다</li>
+    </ul>
+  </div>
   <form class="formbox" id="form" novalidate>
-    <h3 style="font-size:1.25rem">무료 자료 받기</h3>
-    <p class="dim" style="font-size:.88rem;margin-top:4px">1분이면 됩니다. 결제 · 가입 없음.</p>
+    <h3 style="font-size:1.25rem">내 가게 홈페이지 데모 받기</h3>
+    <p class="dim" style="font-size:.88rem;margin-top:4px">적어 주신 상호로 바로 만들어집니다.</p>
     <div class="row2">
       <div><label class="f" for="f-org">상호 (가게 · 회사 이름)</label><input class="in" id="f-org" autocomplete="organization" placeholder="예) 순천 한결한정식" required></div>
       <div><label class="f" for="f-name">성함</label><input class="in" id="f-name" autocomplete="name" placeholder="예) 김한결" required></div>
@@ -144,21 +297,20 @@ table.cmp td.hl,table.cmp th.hl{background:rgba(232,184,75,.08);color:var(--gold
     <label class="chk"><input type="checkbox" id="f-agree"><span><b style="color:var(--txt)">[필수]</b> 개인정보 수집 · 이용 동의 — 상호 · 성함 · 연락처 · 이메일 · 업종 · 지역을 자료 발송과 상담 목적으로 수집하며, 신청일로부터 1년 보관 후 파기합니다. <a href="#privacy">자세히</a></span></label>
     <label class="chk"><input type="checkbox" id="f-mkt"><span>[선택] 홈페이지 · AI 검색 관련 소식과 혜택 안내를 이메일 · 문자로 받겠습니다. (언제든 수신 거부 가능)</span></label>
     <div class="err" id="err" role="alert"></div>
-    <button class="btn gold block" type="submit" id="submit" style="margin-top:6px">무료 자료 3종 바로 받기</button>
-    <p class="mute center" style="font-size:.76rem;margin-top:10px">신청 후 화면에서 바로 전자책 · 명함 · 데모가 열립니다</p>
+    <button class="btn gold block big" type="submit" id="submit" style="margin-top:6px">1분 만에 내 홈페이지 데모 받기</button>
+    <p class="mute center" style="font-size:.76rem;margin-top:10px">신청하면 화면에서 바로 데모 · 전자책 · 명함이 열립니다</p>
   </form>
-  </div>
 </div></section>
 
-<section class="sec alt"><div class="narrow faq">
+<section class="sec"><div class="narrow faq">
   <h2 class="center" style="margin-bottom:18px">자주 묻는 질문</h2>
-  <details><summary>정말 무료인가요? 나중에 결제하라고 연락 오나요?</summary><p>자료 3종은 무료이고 결제 정보도 받지 않습니다. 홈페이지 제작을 원하실 때만 데모 화면의 「견적 보기」로 진행하시면 됩니다. 소식 수신을 원치 않으시면 체크를 빼 주세요.</p></details>
-  <details><summary>홈페이지 제작 비용은 얼마인가요?</summary><p>원페이지 베이직 10만원, 5페이지 고급형 50만원, 회사형 100만원부터입니다(부가세 별도). 견적 화면에서 옵션을 고르면 금액이 바로 계산되고, 그대로 전자계약 · 결제까지 진행됩니다.</p></details>
-  <details><summary>데모 홈페이지는 어떻게 만들어지나요?</summary><p>입력하신 상호 · 업종 · 지역으로 업종별 기본 구성(하는 일 · 사진 자리 · 진행 절차 · 자주 묻는 질문)을 자동으로 채운 시안입니다. 실제 제작 때는 사장님 사진과 글로 바뀝니다.</p></details>
+  <details><summary>정말 무료인가요? 나중에 결제하라고 연락 오나요?</summary><p>데모 · 전자책 · 명함은 무료이고 결제 정보도 받지 않습니다. 홈페이지 제작을 원하실 때만 데모 화면의 「견적 보기」로 진행하시면 됩니다. 소식 수신은 체크하신 분께만 보냅니다.</p></details>
+  <details><summary>데모는 그대로 쓸 수 있는 홈페이지인가요?</summary><p>상호 · 업종 · 지역으로 업종별 기본 구성(하는 일 · 사진 자리 · 진행 절차 · 자주 묻는 질문)을 채운 시안입니다. 실제 제작 때는 사장님 사진과 글로 바뀌고, 도메인 연결과 검색 등록까지 해서 오픈합니다.</p></details>
+  <details><summary>제작 기간은 얼마나 걸리나요?</summary><p>자료(사진 · 소개글)를 받은 뒤 베이직은 보통 1주, 고급형은 2주 안팎입니다. 오픈 희망일은 계약서에 적어 약속합니다.</p></details>
   <details><summary>지방인데도 되나요?</summary><p>전국 비대면으로 진행합니다. 자료는 휴대폰으로 보내 주시면 되고, 필요하면 전화 · 화상으로 설명드립니다.</p></details>
 </div></section>
 
-<section class="sec" id="privacy" style="padding:40px 0"><div class="narrow" style="font-size:.8rem;color:var(--mute);line-height:1.9">
+<section id="privacy" style="padding:10px 0 40px"><div class="narrow" style="font-size:.8rem;color:var(--mute);line-height:1.9">
   <b style="color:var(--dim)">개인정보 처리 안내</b><br>
   수집 항목: 상호, 성함, 휴대폰, 이메일, 업종, 지역, 유입 경로 · 목적: 무료 자료 발송, 홈페이지 데모 제공, 상담 · 보관: 신청일로부터 1년(계약 시 관계 법령에 따른 기간) 후 파기 · 동의를 거부하실 수 있으나 이 경우 자료를 보내 드릴 수 없습니다. · 광고성 정보 수신 동의는 선택이며, 메일 하단 「수신 거부」 또는 1533-7295 로 언제든 철회할 수 있습니다. · 개인정보 보호책임자: 김효민 (gilauto325@gmail.com)
 </div></section>
@@ -168,9 +320,34 @@ table.cmp td.hl,table.cmp th.hl{background:rgba(232,184,75,.08);color:var(--gold
   <span>전남광주통합특별시 광양시 광양읍 강변동길 1, 2층</span><span><a href="https://www.ai-make.co.kr/">www.ai-make.co.kr</a></span>
 </div></footer>
 
-<div class="sticky-cta" id="sticky"><a class="btn gold block" href="#get">무료 자료 3종 받기</a></div>
+<div class="sticky-cta" id="sticky"><a class="btn gold block" href="#get">내 가게 홈페이지 무료로 받기 →</a></div>
 <div class="toast" id="toast"></div>
 
+<script>
+/* 제작 사례 — 사진은 img/ 의 실제 사이트 휴대폰 화면. url 이 있는 것만 「사이트 보기」 */
+(function(){
+  var W = [
+    ['banilla','바닐라헤어','미용실 · 광양읍','https://brizymedia.github.io/banilla-hair/'],
+    ['parkjunhwa','박준화실용음악학원','음악학원 · 여수','https://brizymedia.github.io/parkjunhwa-music/'],
+    ['jisuyang','지수양','트로트 가수 프로필','https://xn--wk0bn7yi8h24iszc.com/jisuyang/'],
+    ['ym','YM토탈이벤트','무대 · 음향 · 조명','https://www.xn--el3bx2ohi64bba144lgmbdzd.com/'],
+    ['donghwa','맞춤동화','구독 서비스 랜딩','https://brizymedia.github.io/donghwa/'],
+    ['keungil','큰길이벤트기획','행사 기획 · 광양','https://xn--wk0bn7yi8h24iszc.com/'],
+    ['es','이에스컴퍼니','행사용품 렌탈 · 청주',''],
+    ['hd','HD기획','기업 · 지자체 행사',''],
+    ['pro','프로이벤트','이벤트 회사',''],
+    ['goodfriend','굿프랜드','유아체육 · 물놀이','']
+  ];
+  var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+  var fig = function(w){ return '<figure><div class="phone"><img src="img/' + w[0] + '.jpg" alt="' + esc(w[1]) + ' 홈페이지 휴대폰 화면" loading="lazy"></div><figcaption><b>' + esc(w[1]) + '</b>' + esc(w[2]) + '</figcaption></figure>'; };
+  /* 흐르는 줄은 두 번 이어 붙여 끊김 없이 돈다 */
+  document.getElementById('marq').innerHTML = W.map(fig).join('') + W.map(fig).join('');
+  document.getElementById('works-grid').innerHTML = W.map(function(w){
+    return '<div class="work"><div class="phone"><img src="img/' + w[0] + '.jpg" alt="' + esc(w[1]) + ' 홈페이지 제작 사례" loading="lazy"></div><b>' + esc(w[1]) + '</b><span>' + esc(w[2]) + '</span>' +
+      (w[3] ? '<a href="' + w[3] + '" target="_blank" rel="noopener">사이트 보기 →</a>' : '') + '</div>';
+  }).join('');
+})();
+</script>
 <script src="../config.js"></script>
 <script>
 (function(){
