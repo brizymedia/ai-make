@@ -5,6 +5,9 @@ Disallow: /contract.html
 # 유입 현황판 · 내부 화면은 내부용
 Disallow: /stats/
 Disallow: /me/
+# 결제 · 자료 받기 화면은 개인 화면이다
+Disallow: /pay/
+Disallow: /welcome/
 # 명함 사진은 검색에 걸릴 이유가 없다
 Disallow: /card/img/
 Disallow: /card/bg/
