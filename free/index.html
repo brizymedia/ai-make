@@ -90,9 +90,9 @@
 .gift .tag{display:inline-block;font-size:.7rem;font-weight:800;color:var(--teal);margin-bottom:2px}
 
 /* ── 사례 그리드 ── */
-.works{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 14px;margin-top:34px}
-@media(min-width:760px){.works{grid-template-columns:repeat(5,1fr)}}
-.work{text-align:center}
+.works{display:flex;flex-wrap:wrap;justify-content:center;gap:26px 14px;margin-top:34px}
+.work{text-align:center;width:calc(50% - 7px)}
+@media(min-width:760px){.work{width:calc(25% - 11px);max-width:210px}}
 .work .phone{width:100%;max-width:190px;margin:0 auto;border-radius:28px;padding:7px}
 .work .phone img{border-radius:22px}
 .work .phone:before{top:12px;width:48px;height:13px}
@@ -158,7 +158,7 @@
     <div class="cta-row">
       <a class="btn gold big" href="#get">내 가게 홈페이지 무료로 받아보기 →</a>
     </div>
-    <div class="checks"><span>결제 정보 없이 무료</span><span>실제 제작 사례 10곳 공개</span><span>제작 10만원부터</span><span>전국 비대면</span></div>
+    <div class="checks"><span>결제 정보 없이 무료</span><span>실제 제작 사례 11곳 공개</span><span>제작 10만원부터</span><span>전국 비대면</span></div>
   </div>
   <div class="stage" aria-label="큰길브리지가 만든 홈페이지 화면">
     <div class="phone p1"><img src="img/banilla.jpg" alt="바닐라헤어 미용실 홈페이지 휴대폰 화면"></div>
@@ -171,7 +171,7 @@
 
 <!-- 2. 실제로 만든 홈페이지 (흐르는 줄) -->
 <section class="band" aria-label="실제 제작 사례">
-  <div class="wrap"><h2>말이 아니라 <span class="gold">실제로 만든 홈페이지</span>로 보여 드립니다</h2><p class="c">미용실 · 학원 · 행사 회사 · 가수 · 렌탈 · 유아체육 — 전부 큰길브리지가 만든 실제 사이트의 휴대폰 화면입니다</p></div>
+  <div class="wrap"><h2>말이 아니라 <span class="gold">실제로 만든 홈페이지</span>로 보여 드립니다</h2><p class="c">미용실 · 학원 · 아파트 분양 · 행사 회사 · 가수 · 렌탈 · 유아체육 — 전부 큰길브리지가 만든 실제 사이트의 휴대폰 화면입니다</p></div>
   <div class="marq" id="marq"></div>
 </section>
 
@@ -324,7 +324,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* 제작 사례 — 사진은 img/ 의 실제 사이트 휴대폰 화면. url 이 있는 것만 「사이트 보기」 */
+/* 제작 사례 — 사진은 img/ 의 실제 고객 사이트 휴대폰 화면 */
 (function(){
   var W = [
     ['banilla','바닐라헤어','미용실 · 광양읍','https://brizymedia.github.io/banilla-hair/'],
@@ -333,10 +333,11 @@
     ['ym','YM토탈이벤트','무대 · 음향 · 조명','https://www.xn--el3bx2ohi64bba144lgmbdzd.com/'],
     ['donghwa','맞춤동화','구독 서비스 랜딩','https://brizymedia.github.io/donghwa/'],
     ['keungil','큰길이벤트기획','행사 기획 · 광양','https://xn--wk0bn7yi8h24iszc.com/'],
-    ['es','이에스컴퍼니','행사용품 렌탈 · 청주',''],
-    ['hd','HD기획','기업 · 지자체 행사',''],
-    ['pro','프로이벤트','이벤트 회사',''],
-    ['goodfriend','굿프랜드','유아체육 · 물놀이','']
+    ['prugio','순천 푸르지오 더 퍼스트','아파트 분양 · 순천','https://brizymedia.github.io/suncheon-prugio/'],
+    ['es','이에스컴퍼니','행사용품 렌탈 · 청주','https://brizymedia.github.io/es-company/'],
+    ['hd','HD기획','기업 · 지자체 행사 · 서울','https://brizymedia.github.io/hd-event/'],
+    ['pro','프로이벤트','이벤트 기업 · 서울','https://brizymedia.github.io/pro-event/'],
+    ['goodfriend','굿프랜드','유아체육 · 물놀이 · 여수','https://brizymedia.github.io/goodfriend-event/']
   ];
   var esc = function(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
   var fig = function(w){ return '<figure><div class="phone"><img src="img/' + w[0] + '.jpg" alt="' + esc(w[1]) + ' 홈페이지 휴대폰 화면" loading="lazy"></div><figcaption><b>' + esc(w[1]) + '</b>' + esc(w[2]) + '</figcaption></figure>'; };
