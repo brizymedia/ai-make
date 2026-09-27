@@ -36,7 +36,7 @@
   /* ── 편집 서버 주소 ──────────────────────────────────
      갤러리 발행 서버(앱스 스크립트)의 /exec 주소. 같은 서버가 편집도 받는다.
      비어 있으면 시안 모드로 돈다.                          */
-  var 서버 = '';
+  var 서버 = 'https://script.google.com/macros/s/AKfycbwvndCS4_95zXdXvVd2r4gCCUivUDDa4Ik6r942mtuexUp0VljTqEpOm73xf4WLbsYv2w/exec';
   /* ─────────────────────────────────────────────────── */
 
   var 경로메타 = document.querySelector('meta[name="kb-edit-path"]');
