@@ -96,7 +96,51 @@
   .btn.pri{ background:var(--top); color:#fff; border-color:transparent; }
   .btn:active{ transform:translateY(1px); }
 
-  .foot{ padding:0 1.25rem 1.5rem; text-align:center; font-size:.74rem; color:#9AA0B0; }
+  /* 아래쪽 — 큰길브리지 링크 · 좋아요 · 댓글 · 나도 만들기 */
+  .brand{
+    display:flex; align-items:center; justify-content:space-between; gap:.6rem;
+    margin:0 1.25rem; padding:.85rem 1rem; border-radius:.7rem;
+    background:#F4F6FA; color:#3D4250; text-decoration:none; font-size:.82rem; font-weight:700;
+  }
+  .brand b{ color:var(--top); font-weight:900; }
+  .brand .go{ color:#9AA0B0; font-size:1.1rem; line-height:1; }
+  .social{ margin:1.1rem 1.25rem 0; padding-top:1rem; border-top:1px solid #EDEFF3; }
+  .social .ph{ font-size:.8rem; color:#9AA0B0; text-align:center; padding:.6rem 0 .2rem; }
+  .likes{ display:flex; align-items:center; gap:.7rem; }
+  .like{
+    display:inline-flex; align-items:center; gap:.4rem; padding:.55rem .95rem; border-radius:2rem;
+    border:1px solid #DDE1EA; background:#fff; color:#3D4250;
+    font-family:inherit; font-size:.9rem; font-weight:800; cursor:pointer;
+  }
+  .like svg{ width:1.05rem; height:1.05rem; }
+  .like.on{ border-color:transparent; background:#FDECEF; color:#D6336C; }
+  .like .n{ font-variant-numeric:tabular-nums; }
+  .likes .who{ font-size:.78rem; color:#8A8FA0; }
+  .cmts{ margin-top:.9rem; display:grid; gap:.55rem; }
+  .cmt{ padding:.65rem .8rem; border-radius:.6rem; background:#F7F8FB; }
+  .cmt .hd{ display:flex; align-items:baseline; gap:.5rem; font-size:.74rem; color:#8A8FA0; }
+  .cmt .hd b{ color:#3D4250; font-size:.8rem; }
+  .cmt .hd button{ margin-left:auto; border:0; background:none; color:#B0B5C2; font-family:inherit; font-size:.72rem; cursor:pointer; }
+  .cmt p{ font-size:.9rem; margin-top:.15rem; white-space:pre-wrap; word-break:break-word; }
+  .cmts .none{ font-size:.82rem; color:#9AA0B0; text-align:center; padding:.4rem 0; }
+  .cform{ margin-top:.8rem; display:grid; gap:.45rem; }
+  .cform input,.cform textarea{
+    width:100%; padding:.65rem .8rem; border:1px solid #DDE1EA; border-radius:.55rem;
+    font-family:inherit; font-size:.9rem; color:#15171C; background:#fff;
+  }
+  .cform textarea{ min-height:4.2rem; resize:vertical; }
+  .cform .row{ display:flex; gap:.45rem; align-items:center; }
+  .cform .row input{ flex:1; min-width:0; }
+  .cform .row button{
+    flex:none; padding:.65rem 1rem; border-radius:.55rem; border:0;
+    background:var(--top); color:#fff; font-family:inherit; font-size:.9rem; font-weight:800; cursor:pointer;
+  }
+  .cform .row button[disabled]{ opacity:.5; cursor:default; }
+  .cform small{ font-size:.72rem; color:#9AA0B0; line-height:1.5; }
+  .social .msg{ font-size:.8rem; color:#8A8FA0; margin-top:.4rem; min-height:1em; }
+  .social .msg.bad{ color:#C2410C; }
+
+  .foot{ padding:1.2rem 1.25rem 1.5rem; text-align:center; font-size:.74rem; color:#9AA0B0; }
   .foot a{ color:#6B7284; text-decoration:none; font-weight:700; }
 </style>
   <script defer src="https://www.ai-make.co.kr/stats/stats.js" data-site="ai-make"></script>
@@ -127,7 +171,15 @@
     <button class="btn" id="share">명함 링크 공유</button>
   </div>
 
-  <p class="foot">전자명함 · <a href="https://www.ai-make.co.kr/card/">나도 만들기</a></p>
+  <!-- 이 명함을 만든 곳. 명함을 받은 사람이 홈페이지 제작으로 이어지는 문이다. -->
+  <a class="brand" href="https://www.ai-make.co.kr/" target="_blank" rel="noopener"><span>홈페이지 제작 · 큰길브리지 <b>www.ai-make.co.kr</b></span><span class="go">›</span></a>
+
+  <!-- 좋아요 · 댓글 — 발행된 명함에서는 ../social.js 가 서버에서 받아 채운다. 미리보기에는 안내만 보인다. -->
+  <section class="social" id="kb-social" data-slug="gfevent1">
+    <p class="ph">좋아요 · 댓글을 불러오는 중…</p>
+  </section>
+
+  <p class="foot">전자명함 · <a href="https://www.ai-make.co.kr/card/">나도 무료로 만들기</a></p>
 </div>
 
 <!-- 고칠 때 이 내용을 그대로 불러온다. 사람 눈에는 안 보인다. -->
@@ -153,5 +205,6 @@
   });
 })();
 </script>
+<script defer src="../social.js?v=20260927"></script>
 </body>
 </html>

@@ -19,6 +19,9 @@
  *   card/bg/{주소}.jpg       배경 사진 (크게 깔린다)
  *   card/og/{주소}.jpg       카톡·문자 미리보기용 1200×630
  *
+ * 명함 페이지 아래쪽의 좋아요 · 댓글(card/social.js)도 이 서버가 받습니다 — 아래 「좋아요 · 댓글」 부분.
+ * 시트는 처음 부를 때 알아서 만들어집니다 (드라이브 「큰길브리지 / 명함 댓글·좋아요」).
+ *
  * ── 설치 ────────────────────────────────────────────────
  * 1. script.google.com → 「큰길 명함 발행」 프로젝트 → Code.gs 에 이 파일 내용을 통째로 붙여넣기
  * 2. 프로젝트 설정 → 스크립트 속성
@@ -27,7 +30,7 @@
  *      UPLOAD_PW       (선택) 관리자 비밀번호 — 남의 명함 고치기 · 지우기에 쓴다. 없으면 그 기능은 꺼진다
  *      OPEN_PUBLISH    (선택) off 로 두면 관리자 비밀번호가 있어야만 발행된다 (도배를 당했을 때 잠그는 스위치)
  *      OPEN_DAILY_MAX  (선택) 하루에 받아 줄 발행 수. 비우면 80
- * 3. 함수 「점검」 실행 → 권한 허용 → 로그에 「쓰기 권한 정상」 · 「명함 틀 정상」
+ * 3. 함수 「점검」 실행 → 권한 허용 → 로그에 「쓰기 권한 정상」 · 「명함 틀 정상」 · 「좋아요 · 댓글 시트 준비됨」
  * 4. 배포 → 배포 관리 → 연필 → 새 버전 → 배포   (주소는 그대로)
  * 5. 주소를 브라우저로 열어 {"ok":true,"service":"keungil-card","render":"server"…} 가 보이면 끝
  *
@@ -36,7 +39,7 @@
 
 const 브랜치 = 'main';          // 깃허브 페이지가 보고 있는 브랜치
 const 주소틀 = /^[a-z0-9][a-z0-9-]{1,38}$/;   // 명함 주소로 쓸 수 있는 글자
-const 버전  = '2026-09-21a';    // 배포 확인용 — 코드를 고칠 때마다 올린다
+const 버전  = '2026-09-27a';    // 배포 확인용 — 코드를 고칠 때마다 올린다
 const 집    = 'https://www.ai-make.co.kr';
 const 틀주소 = 집 + '/card/template.js';
 const 그림한도 = 900 * 1024;    // 사진 한 장 (만들기 화면이 줄여서 보내므로 보통 100~250KB)
@@ -47,7 +50,8 @@ const 그림한도 = 900 * 1024;    // 사진 한 장 (만들기 화면이 줄�
 function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.check) return 응답(쓸수있나(p.check));
-  return 응답({ ok: true, service: 'keungil-card', version: 버전, render: 'server', open: 열린발행() });
+  if (p.social) return 응답(소셜읽기(p.slug, p.device));          // 명함 페이지의 좋아요 · 댓글
+  return 응답({ ok: true, service: 'keungil-card', version: 버전, render: 'server', open: 열린발행(), social: true });
 }
 
 function doPost(e) {
@@ -56,6 +60,10 @@ function doPost(e) {
 
     if (요청.action === 'card2')  return 응답(잠그고(function () { return 명함발행(요청); }));
     if (요청.action === 'delete') return 응답(잠그고(function () { return 명함삭제(요청); }));
+    /* 명함 페이지 아래쪽 — 좋아요 · 댓글. 시트에 쓰는 일이라 짧게 잠근다 */
+    if (요청.action === 'like')           return 응답(잠그고(function () { return 좋아요(요청); }, 10000));
+    if (요청.action === 'comment')        return 응답(잠그고(function () { return 댓글쓰기(요청); }, 10000));
+    if (요청.action === 'comment-delete') return 응답(잠그고(function () { return 댓글지우기(요청); }, 10000));
     /* 옛 화면(2026-09-21 이전)은 완성된 HTML 을 보냈다. 이제 받지 않는다 */
     if (요청.action === 'card')   return 응답({ ok: false, error: '명함 만들기 화면이 새로 바뀌었습니다. 화면을 새로고침한 뒤 다시 발행해 주세요' });
 
@@ -315,10 +323,10 @@ function 관리자(pw) { const 비번 = 옵션('UPLOAD_PW'); return !!비번 && 
 function 열린발행() { return 옵션('OPEN_PUBLISH').toLowerCase() !== 'off'; }
 
 /** 같은 주소에 두 사람이 동시에 발행하면 하나가 사라진다. 순서대로 처리한다. */
-function 잠그고(일) {
+function 잠그고(일, 기다림) {
   const 자물쇠 = LockService.getScriptLock();
-  try { 자물쇠.waitLock(25000); } catch (err) {
-    return { ok: false, error: '다른 발행이 진행 중입니다. 잠시 뒤 다시 눌러주세요' };
+  try { 자물쇠.waitLock(기다림 || 25000); } catch (err) {
+    return { ok: false, error: '다른 요청이 진행 중입니다. 잠시 뒤 다시 눌러주세요' };
   }
   try { return 일(); } finally { try { 자물쇠.releaseLock(); } catch (err) { /* 무시 */ } }
 }
@@ -372,6 +380,10 @@ function 점검() {
     const html = 틀읽기_().명함HTML(명함자료({ n: '점검', p: '010-0000-0000' }), { url: 집 + '/card/test/' });
     Logger.log(html.indexOf('<title>점검') > 0 ? '명함 틀 정상 — 사이트의 template.js 로 그렸습니다' : '── 명함 틀이 이상합니다');
   } catch (err) { Logger.log('── 명함 틀을 읽지 못했습니다: ' + err.message); }
+  try {
+    const ss = 소셜시트_();
+    Logger.log('좋아요 · 댓글 시트 준비됨 — ' + ss.getUrl());
+  } catch (err) { Logger.log('── 좋아요 · 댓글 시트를 만들지 못했습니다: ' + err.message); }
 }
 
 /* 읽기는 공개 저장소라 아무 토큰이나 되지만, 쓰기는 토큰이 이 저장소에 「Contents: Read and write」 권한을 가져야 한다.
@@ -460,4 +472,206 @@ function 전화정리_(v) {
   let d = String(v || '').replace(/[^0-9]/g, '');
   if (d.indexOf('8210') === 0) d = '0' + d.slice(2);
   return /^01[016789][0-9]{7,8}$/.test(d) ? d : '';
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   좋아요 · 댓글 — 명함 페이지 아래쪽(card/social.js)이 부른다.  (2026-09-27)
+
+   시트 「큰길브리지 / 명함 댓글·좋아요」에 쌓인다. 처음 부를 때 스크립트가 알아서 만들고(형님 드라이브),
+   그 뒤로는 스크립트 속성 SOCIAL_SHEET_ID 로 바로 연다.
+     탭 「좋아요」: 때 · 명함 주소 · 기기
+     탭 「댓글」  : 번호 · 때 · 명함 주소 · 이름 · 내용 · 기기 · 상태(공개·숨김)
+   스팸 댓글은 시트에서 상태를 「숨김」으로 바꾸거나 줄을 지우면 사라진다(2분 안에).
+
+   기기 = 명함을 보는 브라우저가 스스로 만든 난수(비밀이 아니다). 같은 기기의 좋아요는 한 번만 센다.
+   댓글은 쓴 기기 · 명함 주인(열쇠 지문이 맞는 기기) · 관리자(UPLOAD_PW)만 지운다.
+   읽기는 명함마다 2분 기억(창고)해 둔다 — 명함을 열 때마다 시트를 읽지 않게. 쓰면 그 명함 기억을 지운다.
+══════════════════════════════════════════════════════════════ */
+const 소셜폴더 = '큰길브리지';
+const 소셜파일 = '명함 댓글·좋아요';
+const 댓글최대 = 50;                       // 한 명함에 보여 주는 댓글 수 (최근 것부터)
+const 기기틀  = /^[0-9a-f]{16,64}$/;
+
+function 소셜읽기(slug, device) {
+  slug = 소셜주소_(slug);
+  if (!slug) return { ok: false, error: '주소가 이상합니다' };
+  device = 기기틀.test(String(device || '')) ? String(device) : '';
+  const 판 = 소셜판_(slug);
+  return {
+    ok: true,
+    likes: 판.likers.length,
+    liked: !!device && 판.likers.indexOf(device) >= 0,
+    comments: 판.comments.map(function (c) {
+      return { id: c.id, name: c.name, text: c.text, at: c.at, mine: !!device && c.device === device };
+    }),
+  };
+}
+
+function 좋아요(요청) {
+  const slug = 소셜주소_(요청.slug);
+  if (!slug) return { ok: false, error: '주소가 이상합니다' };
+  const device = String(요청.device || '');
+  if (!기기틀.test(device)) return { ok: false, error: '화면을 새로고침한 뒤 다시 눌러 주세요' };
+  if (!명함있나_(slug)) return { ok: false, error: '아직 준비되지 않은 명함입니다. 1~2분 뒤 다시 눌러 주세요' };
+  if (횟수막기_('like:' + device, 40, 600)) return { ok: false, error: '너무 빠릅니다. 잠시 뒤 다시 눌러 주세요' };
+
+  const sh = 소셜시트_().getSheetByName('좋아요');
+  const L = 값들_(sh, 3);
+  let 줄 = -1;
+  for (let i = 0; i < L.length; i++) if (String(L[i][1]) === slug && String(L[i][2]) === device) { 줄 = i + 2; break; }
+  const on = !(요청.on === false || 요청.on === 'false');
+  if (on && 줄 < 0) sh.appendRow([new Date(), slug, device]);
+  if (!on && 줄 > 0) sh.deleteRow(줄);
+  소셜잊기_(slug);
+  const 판 = 소셜판_(slug);
+  return { ok: true, likes: 판.likers.length, liked: 판.likers.indexOf(device) >= 0 };
+}
+
+function 댓글쓰기(요청) {
+  const slug = 소셜주소_(요청.slug);
+  if (!slug) return { ok: false, error: '주소가 이상합니다' };
+  const device = String(요청.device || '');
+  if (!기기틀.test(device)) return { ok: false, error: '화면을 새로고침한 뒤 다시 눌러 주세요' };
+  const name = 한줄_(요청.name, 20), text = 여러줄_(요청.text, 300);
+  if (!name) return { ok: false, error: '이름(닉네임)을 적어 주세요' };
+  if (text.length < 2) return { ok: false, error: '댓글 내용을 적어 주세요' };
+  if (/https?:\/\/|www\./i.test(name + ' ' + text)) return { ok: false, error: '댓글에는 링크를 넣을 수 없습니다' };
+  if (!명함있나_(slug)) return { ok: false, error: '아직 준비되지 않은 명함입니다. 1~2분 뒤 다시 해 주세요' };
+  if (횟수막기_('cmt:' + device, 5, 600)) return { ok: false, error: '댓글을 너무 자주 남기고 있습니다. 10분 뒤에 다시 해 주세요' };
+  if (횟수막기_('cmt-day:' + slug + ':' + 오늘_(), 200, 86400)) return { ok: false, error: '오늘은 이 명함에 댓글이 많아 잠시 닫았습니다' };
+
+  const id = Utilities.getUuid().replace(/-/g, '').slice(0, 10) + Date.now().toString(36);
+  const at = new Date();
+  소셜시트_().getSheetByName('댓글').appendRow([id, at, slug, name, text, device, '공개']);
+  소셜잊기_(slug);
+  return { ok: true, comment: { id: id, name: name, text: text, at: at.getTime(), mine: true } };
+}
+
+function 댓글지우기(요청) {
+  const slug = 소셜주소_(요청.slug);
+  if (!slug) return { ok: false, error: '주소가 이상합니다' };
+  const id = String(요청.id || '');
+  if (!/^[0-9a-z]{6,40}$/.test(id)) return { ok: false, error: '댓글 번호가 이상합니다' };
+  const device = String(요청.device || '');
+  const 열쇠 = String(요청.owner || '');
+
+  const sh = 소셜시트_().getSheetByName('댓글');
+  const C = 값들_(sh, 7);
+  for (let i = 0; i < C.length; i++) {
+    if (String(C[i][0]) !== id || String(C[i][2]) !== slug) continue;
+    const 내것 = 기기틀.test(device) && String(C[i][5]) === device;
+    const 주인 = /^[0-9a-f]{32,128}$/.test(열쇠) && sha256_(열쇠) === 명함지문_(slug);
+    if (!내것 && !주인 && !관리자(요청.pw)) return { ok: false, error: '이 댓글은 쓴 사람 · 명함 주인 · 관리자만 지울 수 있습니다' };
+    sh.deleteRow(i + 2);
+    소셜잊기_(slug);
+    return { ok: true };
+  }
+  return { ok: false, error: '이미 지워진 댓글입니다' };
+}
+
+/** 한 명함의 좋아요(기기 목록) · 댓글(최근 것부터)을 모아 온다. 2분 기억 */
+function 소셜판_(slug) {
+  const 창고 = CacheService.getScriptCache(), 키 = 'social:' + slug;
+  const 있던 = 창고.get(키);
+  if (있던) { try { return JSON.parse(있던); } catch (err) { /* 다시 읽는다 */ } }
+  const ss = 소셜시트_();
+  const likers = [];
+  const L = 값들_(ss.getSheetByName('좋아요'), 3);
+  for (let i = 0; i < L.length; i++) if (String(L[i][1]) === slug && L[i][2]) likers.push(String(L[i][2]));
+  const comments = [];
+  const C = 값들_(ss.getSheetByName('댓글'), 7);
+  for (let i = C.length - 1; i >= 0 && comments.length < 댓글최대; i--) {
+    const r = C[i];
+    if (String(r[2]) !== slug || !r[0] || String(r[6]) === '숨김') continue;
+    comments.push({ id: String(r[0]), at: 때_(r[1]), name: String(r[3]), text: String(r[4]), device: String(r[5] || '') });
+  }
+  const 판 = { likers: likers, comments: comments };
+  const 글 = JSON.stringify(판);
+  if (글.length < 95000) 창고.put(키, 글, 120);
+  return 판;
+}
+function 소셜잊기_(slug) { CacheService.getScriptCache().remove('social:' + slug); }
+function 소셜주소_(v) { const s = String(v || '').toLowerCase(); return 주소틀.test(s) ? s : ''; }
+function 값들_(sh, 열수) { const 끝 = sh.getLastRow(); return 끝 >= 2 ? sh.getRange(2, 1, 끝 - 1, 열수).getValues() : []; }
+function 때_(v) { const t = v instanceof Date ? v.getTime() : new Date(v).getTime(); return isNaN(t) ? Date.now() : t; }
+
+/** 글자 다듬기 — 제어 문자(줄바꿈 포함)를 빼고 공백을 하나로 */
+function 한줄_(v, 길이) { return 글자만_(v, false).replace(/\s+/g, ' ').trim().slice(0, 길이); }
+/** 여러 줄 — 줄바꿈은 두고 제어 문자만 뺀다. 빈 줄이 세 줄 넘게 이어지면 줄인다 */
+function 여러줄_(v, 길이) { return 글자만_(v, true).replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim().slice(0, 길이); }
+function 글자만_(v, 줄바꿈허용) {
+  const s = String(v === null || v === undefined ? '' : v);
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    if (c === 10 && 줄바꿈허용) { out += '\n'; continue; }
+    if (c < 32 || c === 127 || c === 8232 || c === 8233) { out += ' '; continue; }   // 제어 문자 · 유니코드 줄 구분자
+    out += s[i];
+  }
+  return out;
+}
+
+/** 같은 기기가 너무 자주 부르면 막는다 — 기억 창고에 횟수를 센다 */
+function 횟수막기_(키, 최대, 초) {
+  const 창고 = CacheService.getScriptCache(), k = 'n:' + 키;
+  const n = Number(창고.get(k) || 0) + 1;
+  창고.put(k, String(n), 초);
+  return n > 최대;
+}
+
+/** 그 명함이 사이트에 실제로 있는지 (하루 기억). 없는 주소에 좋아요 · 댓글이 쌓이지 않게 */
+function 명함있나_(slug) {
+  const 창고 = CacheService.getScriptCache(), 키 = 'exists:' + slug;
+  const 있던 = 창고.get(키);
+  if (있던 !== null) return 있던 === '1';
+  let 있음 = false;
+  try { 있음 = UrlFetchApp.fetch(집 + '/card/' + slug + '/?t=' + Date.now(), { muteHttpExceptions: true }).getResponseCode() === 200; } catch (err) { /* 없음 */ }
+  창고.put(키, 있음 ? '1' : '0', 있음 ? 86400 : 60);     // 막 발행한 명함은 1~2분 뒤에 뜨므로 「없음」은 1분만 기억
+  return 있음;
+}
+
+/** 사이트에 올라간 명함에서 주인 지문을 읽는다 (1시간 기억) */
+function 명함지문_(slug) {
+  const 창고 = CacheService.getScriptCache(), 키 = 'owner:' + slug;
+  const 있던 = 창고.get(키);
+  if (있던 !== null) return 있던;
+  let 지문 = '';
+  try {
+    const 응 = UrlFetchApp.fetch(집 + '/card/' + slug + '/?t=' + Date.now(), { muteHttpExceptions: true });
+    if (응.getResponseCode() === 200) {
+      const m = /<meta name="card-owner" content="([0-9a-f]{64})">/.exec(응.getContentText('UTF-8'));
+      지문 = m ? m[1] : '';
+    }
+  } catch (err) { /* 없음 */ }
+  창고.put(키, 지문, 3600);
+  return 지문;
+}
+
+/** 시트 열기 — 없으면 만든다. 한 번 만든 뒤에는 SOCIAL_SHEET_ID 로 바로 연다 */
+function 소셜시트_() {
+  const 속성 = PropertiesService.getScriptProperties();
+  const id = 속성.getProperty('SOCIAL_SHEET_ID');
+  if (id) { try { return 소셜탭확인_(SpreadsheetApp.openById(id)); } catch (err) { /* 지워졌으면 아래에서 새로 */ } }
+  const 뿌리 = DriveApp.getRootFolder(), it = 뿌리.getFoldersByName(소셜폴더);
+  const 폴더 = it.hasNext() ? it.next() : 뿌리.createFolder(소셜폴더);
+  let ss = null;
+  const fs = 폴더.getFilesByType(MimeType.GOOGLE_SHEETS);
+  while (fs.hasNext()) { const f = fs.next(); if (f.getName() === 소셜파일) { ss = SpreadsheetApp.open(f); break; } }
+  if (!ss) { ss = SpreadsheetApp.create(소셜파일); DriveApp.getFileById(ss.getId()).moveTo(폴더); }
+  속성.setProperty('SOCIAL_SHEET_ID', ss.getId());
+  return 소셜탭확인_(ss);
+}
+function 소셜탭확인_(ss) {
+  if (!ss.getSheetByName('좋아요')) {
+    const sh = ss.insertSheet('좋아요');
+    sh.appendRow(['때', '명함 주소', '기기']); sh.setFrozenRows(1);
+  }
+  if (!ss.getSheetByName('댓글')) {
+    const sh = ss.insertSheet('댓글');
+    sh.appendRow(['번호', '때', '명함 주소', '이름', '내용', '기기', '상태(공개·숨김)']); sh.setFrozenRows(1);
+  }
+  const 기본 = ss.getSheetByName('시트1') || ss.getSheetByName('Sheet1');
+  if (기본 && ss.getSheets().length > 2) { try { ss.deleteSheet(기본); } catch (err) { /* 무시 */ } }
+  return ss;
 }
