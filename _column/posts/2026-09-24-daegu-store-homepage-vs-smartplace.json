@@ -201,5 +201,10 @@
    "name": "대구광역시 달구벌여성창업플랫폼",
    "url": "https://w-startup.daegu.go.kr/"
   }
- ]
+ ],
+ "cover": {
+  "src": "/free/img/demo-salon.jpg",
+  "alt": "미용실 홈페이지 예시 — 모바일 첫 화면과 예약 · 전화 버튼",
+  "caption": "큰길브리지 제작 예시 — 미용실 홈페이지 예시 — 모바일 첫 화면과 예약 · 전화 버튼"
+ }
 }

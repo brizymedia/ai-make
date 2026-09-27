@@ -242,5 +242,10 @@
    "name": "기업마당 — [대전] 소상공인 상권분석 서비스 활용 소상공인 경영컨설팅 지원사업 업체 모집 공고",
    "url": "https://www.bizinfo.go.kr/web/lay1/bbs/S1T122C128/AS/74/view.do?pblancId=PBLN_000000000109473"
   }
- ]
+ ],
+ "cover": {
+  "src": "/free/img/demo-interior.jpg",
+  "alt": "인테리어 업체 홈페이지 예시 — 시공 사진과 상담 신청 버튼",
+  "caption": "큰길브리지 제작 예시 — 인테리어 업체 홈페이지 예시 — 시공 사진과 상담 신청 버튼"
+ }
 }

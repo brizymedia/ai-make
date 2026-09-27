@@ -238,5 +238,10 @@
    "name": "기업지원시스템 — 소상공인 지원사업정보",
    "url": "https://www.gjbizinfo.or.kr/online.do?pageId=www63"
   }
- ]
+ ],
+ "cover": {
+  "src": "/works/1.jpg",
+  "alt": "가수 홍보 홈페이지 PC 화면",
+  "caption": "큰길브리지 제작 예시 — 가수 홍보 홈페이지 PC 화면"
+ }
 }

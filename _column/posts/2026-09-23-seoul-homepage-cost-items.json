@@ -206,5 +206,10 @@
    "name": "서울신용보증재단",
    "url": "https://www.seoulshinbo.co.kr/"
   }
- ]
+ ],
+ "cover": {
+  "src": "/works/2.jpg",
+  "alt": "행사 업체 홈페이지 PC 화면 — 실적 숫자와 문의 버튼",
+  "caption": "큰길브리지 제작 예시 — 행사 업체 홈페이지 PC 화면 — 실적 숫자와 문의 버튼"
+ }
 }

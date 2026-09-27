@@ -182,5 +182,10 @@
    "name": "고양교육지원청 — 학원운영안내",
    "url": "https://www.goegy.kr/goegy/cm/cntnts/cntntsView.do?mi=20289&cntntsId=2401"
   }
- ]
+ ],
+ "cover": {
+  "src": "/works/4.jpg",
+  "alt": "음악학원 홈페이지 PC 화면 — 수업 소개와 상담 신청",
+  "caption": "큰길브리지 제작 예시 — 음악학원 홈페이지 PC 화면 — 수업 소개와 상담 신청"
+ }
 }
