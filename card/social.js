@@ -19,6 +19,9 @@
   if (!box) return;
   var slug = box.getAttribute('data-slug') || '';
   if (!/^[a-z0-9][a-z0-9-]*$/.test(slug)) return;        // 미리보기(이름 없음)면 안내문만 남긴다
+  /* 서버가 명함을 다시 그리며 구워 넣은 좋아요 · 댓글이 있으면(data-baked) 서버 응답이 올 때까지 그대로 두고,
+     서버가 안 되면 그것을 그대로 남긴다 — 검색엔진과 사람 모두 그 글을 본다 */
+  var 구움 = box.getAttribute('data-baked') === '1';
 
   var 상태 = { likes: 0, liked: false, comments: [], 주인: false, 보내는중: false };
   var 관리자비번 = '';
@@ -195,6 +198,11 @@
 
   /* ── 시작 ────────────────────────────────────── */
   function 준비중(글) {
+    if (구움 && !좋아요단추) {
+      var ph = box.querySelector('.ph');
+      if (ph) ph.textContent = 글 || '댓글 쓰기는 잠시 준비 중입니다';
+      return;
+    }
     box.textContent = '';
     box.appendChild(el('p', 'ph', 글 || '좋아요 · 댓글은 잠시 준비 중입니다'));
   }

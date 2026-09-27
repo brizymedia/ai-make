@@ -14,6 +14,8 @@
 <meta property="og:image:height" content="630">
 
 <meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"황동훈","jobTitle":"대표","worksFor":{"@type":"Organization","name":"GF EVENT"},"telephone":["01094364769"],"email":"goodfriend4769@naver.com","url":"https://www.ai-make.co.kr/card/tguzf6/","image":"https://www.ai-make.co.kr/card/img/tguzf6.jpg","description":"에어바운스,물놀이,체육대회 전문 /각종 행사기획","address":{"@type":"PostalAddress","streetAddress":"전남광주통합특별시 광양시 덕산4길16","addressCountry":"KR"},"sameAs":["https://www.gfevent.co.kr"],"knowsAbout":["음향","조명","LED·영상","무대·트러스","MC·사회","가수·공연","마술·버블","부스·천막","발전기","특수효과","카메라·중계","행사기획","에어바운스","물놀이"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -114,6 +116,7 @@
   }
   .like svg{ width:1.05rem; height:1.05rem; }
   .like.on{ border-color:transparent; background:#FDECEF; color:#D6336C; }
+  .like.static{ cursor:default; }
   .like .n{ font-variant-numeric:tabular-nums; }
   .likes .who{ font-size:.78rem; color:#8A8FA0; }
   .cmts{ margin-top:.9rem; display:grid; gap:.55rem; }
@@ -175,11 +178,13 @@
   <a class="brand" href="https://www.ai-make.co.kr/" target="_blank" rel="noopener"><span>홈페이지 제작 · 큰길브리지 <b>www.ai-make.co.kr</b></span><span class="go">›</span></a>
 
   <!-- 좋아요 · 댓글 — 발행된 명함에서는 ../social.js 가 서버에서 받아 채운다. 미리보기에는 안내만 보인다. -->
-  <section class="social" id="kb-social" data-slug="tguzf6">
-    <p class="ph">좋아요 · 댓글을 불러오는 중…</p>
+  <section class="social" id="kb-social" data-slug="tguzf6" data-baked="1">
+    <div class="likes"><span class="like static"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.1C1 8.3 3.3 4.9 6.8 4.9c1.9 0 3.5 1 4.4 2.5.9-1.5 2.5-2.5 4.4-2.5 3.5 0 5.8 3.4 4.3 7-2 4.5-9.5 9.1-9.5 9.1z"/></svg><span>좋아요</span> <span class="n">0</span></span><span class="who">이 명함이 도움이 됐다면 눌러 주세요</span></div>
+    <div class="cmts"><p class="none">아직 댓글이 없습니다. 첫 댓글을 남겨 보세요.</p></div>
+    <p class="ph">댓글 쓰기 칸을 불러오는 중…</p>
   </section>
 
-  <p class="foot">전자명함 · <a href="https://www.ai-make.co.kr/card/">나도 무료로 만들기</a></p>
+  <p class="foot">전자명함 · <a href="https://www.ai-make.co.kr/card/all/">명함 모음</a> · <a href="https://www.ai-make.co.kr/card/">나도 무료로 만들기</a></p>
 </div>
 
 <!-- 고칠 때 이 내용을 그대로 불러온다. 사람 눈에는 안 보인다. -->
@@ -205,6 +210,6 @@
   });
 })();
 </script>
-<script defer src="../social.js?v=20260927"></script>
+<script defer src="../social.js?v=20260927b"></script>
 </body>
 </html>

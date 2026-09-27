@@ -21,6 +21,8 @@
  *
  * 명함 페이지 아래쪽의 좋아요 · 댓글(card/social.js)도 이 서버가 받습니다 — 아래 「좋아요 · 댓글」 부분.
  * 시트는 처음 부를 때 알아서 만들어집니다 (드라이브 「큰길브리지 / 명함 댓글·좋아요」).
+ * 검색 노출(명함 목록 · 사이트맵 · 명함 모음) · 댓글 굽기(매시간) · 소식 문자(매일 10시)는 맨 아래 부분.
+ *   → 붙여넣은 뒤 함수 「예약설정」을 한 번 실행해야 시간 예약이 걸립니다.
  *
  * ── 설치 ────────────────────────────────────────────────
  * 1. script.google.com → 「큰길 명함 발행」 프로젝트 → Code.gs 에 이 파일 내용을 통째로 붙여넣기
@@ -31,6 +33,7 @@
  *      OPEN_PUBLISH    (선택) off 로 두면 관리자 비밀번호가 있어야만 발행된다 (도배를 당했을 때 잠그는 스위치)
  *      OPEN_DAILY_MAX  (선택) 하루에 받아 줄 발행 수. 비우면 80
  * 3. 함수 「점검」 실행 → 권한 허용 → 로그에 「쓰기 권한 정상」 · 「명함 틀 정상」 · 「좋아요 · 댓글 시트 준비됨」
+ *    함수 「예약설정」 실행 → 로그에 「예약 완료 — 댓글굽기 매시간 · 소식문자 매일 10시」
  * 4. 배포 → 배포 관리 → 연필 → 새 버전 → 배포   (주소는 그대로)
  * 5. 주소를 브라우저로 열어 {"ok":true,"service":"keungil-card","render":"server"…} 가 보이면 끝
  *
@@ -39,7 +42,7 @@
 
 const 브랜치 = 'main';          // 깃허브 페이지가 보고 있는 브랜치
 const 주소틀 = /^[a-z0-9][a-z0-9-]{1,38}$/;   // 명함 주소로 쓸 수 있는 글자
-const 버전  = '2026-09-27a';    // 배포 확인용 — 코드를 고칠 때마다 올린다
+const 버전  = '2026-09-27b';    // 배포 확인용 — 코드를 고칠 때마다 올린다
 const 집    = 'https://www.ai-make.co.kr';
 const 틀주소 = 집 + '/card/template.js';
 const 그림한도 = 900 * 1024;    // 사진 한 장 (만들기 화면이 줄여서 보내므로 보통 100~250KB)
@@ -130,7 +133,9 @@ function 명함발행(요청) {
     og:    그림.og    ? 집 + '/card/og/'  + 주소 + '.jpg' : '',
     url:   집 + '/card/' + 주소 + '/',
     owner: 지문,
+    social: null,
   };
+  try { 주소들.social = 소셜요약_(주소); } catch (err) { /* 좋아요 · 댓글이 없어도 명함은 나간다 */ }
   const html = 틀읽기_().명함HTML(d, 주소들);
   if (!html || html.length < 500 || html.length > 400000) return { ok: false, error: '명함을 그리지 못했습니다. 잠시 뒤 다시 눌러 주세요' };
 
@@ -143,6 +148,10 @@ function 명함발행(요청) {
   if (!r.ok) return r;
   if (!관리) 한도올리기_(d.p);
 
+  // 명함 목록 · 사이트맵 · 명함 모음 — 검색엔진이 새 명함을 찾아가게. 여기서 실패해도 발행은 된 것이다.
+  let 목록 = null;
+  try { 목록 = 목록갱신_(주소, d, !!그림.photo); } catch (err) { 목록 = { ok: false, error: String(err && err.message ? err.message : err) }; }
+
   // 명단 — 누가 명함을 만들었는지 시트에 남긴다. 여기서 실패해도 발행은 된 것이다.
   let 명단 = null;
   try {
@@ -151,7 +160,7 @@ function 명함발행(요청) {
                         email: l.email || d.e, consent: l.consent }, 주소);
   } catch (err) { 명단 = { ok: false, error: String(err && err.message ? err.message : err) }; }
 
-  return { ok: true, slug: 주소, url: 주소들.url, lead: 명단 };
+  return { ok: true, slug: 주소, url: 주소들.url, lead: 명단, list: 목록 };
 }
 
 /** 명함에 들어갈 자료만 추린다 — 모르는 칸은 버리고, 줄바꿈을 없애고, 길이를 자른다 */
@@ -204,7 +213,7 @@ function 틀읽기_() {
     if (코드.indexOf('function 명함HTML') < 0) throw new Error('명함 틀이 이상합니다. 관리자에게 알려 주세요 (1533-7295)');
     if (코드.length < 95000) 창고.put('card-template', 코드, 300);
   }
-  return new Function(코드 + '\n;return { 명함HTML: 명함HTML };')();
+  return new Function(코드 + '\n;return { 명함HTML: 명함HTML, 명함모음HTML: typeof 명함모음HTML === "function" ? 명함모음HTML : null, 명함사이트맵: typeof 명함사이트맵 === "function" ? 명함사이트맵 : null };')();
 }
 
 /* ── 하루 발행 수 ── 전체는 스크립트 속성에(날짜별 한 칸), 전화번호별은 6시간 기억 창고에 */
@@ -236,6 +245,7 @@ function 명함삭제(요청) {
 
   const 지운것 = 결과.filter(function (r) { return r.ok; }).length;
   if (!지운것) return { ok: false, error: '지울 것이 없습니다' };
+  try { 목록에서빼기_(주소); } catch (err) { /* 목록은 다음 발행 때 다시 맞춰진다 */ }
   return { ok: true, 지움: 지운것 };
 }
 
@@ -384,6 +394,12 @@ function 점검() {
     const ss = 소셜시트_();
     Logger.log('좋아요 · 댓글 시트 준비됨 — ' + ss.getUrl());
   } catch (err) { Logger.log('── 좋아요 · 댓글 시트를 만들지 못했습니다: ' + err.message); }
+  try { Logger.log('명함 목록(card/list.json): ' + 목록읽기_().list.length + '장 · 굽기 대기 ' + 굽기대기_().length + '장'); } catch (err) { /* 무시 */ }
+  Logger.log('시간 예약: ' + 예약상태_());
+  const 모드 = (속성.getProperty('SMS_MODE') || 'off').toLowerCase();
+  Logger.log('소식 문자: SMS_MODE=' + 모드 + (모드 === 'off' ? ' (보내지 않고 로그만)' : '') +
+             ' · 알리고 키 ' + (속성.getProperty('ALIGO_KEY') && 속성.getProperty('ALIGO_USER') && 속성.getProperty('ALIGO_SENDER') ? '있음' : '── 없음') +
+             (모드 === 'test' ? ' · 시험 번호 ' + (속성.getProperty('SMS_TEST_TO') || '── 없음') : ''));
 }
 
 /* 읽기는 공개 저장소라 아무 토큰이나 되지만, 쓰기는 토큰이 이 저장소에 「Contents: Read and write」 권한을 가져야 한다.
@@ -591,7 +607,7 @@ function 소셜판_(slug) {
   if (글.length < 95000) 창고.put(키, 글, 120);
   return 판;
 }
-function 소셜잊기_(slug) { CacheService.getScriptCache().remove('social:' + slug); }
+function 소셜잊기_(slug) { CacheService.getScriptCache().remove('social:' + slug); 굽기예약_(slug); }
 function 소셜주소_(v) { const s = String(v || '').toLowerCase(); return 주소틀.test(s) ? s : ''; }
 function 값들_(sh, 열수) { const 끝 = sh.getLastRow(); return 끝 >= 2 ? sh.getRange(2, 1, 끝 - 1, 열수).getValues() : []; }
 function 때_(v) { const t = v instanceof Date ? v.getTime() : new Date(v).getTime(); return isNaN(t) ? Date.now() : t; }
@@ -671,7 +687,260 @@ function 소셜탭확인_(ss) {
     const sh = ss.insertSheet('댓글');
     sh.appendRow(['번호', '때', '명함 주소', '이름', '내용', '기기', '상태(공개·숨김)']); sh.setFrozenRows(1);
   }
+  if (!ss.getSheetByName('알림')) {
+    const sh = ss.insertSheet('알림');
+    sh.appendRow(['명함 주소', '전화', '마지막 문자', '횟수', '종류', '새 댓글 수']); sh.setFrozenRows(1);
+  }
   const 기본 = ss.getSheetByName('시트1') || ss.getSheetByName('Sheet1');
-  if (기본 && ss.getSheets().length > 2) { try { ss.deleteSheet(기본); } catch (err) { /* 무시 */ } }
+  if (기본 && ss.getSheets().length > 3) { try { ss.deleteSheet(기본); } catch (err) { /* 무시 */ } }
   return ss;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   검색 노출 · 댓글 굽기 · 소식 문자  (2026-09-27b)
+
+   ① 명함 목록 card/list.json — 발행 · 삭제 때마다 고치고, 그것으로 card/sitemap.xml 과 명함 모음 card/all/ 을 다시 만든다.
+      robots.txt 가 사이트맵을 가리키므로 검색엔진이 모든 명함을 찾아간다.
+   ② 댓글 굽기 — 좋아요 · 댓글이 바뀐 명함은 대기 목록(BAKE_QUEUE)에 넣고, 매시간 「댓글굽기」가 그 명함을
+      좋아요 수 · 댓글까지 박아서 다시 그려 올린다. 그래야 검색엔진이 댓글 글을 읽는다(스크립트가 불러오는 글은 잘 못 읽음).
+   ③ 소식 문자 — 매일 10시 「소식문자」. 명함 주인 중 앱을 아직 안 깐 사람에게(명단 시트 출처에 「앱」이 없으면)
+      새 댓글이 있으면 7일에 한 번, 없으면 30일에 한 번(문자 동의한 사람만) 알리고로 한 통.
+      SMS_MODE 가 off(기본)면 보내지 않고 로그만 남긴다. test 면 SMS_TEST_TO 로만 보낸다. on 이면 실제로 보낸다.
+
+   시간 예약은 함수 「예약설정」을 한 번 실행하면 만들어진다(프로젝트 시간대는 Asia/Seoul 이어야 10시가 우리 10시다).
+
+   스크립트 속성 (선택)
+     ALIGO_KEY · ALIGO_USER · ALIGO_SENDER   알리고 API 키 · 아이디 · 등록한 발신번호
+     SMS_MODE        off(기본) · test · on
+     SMS_TEST_TO     test 모드에서 받을 번호 (형님 폰)
+     SMS_DAILY_MAX   하루에 보낼 최대 통수. 비우면 30
+══════════════════════════════════════════════════════════════ */
+
+/** 한 명함의 좋아요 · 댓글을 틀에 구워 넣을 모양으로 */
+function 소셜요약_(slug) {
+  const 판 = 소셜판_(slug);
+  return { likes: 판.likers.length, comments: 판.comments.map(function (c) { return { name: c.name, text: c.text, at: c.at }; }) };
+}
+
+/* ── ① 명함 목록 · 사이트맵 · 명함 모음 ─────────────────────────── */
+function 목록읽기_() {
+  const 응 = 깃허브('card/list.json', 'get');
+  if (응.getResponseCode() !== 200) return { list: [], sha: '' };
+  try {
+    const 파일 = JSON.parse(응.getContentText());
+    const 글 = Utilities.newBlob(Utilities.base64Decode(String(파일.content || '').replace(/\s/g, ''))).getDataAsString('UTF-8');
+    const list = JSON.parse(글);
+    return { list: Array.isArray(list) ? list : [], sha: 파일.sha || '' };
+  } catch (err) { return { list: [], sha: '' }; }
+}
+
+function 목록쓰기_(list) {
+  const 틀 = 틀읽기_();
+  const r1 = 깃허브에올리기('card/list.json', base64(JSON.stringify(list)), '명함 목록 갱신 (' + list.length + '장)');
+  if (!r1.ok) return r1;
+  if (틀.명함사이트맵) { const r2 = 깃허브에올리기('card/sitemap.xml', base64(틀.명함사이트맵(list)), '명함 사이트맵 갱신'); if (!r2.ok) return r2; }
+  if (틀.명함모음HTML) { const r3 = 깃허브에올리기('card/all/index.html', base64(틀.명함모음HTML(list)), '명함 모음 갱신'); if (!r3.ok) return r3; }
+  return { ok: true, n: list.length };
+}
+
+/** 발행할 때 — 이 명함을 목록에 넣거나 고친다 */
+function 목록갱신_(slug, d, photo) {
+  const list = 목록읽기_().list.filter(function (x) { return x && x.slug !== slug; });
+  list.push({ slug: slug, n: d.n, c: d.c, t: d.t, at: 오늘_(), photo: !!photo });
+  return 목록쓰기_(list);
+}
+
+/** 지울 때 — 목록에서 뺀다 */
+function 목록에서빼기_(slug) {
+  const 읽 = 목록읽기_();
+  const list = 읽.list.filter(function (x) { return x && x.slug !== slug; });
+  if (list.length === 읽.list.length) return { ok: true, n: list.length };
+  return 목록쓰기_(list);
+}
+
+/* ── ② 댓글 굽기 ──────────────────────────────────────────────── */
+function 굽기대기_() { try { const v = JSON.parse(옵션('BAKE_QUEUE') || '[]'); return Array.isArray(v) ? v : []; } catch (err) { return []; } }
+function 굽기대기저장_(list) {
+  const 속성 = PropertiesService.getScriptProperties();
+  if (list.length) 속성.setProperty('BAKE_QUEUE', JSON.stringify(list)); else 속성.deleteProperty('BAKE_QUEUE');
+}
+/** 좋아요 · 댓글이 바뀐 명함을 대기 목록에 (소셜잊기_ 가 부른다) */
+function 굽기예약_(slug) {
+  const 대기 = 굽기대기_();
+  if (대기.indexOf(slug) < 0) { 대기.push(slug); 굽기대기저장_(대기); }
+}
+
+/** 매시간 — 대기 목록의 명함을 좋아요 · 댓글까지 박아 다시 그려 올린다 (한 번에 20장) */
+function 댓글굽기() {
+  return 잠그고(function () {
+    const 대기 = 굽기대기_();
+    if (!대기.length) { Logger.log('댓글 굽기: 대기 없음'); return { ok: true, n: 0 }; }
+    const 이번 = 대기.slice(0, 20), 남은 = 대기.slice(20);
+    const 로그 = [];
+    이번.forEach(function (slug) {
+      try { const r = 명함다시그리기_(slug); 로그.push(slug + ': ' + (r.ok ? '구움' : r.error)); }
+      catch (err) { 로그.push(slug + ': ' + (err && err.message ? err.message : err)); }
+    });
+    굽기대기저장_(남은);
+    Logger.log('댓글 굽기 ' + 이번.length + '장' + (남은.length ? ' (남은 ' + 남은.length + '장은 다음 시간에)' : '') + '\n' + 로그.join('\n'));
+    return { ok: true, n: 이번.length, log: 로그 };
+  }, 60000);
+}
+
+/** 깃허브에 있는 명함 파일을 읽어 같은 자료로 다시 그린다 — 좋아요 · 댓글을 넣어서 */
+function 명함다시그리기_(slug) {
+  if (!주소틀.test(slug)) return { ok: false, error: '주소가 이상합니다' };
+  const 응 = 깃허브('card/' + slug + '/index.html', 'get');
+  if (응.getResponseCode() !== 200) return { ok: false, error: '명함 파일이 없습니다' };
+  let 글 = '';
+  try {
+    const 파일 = JSON.parse(응.getContentText());
+    글 = Utilities.newBlob(Utilities.base64Decode(String(파일.content || '').replace(/\s/g, ''))).getDataAsString('UTF-8');
+  } catch (err) { return { ok: false, error: '명함 파일을 읽지 못했습니다' }; }
+  const m = /<script type="application\/json" id="card-data">([\s\S]*?)<\/script>/.exec(글);
+  if (!m) return { ok: false, error: '자료가 없는 옛 명함 — 다시 그리지 않음' };
+  let d;
+  try { d = 명함자료(JSON.parse(m[1])); } catch (err) { return { ok: false, error: '자료를 읽지 못했습니다' }; }
+  const om = /<meta name="card-owner" content="([0-9a-f]{64})">/.exec(글);
+  const 주소들 = {
+    photo: 글.indexOf('/card/img/' + slug + '.jpg') >= 0 ? 집 + '/card/img/' + slug + '.jpg' : '',
+    bg:    글.indexOf('/card/bg/'  + slug + '.jpg') >= 0 ? 집 + '/card/bg/'  + slug + '.jpg' : '',
+    og:    글.indexOf('/card/og/'  + slug + '.jpg') >= 0 ? 집 + '/card/og/'  + slug + '.jpg' : '',
+    url:   집 + '/card/' + slug + '/',
+    owner: om ? om[1] : '',
+    social: 소셜요약_(slug),
+  };
+  const html = 틀읽기_().명함HTML(d, 주소들);
+  if (!html || html.length < 500 || html.length > 400000) return { ok: false, error: '명함을 그리지 못했습니다' };
+  return 깃허브에올리기('card/' + slug + '/index.html', base64(html), '명함 댓글 굽기: ' + slug);
+}
+
+/* ── 시간 예약 ─────────────────────────────────────────────────── */
+function 예약설정() {
+  const 있는 = ScriptApp.getProjectTriggers().map(function (t) { return t.getHandlerFunction(); });
+  if (있는.indexOf('댓글굽기') < 0) ScriptApp.newTrigger('댓글굽기').timeBased().everyHours(1).create();
+  if (있는.indexOf('소식문자') < 0) ScriptApp.newTrigger('소식문자').timeBased().atHour(10).everyDays(1).inTimezone('Asia/Seoul').create();
+  Logger.log('예약 완료 — ' + 예약상태_());
+}
+function 예약해제() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (['댓글굽기', '소식문자'].indexOf(t.getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(t);
+  });
+  Logger.log('예약을 모두 지웠습니다');
+}
+function 예약상태_() {
+  const 있는 = ScriptApp.getProjectTriggers().map(function (t) { return t.getHandlerFunction(); });
+  return '댓글굽기 ' + (있는.indexOf('댓글굽기') >= 0 ? '매시간' : '── 없음(예약설정 실행)') +
+         ' · 소식문자 ' + (있는.indexOf('소식문자') >= 0 ? '매일 10시' : '── 없음(예약설정 실행)');
+}
+
+/* ── ③ 소식 문자 ──────────────────────────────────────────────── */
+/** 매일 10시 — 명함 주인에게 새 댓글 · 앱 · 홈페이지 소식을 한 통 */
+function 소식문자() {
+  const 모드 = (옵션('SMS_MODE') || 'off').toLowerCase();
+  const 최대 = Number(옵션('SMS_DAILY_MAX')) || 30;
+  const 후보 = 문자후보_();
+  const 기록 = 알림읽기_();
+  const now = Date.now();
+  const 로그 = [];
+  let 보냄 = 0;
+  후보.forEach(function (h) {
+    if (보냄 >= 최대) { 로그.push(h.slug + ': 오늘 한도(' + 최대 + ') — 내일'); return; }
+    if (h.앱) { 로그.push(h.slug + ': 앱 등록 — 문자 안 보냄'); return; }
+    const 전 = 기록[h.slug] || { at: 0 };
+    const 판 = 소셜판_(h.slug);
+    const 새댓글 = 판.comments.filter(function (c) { return c.at > 전.at; });
+    let 종류 = '';
+    if (새댓글.length && now - 전.at >= 7 * 86400000) 종류 = '댓글';
+    else if (!새댓글.length && h.동의 && now - 전.at >= 30 * 86400000 && now - h.활동 >= 3 * 86400000) 종류 = '안내';
+    if (!종류) { 로그.push(h.slug + ': 보낼 것 없음'); return; }
+    const 글 = 문자본문_(h, 종류, 새댓글, 판.likers.length);
+    const r = 알리고보내기_(h.전화, 글, '큰길브리지 명함 소식', 모드);
+    로그.push(h.slug + ' → ' + h.전화 + ' [' + 종류 + (h.동의 ? '' : ' · 광고 없이') + '] ' + (r.ok ? r.note : '실패: ' + r.error));
+    if (r.ok && r.sent) { 알림기록_(h.slug, h.전화, 종류, 새댓글.length); 보냄++; }
+  });
+  Logger.log('소식 문자 (' + 모드 + ') ' + 보냄 + '통 · 후보 ' + 후보.length + '명\n' + 로그.join('\n'));
+  return { ok: true, mode: 모드, sent: 보냄, log: 로그 };
+}
+
+/** 명단 시트에서 명함 주인들을 모은다 — 출처에 「명함」이 있는 줄, 메모의 「명함 주소」로 어느 명함인지 안다 */
+function 문자후보_() {
+  const sh = 명단시트_();
+  const 끝 = sh.getLastRow();
+  if (끝 < 2) return [];
+  const 값 = sh.getRange(2, 1, 끝 - 1, 10).getValues();
+  const 후보 = [];
+  for (let i = 0; i < 값.length; i++) {
+    const r = 값[i];
+    const 출처 = String(r[5] || '');
+    if (출처.indexOf('명함') < 0) continue;
+    const 전화 = 전화정리_(r[2]);
+    const m = /명함 ([a-z0-9][a-z0-9-]*)/.exec(String(r[8] || ''));
+    if (!전화 || !m) continue;
+    후보.push({ slug: m[1], 전화: 전화, 이름: String(r[1] || '고객'), 동의: String(r[6] || '') === 'Y', 앱: 출처.indexOf('앱') >= 0, 활동: 때_(r[7] || r[0]) });
+  }
+  return 후보;
+}
+
+/** 문자 글. 문자 동의(문자동의 Y)한 사람에게만 (광고) 표시와 앱 · 홈페이지 안내를 붙인다. 안 한 사람은 댓글 알림만 */
+function 문자본문_(h, 종류, 새댓글, likes) {
+  const 명함 = 'ai-make.co.kr/card/' + h.slug + '/';
+  const L = [];
+  L.push((h.동의 ? '(광고)' : '') + '[큰길브리지] ' + h.이름 + ' 님 전자명함 소식');
+  if (새댓글.length) {
+    L.push('새 댓글 ' + 새댓글.length + '개 · 좋아요 ' + likes + '개 → ' + 명함);
+    const c = 새댓글[0];
+    L.push('"' + 한줄_(c.text, 40) + (String(c.text || '').length > 40 ? '…' : '') + '" - ' + 한줄_(c.name, 12));
+  } else {
+    L.push('내 명함 ' + 명함 + (likes ? ' · 좋아요 ' + likes + '개' : ''));
+  }
+  if (h.동의) {
+    L.push('▶ 앱을 깔면 댓글 알림과 통화 뒤 자동 명함 문자(콜백)를 받습니다: ai-make.co.kr/app/');
+    L.push('▶ 명함 다음은 홈페이지 — 큰길브리지가 만들어 드립니다: ai-make.co.kr');
+    L.push('1533-7295 · 무료수신거부: 이 번호로 "거부" 답장');
+  } else {
+    L.push('문의 1533-7295');
+  }
+  return L.join('\n');
+}
+
+/** 알리고로 한 통. 모드 off → 안 보내고 기록만, test → SMS_TEST_TO 로, on → 실제 */
+function 알리고보내기_(받는이, 글, 제목, 모드) {
+  if (!모드 || 모드 === 'off') return { ok: true, sent: false, note: '꺼짐(SMS_MODE=off) — 보냈다면 이 글: ' + 글.split('\n')[1] };
+  const key = 옵션('ALIGO_KEY'), user = 옵션('ALIGO_USER'), sender = 옵션('ALIGO_SENDER');
+  if (!key || !user || !sender) return { ok: false, error: '알리고 키(ALIGO_KEY · ALIGO_USER · ALIGO_SENDER)가 비어 있습니다' };
+  let 수신 = 받는이, 본문 = 글;
+  if (모드 === 'test') {
+    수신 = 전화정리_(옵션('SMS_TEST_TO'));
+    if (!수신) return { ok: false, error: 'test 모드인데 SMS_TEST_TO 가 비어 있습니다' };
+    본문 = '[시험 → 원래 받을 번호 ' + 받는이 + ']\n' + 글;
+  } else if (모드 !== 'on') return { ok: false, error: 'SMS_MODE 는 off · test · on 중 하나여야 합니다' };
+  const 응 = UrlFetchApp.fetch('https://apis.aligo.in/send/', {
+    method: 'post',
+    payload: { key: key, user_id: user, sender: sender, receiver: 수신, msg: 본문, msg_type: 'LMS', title: 제목 },
+    muteHttpExceptions: true,
+  });
+  let j = null;
+  try { j = JSON.parse(응.getContentText()); } catch (err) { /* 아래에서 처리 */ }
+  if (j && String(j.result_code) === '1') return { ok: true, sent: 모드 === 'on', note: 모드 === 'test' ? '시험 번호(' + 수신 + ')로 보냄' : '보냄', id: j.msg_id };
+  return { ok: false, error: (j && j.message) || ('HTTP ' + 응.getResponseCode()) };
+}
+
+/* 보낸 기록 — 소셜 시트의 「알림」 탭: 명함 주소 · 전화 · 마지막문자 · 횟수 · 종류 · 새댓글수 */
+function 알림읽기_() {
+  const sh = 소셜시트_().getSheetByName('알림');
+  const 값 = 값들_(sh, 6), 기록 = {};
+  for (let i = 0; i < 값.length; i++) if (값[i][0]) 기록[String(값[i][0])] = { at: 때_(값[i][2]), n: Number(값[i][3]) || 0, row: i + 2 };
+  return 기록;
+}
+function 알림기록_(slug, 전화, 종류, 새댓글수) {
+  const sh = 소셜시트_().getSheetByName('알림');
+  const 기록 = 알림읽기_()[slug];
+  if (기록) {
+    sh.getRange(기록.row, 2).setValue(전화); sh.getRange(기록.row, 3).setValue(new Date());
+    sh.getRange(기록.row, 4).setValue(기록.n + 1); sh.getRange(기록.row, 5).setValue(종류); sh.getRange(기록.row, 6).setValue(새댓글수);
+  } else {
+    sh.appendRow([slug, 전화, new Date(), 1, 종류, 새댓글수]);
+  }
 }

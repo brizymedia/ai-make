@@ -262,8 +262,8 @@
         <p class="hint" style="margin-top:.35rem;">위에서 명함에 넣은 회사명 · 이메일이 있으면 그대로 채워집니다. 이 두 칸에 적은 것은 명함에 표시되지 않습니다.</p>
         <label class="f">하시는 일</label>
         <div class="picks" id="l-job"></div>
-        <label class="agree" id="l-agree-box"><input type="checkbox" id="l-agree"><span><b>개인정보 수집 · 이용 동의</b> — 항목: 이름 · 휴대폰 · 상호 · 이메일 · 하시는 일. 목적: 전자명함 발행 · 관리, 홈페이지 제작 상담. 보유: 명함은 지워 달라고 하실 때까지, 상담용 연락처는 1년. 주식회사 브리지미디어 · 1533-7295</span></label>
-        <label class="agree" style="margin-top:.5rem;"><input type="checkbox" id="f-consent"><span>새 행사 입찰 · 일감 소식을 <b>문자</b>로 받겠습니다 <small style="color:var(--ink3);">(이벤트 코리아 · 주 1회 안팎 · 언제든 거부 · 선택)</small></span></label>
+        <label class="agree" id="l-agree-box"><input type="checkbox" id="l-agree"><span><b>개인정보 수집 · 이용 동의</b> — 항목: 이름 · 휴대폰 · 상호 · 이메일 · 하시는 일. 목적: 전자명함 발행 · 관리, 홈페이지 제작 상담. 명함 페이지는 누구나 볼 수 있고 검색엔진에도 노출됩니다. 명함 페이지는 누구나 볼 수 있고 검색엔진에도 노출됩니다. 보유: 명함은 지워 달라고 하실 때까지, 상담용 연락처는 1년. 주식회사 브리지미디어 · 1533-7295</span></label>
+        <label class="agree" style="margin-top:.5rem;"><input type="checkbox" id="f-consent"><span>새 행사 입찰 · 일감 소식과 명함 소식(새 댓글 · 앱 · 홈페이지 제작 안내)을 <b>문자</b>로 받겠습니다 <small style="color:var(--ink3);">(주 1회 안팎 · 언제든 거부 · 선택)</small></span></label>
         <div id="pw-box" hidden>
           <label class="f" for="f-pw">관리자 비밀번호</label>
           <input id="f-pw" type="password" placeholder="남의 명함 · 옛 명함을 고칠 때만" autocomplete="current-password">
@@ -336,7 +336,7 @@
 <div id="toast" role="status" aria-live="polite"></div>
 
 <!-- 명함 틀 — 서버도 같은 파일로 발행한다 -->
-<script src="template.js?v=20260927"></script>
+<script src="template.js?v=20260927b"></script>
 <script>
 const $  = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));

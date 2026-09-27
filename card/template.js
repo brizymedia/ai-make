@@ -68,6 +68,10 @@ function 명함HTML(d, opt){
   const url = opt.url || '';
   /* 명함 이름(주소의 마지막 칸). 미리보기(url 없음)에서는 비어 있고, 그러면 좋아요 · 댓글 자리에 안내만 보인다 */
   const 주소 = (/\/card\/([a-z0-9][a-z0-9-]*)\/?$/.exec(url) || [])[1] || '';
+  /* 구워 넣는 좋아요 · 댓글 — 서버가 댓글이 달린 뒤 명함을 다시 그릴 때 넣어 준다(opt.social).
+     검색엔진은 스크립트가 나중에 불러오는 글을 잘 못 보므로, 여기 박힌 글만 검색에 잡힌다. */
+  const 소셜 = opt.social && typeof opt.social === 'object' ? opt.social : null;
+  const 댓글들 = 소셜 && Array.isArray(소셜.comments) ? 소셜.comments.slice(0, 50) : [];
   const 이름 = d.n || '이름';
   const 소속 = [d.c, d.t].filter(Boolean).join(' · ');
 
@@ -105,6 +109,8 @@ ${'' /* og:url 과 canonical 은 일부러 넣지 않는다.
         예전에 읽어둔 미리보기를 계속 보여준다. 명함을 고쳐도 새 그림이 안 뜬다.
         명함은 주소 하나에 내용 하나뿐이라 canonical 로 묶을 것도 없다. */}
 <meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<script type="application/ld+json">${스크립트안(인물정보(d, { url: url, photo: 사진주소 }))}<\/script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -205,6 +211,7 @@ ${'' /* og:url 과 canonical 은 일부러 넣지 않는다.
   }
   .like svg{ width:1.05rem; height:1.05rem; }
   .like.on{ border-color:transparent; background:#FDECEF; color:#D6336C; }
+  .like.static{ cursor:default; }
   .like .n{ font-variant-numeric:tabular-nums; }
   .likes .who{ font-size:.78rem; color:#8A8FA0; }
   .cmts{ margin-top:.9rem; display:grid; gap:.55rem; }
@@ -266,11 +273,11 @@ ${'' /* og:url 과 canonical 은 일부러 넣지 않는다.
   <a class="brand" href="${집}/" target="_blank" rel="noopener"><span>홈페이지 제작 · 큰길브리지 <b>www.ai-make.co.kr</b></span><span class="go">›</span></a>
 
   <!-- 좋아요 · 댓글 — 발행된 명함에서는 ../social.js 가 서버에서 받아 채운다. 미리보기에는 안내만 보인다. -->
-  <section class="social" id="kb-social" data-slug="${esc(주소)}">
-    <p class="ph">${주소 ? '좋아요 · 댓글을 불러오는 중…' : '발행하면 여기에 좋아요 · 댓글이 붙습니다'}</p>
+  <section class="social" id="kb-social" data-slug="${esc(주소)}"${소셜 ? ' data-baked="1"' : ''}>
+    ${소셜 ? 구운소셜(소셜, 댓글들) : `<p class="ph">${주소 ? '좋아요 · 댓글을 불러오는 중…' : '발행하면 여기에 좋아요 · 댓글이 붙습니다'}</p>`}
   </section>
 
-  <p class="foot">전자명함 · <a href="${집}/card/">나도 무료로 만들기</a></p>
+  <p class="foot">전자명함 · <a href="${집}/card/all/">명함 모음</a> · <a href="${집}/card/">나도 무료로 만들기</a></p>
 </div>
 
 <!-- 고칠 때 이 내용을 그대로 불러온다. 사람 눈에는 안 보인다. -->
@@ -296,7 +303,119 @@ ${'' /* og:url 과 canonical 은 일부러 넣지 않는다.
   });
 })();
 <\/script>
-${주소 ? '<script defer src="../social.js?v=20260927"><\/script>' : ''}
+${주소 ? '<script defer src="../social.js?v=20260927b"><\/script>' : ''}
+</body>
+</html>`;
+}
+
+/* ── 검색엔진용 인물 정보 (schema.org Person) ─────────────────────
+   명함에 보이는 것과 같은 내용을 기계가 읽는 형태로 한 번 더 적는다. 없는 칸은 넣지 않는다. */
+function 인물정보(d, o){
+  o = o || {};
+  const p = { '@context': 'https://schema.org', '@type': 'Person', name: d.n || '이름' };
+  if (d.t) p.jobTitle = d.t;
+  if (d.c) p.worksFor = { '@type': 'Organization', name: d.c };
+  /* 사무실 칸에 주소를 적는 분이 있다 — 전화 모양(숫자 · + · 괄호 · 하이픈, 숫자 8자 이상)인 것만 전화로 적는다 */
+  const 전화들 = [d.p, d.p2].filter(x => x && /^[0-9+()\s.-]+$/.test(String(x).trim()) && 전화숫자(x).length >= 8);
+  if (전화들.length) p.telephone = 전화들;
+  if (d.e) p.email = d.e;
+  if (o.url) p.url = o.url;
+  if (o.photo) p.image = o.photo;
+  if (d.b) p.description = d.b;
+  if (d.a) p.address = { '@type': 'PostalAddress', streetAddress: d.a, addressCountry: 'KR' };
+  if (d.w) p.sameAs = [/^https?:/i.test(d.w) ? d.w : 'https://' + d.w];
+  if (d.g && d.g.length) p.knowsAbout = d.g.slice(0, 14);
+  return p;
+}
+
+/* 서버가 구워 넣는 좋아요 · 댓글. social.js 가 살아나면 같은 모양의 살아 있는 것으로 바꿔 끼운다. */
+const 하트 = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.1C1 8.3 3.3 4.9 6.8 4.9c1.9 0 3.5 1 4.4 2.5.9-1.5 2.5-2.5 4.4-2.5 3.5 0 5.8 3.4 4.3 7-2 4.5-9.5 9.1-9.5 9.1z"/></svg>';
+function 날짜(at){
+  const t = new Date(Number(at) + 9 * 3600 * 1000);          // 한국 시간
+  if (isNaN(t.getTime())) return '';
+  return t.getUTCFullYear() + '.' + (t.getUTCMonth() + 1) + '.' + t.getUTCDate();
+}
+function 구운소셜(s, 댓글들){
+  const n = Number(s.likes) || 0;
+  const 목록 = 댓글들.length
+    ? 댓글들.map(c => `<div class="cmt"><div class="hd"><b>${esc(c.name || '익명')}</b><span>${esc(날짜(c.at))}</span></div><p>${esc(c.text || '')}</p></div>`).join('')
+    : '<p class="none">아직 댓글이 없습니다. 첫 댓글을 남겨 보세요.</p>';
+  return `<div class="likes"><span class="like static">${하트}<span>좋아요</span> <span class="n">${n}</span></span><span class="who">${댓글들.length ? '댓글 ' + 댓글들.length + '개' : '이 명함이 도움이 됐다면 눌러 주세요'}</span></div>
+    <div class="cmts">${목록}</div>
+    <p class="ph">댓글 쓰기 칸을 불러오는 중…</p>`;
+}
+
+/* ── 명함 모음 페이지 · 사이트맵 — 서버가 명함을 발행할 때마다 다시 만든다 ────────
+   list = [{ slug, n, c, t, at('YYYY-MM-DD'), photo }] (card/list.json) */
+function 명함사이트맵(list){
+  const L = Array.isArray(list) ? list.filter(x => x && /^[a-z0-9][a-z0-9-]*$/.test(x.slug)) : [];
+  const 날 = (x) => /^\d{4}-\d{2}-\d{2}/.test(String(x.at || '')) ? String(x.at).slice(0, 10) : '';
+  const 최신 = L.map(날).filter(Boolean).sort().pop() || '';
+  const url = (loc, lastmod, freq) => '  <url>\n    <loc>' + loc + '</loc>\n' + (lastmod ? '    <lastmod>' + lastmod + '</lastmod>\n' : '') + '    <changefreq>' + freq + '</changefreq>\n  </url>\n';
+  let out = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+  out += url(집 + '/card/', 최신, 'weekly');
+  out += url(집 + '/card/all/', 최신, 'daily');
+  L.forEach(x => { out += url(집 + '/card/' + x.slug + '/', 날(x), 'weekly'); });
+  return out + '</urlset>\n';
+}
+
+function 명함모음HTML(list){
+  const L = (Array.isArray(list) ? list.filter(x => x && /^[a-z0-9][a-z0-9-]*$/.test(x.slug)) : [])
+    .slice().sort((a, b) => String(b.at || '').localeCompare(String(a.at || '')));
+  const 항목 = L.map(x => {
+    const 부제 = [x.t, x.c].filter(Boolean).map(esc).join(' · ');
+    return `<li><a href="${집}/card/${esc(x.slug)}/"><b>${esc(x.n || x.slug)}</b>${부제 ? `<span>${부제}</span>` : ''}<em>›</em></a></li>`;
+  }).join('');
+  const 설명 = '큰길브리지에서 만든 행사팀 · 소상공인 · 영업인의 전자명함 ' + L.length + '장. 이름 · 하는 일 · 연락처를 한 번에.';
+  return `<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>전자명함 모음 · 큰길브리지</title>
+<meta name="description" content="${esc(설명)}">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="${집}/card/all/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="전자명함 모음 · 큰길브리지">
+<meta property="og:description" content="${esc(설명)}">
+<meta property="og:image" content="${집}/card/sample-og.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:#EEF0F4; color:#15171C; line-height:1.65; word-break:keep-all; font-family:'Noto Sans KR',system-ui,'Malgun Gothic',sans-serif; padding:1.5rem 1rem 3rem; }
+  .wrap{ max-width:32rem; margin:0 auto; }
+  .eyebrow{ font-size:.78rem; font-weight:900; letter-spacing:.14em; color:#1B2A4A; }
+  h1{ font-size:1.7rem; font-weight:900; letter-spacing:-.03em; line-height:1.25; margin-top:.4rem; }
+  .sub{ color:#5B6170; font-size:.95rem; margin-top:.5rem; }
+  ul{ list-style:none; margin-top:1.4rem; display:grid; gap:.5rem; }
+  li a{ display:flex; align-items:center; gap:.7rem; padding:.9rem 1.05rem; background:#fff; border-radius:.8rem; text-decoration:none; color:inherit; box-shadow:0 8px 24px -18px rgba(10,14,25,.35); }
+  li a:active{ background:#F4F6FA; }
+  li b{ font-size:1.02rem; font-weight:800; }
+  li span{ flex:1; min-width:0; font-size:.84rem; color:#6B7284; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  li em{ margin-left:auto; color:#C6CAD5; font-style:normal; font-size:1.15rem; }
+  .cta{ margin-top:1.8rem; display:grid; gap:.5rem; }
+  .btn{ display:flex; align-items:center; justify-content:center; padding:.95rem 1rem; border-radius:.6rem; border:1px solid #DDE1EA; background:#fff; color:#15171C; text-decoration:none; font-weight:800; }
+  .btn.pri{ background:#1B2A4A; color:#fff; border-color:transparent; }
+  .foot{ margin-top:1.6rem; text-align:center; font-size:.76rem; color:#9AA0B0; }
+  .foot a{ color:#6B7284; text-decoration:none; font-weight:700; }
+</style>
+<script defer src="https://www.ai-make.co.kr/stats/stats.js" data-site="ai-make"><\/script>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">큰길브리지 전자명함</p>
+  <h1>전자명함 모음 <small style="font-size:.9rem;color:#6B7284;font-weight:700;">${L.length}장</small></h1>
+  <p class="sub">행사팀 · 소상공인 · 영업인이 큰길브리지에서 만든 무료 전자명함입니다. 눌러서 전화 · 문자 · 연락처 저장을 바로 할 수 있습니다.</p>
+  <ul>${항목 || '<li><a href="${집}/card/"><b>아직 발행된 명함이 없습니다</b><em>›</em></a></li>'}</ul>
+  <div class="cta">
+    <a class="btn pri" href="${집}/card/">나도 무료로 명함 만들기</a>
+    <a class="btn" href="${집}/">홈페이지 제작 · 큰길브리지</a>
+  </div>
+  <p class="foot">주식회사 브리지미디어 · 1533-7295 · <a href="${집}/">www.ai-make.co.kr</a></p>
+</div>
 </body>
 </html>`;
 }
