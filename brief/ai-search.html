@@ -157,6 +157,11 @@ body.presenter{overflow:auto}
 #pres button{font:700 16px var(--f);padding:14px 22px;border-radius:12px;border:1.5px solid rgba(237,234,227,.25);background:#111725;color:#F4F1EA;cursor:pointer}
 #pres button.go{background:#E8B84B;color:#07090F;border-color:#E8B84B}
 #pres .timer{margin-left:auto;font:700 30px var(--mono);color:#3FD3C6}
+#pres .nextinfo{background:rgba(232,184,75,.12);border:1.5px solid rgba(232,184,75,.55);border-radius:12px;padding:12px 18px;margin-bottom:16px;font-size:20px;line-height:1.6}
+#pres .nextinfo b{color:#E8B84B}
+#pres .pv .clone .f.dim{opacity:.16!important}
+#pres .pv .clone .f.hi{opacity:1!important;outline:6px solid #E8B84B;outline-offset:8px;border-radius:10px}
+#notesbar .nx{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(232,184,75,.4);color:#E8B84B}
 
 /* 인쇄 = 한 장이 한 쪽 */
 @page{size:1920px 1080px;margin:0}
@@ -739,7 +744,7 @@ body.presenter{overflow:auto}
 
 <div id="pres">
   <div class="hd"><span>발표자 창 · <b id="p-n">01 / 01</b></span><span id="p-clock"></span></div>
-  <div class="notes-box"><h2 id="p-title"></h2><div id="p-notes"></div></div>
+  <div class="notes-box"><div class="nextinfo" id="p-nextinfo"></div><h2 id="p-title"></h2><div id="p-notes"></div></div>
   <div class="side">
     <div class="pv" id="pv-cur"><label>지금</label></div>
     <div class="pv" id="pv-next"><label>다음</label></div>
@@ -771,11 +776,20 @@ body.presenter{overflow:auto}
     document.getElementById('hud').style.display = slides[idx].classList.contains('nofoot') ? 'none' : '';
     document.getElementById('brandmark').style.display = slides[idx].classList.contains('nofoot') ? 'none' : '';
     var nt = slides[idx].querySelector('.notes');
-    document.getElementById('notesbar').innerHTML = nt ? '<b>대본 ' + two(idx + 1) + '</b> · ' + nt.innerHTML : '<b>대본 ' + two(idx + 1) + '</b> · (메모 없음)';
+    document.getElementById('notesbar').innerHTML = (nt ? '<b>대본 ' + two(idx + 1) + '</b> · ' + nt.innerHTML : '<b>대본 ' + two(idx + 1) + '</b> · (메모 없음)') + '<span class="nx">▶ ' + nextInfo() + '</span>';
     if (location.hash !== '#' + (idx + 1)) { try { history.replaceState(null, '', '#' + (idx + 1)); } catch(e){} }
     if (isPres) presenterUpdate();
     document.querySelectorAll('#toc li').forEach(function(li,k){ li.classList.toggle('cur', k === idx); });
     if (broadcast !== false && ch) ch.postMessage({ t:'state', idx: idx, frag: frag });
+  }
+  function esc(t){ return t.replace(/[&<>]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]; }); }
+  function short(t, n){ t = (t || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n) + '…' : t; }
+  function plain(el){ var d = document.createElement('div'); d.innerHTML = el.innerHTML.replace(/<br\s*\/?>|<\/(div|p|li|h\d|span|b|strong|em|i|label)>/gi, ' $&'); return d.textContent; }
+  function nextInfo(){
+    var fs = frags(slides[idx]);
+    if (frag < fs.length) return '<b>다음 클릭</b> — 이 장 항목 ' + (frag + 1) + '/' + fs.length + ' : 「' + esc(short(plain(fs[frag]), 60)) + '」';
+    if (idx < N - 1) { var nf = frags(slides[idx + 1]).length; return '<b>다음 클릭</b> — 다음 장 ' + two(idx + 2) + ' : 「' + esc(short(title(slides[idx + 1]), 50)) + '」' + (nf ? ' (그 장 항목 ' + nf + '개)' : ''); }
+    return '<b>마지막 장입니다</b> — 더 넘어가지 않습니다.';
   }
   function next(){ var fs = frags(slides[idx]); if (frag < fs.length) { frag++; apply(); } else if (idx < N - 1) { idx++; frag = 0; apply(); } }
   function prev(){ if (frag > 0) { frag--; apply(); } else if (idx > 0) { idx--; frag = frags(slides[idx]).length; apply(); } }
@@ -789,11 +803,11 @@ body.presenter{overflow:auto}
 
   /* 발표자 창 */
   var t0 = Date.now();
-  function clone(s, host){
+  function clone(s, host, upto, hi){
     var old = host.querySelector('.clone'); if (old) old.remove();
     if (!s) return;
     var c = s.cloneNode(true); c.classList.add('on'); c.classList.remove('past'); c.style.cssText = 'position:absolute;inset:0;opacity:1;visibility:visible;transform:none;transition:none';
-    c.querySelectorAll('.f').forEach(function(f){ f.classList.add('in'); });
+    c.querySelectorAll('.f').forEach(function(f, j){ f.classList.add('in'); if (upto != null && j >= upto) f.classList.add(j === hi ? 'hi' : 'dim'); });
     var box = document.createElement('div'); box.className = 'clone'; box.appendChild(c);
     host.appendChild(box);
     var sc = host.clientWidth / 1920; box.style.transform = 'scale(' + sc + ')';
@@ -803,8 +817,11 @@ body.presenter{overflow:auto}
     document.getElementById('p-title').textContent = title(slides[idx]);
     var nt = slides[idx].querySelector('.notes');
     document.getElementById('p-notes').innerHTML = nt ? nt.innerHTML : '(메모 없음)';
-    clone(slides[idx], document.getElementById('pv-cur'));
-    clone(slides[idx + 1], document.getElementById('pv-next'));
+    var fs = frags(slides[idx]), more = frag < fs.length;
+    document.getElementById('p-nextinfo').innerHTML = '▶ ' + nextInfo();
+    clone(slides[idx], document.getElementById('pv-cur'), frag, -1);
+    if (more) clone(slides[idx], document.getElementById('pv-next'), frag, frag); else clone(slides[idx + 1], document.getElementById('pv-next'));
+    document.querySelector('#pv-next label').textContent = more ? '다음 클릭 (금색 테두리)' : (idx < N - 1 ? '다음 장' : '끝');
   }
   if (isPres) {
     setInterval(function(){ var s = Math.floor((Date.now() - t0) / 1000); document.getElementById('p-timer').textContent = two(Math.floor(s / 60)) + ':' + two(s % 60); document.getElementById('p-clock').textContent = new Date().toLocaleTimeString('ko-KR'); }, 500);
