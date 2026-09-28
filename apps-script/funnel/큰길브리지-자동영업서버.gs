@@ -3,7 +3,7 @@
  * ────────────────────────────────────────────────────────────
  * free/ · welcome/ · go/ · pay/ 화면이 부르는 백엔드 하나.
  *
- *   POST {action:'lead', ...}      무료 자료 신청 → 리드 저장 · 자료 메일 · 사장님 알림 · (선택) 문자
+ *   POST {action:'lead', ...}      무료 데모 신청(사진 2~3장 포함) → 사진 드라이브 저장 · 데모 주소 · 리드 저장 · 데모 메일 · 사장님 알림 · (선택) 문자
  *   POST {action:'event', ...}     퍼널 단계 기록 (랜딩 조회 · 데모 조회 · 견적 · 서명 …)
  *   POST {action:'contract', ...}  자동 견적으로 계약서가 만들어짐 → 리드와 연결 · 사장님 알림
  *   POST {action:'status', c, stage}           이미 결제됐는지
@@ -16,7 +16,8 @@
  *   GET  ?bankok=행&k=…            사장님 전용: 무통장 입금 확인 처리
  *
  * 매시간 자동 (설치() 를 한 번 실행하면 걸린다)
- *   - 후속 메일: 신청 1일 · 3일 · 6일 뒤 (소식 수신 동의한 분만, 계약하면 멈춤)
+ *   - 선물 메일: 신청 1일 뒤 전자책 · 3일 뒤 전자명함 (신청자 모두)
+ *   - 안내 메일: 신청 2일 · 6일 뒤 견적 안내 (소식 수신 동의한 분만, 계약하면 멈춤)
  *   - 계약서 만들고 24시간 서명 안 함 → 서명 안내 메일
  *   - 서명하고 24시간 결제 안 함 → 결제 안내 메일
  *   - 가상계좌 입금 대기 → 입금되면 자동 완료 처리
@@ -33,7 +34,7 @@ var SITE           = 'https://www.ai-make.co.kr';   // 데모 · 계약서 · �
 var FUNNEL         = 'https://www.ai-make.co.kr';   // free/ go/ pay/ ebook/ 이 올라간 곳
 var CONTRACT_API   = 'https://script.google.com/macros/s/AKfycbzB5cpUDleZnChRIRFWELgJ2uAbxa5fe2iBE9upWqUl92BgTPA4KrDWtTp5UZJ31Ezc/exec';
 var SHEET_TITLE    = '큰길브리지 자동영업 대장';
-var VERSION        = '2026-09-26a';
+var VERSION        = '2026-09-28a';
 var PROMO          = '';   // 후속 메일에 넣을 혜택 한 줄 (예: '이번 달 계약 시 도메인 1년 무료'). 비우면 혜택 문구 없이 보낸다
 /* 스크립트 속성 (⚙ 프로젝트 설정 → 스크립트 속성)
  *   TOSS_SECRET_KEY   토스페이먼츠 결제위젯 시크릿 키 (test_gsk_… / live_gsk_…) — 필수(온라인 결제)
@@ -89,43 +90,69 @@ var C_ = {}; 리드머리.forEach(function (h, i) { C_[h] = i + 1; });
 function 리드_(b) {
   var email = 다듬기_(b.email, 120), tel = 다듬기_(b.tel, 30), org = 다듬기_(b.org, 80), name = 다듬기_(b.name, 40);
   if (!org || !name || !isEmail_(email) || String(tel).replace(/[^0-9]/g, '').length < 9) throw new Error('입력값을 확인해 주세요');
-  /* 같은 메일로 10분 안에 또 오면 새로 만들지 않고 기존 ID 를 돌려준다 (두 번 누름 · 봇) */
+  /* 같은 메일로 10분 안에 또 오면 새로 만들지 않고 기존 결과를 돌려준다 (두 번 누름 · 봇) */
   var cache = CacheService.getScriptCache(), ck = 'lead_' + email.toLowerCase();
-  var 있던 = cache.get(ck); if (있던) return { ok: true, id: 있던, dup: true };
+  var 있던 = cache.get(ck); if (있던) { try { var o = JSON.parse(있던); o.dup = true; return o; } catch (e) {} }
 
   var id = 새ID_('L');
-  var demo = /^https:\/\/www\.ai-make\.co\.kr\/demo\//.test(String(b.demo || '')) ? String(b.demo) : '';
+  var gift = ({ ebook: 'ebook', card: 'card' })[b.gift] || '';     // SNS 에서 「전자책」「명함」을 보고 온 분은 그 선물을 바로
+  var 사진 = 사진저장_(id, org, b.photos);
+  /* 데모 주소는 서버가 만든다 — 사진 주소를 실어야 하므로 */
+  var d = { biz: 다듬기_(b.biz, 20) || 'etc', org: org, owner: name, tel: tel, email: email, addr: 다듬기_(b.area, 40), areas: 다듬기_(b.area, 40) };
+  if (사진.length) d.photos = 사진;
+  var demo = SITE + '/demo/#d=' + Utilities.base64EncodeWebSafe(JSON.stringify(d), Utilities.Charset.UTF_8).replace(/=+$/, '');
+  var 받은선물 = gift === 'ebook' ? 'G1' : (gift === 'card' ? 'G3' : '');
   시트_('리드').appendRow([지금_(), id, org, name, tel, email, 다듬기_(b.bizName || b.biz, 30), 다듬기_(b.area, 40), 다듬기_(b.has, 20),
-    b.mkt ? 'Y' : 'N', 다듬기_(b.src, 120), demo, '자료 신청', '', '', '', 지금_(), '', '']);
-  cache.put(ck, id, 600);
-  활동기록_(id, 'lead_submit', b.page, b.src, org);
+    b.mkt ? 'Y' : 'N', 다듬기_(b.src, 120), demo, '자료 신청', '', '', '', 지금_(), 받은선물, '']);
+  var 결과 = { ok: true, id: id, demo: demo, photos: 사진, gift: gift };
+  cache.put(ck, JSON.stringify(결과), 600);
+  활동기록_(id, 'lead_submit', b.page, b.src, org + (사진.length ? ' · 사진 ' + 사진.length + '장' : ''));
 
-  /* 신청자에게 — 자료 3종 (요청한 자료라 광고 메일이 아니다) */
+  /* 신청자에게 — 지금은 데모 하나만. 나머지 선물은 순서대로 (내일 전자책, 3일 뒤 전자명함) */
   var 이름 = name + ' 사장님';
-  메일_(email, '[' + BRAND + '] 요청하신 무료 자료 3종입니다', 틀_(
-    '<h2 style="margin:0 0 12px">' + esc_(이름) + ', 자료 보내 드립니다</h2>' +
-    '<p>「AI가 추천하는 가게의 7가지 조건」 전자책과 무료 전자명함, 그리고 <b>' + esc_(org) + '</b> 이름으로 만든 홈페이지 데모입니다.</p>' +
-    단추_(FUNNEL + '/ebook/ai-search-7.pdf', '📘 전자책 PDF 받기', true) +
-    단추_(SITE + '/card/', '📇 무료 전자명함 만들기') +
-    (demo ? 단추_(demo, '🖥 ' + org + ' 홈페이지 데모 보기') : '') +
-    '<p style="margin-top:22px">전자책 12쪽의 <b>20문항 체크리스트</b>부터 해 보세요. 10분이면 우리 가게가 AI 검색에 얼마나 준비돼 있는지 보입니다.</p>' +
-    '<p>데모가 마음에 드시면 옵션을 골라 바로 견적을 보실 수 있습니다 — 상담 전화 없이 계약 · 결제까지 온라인으로 됩니다.</p>' +
-    단추_(FUNNEL + '/go/?l=' + id + '&utm_source=email&utm_campaign=welcome', '자동 견적 보기 →'),
-    id, false));
+  var 다음선물 = gift === 'ebook' ? '3일 뒤에는 <b>카톡으로 보내는 무료 전자명함</b>을 보내 드립니다.'
+    : (gift === 'card' ? '내일은 <b>전자책 「AI가 추천하는 가게의 7가지 조건」</b>을 보내 드립니다.'
+    : '내일은 <b>전자책 「AI가 추천하는 가게의 7가지 조건」</b>, 3일 뒤에는 <b>무료 전자명함</b>을 하나씩 보내 드립니다.');
+  메일_(email, '[' + BRAND + '] ' + org + ' 홈페이지 데모가 준비됐습니다', 틀_(
+    '<h2 style="margin:0 0 12px">' + esc_(이름) + ', 데모가 나왔습니다</h2>' +
+    '<p><b>' + esc_(org) + '</b> 이름' + (사진.length ? '과 보내 주신 사진 ' + 사진.length + '장' : '') + '으로 만든 홈페이지 시안입니다. 휴대폰으로 열어 보세요.</p>' +
+    단추_(demo, '🖥 ' + org + ' 홈페이지 데모 보기', true) +
+    (gift === 'ebook' ? 단추_(FUNNEL + '/ebook/ai-search-7.pdf', '📘 요청하신 전자책 PDF 받기') : '') +
+    (gift === 'card' ? 단추_(SITE + '/card/', '📇 요청하신 전자명함 만들기') : '') +
+    (사진.length ? '' : '<p style="background:#FFF8E6;border-radius:10px;padding:12px 14px">📷 매장 · 작업 사진 2~3장을 이 메일에 답장으로 보내 주시면, 사진을 넣은 데모로 다시 만들어 드립니다.</p>') +
+    '<p>' + 다음선물 + '</p>', id, false));
 
   /* 사장님께 — 새 리드 */
-  메일_(OWNER_EMAIL, '🟡 새 리드 · ' + org + ' (' + (b.bizName || '') + ' · ' + (b.area || '지역 미기재') + ')', 틀_(
+  메일_(OWNER_EMAIL, '🟡 새 리드 · ' + org + ' (' + (b.bizName || '') + ' · ' + (b.area || '지역 미기재') + ')' + (사진.length ? ' · 사진 ' + 사진.length + '장' : ''), 틀_(
     '<h2 style="margin:0 0 12px">새 리드가 들어왔습니다</h2>' +
     표_([['상호', org], ['성함', name], ['휴대폰', tel], ['이메일', email], ['업종', b.bizName || b.biz], ['지역', b.area],
-        ['기존 홈페이지', b.has], ['소식 수신', b.mkt ? '동의' : '거부'], ['유입', b.src], ['ID', id]]) +
-    (demo ? 단추_(demo, '고객이 받은 데모 보기', true) : '') +
+        ['기존 홈페이지', b.has], ['소식 수신', b.mkt ? '동의' : '거부'], ['유입', b.src], ['먼저 받은 선물', gift ? ({ ebook: '전자책', card: '전자명함' })[gift] : '데모'], ['ID', id]]) +
+    사진.map(function (u) { return '<img src="' + esc_(u) + '" style="width:31%;margin:0 1% 8px 0;border-radius:8px" alt="">'; }).join('') +
+    단추_(demo, '고객이 받은 데모 보기', true) +
     단추_('tel:' + String(tel).replace(/[^0-9]/g, ''), '📞 바로 전화') +
-    '<p style="color:#888;font-size:13px">자료 메일은 자동 발송됐습니다. 데모를 열어 보면 데모 알림 서버가 따로 알려 드립니다. 1 · 3 · 6일 뒤 후속 메일도 자동입니다.</p>', '', true));
+    '<p style="color:#888;font-size:13px">데모 메일은 자동 발송됐습니다. 선물은 1일 뒤 전자책 · 3일 뒤 전자명함 순서로 자동 발송되고, 소식 수신에 동의한 분께는 2일 · 6일 뒤 견적 안내가 갑니다.</p>', '', true));
 
-  문자_(tel, '[' + BRAND + '] ' + name + '님, 요청하신 전자책 · 데모를 메일로 보냈습니다. 데모 바로 보기: ' + (demo ? 짧게_(demo) : FUNNEL + '/welcome/'));
+  문자_(tel, '[' + BRAND + '] ' + name + '님, ' + org + ' 홈페이지 데모가 나왔습니다. 메일에서 확인해 주세요. ' + FUNNEL + '/welcome/?l=' + id);
   사장님문자_('[새 리드] ' + org + ' ' + name + ' ' + tel + ' (' + (b.src || '') + ')');
-  return { ok: true, id: id };
+  return 결과;
 }
+
+/* 데모용 사진 — 드라이브 「큰길브리지 데모 사진/리드ID」 에 저장하고, 링크가 있는 사람만 볼 수 있게 연다 */
+function 사진저장_(id, org, photos) {
+  var out = [];
+  (photos || []).slice(0, 3).forEach(function (u, i) {
+    var m = String(u || '').match(/^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+\/=]+)$/);
+    if (!m || m[2].length > 4e6) return;                       // 사진 한 장 약 3MB 까지
+    try {
+      var 폴더 = subFolder_(subFolder_(DriveApp.getRootFolder(), '큰길브리지 데모 사진'), id + ' ' + org.slice(0, 20));
+      var f = 폴더.createFile(Utilities.newBlob(Utilities.base64Decode(m[2]), 'image/' + m[1], (i + 1) + '.' + (m[1] === 'jpeg' ? 'jpg' : m[1])));
+      f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      out.push('https://drive.google.com/thumbnail?id=' + f.getId() + '&sz=w1600');
+    } catch (e) { console.warn('사진 저장 실패: ' + e); }
+  });
+  return out;
+}
+function subFolder_(parent, name) { var it = parent.getFoldersByName(name); return it.hasNext() ? it.next() : parent.createFolder(name); }
 
 
 /* ══ 2. 활동 기록 ════════════════════════════════════ */
@@ -338,24 +365,36 @@ function 매시간() {
   try { if (낮) { 후속메일_(); 계약재안내_(); } 가상계좌확인_(); } finally { lock.releaseLock(); }
 }
 
-/* 후속 메일 3통 — 소식 수신 동의(Y) · 수신거부 아님 · 아직 계약서 안 만든 분만. 정보통신망법: 제목에 (광고), 본문에 수신거부 */
+/* 후속 메일 — 두 종류
+ *   선물(G): 신청한 분 모두에게, 약속한 자료를 하나씩 (요청한 자료라 광고가 아니다). 수신 거부한 분은 제외
+ *   안내(A): 소식 수신에 동의(Y)한 분에게만, 아직 계약 전일 때. 정보통신망법: 제목에 (광고), 본문에 수신 거부
+ *   발송은 08~21시에만 (매시간() 에서 막는다). 한 사람에게 한 번 돌 때 한 통만. */
 var 후속 = [
-  { 일: 1, 제목: '(광고) 챗GPT에 우리 가게를 물어보셨나요?', 본문: function (r) {
-    return '<p>' + esc_(r.성함) + ' 사장님, 어제 받으신 전자책의 「오늘 할 일」 첫 번째 — 해 보셨나요?</p>' +
+  { 표: 'G1', 일: 1, 광고: false, 제목: function (r) { return '[' + BRAND + '] 약속드린 전자책 — AI가 추천하는 가게의 7가지 조건'; }, 본문: function (r) {
+    return '<p>' + esc_(r.성함) + ' 사장님, 어제 ' + esc_(r.상호) + ' 데모를 받으셨죠. 약속드린 두 번째 선물입니다.</p>' +
+      단추_(FUNNEL + '/ebook/ai-search-7.pdf', '📘 전자책 PDF 받기 (13쪽)', true) +
+      '<p>읽기 전에 딱 하나만 해 보세요. 챗GPT나 네이버에</p>' +
       '<p style="background:#FFF8E6;border-radius:10px;padding:14px 16px"><b>「' + esc_(r.지역 || '우리 지역') + ' ' + esc_(r.업종 || '우리 업종') + ' 추천해 줘」</b></p>' +
-      '<p>이 한 줄을 챗GPT나 네이버에 넣어 보세요. ' + esc_(r.상호) + '가 안 나온다면, AI가 읽을 「근거 문장」이 아직 없다는 뜻입니다. 전자책 5쪽의 공식으로 한 문장만 써 두셔도 시작입니다.</p>' +
-      (r.데모 ? 단추_(r.데모, esc_(r.상호) + ' 데모 다시 보기', true) : '');
+      '<p>라고 물었을 때 ' + esc_(r.상호) + '가 나오나요? 안 나온다면 전자책 5쪽의 「한 문장 공식」부터 시작하시면 됩니다. 12쪽 체크리스트 20문항으로 점수도 매겨 보세요.</p>' +
+      (r.데모 ? 단추_(r.데모, esc_(r.상호) + ' 데모 다시 보기') : '') +
+      '<p style="color:#888;font-size:13px">3일 뒤에는 마지막 선물, 카톡으로 보내는 전자명함을 드립니다.</p>';
   } },
-  { 일: 3, 제목: '(광고) 데모 그대로 만들면 얼마일까요? — 1분 견적', 본문: function (r) {
-    return '<p>' + esc_(r.성함) + ' 사장님, ' + esc_(r.상호) + ' 데모는 보셨나요?</p>' +
+  { 표: 'A2', 일: 2, 광고: true, 제목: function () { return '(광고) 데모 그대로 만들면 얼마일까요? — 1분 견적'; }, 본문: function (r) {
+    return '<p>' + esc_(r.성함) + ' 사장님, ' + esc_(r.상호) + ' 데모 보셨나요?</p>' +
       '<p>큰길브리지는 <b>상담 전화 없이</b> 견적 → 전자계약 → 결제까지 온라인으로 끝납니다. 옵션을 누르면 금액이 바로 계산되고, 마음에 들면 그 자리에서 계약서가 만들어집니다.</p>' +
       표_([['베이직', '원페이지 · 모바일 · 전화 · 카톡 · 지도 — 10만원'], ['고급형 (추천)', '5페이지 · 문의 폼 · 네이버 · 구글 검색 등록 — 50만원'], ['회사형', '페이지 무제한 · 관리자 · 매월 블로그 기사 — 100만원']]) +
       (PROMO ? '<p style="background:#FFF8E6;border-radius:10px;padding:12px 14px">🎁 ' + esc_(PROMO) + '</p>' : '') +
-      단추_(FUNNEL + '/go/?l=' + r.ID + '&utm_source=email&utm_campaign=d3', '1분 자동 견적 보기', true) +
+      단추_(FUNNEL + '/go/?l=' + r.ID + '&utm_source=email&utm_campaign=d2', '1분 자동 견적 보기', true) +
       '<p style="color:#888;font-size:13px">부가세 별도 · 계약금 50% 결제 후 착수</p>';
   } },
-  { 일: 6, 제목: '(광고) 마지막으로 하나만 여쭤볼게요', 본문: function (r) {
-    return '<p>' + esc_(r.성함) + ' 사장님, 자료를 받으신 지 일주일이 됐습니다.</p>' +
+  { 표: 'G3', 일: 3, 광고: false, 제목: function () { return '[' + BRAND + '] 마지막 선물 — 카톡으로 보내는 전자명함'; }, 본문: function (r) {
+    return '<p>' + esc_(r.성함) + ' 사장님, 약속드린 마지막 선물입니다.</p>' +
+      '<p>종이 명함은 받는 순간 서랍으로 들어가지만, 카톡으로 보낸 전자명함은 대화방에 계속 남습니다. 눌러서 바로 <b>전화 · 카톡 · 길찾기</b>가 됩니다. 5분이면 만듭니다.</p>' +
+      단추_(SITE + '/card/', '📇 무료 전자명함 만들기', true) +
+      (r.데모 ? '<p>명함의 「홈페이지」 칸에는 나중에 ' + esc_(r.상호) + ' 홈페이지 주소를 넣으시면 됩니다.</p>' + 단추_(r.데모, '데모 다시 보기') : '');
+  } },
+  { 표: 'A6', 일: 6, 광고: true, 제목: function () { return '(광고) 마지막으로 하나만 여쭤볼게요'; }, 본문: function (r) {
+    return '<p>' + esc_(r.성함) + ' 사장님, 데모를 받으신 지 일주일이 됐습니다.</p>' +
       '<p>홈페이지를 망설이시는 이유가 <b>비용</b>이라면 베이직(10만원)으로 시작해 나중에 페이지를 늘리셔도 되고, <b>시간</b>이라면 자료는 휴대폰 사진 몇 장이면 충분합니다. 나머지는 저희가 합니다.</p>' +
       '<p>궁금한 게 있으시면 이 메일에 답장하시거나 ' + TEL + ' 로 전화 주세요. 이 메일이 마지막 안내입니다.</p>' +
       단추_(FUNNEL + '/go/?l=' + r.ID + '&utm_source=email&utm_campaign=d6', '견적 보기', true) +
@@ -368,17 +407,19 @@ function 후속메일_() {
   var rows = sh.getRange(2, 1, n - 1, 리드머리.length).getValues(), 지금 = Date.now(), 보냄 = 0;
   for (var i = 0; i < rows.length && 보냄 < 40; i++) {
     var r = 행객체_(rows[i]);
-    if (r['소식 수신'] !== 'Y' || r['수신거부'] || r['계약ID']) continue;
+    if (r['수신거부'] || !isEmail_(r['이메일'])) continue;
     var 경과일 = (지금 - 시각_(r['접수시각'])) / 864e5, 한것 = String(r['후속메일'] || '');
     for (var j = 0; j < 후속.length; j++) {
-      var f = 후속[j], 표시 = 'D' + f.일;
-      if (한것.indexOf(표시) >= 0 || 경과일 < f.일 || 경과일 > f.일 + 2) continue;   // 이틀 넘게 밀린 건 건너뛴다 (한꺼번에 몰아 보내지 않게)
-      if (!isEmail_(r['이메일'])) break;
-      메일_(r['이메일'], f.제목, 틀_(f.본문({ ID: r.ID, 성함: r['성함'], 상호: r['상호'], 지역: r['지역'], 업종: r['업종'], 데모: r['데모'] }), r.ID, false));
-      한것 += (한것 ? ',' : '') + 표시;
+      var f = 후속[j];
+      if (한것.indexOf(f.표) >= 0 || 경과일 < f.일) continue;
+      if (f.광고 && (r['소식 수신'] !== 'Y' || r['계약ID'] || 경과일 > f.일 + 2)) continue;   // 광고는 동의자 · 계약 전 · 이틀 넘게 밀리지 않은 것만
+      if (!f.광고 && 경과일 > f.일 + 5) continue;                                              // 선물은 늦어도 보내되 너무 오래된 건 건너뛴다
+      var 값 = { ID: r.ID, 성함: r['성함'], 상호: r['상호'], 지역: r['지역'], 업종: r['업종'], 데모: r['데모'] };
+      메일_(r['이메일'], f.제목(값), 틀_(f.본문(값), r.ID, false));
+      한것 += (한것 ? ',' : '') + f.표;
       sh.getRange(i + 2, C_['후속메일']).setValue(한것);
       보냄++;
-      break;   // 한 번 돌 때 한 사람에게 한 통만
+      break;
     }
   }
 }

@@ -106,7 +106,9 @@ if (!/(^|\.)ai-make\.co\.kr$/.test(location.hostname)) {
   /* 자동 영업 서버 호출 — Apps Script 는 text/plain 으로 보내야 사전요청(CORS) 없이 받는다 */
   B.api = function (payload) {
     if (!B.FUNNEL_API) return Promise.reject(new Error('no-server'));
-    return fetch(B.FUNNEL_API, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+    var body = JSON.stringify(payload);
+    /* keepalive 는 64KB 까지만 된다 — 사진이 실린 요청은 일반 요청으로 */
+    return fetch(B.FUNNEL_API, { method: 'POST', keepalive: body.length < 60000, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body })
       .then(function (r) { return r.json(); });
   };
   /* 퍼널 단계 기록 (실패해도 화면은 계속) */
@@ -127,9 +129,28 @@ if (!/(^|\.)ai-make\.co\.kr$/.test(location.hostname)) {
       return JSON.parse(localStorage.getItem('kb_me') || '{}');
     } catch (e) { return o || {}; }
   };
+  /* 사진 줄이기 — 휴대폰 사진(수 MB)을 긴 변 1400px JPEG 로. 데모에는 이 정도면 충분하다 */
+  B.shrink = function (file, max) {
+    max = max || 1400;
+    return new Promise(function (res, rej) {
+      if (!/^image\//.test(file.type)) return rej(new Error('사진 파일이 아닙니다'));
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var k = Math.min(1, max / Math.max(img.width, img.height)), c = document.createElement('canvas');
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); rej(new Error('사진을 열 수 없습니다 (HEIC 는 JPG 로 바꿔 주세요)')); };
+      img.src = url;
+    });
+  };
   /* 기존 데모 생성기로 「내 가게 홈페이지 시안」 주소 만들기 */
   B.demoUrl = function (m) {
     var d = { biz: m.biz || 'etc', org: m.org || '', owner: m.name || '', tel: m.tel || '', email: m.email || '', addr: m.area || '', areas: m.area || '' };
+    /* 서버에 올라간 사진 주소만 링크에 싣는다 (사진 원본은 링크에 못 싣는다 — 너무 길다) */
+    var urls = (m.photoUrls || []).filter(function (u) { return /^https:\/\//.test(u); });
+    if (urls.length) d.photos = urls;
     return B.SITE + '/demo/#d=' + B.b64u(JSON.stringify(d));
   };
 })(window.BRIDGE);

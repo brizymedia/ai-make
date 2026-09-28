@@ -52,12 +52,14 @@ export function saveMemo(m) {
 }
 
 /* 링크 — 어느 채널 · 어느 글에서 왔는지 utm 으로 남긴다 (자동영업 서버의 「유입 경로」에 찍힌다) */
-export function link(source, contentId, medium = 'social') {
+export function link(source, contentId, medium = 'social', gift = '') {
   const u = new URL(CFG.LANDING);
+  if (gift) u.searchParams.set('gift', gift);   // 「전자책」「명함」을 보고 온 분은 그 선물을 신청 즉시 받는다
   u.searchParams.set('utm_source', source); u.searchParams.set('utm_medium', medium); u.searchParams.set('utm_campaign', 'ai-search'); if (contentId) u.searchParams.set('utm_content', contentId);
   return u.toString();
 }
-export const fill = (text, source, id) => String(text || '').replaceAll('{LINK}', link(source, id));
+const GIFT = { '전자책': 'ebook', '명함': 'card' };
+export const fill = (text, source, id, kw = '') => String(text || '').replaceAll('{LINK}', link(source, id, 'social', GIFT[kw] || ''));
 
 /* 카드 이미지 주소 — 글 하나당 슬라이드 수 + CTA 1장 */
 export function cardUrls(post) { const n = post.slides.length + 1; return Array.from({ length: n }, (_, i) => `${CFG.CARDS_BASE}/${post.id}/${i + 1}.jpg`); }
@@ -82,10 +84,10 @@ export async function api(method, url, params = {}, { json, headers = {}, body }
 
 /* 댓글 키워드 → DM 문구 */
 export const DM = {
-  '전자책': s => `요청하신 무료 전자책 「AI가 추천하는 가게의 7가지 조건」입니다 📘\n아래에서 연락처만 남기시면 바로 받으실 수 있어요. 우리 가게 이름 넣은 홈페이지 데모와 전자명함도 같이 드려요.\n👉 ${link(s, 'dm-ebook', 'dm')}`,
-  '데모': s => `우리 가게 이름이 들어간 홈페이지 데모, 1분이면 보실 수 있어요 🖥\n상호 · 업종 · 지역만 넣으시면 바로 열립니다 (무료 · 결제 정보 없음).\n👉 ${link(s, 'dm-demo', 'dm')}`,
+  '전자책': s => `요청하신 무료 전자책 「AI가 추천하는 가게의 7가지 조건」입니다 📘\n아래에서 연락처만 남기시면 바로 받으실 수 있어요. 가게 사진 2~3장을 넣으시면 우리 가게 홈페이지 데모도 같이 만들어 드려요.\n👉 ${link(s, 'dm-ebook', 'dm', 'ebook')}`,
+  '데모': s => `우리 가게 이름이 들어간 홈페이지 데모, 1분이면 보실 수 있어요 🖥\n상호와 가게 사진 2~3장만 넣으시면 우리 가게 사진으로 만들어져요 (무료 · 결제 정보 없음).\n👉 ${link(s, 'dm-demo', 'dm')}`,
   '견적': s => `홈페이지 자동 견적 링크입니다 💰\n먼저 무료 데모를 보시고, 옵션을 고르면 금액이 바로 나와요. 마음에 들면 전자계약 · 결제까지 온라인으로 됩니다.\n👉 ${link(s, 'dm-quote', 'dm')}`,
-  '명함': s => `무료 모바일 전자명함 링크입니다 📇\n연락처 남기시면 명함 만드는 화면과 전자책도 같이 드려요.\n👉 ${link(s, 'dm-card', 'dm')}`
+  '명함': s => `무료 모바일 전자명함 링크입니다 📇\n연락처 남기시면 명함 만드는 화면이 바로 열리고, 우리 가게 홈페이지 데모도 같이 만들어 드려요.\n👉 ${link(s, 'dm-card', 'dm', 'card')}`
 };
 export const KEYWORDS = Object.keys(DM);
 /* 댓글에서 키워드 찾기 — 띄어쓰기 · 따옴표 무시 */

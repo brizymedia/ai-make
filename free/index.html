@@ -139,6 +139,15 @@
 .sticky-cta{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:none}
 @media(max-width:759px){.sticky-cta.on{display:block}}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.pick{display:block;border:1.5px dashed rgba(232,184,75,.55);background:rgba(232,184,75,.05);border-radius:14px;padding:16px;cursor:pointer;text-align:center}
+.pick:hover{background:rgba(232,184,75,.1)}
+.pick input{position:absolute;opacity:0;width:1px;height:1px}
+.pick b{color:var(--gold);display:block;font-size:.98rem}
+.pick span{font-size:.8rem;color:var(--dim)}
+.thumbs{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.thumbs div{position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--line-2)}
+.thumbs img{width:100%;height:100%;object-fit:cover}
+.thumbs button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.7);color:#fff;font-size:14px;line-height:1;cursor:pointer}
 @media (prefers-reduced-motion:reduce){.marq{animation:none;flex-wrap:wrap;width:auto;justify-content:center}}
 </style>
 </head>
@@ -154,7 +163,7 @@
   <div>
     <span class="live"><i></i>지금 손님은 AI에게 가게를 묻습니다</span>
     <h1>챗GPT에 우리 가게를 물었더니<br><span class="gold">경쟁 가게만 나왔습니다.</span></h1>
-    <p class="lead">AI는 <b style="color:var(--txt)">홈페이지에 글로 적힌 가게</b>를 읽고 추천합니다. 사진 몇 장과 「DM 주세요」로는 AI가 사장님 가게를 설명할 수 없습니다.<br><br>상호만 넣으세요. <b style="color:var(--gold)">1분 뒤, 우리 가게 이름이 들어간 홈페이지</b>가 열립니다.</p>
+    <p class="lead">AI는 <b style="color:var(--txt)">홈페이지에 글로 적힌 가게</b>를 읽고 추천합니다. 사진 몇 장과 「DM 주세요」로는 AI가 사장님 가게를 설명할 수 없습니다.<br><br>상호와 가게 사진 2~3장만 넣으세요. <b style="color:var(--gold)">1분 뒤, 우리 가게 이름과 사진이 들어간 홈페이지</b>가 열립니다.</p>
     <div class="cta-row">
       <a class="btn gold big" href="#get">내 가게 홈페이지 무료로 받아보기 →</a>
     </div>
@@ -200,8 +209,8 @@
 <section class="sec alt"><div class="wrap">
   <div class="center narrow" style="padding:0">
     <span class="eyebrow">신청하면 1분 뒤 받는 것</span>
-    <h2>상호 · 업종 · 지역만 넣으면<br><span class="gold">이렇게 만들어집니다</span></h2>
-    <p class="lead">아래는 실제 데모 생성기가 상호만 받고 만든 화면입니다. 사장님 가게 이름으로 바로 열립니다.</p>
+    <h2>상호 · 업종 · 사진만 넣으면<br><span class="gold">이렇게 만들어집니다</span></h2>
+    <p class="lead">아래는 실제 데모 생성기가 상호만 받고 만든 화면입니다. 사진을 넣으시면 첫 화면과 갤러리가 사장님 가게 사진으로 채워집니다.</p>
   </div>
   <div class="demos">
     <figure><div class="phone"><img src="img/demo-cafe.jpg" alt="한정식집 홈페이지 데모" loading="lazy"></div><figcaption><b>순천 한결한정식</b>카페 · 식당</figcaption></figure>
@@ -209,11 +218,11 @@
     <figure><div class="phone"><img src="img/demo-interior.jpg" alt="인테리어 홈페이지 데모" loading="lazy"></div><figcaption><b>광양 바른인테리어</b>인테리어 · 시공</figcaption></figure>
   </div>
   <div class="gifts">
-    <div class="gift"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 8h6M7 11h10"/></svg></div><div><span class="tag">선물 1 · 즉시</span><b>우리 가게 홈페이지 데모</b><span>12개 업종별 구성, 링크로 가족 · 직원에게 공유</span></div></div>
-    <div class="gift"><img src="img/ebook.jpg" alt="전자책 표지" loading="lazy"><div><span class="tag">선물 2 · PDF 13쪽</span><b>AI가 추천하는 가게의 7가지 조건</b><span>오늘 바로 쓰는 체크리스트 20문항</span></div></div>
-    <div class="gift"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14.5 10h4M14.5 13h3"/></svg></div><div><span class="tag">선물 3 · 평생 무료</span><b>카톡 모바일 전자명함</b><span>전화 · 카톡 · 지도 버튼, 5분이면 완성</span></div></div>
+    <div class="gift"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M7 8h6M7 11h10"/></svg></div><div><span class="tag">지금 바로</span><b>우리 가게 홈페이지 데모</b><span>가게 사진을 넣어 만들고, 링크로 가족 · 직원에게 공유</span></div></div>
+    <div class="gift"><img src="img/ebook.jpg" alt="전자책 표지" loading="lazy"><div><span class="tag">다음 날 메일로</span><b>전자책 「AI가 추천하는 가게의 7가지 조건」</b><span>체크리스트 20문항 · PDF 13쪽</span></div></div>
+    <div class="gift"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M6 16c.6-1.6 1.8-2.4 3-2.4s2.4.8 3 2.4M14.5 10h4M14.5 13h3"/></svg></div><div><span class="tag">3일 뒤 메일로</span><b>카톡 모바일 전자명함</b><span>전화 · 카톡 · 지도 버튼, 평생 무료</span></div></div>
   </div>
-  <div class="center" style="margin-top:34px"><a class="btn gold big" href="#get">3가지 모두 무료로 받기 →</a></div>
+  <div class="center" style="margin-top:34px"><a class="btn gold big" href="#get">우리 가게 데모 무료로 받기 →</a></div>
 </div></section>
 
 <!-- 5. 제작 사례 -->
@@ -266,7 +275,7 @@
     <span class="eyebrow">무료 신청 · 1분</span>
     <h2>우리 가게 이름이 들어간<br>홈페이지, <span class="gold">지금 받아 보세요</span></h2>
     <ul class="promise">
-      <li>✓ <b>결제 정보를 받지 않습니다.</b> 데모 · 전자책 · 명함 모두 무료</li>
+      <li>✓ <b>결제 정보를 받지 않습니다.</b> 데모는 지금, 전자책 · 명함은 순서대로 메일로 — 모두 무료</li>
       <li>✓ <b>영업 전화 안 드립니다.</b> 궁금하면 그때 연락 주세요</li>
       <li>✓ <b>마음에 들면</b> 데모 화면에서 바로 견적 → 계약 → 결제 (5분)</li>
       <li>✓ <b>마음에 안 들면</b> 그냥 닫으셔도 됩니다</li>
@@ -274,7 +283,7 @@
   </div>
   <form class="formbox" id="form" novalidate>
     <h3 style="font-size:1.25rem">내 가게 홈페이지 데모 받기</h3>
-    <p class="dim" style="font-size:.88rem;margin-top:4px">적어 주신 상호로 바로 만들어집니다.</p>
+    <p class="dim" style="font-size:.88rem;margin-top:4px">적어 주신 상호와 사진으로 바로 만들어집니다.</p>
     <div class="row2">
       <div><label class="f" for="f-org">상호 (가게 · 회사 이름)</label><input class="in" id="f-org" autocomplete="organization" placeholder="예) 순천 한결한정식" required></div>
       <div><label class="f" for="f-name">성함</label><input class="in" id="f-name" autocomplete="name" placeholder="예) 김한결" required></div>
@@ -287,6 +296,9 @@
       <div><label class="f" for="f-biz">업종</label><select class="in" id="f-biz"></select></div>
       <div><label class="f" for="f-area">지역</label><input class="in" id="f-area" placeholder="예) 전남 순천" autocomplete="address-level2"></div>
     </div>
+    <label class="f">가게 사진 2~3장 <small>(선택 · 강력 추천 — 넣으면 데모가 우리 가게 사진으로 만들어집니다)</small></label>
+    <label class="pick" id="pick"><input type="file" id="f-photos" accept="image/*" multiple><b>📷 사진 고르기</b><span>간판 · 매장 안 · 대표 메뉴나 작업 사진 · 휴대폰 사진이면 충분합니다</span></label>
+    <div class="thumbs" id="thumbs"></div>
     <label class="f">지금 홈페이지가 있으신가요?</label>
     <div class="chips" id="f-has">
       <label><input type="radio" name="has" value="없음" checked><span>없어요</span></label>
@@ -298,12 +310,13 @@
     <label class="chk"><input type="checkbox" id="f-mkt"><span>[선택] 홈페이지 · AI 검색 관련 소식과 혜택 안내를 이메일 · 문자로 받겠습니다. (언제든 수신 거부 가능)</span></label>
     <div class="err" id="err" role="alert"></div>
     <button class="btn gold block big" type="submit" id="submit" style="margin-top:6px">1분 만에 내 홈페이지 데모 받기</button>
-    <p class="mute center" style="font-size:.76rem;margin-top:10px">신청하면 화면에서 바로 데모 · 전자책 · 명함이 열립니다</p>
+    <p class="mute center" style="font-size:.76rem;margin-top:10px" id="after">신청하면 데모가 바로 열리고, 내일 전자책 · 3일 뒤 전자명함이 메일로 갑니다</p>
   </form>
 </div></section>
 
 <section class="sec"><div class="narrow faq">
   <h2 class="center" style="margin-bottom:18px">자주 묻는 질문</h2>
+  <details><summary>사진은 어떤 걸 넣으면 좋나요?</summary><p>간판이나 가게 외관 1장, 매장 안 1장, 대표 메뉴나 작업 결과 1장이면 충분합니다. 휴대폰으로 찍은 사진이면 되고, 밝기와 크기는 저희가 맞춥니다. 사진이 없으면 비워 두셔도 데모는 만들어집니다.</p></details>
   <details><summary>정말 무료인가요? 나중에 결제하라고 연락 오나요?</summary><p>데모 · 전자책 · 명함은 무료이고 결제 정보도 받지 않습니다. 홈페이지 제작을 원하실 때만 데모 화면의 「견적 보기」로 진행하시면 됩니다. 소식 수신은 체크하신 분께만 보냅니다.</p></details>
   <details><summary>데모는 그대로 쓸 수 있는 홈페이지인가요?</summary><p>상호 · 업종 · 지역으로 업종별 기본 구성(하는 일 · 사진 자리 · 진행 절차 · 자주 묻는 질문)을 채운 시안입니다. 실제 제작 때는 사장님 사진과 글로 바뀌고, 도메인 연결과 검색 등록까지 해서 오픈합니다.</p></details>
   <details><summary>제작 기간은 얼마나 걸리나요?</summary><p>자료(사진 · 소개글)를 받은 뒤 베이직은 보통 1주, 고급형은 2주 안팎입니다. 오픈 희망일은 계약서에 적어 약속합니다.</p></details>
@@ -312,7 +325,7 @@
 
 <section id="privacy" style="padding:10px 0 40px"><div class="narrow" style="font-size:.8rem;color:var(--mute);line-height:1.9">
   <b style="color:var(--dim)">개인정보 처리 안내</b><br>
-  수집 항목: 상호, 성함, 휴대폰, 이메일, 업종, 지역, 유입 경로 · 목적: 무료 자료 발송, 홈페이지 데모 제공, 상담 · 보관: 신청일로부터 1년(계약 시 관계 법령에 따른 기간) 후 파기 · 동의를 거부하실 수 있으나 이 경우 자료를 보내 드릴 수 없습니다. · 광고성 정보 수신 동의는 선택이며, 메일 하단 「수신 거부」 또는 1533-7295 로 언제든 철회할 수 있습니다. · 개인정보 보호책임자: 김효민 (gilauto325@gmail.com)
+  수집 항목: 상호, 성함, 휴대폰, 이메일, 업종, 지역, 유입 경로, 올려 주신 가게 사진(선택) · 목적: 무료 자료 발송, 홈페이지 데모 제공, 상담 · 사진은 데모 제작에만 쓰며, 데모 링크를 가진 사람만 볼 수 있습니다. 직접 찍었거나 사용 권한이 있는 사진만 올려 주세요 · 보관: 신청일로부터 1년(계약 시 관계 법령에 따른 기간) 후 파기 · 동의를 거부하실 수 있으나 이 경우 자료를 보내 드릴 수 없습니다. · 광고성 정보 수신 동의는 선택이며, 메일 하단 「수신 거부」 또는 1533-7295 로 언제든 철회할 수 있습니다. · 개인정보 보호책임자: 김효민 (gilauto325@gmail.com)
 </div></section>
 
 <footer class="foot"><div class="wrap">
@@ -369,6 +382,27 @@
     new IntersectionObserver(function(es){ sticky.classList.toggle('on', !es[0].isIntersecting && scrollY > 400); }).observe(get);
   }
 
+  /* SNS 에서 「전자책」「명함」을 보고 온 분은 그 선물을 바로 준다 (?gift=ebook) */
+  var gift = ({ ebook:'ebook', card:'card' })[new URLSearchParams(location.search).get('gift')] || '';
+  if(gift === 'ebook') $('#after').textContent = '신청하면 데모와 전자책이 바로 열리고, 3일 뒤 전자명함이 메일로 갑니다';
+  if(gift === 'card') $('#after').textContent = '신청하면 데모와 전자명함 만들기가 바로 열리고, 내일 전자책이 메일로 갑니다';
+
+  /* 사진 2~3장 — 고르는 순간 줄여 둔다 (휴대폰 원본은 너무 크다) */
+  var 사진들 = [];
+  function 사진그리기(){
+    $('#thumbs').innerHTML = 사진들.map(function(u, i){ return '<div><img src="' + u + '" alt=""><button type="button" data-i="' + i + '" aria-label="사진 빼기">×</button></div>'; }).join('');
+    $('#pick b').textContent = 사진들.length ? '📷 ' + 사진들.length + '장 골랐습니다' + (사진들.length < 3 ? ' — 더 고르기' : '') : '📷 사진 고르기';
+  }
+  $('#f-photos').addEventListener('change', function(){
+    var files = Array.prototype.slice.call(this.files || []).slice(0, 3 - 사진들.length);
+    this.value = '';
+    if(!files.length){ if(사진들.length >= 3) toast('사진은 3장까지입니다'); return; }
+    $('#pick b').innerHTML = '<span class="spin"></span> 사진 준비 중…';
+    Promise.all(files.map(function(f){ return B.shrink(f).catch(function(e){ toast(e.message); return ''; }); }))
+      .then(function(us){ 사진들 = 사진들.concat(us.filter(Boolean)).slice(0, 3); 사진그리기(); });
+  });
+  $('#thumbs').addEventListener('click', function(e){ var i = e.target.getAttribute('data-i'); if(i !== null){ 사진들.splice(+i, 1); 사진그리기(); } });
+
   function err(m){ $('#err').textContent = m || ''; }
   function toast(m){ var t = $('#toast'); t.textContent = m; t.classList.add('on'); setTimeout(function(){ t.classList.remove('on'); }, 2600); }
 
@@ -387,28 +421,32 @@
     if(!$('#f-agree').checked) return err('개인정보 수집 · 이용에 동의해 주셔야 자료를 보내 드릴 수 있습니다');
     if($('#f-website').value) return;   // 봇
 
-    var btn = $('#submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span> 자료 준비 중…';
-    B.me(m);
+    var btn = $('#submit'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span> ' + (사진들.length ? '사진 올리고 데모 만드는 중…' : '데모 만드는 중…');
     var bizName = (B.BIZ.filter(function(b){ return b[0] === m.biz; })[0] || ['',''])[1];
-    var demo = B.demoUrl(m);
+    /* 서버가 없어도 이 브라우저에서는 올린 사진으로 데모가 보이게 */
+    try { localStorage.setItem('kb_demo_photos', JSON.stringify({ org: m.org, photos: 사진들 })); } catch(e){}
+    m.gift = gift;
 
-    /* 1) 자동 영업 서버 (리드 저장 · 전자책 메일 · 후속 메일 예약) */
+    /* 1) 자동 영업 서버 — 사진 저장 · 데모 주소 · 리드 저장 · 데모 메일 · 순서대로 선물 예약 */
     var 서버 = B.api({ action:'lead', org:m.org, name:m.name, tel:m.tel, email:m.email, biz:m.biz, bizName:bizName,
-      area:m.area, has:m.has, mkt:m.mkt, src:src, demo:demo, page:location.href, ua:navigator.userAgent.slice(0,160) })
-      .then(function(r){ return (r && r.ok && r.id) ? r.id : ''; }).catch(function(){ return ''; });
+      area:m.area, has:m.has, mkt:m.mkt, src:src, gift:gift, photos:사진들, page:location.href, ua:navigator.userAgent.slice(0,160) })
+      .then(function(r){ return (r && r.ok && r.id) ? r : null; }).catch(function(){ return null; });
 
-    /* 2) 자동 영업 서버가 없거나 실패하면 기존 문의 접수 서버로 — 설치 전에도 사장님 메일 · 시트로 들어온다 (알림이 두 번 가지 않게 둘 중 하나만) */
-    var 문의 = 서버.then(function(id){ if(id) return id; return fetch(B.INQUIRY_API, { method:'POST', keepalive:true, headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({
-      name: m.org + ' / ' + m.name, phone: m.tel, email: m.email, service: '무료 자료 신청 (전자책 · 명함 · 데모)',
-      message: '[리드마그넷] 업종: ' + bizName + ' · 지역: ' + (m.area || '-') + ' · 홈페이지: ' + m.has + ' · 소식 수신: ' + (m.mkt ? '동의' : '거부') + ' · 유입: ' + src,
+    /* 2) 서버가 없거나 실패하면 기존 문의 접수 서버로 — 사장님 메일 · 시트로는 들어온다 (알림이 두 번 가지 않게 둘 중 하나만) */
+    var 끝 = 서버.then(function(r){ if(r) return r; return fetch(B.INQUIRY_API, { method:'POST', keepalive:true, headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({
+      name: m.org + ' / ' + m.name, phone: m.tel, email: m.email, service: '무료 데모 신청' + (gift ? ' (' + (gift === 'ebook' ? '전자책' : '전자명함') + ')' : ''),
+      message: '[리드마그넷] 업종: ' + bizName + ' · 지역: ' + (m.area || '-') + ' · 홈페이지: ' + m.has + ' · 사진: ' + 사진들.length + '장(서버 미설치로 저장 안 됨) · 소식 수신: ' + (m.mkt ? '동의' : '거부') + ' · 유입: ' + src,
       at: new Date().toLocaleString('ko-KR', { timeZone:'Asia/Seoul' }), page: location.href, website: ''
-    }) }).then(function(){ return ''; }).catch(function(){ return ''; }); });
+    }) }).then(function(){ return null; }).catch(function(){ return null; }); });
 
-    /* 서버가 느려도 6초 넘게 기다리게 하지 않는다 */
-    var 늦음 = new Promise(function(res){ setTimeout(function(){ res(''); }, 6000); });
-    Promise.race([문의, 늦음]).then(function(id){
-      B.track('lead_submit', { lead: id });
-      location.href = '../welcome/' + (id ? '?l=' + encodeURIComponent(id) : '');
+    /* 사진이 있으면 올리는 데 시간이 걸린다 — 최대 25초, 없으면 8초까지만 기다린다 */
+    var 늦음 = new Promise(function(res){ setTimeout(function(){ res(null); }, 사진들.length ? 25000 : 8000); });
+    Promise.race([끝, 늦음]).then(function(r){
+      if(r && r.photos) m.photoUrls = r.photos;
+      B.me(m);
+      B.track('lead_submit', { lead: r ? r.id : '' });
+      var q = []; if(r) q.push('l=' + encodeURIComponent(r.id)); if(gift) q.push('gift=' + gift);
+      location.href = '../welcome/' + (q.length ? '?' + q.join('&') : '');
     });
   });
 })();

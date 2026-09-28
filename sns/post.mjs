@@ -39,7 +39,7 @@ async function threadsPublish(creationId) {
 }
 async function threadsPost() {
   const post = pick({ ch: 'threads', f: 'next' }); if (!post) return;
-  const text = fill(post.threads, 'threads', post.id);
+  const text = fill(post.threads, 'threads', post.id, post.kw);
   if (text.length > 500) throw new Error(`스레드 글이 500자를 넘습니다 (${post.id}: ${text.length}자)`);
   const imgs = cardUrls(post);
   if (CFG.DRY || !CFG.THREADS_TOKEN) return log(`[${CFG.DRY ? '연습' : '토큰 없음'}] 스레드 ${post.id}\n${text}\n이미지 ${imgs.length}장: ${imgs[0]} …`);
@@ -53,7 +53,7 @@ async function threadsPost() {
 async function threadsTip() {
   const list = tips(); const i = S.threads.tipNext || 0;
   if (i >= list.length) return log('⚠ 스레드 짧은 글을 다 올렸습니다. tips.json 에 추가하세요.');
-  const text = fill(list[i], 'threads', `tip${i + 1}`);
+  const text = fill(list[i], 'threads', `tip${i + 1}`, list[i].includes('전자책') ? '전자책' : '');
   if (CFG.DRY || !CFG.THREADS_TOKEN) return log(`[${CFG.DRY ? '연습' : '토큰 없음'}] 스레드 짧은 글 #${i + 1}\n${text}`);
   const params = { media_type: 'TEXT', text };
   if (text.includes('http')) params.link_attachment = text.match(/https?:\/\/\S+/)[0];   // 링크 미리보기 카드
@@ -76,7 +76,7 @@ async function igWait(id, limit = 40) {
 }
 async function instagramPost() {
   const post = pick({ ch: 'instagram', f: 'next' }); if (!post) return;
-  const caption = fill(post.caption, 'instagram', post.id);
+  const caption = fill(post.caption, 'instagram', post.id, post.kw);
   const imgs = cardUrls(post);
   if (CFG.DRY || !CFG.IG_TOKEN) return log(`[${CFG.DRY ? '연습' : '토큰 없음'}] 인스타 ${post.id}\n${caption}\n이미지 ${imgs.length}장`);
   const children = [];
@@ -100,7 +100,7 @@ async function makeShort(post) {
 }
 async function reelsPost() {
   const post = pick({ ch: 'instagram', f: 'reelNext' }); if (!post) return;
-  const caption = fill(post.caption, 'instagram', post.id + '-reel');
+  const caption = fill(post.caption, 'instagram', post.id + '-reel', post.kw);
   if (CFG.DRY || !CFG.IG_TOKEN) return log(`[${CFG.DRY ? '연습' : '토큰 없음'}] 인스타 릴스 ${post.id}`);
   const file = await makeShort(post), size = fs.statSync(file).size;
   /* 재개 가능 업로드 — 영상을 어딘가에 공개로 올려 둘 필요가 없다 */
@@ -118,7 +118,7 @@ async function youtubePost() {
   const post = pick({ ch: 'youtube', f: 'next' }); if (!post) return;
   const title = post.yt.slice(0, 95);
   const desc = [post.slides.map(s => s[1].replace(/\n/g, ' ')).join(' → '), '',
-    '📘 무료 전자책 「AI가 추천하는 가게의 7가지 조건」 + 우리 가게 홈페이지 데모', fill('{LINK}', 'youtube', post.id), '',
+    '📘 무료 전자책 「AI가 추천하는 가게의 7가지 조건」 + 우리 가게 홈페이지 데모', fill('{LINK}', 'youtube', post.id, post.kw), '',
     '큰길브리지 · 전국 비대면 홈페이지 제작 · 1533-7295', '#Shorts #AI검색 #홈페이지제작 #자영업'].join('\n');
   if (CFG.DRY || !CFG.YT_REFRESH_TOKEN) return log(`[${CFG.DRY ? '연습' : '토큰 없음'}] 유튜브 쇼츠 ${post.id} — ${title}`);
   const file = await makeShort(post), size = fs.statSync(file).size;

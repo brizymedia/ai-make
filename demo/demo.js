@@ -126,6 +126,9 @@ var D = { biz:'etc', org:'', owner:'', slogan:'', sub:'', tel:'', email:'', addr
   var o = window.DEMO || null;
   if (!o) { var h = location.hash.indexOf('#d=')===0 ? location.hash.slice(3) : (new URLSearchParams(location.search).get('d') || ''); if (h) { try { o = JSON.parse(unb64(h)); } catch(e){} } }
   if (o) Object.keys(D).forEach(function(k){ if (o[k] !== undefined && o[k] !== null) D[k] = o[k]; });
+  /* 무료 데모를 신청한 그 브라우저에서는, 서버가 없어도 올린 사진을 보여 준다 (같은 상호일 때만) */
+  if (!(D.photos && D.photos.length)) { try { var 내사진 = JSON.parse(localStorage.getItem('kb_demo_photos') || 'null'); if (내사진 && 내사진.org && 내사진.org === D.org) D.photos = 내사진.photos || []; } catch(e){} }
+  D.photos = (D.photos || []).filter(function(p){ return /^(https:\/\/|data:image\/)/.test(String(p)); }).slice(0, 6);
   if (!T[D.biz]) D.biz = 'etc';
   if (!D.org) D.org = '○○업체';
 })();
@@ -159,16 +162,21 @@ h += '<div class="eyebrow">' + esc(B.eye) + (지역 ? ' · ' + esc(지역) : '')
 h += '<h1>' + esc(D.slogan || B.slogan) + '</h1><p>' + esc(D.sub || B.sub) + '</p>';
 h += '<div class="acts"><a class="btn fill" href="#contact">' + esc(B.cta) + '</a><a class="btn" href="tel:' + 연락.tel + '">전화 ' + esc(D.tel || '') + '</a></div>';
 h += '<div class="stats">' + 강점.map(function(s){ return '<div class="stat"><b>' + esc(s[0]) + '</b><span>' + esc(s[1]) + '</span></div>'; }).join('') + '</div>';
-h += '</div><div class="art">';
+h += '</div><div class="art"' + (D.photos[0] ? ' style="position:relative;overflow:hidden"' : '') + '>';
+if (D.photos[0]) h += '<img src="' + esc(D.photos[0]) + '" alt="' + esc(D.org) + ' 대표 사진" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">';
+else {
 h += '<svg viewBox="0 0 400 440" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="g1" cx="30%" cy="25%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><rect width="400" height="440" fill="url(#g1)"/><g fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.5"><circle cx="300" cy="120" r="70"/><circle cx="300" cy="120" r="110"/><circle cx="300" cy="120" r="150"/></g><g fill="#fff" fill-opacity=".14"><circle cx="90" cy="330" r="90"/><circle cx="330" cy="380" r="60"/></g><g transform="translate(140 150) scale(5)" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".95">' + (I[서비스[0].i] || I.check) + '</g></svg>';
-h += '<span class="ph">📷 대표 사진 자리 — 사장님 사진으로 바뀝니다</span></div></div></header>';
+h += '<span class="ph">📷 대표 사진 자리 — 사장님 사진으로 바뀝니다</span>';
+}
+h += '</div></div></header>';
 
 h += '<section class="sec" id="work"><div class="wrap"><div class="h"><div class="k">SERVICE</div><h2>하는 일</h2><p>' + esc(D.org) + '가 맡는 일입니다. 필요한 것만 골라 문의하세요.</p></div><div class="grid3">';
 h += 서비스.map(function(s){ return '<div class="card"><div class="ic">' + ic(s.i) + '</div><b>' + esc(s.n) + '</b><p>' + esc(s.d) + '</p></div>'; }).join('');
 h += '</div></div></section>';
 
-h += '<section class="sec alt" id="gal"><div class="wrap"><div class="h"><div class="k">GALLERY</div><h2>현장 사진</h2><p>실제 사진이 들어갈 자리입니다. 휴대폰으로 찍은 사진이면 됩니다 — 밝기와 크기는 저희가 맞춥니다.</p></div><div class="gal">';
-h += B.갤러리.map(function(c, i){ var p = D.photos && D.photos[i]; return '<div class="tile">' + (p ? '<img src="' + esc(p) + '" alt="">' : '<span class="cam">' + ic('camera') + '</span>') + '<span class="cap">' + esc(c) + '</span></div>'; }).join('');
+h += '<section class="sec alt" id="gal"><div class="wrap"><div class="h"><div class="k">GALLERY</div><h2>현장 사진</h2><p>' + (D.photos.length ? '보내 주신 사진으로 채웠습니다. 나머지 칸도 휴대폰 사진이면 충분합니다 — 밝기와 크기는 저희가 맞춥니다.' : '실제 사진이 들어갈 자리입니다. 휴대폰으로 찍은 사진이면 됩니다 — 밝기와 크기는 저희가 맞춥니다.') + '</p></div><div class="gal">';
+var 갤사진 = D.photos.length > 1 ? D.photos.slice(1).concat([D.photos[0]]) : D.photos;   /* 대표 사진과 겹치지 않게 두 번째 사진부터 */
+h += B.갤러리.map(function(c, i){ var p = 갤사진[i]; return '<div class="tile">' + (p ? '<img src="' + esc(p) + '" alt="">' : '<span class="cam">' + ic('camera') + '</span>') + '<span class="cap">' + esc(c) + '</span></div>'; }).join('');
 h += '</div><p class="galnote">📷 사진 자리 6칸 — 「천막 설치 현장」처럼 어떤 사진이 좋은지 이름을 붙여 두었습니다.</p></div></section>';
 
 h += '<section class="sec" id="about"><div class="wrap"><div class="h"><div class="k">ABOUT</div><h2>' + esc(D.org) + ' 소개</h2></div><div class="about"><div class="txt">';
