@@ -203,6 +203,54 @@
     "name": "사장님을 위한 AI 활용 — 글 · 사진 · 영상",
     "keyword": "{city} AI 강의",
     "angle": "실제로 해 볼 수 있는 작업 순서. 과장 금지"
+   },
+   {
+    "id": "blog-vs-home",
+    "name": "네이버 블로그와 홈페이지 둘 다 필요할까",
+    "keyword": "{city} 블로그 홈페이지",
+    "angle": "채널 역할 비교, 확인된 기능만"
+   },
+   {
+    "id": "kakao-channel",
+    "name": "카카오톡 채널과 홈페이지 문의 연결",
+    "keyword": "{city} 카카오톡 채널",
+    "angle": "카카오 비즈니스 공식 도움말 기준"
+   },
+   {
+    "id": "photo-guide",
+    "name": "가게 사진 직접 찍는 법 — 홈페이지 · 플레이스용",
+    "keyword": "{city} 가게 사진 촬영",
+    "angle": "휴대폰 촬영 팁, 저작권 · 초상권 주의"
+   },
+   {
+    "id": "review-page",
+    "name": "후기 대신 신뢰 주는 홈페이지 구성",
+    "keyword": "{city} 홈페이지 신뢰",
+    "angle": "표시광고법 · 후기 조작 금지(공정위) 공식 출처"
+   },
+   {
+    "id": "local-seo",
+    "name": "지역 이름으로 검색될 때 — 지역 키워드 페이지",
+    "keyword": "{city} 지역 검색 노출",
+    "angle": "도어웨이 페이지 금지(구글 공식) 포함"
+   },
+   {
+    "id": "gov-support",
+    "name": "소상공인 온라인 판로 · 디지털 전환 지원사업 찾는 법",
+    "keyword": "{city} 소상공인 지원사업",
+    "angle": "기업마당 · 소진공 공식 공고만, 금액 쓰지 않음"
+   },
+   {
+    "id": "pdf-to-web",
+    "name": "전단지 · 카탈로그를 홈페이지로 옮기는 법",
+    "keyword": "{city} 카탈로그 홈페이지",
+    "angle": "구성 요령"
+   },
+   {
+    "id": "youtube-channel",
+    "name": "가게 유튜브 채널 시작 체크리스트",
+    "keyword": "{city} 유튜브 홍보",
+    "angle": "YouTube 공식 고객센터 기준"
    }
   ]
  }
