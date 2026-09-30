@@ -25,7 +25,7 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
-const VERSION    = '2026-09-30a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
+const VERSION    = '2026-10-01a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
 
 
@@ -38,7 +38,33 @@ const VERSION    = '2026-09-30a';                // 배포 확인용 — 코드�
  */
 function 브랜드(d) {
   const 글 = String((d && d.page) || '') + ' ' + String((d && d.service) || '');
+  if (/baro-event|바로기획/.test(글)) return '바로기획';
   return /xn--wk0bn7yi8h24iszc|큰길이벤트/.test(글) ? '큰길이벤트기획' : BRAND;
+}
+
+/**
+ * 고객사 문의는 그 회사 대표에게도 같이 보낸다 (큰길브리지는 늘 받는다).
+ * 바로기획 — 홈페이지 brizymedia.github.io/baro-event, 대표 김선호.
+ */
+const 고객사 = {
+  '바로기획': { mail: 'mot2256@naver.com', quote: 'https://brizymedia.github.io/baro-event/quote.html' }
+};
+function 받는사람(d) {
+  const 곳 = 고객사[브랜드(d)];
+  return 곳 ? TO_EMAIL + ',' + 곳.mail : TO_EMAIL;
+}
+
+/**
+ * 고객사 견적서(큰길이벤트형 quote.html) 주소 — #q={i:[단체, 담당, 연락처, 이메일, 행사명, 날짜, 장소, 인원, 메모]}
+ * quote.html 의 decodeState() 와 모양이 같아야 한다.
+ */
+function 고객사견적서주소(d, 곳) {
+  const 이름 = String(d.name || '').trim();
+  const m = 이름.match(/^(.*?)\s*\((.+)\)$/);            // 「홍길동 (○○교회)」 꼴이면 둘로 나눈다
+  const i = [m ? m[2] : '', m ? m[1] : 이름, d.phone || d.tel || '', d.email || '',
+             d.title || d.type || '', d.date || '', d.place || '', d.people || '', String(d.message || '').slice(0, 800)];
+  const 코드 = Utilities.base64EncodeWebSafe(JSON.stringify({ i: i, r: [] }), Utilities.Charset.UTF_8).replace(/=+$/, '');
+  return 곳.quote + '?admin=1#q=' + 코드;
 }
 
 
@@ -86,6 +112,8 @@ function 데모주소(d) {
 
 /** 다음 단계 단추 둘 — 데모 신청이면 데모가 앞(노랑), 아니면 견적서가 앞 */
 function 다음단추(d) {
+  const 곳 = 고객사[브랜드(d)];
+  if (곳) return '<a href="' + 고객사견적서주소(d, 곳) + '" style="display:inline-block;background:#E8B84B;color:#07090F;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin:0 8px 8px 0">📄 이 문의로 견적서 작성</a>';
   const 데모 = /데모/.test(String(d.service || '') + ' ' + String(d.message || ''));
   const 노랑 = 'display:inline-block;background:#E8B84B;color:#07090F;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin:0 8px 8px 0';
   const 흰색 = 'display:inline-block;background:#fff;border:1px solid #E8B84B;color:#8A6512;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:10px;margin:0 8px 8px 0';
@@ -226,7 +254,7 @@ function doPost(e) {
       '</div>';
 
     MailApp.sendEmail({
-      to: TO_EMAIL,
+      to: 받는사람(d),
       subject: '[' + 브랜드(d) + ' 문의] ' + (d.name || '이름없음') + ' 님' + (d.total ? ' · ' + d.total : ''),
       htmlBody: html,
       name: 브랜드(d) + ' 문의접수',

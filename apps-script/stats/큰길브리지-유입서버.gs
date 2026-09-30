@@ -17,7 +17,7 @@ var 폴더이름 = '큰길브리지 유입';
 var 파일이름 = '유입 기록';
 var 장이름   = '방문 기록';
 var 머리     = ['시각', '사이트', '경로', '제목', '유입', '출처', '검색어', 'utm_source', 'utm_medium', 'utm_campaign', '기기', '방문자', '새방문', '언어', '화면폭'];
-var 사이트이름 = { 'ai-make': '큰길브리지', 'keungil': '큰길이벤트', 'event-korea': '이벤트 코리아' };
+var 사이트이름 = { 'ai-make': '큰길브리지', 'keungil': '큰길이벤트', 'event-korea': '이벤트 코리아', 'baro': '바로기획' };
 var 우리도메인 = ['ai-make.co.kr', 'event-korea.co.kr', 'event-korea.com', 'xn--wk0bn7yi8h24iszc.com', 'brizymedia.github.io'];
 var 캐시초   = 300;      // 집계는 5분 캐시
 var 목록최대 = 40;       // 표 하나에 최대 몇 줄
@@ -70,6 +70,7 @@ function 사이트키_(s, host) {
   if (/ai-make/.test(host)) return 'ai-make';
   if (/event-korea/.test(host)) return 'event-korea';
   if (/wk0bn7yi8h24iszc/.test(host)) return 'keungil';
+  if (/baro-event/.test(host)) return 'baro';
   return s || '?';
 }
 
