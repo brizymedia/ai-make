@@ -25,8 +25,21 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
-const VERSION    = '2026-09-21a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
+const VERSION    = '2026-09-30a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
+
+
+/**
+ * 어느 회사로 온 문의인가.
+ *
+ * 이 서버 하나를 큰길브리지와 큰길이벤트기획이 함께 쓴다.
+ * 문의가 온 페이지 주소(page)나 필요 서비스 칸에 큰길이벤트 표시가 있으면
+ * 메일 제목 · 보내는 이름을 큰길이벤트기획으로 바꾼다. 그래야 메일함에서 바로 갈린다.
+ */
+function 브랜드(d) {
+  const 글 = String((d && d.page) || '') + ' ' + String((d && d.service) || '');
+  return /xn--wk0bn7yi8h24iszc|큰길이벤트/.test(글) ? '큰길이벤트기획' : BRAND;
+}
 
 
 /**
@@ -207,16 +220,16 @@ function doPost(e) {
         '</p>' +
 
         '<p style="color:#8A8A93;font-size:12.5px;margin-top:20px;border-top:1px solid #eee;padding-top:12px">' +
-          BRAND + ' 홈페이지 문의폼에서 자동 발송된 메일입니다.<br>' +
+          브랜드(d) + ' 홈페이지 문의폼에서 자동 발송된 메일입니다.<br>' +
           (d.page ? '<span style="color:#B4B4BC;font-size:11.5px">' + esc(d.page) + '</span>' : '') +
         '</p>' +
       '</div>';
 
     MailApp.sendEmail({
       to: TO_EMAIL,
-      subject: '[' + BRAND + ' 문의] ' + (d.name || '이름없음') + ' 님' + (d.total ? ' · ' + d.total : ''),
+      subject: '[' + 브랜드(d) + ' 문의] ' + (d.name || '이름없음') + ' 님' + (d.total ? ' · ' + d.total : ''),
       htmlBody: html,
-      name: BRAND + ' 문의접수',
+      name: 브랜드(d) + ' 문의접수',
       replyTo: d.email || undefined
     });
 
