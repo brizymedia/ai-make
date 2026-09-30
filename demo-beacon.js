@@ -32,7 +32,7 @@
   /* ── 알림 서버 주소 ──────────────────────────────────
      앱스 스크립트를 「웹 앱」으로 배포하면 나오는 /exec 주소.
      비어 있으면 이 조각은 아무 일도 하지 않는다.        */
-  var 서버 = '';
+  var 서버 = 'https://script.google.com/macros/s/AKfycbw59179pAY4kVRhN8NRUbqWrf2T8ag0pMV3wtZgDe53Pssga8P8VypY139j0uAC9RdC/exec';
   /* ─────────────────────────────────────────────────── */
 
   if (!서버) return;
