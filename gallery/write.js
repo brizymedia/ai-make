@@ -381,7 +381,7 @@
       '',
       (d.결과 ? '  <h2>결과</h2>\n  <p>' + esc(d.결과) + '</p>\n' : ''),
       (d.고객말 ? '  <blockquote>' + esc(d.고객말) + '</blockquote>\n' : ''),
-      '  <h2>' + (d.지역 || "전국 어디서든") + ' ' + 유형[d.유형].일 + '이 필요하시면</h2>',
+      '  <h2>' + (d.지역 || "전국 어디서든") + ' ' + 유형[d.유형].일 + 조사(유형[d.유형].일, '이', '가') + ' 필요하시면</h2>',
       '  <p>전국 어디서든 전화와 카카오톡으로 진행합니다. 촬영이나 대면 강의가 필요하면 ' + 방문지역줄 + '은 직접 찾아뵙습니다. 지금 하고 계신 일만 말씀해 주시면 필요한 것과 필요 없는 것을 솔직하게 알려드립니다.</p>',
       '',
       '  <div class="cta">',
@@ -531,6 +531,14 @@
     try { var t = "__t"; window.localStorage.setItem(t, "1"); window.localStorage.removeItem(t); return window.localStorage; }
     catch (e) { return null; }
   })();
+  /* 한글 조사 — 마지막 글자에 받침이 있으면 앞것(이 · 을 · 은), 없으면 뒷것(가 · 를 · 는). 「홈페이지가」 · 「홍보영상이」 */
+  function 조사(말, 받침있음, 받침없음) {
+    var s = String(말 || "").trim(); if (!s) return 받침없음;
+    var c = s.charCodeAt(s.length - 1);
+    if (c < 0xAC00 || c > 0xD7A3) return 받침있음;
+    return (c - 0xAC00) % 28 ? 받침있음 : 받침없음;
+  }
+
   var 키주소 = "kb-pub-url", 키암호 = "kb-pub-pw", 키기억 = "kb-pub-save";
   /* 갤러리 발행 서버(앱스 스크립트) /exec 주소 — edit.js 가 쓰는 것과 같은 서버. 비밀번호는 그 프로젝트의 스크립트 속성 WRITE_PW. */
   var 서버기본 = "https://script.google.com/macros/s/AKfycbwvndCS4_95zXdXvVd2r4gCCUivUDDa4Ik6r942mtuexUp0VljTqEpOm73xf4WLbsYv2w/exec";
