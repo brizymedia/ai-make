@@ -4,7 +4,7 @@
    이름·전화·IP 같은 개인정보는 없다. 서버 주소가 비어 있으면 아무것도 하지 않는다.
    내 방문을 빼고 싶으면 아무 페이지든 ?me=1 을 붙여 한 번 열면 그 브라우저는 이후 기록되지 않는다. */
 (function () {
-  var 서버 = '';   // 유입 서버 /exec 주소 — 배포 뒤 여기 한 곳만 채운다
+  var 서버 = 'https://script.google.com/macros/s/AKfycby1LI49QEV1T519lkoSUJwR8vjsAibSR8YgequAsJWCPO1LfwLjMuV9mL0HMHsx-GAE/exec';   // 유입 서버 /exec 주소 — 배포 뒤 여기 한 곳만 채운다
 
   try {
     if (!서버) return;
