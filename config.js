@@ -62,12 +62,16 @@ window.BRIDGE = {
   OPTIONS: [
     ['도메인 등록 + 연결', 30000], ['갤러리 + 인스타·블로그 자동 연동', 50000],
     ['네이버·구글 AI 검색 세팅', 50000], ['자동 계약서 작성·서명', 50000],
-    ['온라인 예약·신청 시스템', 150000], ['쇼핑몰·결제 연동', 300000],
-    ['AI 챗봇 상담', 200000], ['다국어(영·중·일)', 200000],
+    ['온라인 예약·신청 시스템', 150000, 'basic premium'], ['쇼핑몰·결제 연동', 300000],
+    ['AI 챗봇 상담', 200000, 'basic premium'], ['다국어(영·중·일)', 200000],
     ['모바일 명함 + 콜백 문자', 50000], ['AI 검색 최적화 작업 (블로그글 10개 추가)', 50000],
-    ['3D 무대시안 만들기', 100000],
+    ['3D 무대시안 만들기', 100000, 'enterprise'],
     ['로고 + 브랜드 키트', 150000], ['상세 촬영 대행', 250000],
-    ['페이지 추가', 30000], ['숏폼 홍보영상', 100000], ['AI 1:1 강의', 100000]
+    ['페이지 추가', 30000], ['숏폼 홍보영상', 100000], ['AI 1:1 강의', 100000],
+    /* 회사형 전용 — 위쪽 줄의 번호가 밀리지 않게 맨 끝에 둔다 */
+    ['온라인 예약·신청 시스템 (회사형)', 250000, 'enterprise'], ['AI 챗봇 상담 (회사형)', 350000, 'enterprise'],
+    ['온라인 마케팅 패키지 10회 · 월 결제 (월 150,000원)', 0, 'enterprise'], ['온라인 마케팅 패키지 10회 · 연간 케어팩 (12개월 선결제)', 1500000, 'enterprise'],
+    ['온라인 마케팅 패키지 25회 · 월 결제 (월 300,000원)', 0, 'enterprise'], ['온라인 마케팅 패키지 25회 · 연간 케어팩 (12개월 선결제)', 3000000, 'enterprise']
   ],
   /* 업종 — 데모 생성기(demo/demo.js)의 업종 키와 같아야 데모가 업종에 맞게 그려진다 */
   BIZ: [
@@ -85,6 +89,8 @@ if (!/(^|\.)ai-make\.co\.kr$/.test(location.hostname)) {
 /* ── 공용 도구 ── */
 (function (B) {
   B.won = function (n) { return (Number(n) || 0).toLocaleString('ko-KR') + '원'; };
+  /* 월 결제 항목(단가 0)의 월 금액 — 이름의 「월 결제 (월 150,000원)」에서 읽는다. 아니면 0 */
+  B.monthlyOf = function (n) { n = String(n || ''); var k = '월 결제 (월 ', a = n.indexOf(k); if (a < 0) return 0; var b = n.indexOf('원)', a); if (b < 0) return 0; return Number(n.slice(a + k.length, b).split(',').join('')) || 0; };
   B.esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); };
   B.b64u = function (s) { return btoa(unescape(encodeURIComponent(s))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
   B.unb64u = function (s) { var t = String(s).replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return decodeURIComponent(escape(atob(t))); };

@@ -309,11 +309,17 @@ var 옵션들 = [
   { n:'자동 계약서 작성·서명', p:50000, plans:'basic premium enterprise' },
   { n:'모바일 명함 + 콜백 문자', p:50000, plans:'basic premium' },
   { n:'AI 검색 최적화 작업 (블로그글 10개 추가)', p:50000, plans:'premium' },
-  { n:'온라인 예약·신청 시스템', p:150000, plans:'premium enterprise' },
+  { n:'온라인 예약·신청 시스템', p:150000, plans:'premium' },
+  { n:'온라인 예약·신청 시스템 (회사형)', p:250000, plans:'enterprise' },
   { n:'쇼핑몰·결제 연동', p:300000, plans:'premium enterprise' },
-  { n:'AI 챗봇 상담', p:200000, plans:'premium enterprise' },
+  { n:'AI 챗봇 상담', p:200000, plans:'premium' },
+  { n:'AI 챗봇 상담 (회사형)', p:350000, plans:'enterprise' },
   { n:'다국어(영·중·일)', p:200000, plans:'premium enterprise' },
   { n:'3D 무대시안 만들기', p:100000, plans:'enterprise' },
+  { n:'온라인 마케팅 패키지 10회 · 월 결제 (월 150,000원)', p:0, plans:'enterprise' },
+  { n:'온라인 마케팅 패키지 10회 · 연간 케어팩 (12개월 선결제)', p:1500000, plans:'enterprise' },
+  { n:'온라인 마케팅 패키지 25회 · 월 결제 (월 300,000원)', p:0, plans:'enterprise' },
+  { n:'온라인 마케팅 패키지 25회 · 연간 케어팩 (12개월 선결제)', p:3000000, plans:'enterprise' },
   { n:'로고 + 브랜드 키트', p:150000, plans:'basic premium' },
   { n:'상세 촬영 대행', p:250000, plans:'basic premium enterprise' }
 ];
@@ -344,6 +350,12 @@ function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ retu
 function b64u(s){ return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function unb64(t){ t=t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; return decodeURIComponent(escape(atob(t))); }
 function 원(n){ return (Number(n)||0).toLocaleString('ko-KR')+'원'; }
+/* 온라인 마케팅 패키지 — 월 결제 항목은 합계에 넣지 않고(단가 0), 이름의 「월 결제 (월 150,000원)」에서 월 금액을 읽는다 */
+function 월액(n){ n = String(n||''); var k = '월 결제 (월 ', a = n.indexOf(k); if (a < 0) return 0; var b = n.indexOf('원)', a); if (b < 0) return 0; return Number(n.slice(a + k.length, b).split(',').join('')) || 0; }
+var 마케팅설명 = { '온라인 마케팅 패키지 10회': '매월 네이버 블로그 기사 10회 · 인스타(페이스북 · 스레드) 홍보 10회 · 정보 칼럼 10회 · AI검색 트래픽 관리(매월 보고서 제출)', '온라인 마케팅 패키지 25회': '매월 네이버 블로그 기사 25회 · 인스타(페이스북 · 스레드) 홍보 25회 · 정보 칼럼 25회 · AI검색 트래픽 관리(격주 보고서 제출)' };
+function 항목설명(n){ n = String(n||''); for (var k in 마케팅설명) { if (n.indexOf(k) === 0) return 마케팅설명[k]; } return ''; }
+function 항목값(i){ var m = 월액(i.n); return m ? '월 ' + 원(m) : 원(i.q*i.p); }
+function 옵션값글(o){ var m = 월액(o.n); return m ? '월 ' + 원(m) : '+' + 원(o.p); }
 function 날짜글(d){ var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
 function 오늘(){ return 날짜글(new Date()); }
 function toast(m){ var t=$('#toast'); t.textContent=m; t.className='toast on'; clearTimeout(toast.t); toast.t=setTimeout(function(){t.className='toast';},2600); }
@@ -374,7 +386,7 @@ function 라디오(id, list, key){
 function 폼그리기(){
   $('#f-biz').innerHTML = Object.keys(업종들).map(function(k){ return '<option value="'+k+'">'+esc(업종들[k][0])+'</option>'; }).join('');
   $('#f-plans').innerHTML = Object.keys(PLANS).map(function(k){ var p=PLANS[k]; return '<label class="plan" data-k="'+k+'"><input type="radio" name="plan" value="'+k+'"><span><b>'+p.name+'</b><small>'+esc(p.설명)+'</small></span><span class="pr">'+원(p.price)+'~</span></label>'; }).join('');
-  $('#f-opts').innerHTML = 옵션들.map(function(o){ return '<label class="opt" data-plans="'+o.plans+'"><input type="checkbox" value="'+esc(o.n)+'"><span class="n">'+esc(o.n)+'</span><span class="p">+'+원(o.p)+'</span></label>'; }).join('') +
+  $('#f-opts').innerHTML = 옵션들.map(function(o){ return '<label class="opt" data-plans="'+o.plans+'"><input type="checkbox" value="'+esc(o.n)+'"><span class="n">'+esc(o.n)+'</span><span class="p">'+옵션값글(o)+'</span></label>'; }).join('') +
     수량들.map(function(s){ return '<div class="opt" data-plans="'+s.plans+'" data-qty="'+s.k+'"><span class="n">'+esc(s.n)+' <span class="p">'+s.unit+'당 +'+원(s.p)+'</span></span><span class="qty"><button type="button" data-step="-1" aria-label="줄이기">−</button><span data-q>0</span><button type="button" data-step="1" aria-label="늘리기">+</button></span></div>'; }).join('');
   칩('f-goals', 목적들, 'goals'); 칩('f-pages', 내용들, 'pages'); 칩('f-assets', 자료들, 'assets'); 칩('f-mood', 분위기들, 'mood');
   라디오('f-kind', 구분들, 'kind'); 라디오('f-domain', 도메인들, 'domain'); 라디오('f-pay', 결제들, 'pay'); 라디오('f-contact', 연락들, 'contact');
@@ -385,7 +397,7 @@ function 폼그리기(){
   $('#f-target').addEventListener('input', function(){ O.target = this.value; O.targetTouched = true; 그리기(); });
   $('#f-open').addEventListener('change', function(){ O.open = this.value; 그리기(); });
   $$('#f-plans input').forEach(function(r){ r.addEventListener('change', function(){ O.plan = r.value; 색(); 옵션보이기(); 그리기(); }); });
-  $$('#f-opts input[type=checkbox]').forEach(function(c){ c.addEventListener('change', function(){ O.opts = $$('#f-opts input[type=checkbox]:checked').map(function(x){ return x.value; }); 색(); 그리기(); }); });
+  $$('#f-opts input[type=checkbox]').forEach(function(c){ c.addEventListener('change', function(){ if (c.checked && c.value.indexOf('온라인 마케팅 패키지') === 0) $$('#f-opts input[type=checkbox]').forEach(function(x){ if (x !== c && x.value.indexOf('온라인 마케팅 패키지') === 0) x.checked = false; }); O.opts = $$('#f-opts input[type=checkbox]:checked').map(function(x){ return x.value; }); 색(); 그리기(); }); });
   $$('#f-opts [data-qty]').forEach(function(row){
     var k = row.dataset.qty, q = row.querySelector('[data-q]');
     /* 이 줄의 단추만. $$ 는 두 번째 인자를 안 받아서 문서의 모든 단추(주문 보내기까지)에 붙던 버그가 있었다 */
@@ -424,10 +436,12 @@ function 옵션보이기(){
 function 그리기(){
   var items = 항목들(), sum = 합계(), pk = 플랜();
   $('#s-org').textContent = O.org || '상호를 적어 주세요';
-  $('#s-items').innerHTML = items.length ? items.map(function(i){ return '<li><span>'+esc(i.n)+(i.q>1?' ×'+i.q:'')+'</span><span>'+원(i.q*i.p)+'</span></li>'; }).join('') : '<li><span style="opacity:.6">규모를 고르면 계산됩니다</span><span></span></li>';
+  $('#s-items').innerHTML = items.length ? items.map(function(i){ return '<li><span>'+esc(i.n)+(i.q>1?' ×'+i.q:'')+'</span><span>'+항목값(i)+'</span></li>'; }).join('') : '<li><span style="opacity:.6">규모를 고르면 계산됩니다</span><span></span></li>';
   $('#s-total').textContent = 원(sum);
   $('#s-vat').textContent = sum ? '부가세 포함 ' + 원(Math.round(sum*1.1)) + ' · 선금 50% ' + 원(Math.round(sum/2)) : '';
+  var 월마케팅 = items.reduce(function(a,i){ return a + 월액(i.n); }, 0);
   $('#s-mo').textContent = pk ? '월 관리 ' + 원(PLANS[pk].monthly) + ' (호스팅 · 도메인 · 보안 · 수정 지원' + (PLANS[pk].free ? ' · 첫 '+PLANS[pk].free+' 무료' : '') + ')' : '';
+  if (월마케팅) $('#s-mo').textContent += ' · 온라인 마케팅 패키지 월 ' + 원(월마케팅) + ' 별도';
   try { history.replaceState(null, '', location.pathname + (MODE==='admin'?'?admin=1':'') + 주소해시()); } catch(e){}
 }
 /* 주소에는 적은 것만 담는다 — 빈 칸까지 통째로 담으면 링크가 수백 글자가 된다. 빠진 키는 열 때 기본값으로 채워진다 */
@@ -471,7 +485,7 @@ function 요약글(){
   L.push('▶ 관리자 주문서 열기 (기획서 · 견적서 만들기 단추 있음):'); L.push(주문링크(true)); L.push('');
   L.push('■ 업체'); L.push('상호: '+O.org); L.push('업종: '+업종들[O.biz][0]); L.push('담당: '+O.owner+' · '+O.tel+' · '+O.email); if(O.addr) L.push('지역·주소: '+O.addr); if(O.areas) L.push('일 받는 지역: '+O.areas); if(O.kind) L.push('구분: '+O.kind+(O.bizno?' · '+O.bizno:''));
   L.push(''); L.push('■ 홈페이지'); L.push('규모: '+(pk?PLANS[pk].name+' '+원(PLANS[pk].price):'미정'));
-  항목들().slice(1).forEach(function(i){ L.push('옵션: '+i.n+(i.q>1?' ×'+i.q:'')+' — '+원(i.q*i.p)); });
+  항목들().slice(1).forEach(function(i){ L.push('옵션: '+i.n+(i.q>1?' ×'+i.q:'')+' — '+항목값(i)); });
   if(O.goals.length) L.push('목적: '+O.goals.join(', ')); if(O.target) L.push('타깃: '+O.target); if(O.pages.length) L.push('넣을 내용: '+O.pages.join(', '));
   L.push(''); L.push('■ 자료'); if(O.assets.length) L.push('가진 자료: '+O.assets.join(', ')); if(O.sns) L.push('기존 사이트·SNS: '+O.sns); var refs=O.refs.filter(Boolean); if(refs.length) L.push('참고 사이트: '+refs.join(' , ')); if(O.refwhy) L.push('좋았던 점: '+O.refwhy);
   L.push(''); L.push('■ 도메인: '+(O.domain||'미정')+(O.domainname?' — '+O.domainname:''));
@@ -510,7 +524,7 @@ function 보내기(){
   var payload = {
     name: O.org + ' / ' + O.owner, phone: O.tel, email: O.email, service: '홈페이지 주문서 (' + PLANS[플랜()].name + ')',
     message: 요약글(), total: 원(합계()) + ' (VAT 별도)',
-    quote: items.map(function(i){ return '· ' + i.n + (i.q>1?' ×'+i.q:'') + ' — ' + 원(i.q*i.p); }).join('\n'),
+    quote: items.map(function(i){ return '· ' + i.n + (i.q>1?' ×'+i.q:'') + ' — ' + 항목값(i); }).join('\n'),
     plan: 플랜(), items: items.map(function(i){ return { n: i.n + (i.q>1?' ×'+i.q:''), p: i.q*i.p }; }),
     at: O.at, page: 주문링크(true), website: ''
   };
@@ -540,7 +554,7 @@ function 실패(err){
 function 관리자그리기(){
   var pk = 플랜(), rows = [
     ['접수', O.at || '-'], ['상호', O.org], ['업종', 업종들[O.biz][0]], ['담당', O.owner + ' · ' + O.tel + ' · ' + O.email], ['지역·주소', O.addr], ['일 받는 지역', O.areas], ['구분', (O.kind||'') + (O.bizno ? ' · ' + O.bizno : '')],
-    ['규모', pk ? PLANS[pk].name + ' ' + 원(PLANS[pk].price) : '미정'], ['옵션', 항목들().slice(1).map(function(i){ return i.n + (i.q>1?' ×'+i.q:'') + ' (' + 원(i.q*i.p) + ')'; }).join(', ')], ['합계', 원(합계()) + ' (VAT 별도) · 부가세 포함 ' + 원(Math.round(합계()*1.1))],
+    ['규모', pk ? PLANS[pk].name + ' ' + 원(PLANS[pk].price) : '미정'], ['옵션', 항목들().slice(1).map(function(i){ return i.n + (i.q>1?' ×'+i.q:'') + ' (' + 항목값(i) + ')'; }).join(', ')], ['합계', 원(합계()) + ' (VAT 별도) · 부가세 포함 ' + 원(Math.round(합계()*1.1))],
     ['목적', O.goals.join(', ')], ['타깃', O.target], ['넣을 내용', O.pages.join(', ')], ['가진 자료', O.assets.join(', ')], ['기존 사이트·SNS', O.sns], ['참고 사이트', O.refs.filter(Boolean).join(' , ') + (O.refwhy ? ' — ' + O.refwhy : '')],
     ['도메인', (O.domain||'') + (O.domainname ? ' — ' + O.domainname : '')], ['한 줄 소개', O.slogan], ['소개', O.intro], ['하는 일', O.services], ['분위기', O.mood.join(', ') + (O.colors ? ' · 색: ' + O.colors : '') + (O.avoid ? ' · 피할 것: ' + O.avoid : '')],
     ['오픈 희망', O.open], ['결제', O.pay], ['연락', (O.contact||'') + (O.time ? ' · ' + O.time : '')], ['하실 말씀', O.note]

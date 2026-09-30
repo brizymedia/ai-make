@@ -704,6 +704,10 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 .opt .on{font-size:.85rem;font-weight:600;letter-spacing:-.02em;display:block;line-height:1.3}
 .opt .op{font-family:var(--f-mono);font-size:.66rem;color:var(--gold);margin-top:3px;display:block}
 .opt .op.free{color:var(--teal)}
+.opt .ds{display:block;margin-top:5px;font-size:.7rem;line-height:1.55;color:var(--txt-mute);font-weight:400;letter-spacing:-.01em}
+.mrow{font-size:.8rem;margin-top:10px;color:var(--gold);font-weight:600}
+.mrow b{font-weight:800}
+.mrow[hidden]{display:none}
 /* locked option (케어팩에 포함된 항목) */
 .opt.is-locked{opacity:.45;cursor:not-allowed}
 .opt.is-locked:hover{transform:none;border-color:var(--line)}
@@ -1690,8 +1694,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>AI 마케팅 실무 강의 영상 증정</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>매월 자체 블로그 홍보기사 <b>10회</b></li>
           <li class="li-note"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="5"/></svg>AI 활용 강의 1기 모집 중</li>
-          <li class="li-opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>옵션 · 온라인 예약 · 신청 시스템 연동 <b>+15만원</b></li>
-          <li class="li-opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>옵션 · AI 챗봇 상담 설치 <b>+20만원</b></li>
+          <li class="li-opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>옵션 · 온라인 예약 · 신청 시스템 연동 <b>+25만원</b></li>
+          <li class="li-opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>옵션 · AI 챗봇 상담 설치 <b>+35만원</b></li>
+          <li class="li-opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span>옵션 · 온라인 마케팅 패키지 10회 <b>월 15만원</b> · 연간 케어팩 <b>150만원</b></span></li>
+          <li class="li-opt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span>옵션 · 온라인 마케팅 패키지 25회 <b>월 30만원</b> · 연간 케어팩 <b>300만원</b></span></li>
         </ul>
         <button class="pick" type="button">이 플랜으로 견적내기</button>
       </article>
@@ -1736,20 +1742,30 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">AI 검색 최적화 작업 (블로그글 10개 추가)</span><span class="op">+50,000원</span></span>
             </label>
-            <label class="opt" data-plans="premium enterprise">
+            <label class="opt" data-plans="premium">
               <input type="checkbox" data-addon="온라인 예약·신청 시스템" data-cost="150000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">온라인 예약 · 신청 시스템</span><span class="op">+150,000원</span></span>
+            </label>
+            <label class="opt" data-plans="enterprise">
+              <input type="checkbox" data-addon="온라인 예약·신청 시스템 (회사형)" data-cost="250000">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">온라인 예약 · 신청 시스템</span><span class="op">+250,000원</span></span>
             </label>
             <label class="opt" data-plans="premium enterprise">
               <input type="checkbox" data-addon="쇼핑몰·결제 연동" data-cost="300000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">쇼핑몰 · 결제 연동</span><span class="op">+300,000원</span></span>
             </label>
-            <label class="opt" data-plans="premium enterprise">
+            <label class="opt" data-plans="premium">
               <input type="checkbox" data-addon="AI 챗봇 상담" data-cost="200000">
               <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
               <span class="info"><span class="on">AI 챗봇 상담 설치</span><span class="op">+200,000원</span></span>
+            </label>
+            <label class="opt" data-plans="enterprise">
+              <input type="checkbox" data-addon="AI 챗봇 상담 (회사형)" data-cost="350000">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">AI 챗봇 상담 설치</span><span class="op">+350,000원</span></span>
             </label>
             <label class="opt" data-plans="premium enterprise">
               <input type="checkbox" data-addon="다국어(영·중·일)" data-cost="200000">
@@ -1811,6 +1827,32 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
         </div>
 
         <div class="opt-group">
+          <span class="opt-label">온라인 마케팅 패키지 · 회사형 (매월 관리)</span>
+          <div class="opts">
+            <label class="opt" data-plans="enterprise">
+              <input type="checkbox" data-addon="온라인 마케팅 패키지 10회 · 월 결제 (월 150,000원)" data-cost="0" data-monthly="150000" data-xor="mkt">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">온라인 마케팅 패키지 10회 · 월 결제</span><span class="op">월 150,000원</span><span class="ds">매월 네이버 블로그 기사 10회 · 인스타(페이스북 · 스레드) 홍보 10회 · 정보 칼럼 10회 · AI검색 트래픽 관리(매월 보고서 제출)</span></span>
+            </label>
+            <label class="opt" data-plans="enterprise">
+              <input type="checkbox" data-addon="온라인 마케팅 패키지 10회 · 연간 케어팩 (12개월 선결제)" data-cost="1500000" data-save="300000" data-xor="mkt">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">온라인 마케팅 패키지 10회 · 연간 케어팩</span><span class="op">+1,500,000원 · 300,000원 절약</span><span class="ds">12개월 선결제 — 12개월을 10개월 가격으로 (월 15만원 × 12 = 180만원). 내용은 월 결제와 같습니다</span></span>
+            </label>
+            <label class="opt" data-plans="enterprise">
+              <input type="checkbox" data-addon="온라인 마케팅 패키지 25회 · 월 결제 (월 300,000원)" data-cost="0" data-monthly="300000" data-xor="mkt">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">온라인 마케팅 패키지 25회 · 월 결제</span><span class="op">월 300,000원</span><span class="ds">매월 네이버 블로그 기사 25회 · 인스타(페이스북 · 스레드) 홍보 25회 · 정보 칼럼 25회 · AI검색 트래픽 관리(격주 보고서 제출)</span></span>
+            </label>
+            <label class="opt" data-plans="enterprise">
+              <input type="checkbox" data-addon="온라인 마케팅 패키지 25회 · 연간 케어팩 (12개월 선결제)" data-cost="3000000" data-save="600000" data-xor="mkt">
+              <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>
+              <span class="info"><span class="on">온라인 마케팅 패키지 25회 · 연간 케어팩</span><span class="op">+3,000,000원 · 600,000원 절약</span><span class="ds">12개월 선결제 — 12개월을 10개월 가격으로 (월 30만원 × 12 = 360만원). 내용은 월 결제와 같습니다</span></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="opt-group">
           <span class="opt-label">연간 케어팩 · 선결제 할인</span>
 
           <label class="carepack" id="carePack">
@@ -1839,6 +1881,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
             <div class="lb"><span>합계 (VAT 별도)</span><span id="itemCount">1개 항목</span></div>
             <div class="total-amt"><span id="total">100,000</span><span class="w">원</span></div>
             <div class="saved" id="savedRow" hidden>선결제 할인으로 <b id="savedAmt">0</b>원 아끼셨습니다</div>
+            <div class="mrow" id="monthlyRow" hidden>+ 월 정기 결제 <b id="monthlyAmt">0</b>원 <span style="font-weight:400;opacity:.8">(매월 · 위 합계에는 포함되지 않습니다)</span></div>
             <div class="vat">부가세 포함 시 <b id="vatTotal">110,000</b>원 · 실제 금액은 상담 후 확정됩니다</div>
           </div>
           <div class="calc-acts">
@@ -2438,14 +2481,18 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     });
   });
 
-  $$('.opt input[type=checkbox]').forEach(c=> c.addEventListener('change', render));
+  $$('.opt input[type=checkbox]').forEach(c=> c.addEventListener('change', ()=>{
+    /* 같은 묶음(data-xor)에서는 하나만 — 온라인 마케팅 패키지 4개 중 하나 */
+    if(c.checked && c.dataset.xor) $$('.opt input[type=checkbox][data-xor="' + c.dataset.xor + '"]').forEach(o=>{ if(o !== c) o.checked = false; });
+    render();
+  }));
 
   function collect(){
     const plan = plans.find(p=>p.dataset.on==='1') || plans[0];
     const items = [{ name: PLAN_LABEL[plan.dataset.plan], cost:+plan.dataset.price, base:true }];
     $$('.opt input[type=checkbox]:checked').forEach(c=>{
       if(c.disabled || c.closest('.opt').hidden) return;
-      items.push({ name:c.dataset.addon, cost:+c.dataset.cost });
+      items.push({ name:c.dataset.addon, cost:+c.dataset.cost, monthly:+c.dataset.monthly||0, save:+c.dataset.save||0 });
     });
     qtyRows.forEach(row=>{
       if(row.closest('.opt').hidden) return;
@@ -2484,6 +2531,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   }
 
   const savedRow = $('#savedRow'), savedAmt = $('#savedAmt');
+  const monthlyRow = $('#monthlyRow'), monthlyAmt = $('#monthlyAmt');
+  /* 한 줄 글 — 월 결제 항목은 합계에 안 들어가므로 「월 N원」으로 적는다 */
+  const lineText = i => i.monthly ? '월 ' + won(i.monthly) + '원 (매월 청구 · 합계 별도)' : won(i.cost) + '원';
 
   /* 문의 폼에 "무엇이 함께 전송되는지"를 보여준다 */
   function syncFormQuote(items, sum){
@@ -2501,12 +2551,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const sum   = items.reduce((a,b)=>a+b.cost, 0);
     const saved = items.reduce((a,b)=>a+(b.save||0), 0);
     rcpt.innerHTML = items.map(i=>
-      '<div class="rline'+(i.base?' base':'')+'"><span class="rn">'+i.name+'</span><span class="rv">'+won(i.cost)+'</span></div>'
+      '<div class="rline'+(i.base?' base':'')+'"><span class="rn">'+i.name+'</span><span class="rv">'+(i.monthly ? '월 '+won(i.monthly) : won(i.cost))+'</span></div>'
     ).join('');
     cntEl.textContent = items.length + '개 항목';
     vatEl.textContent = won(Math.round(sum*1.1));
     savedRow.hidden = saved <= 0;
     savedAmt.textContent = won(saved);
+    const monthly = items.reduce((a,b)=>a+(b.monthly||0), 0);
+    monthlyRow.hidden = monthly <= 0;
+    monthlyAmt.textContent = won(monthly);
     animateTo(sum);
     syncFormQuote(items, sum);
   }
@@ -2520,11 +2573,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const sum   = items.reduce((a,b)=>a+b.cost,0);
     const saved = items.reduce((a,b)=>a+(b.save||0),0);
     let s = '[큰길브리지 예상 견적]\n';
-    items.forEach(i=>{ s += '· ' + i.name + ' — ' + won(i.cost) + '원\n'; });
+    items.forEach(i=>{ s += '· ' + i.name + ' — ' + lineText(i) + '\n'; });
     s += '─────────────\n';
     s += '합계(VAT 별도): ' + won(sum) + '원\n';
     s += 'VAT 포함: ' + won(Math.round(sum*1.1)) + '원\n';
     if(saved > 0) s += '(선결제 할인 ' + won(saved) + '원 반영됨)\n';
+    const monthly = items.reduce((a,b)=>a+(b.monthly||0),0);
+    if(monthly > 0) s += '월 정기 결제(합계 별도): ' + won(monthly) + '원 / 월\n';
     s += '\n문의: 1533-7295 (큰길브리지 · 대표 김효민)';
     return s;
   }
@@ -2684,7 +2739,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
     const payload = {
       name: name, phone: tel, email: email, service: type, message: msg,
       total: won(sum) + '원 (VAT 별도)',
-      quote: items.map(i=>'· ' + i.name + ' — ' + won(i.cost) + '원').join('\n'),
+      quote: items.map(i=>'· ' + i.name + ' — ' + lineText(i)).join('\n'),
       /* 손님이 고른 항목을 글이 아니라 자료 그대로 보낸다.
          알림 메일의 「견적서 작성」 버튼이 이걸 그대로 견적서에 채워 넣는다.
          글로만 보내면 서버에서 다시 뜯어 읽어야 해서 틀리기 쉽다. */

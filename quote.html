@@ -386,6 +386,7 @@ body.cust .cust-cta{display:flex}
       <li>본 견적은 위 유효기간 안에서 유효하며, 기간이 지나면 금액이 달라질 수 있습니다.</li>
       <li>요청 범위가 바뀌면 금액이 조정됩니다. 바뀌기 전에 먼저 말씀드립니다.</li>
       <li>월 관리비는 오픈일 다음 달부터 청구되며, 언제든 중단하실 수 있습니다.</li>
+      <li id="d-monthly-note" hidden>「월 결제」 항목은 위 합계에 포함되지 않으며, 표에 적힌 월 금액을 매월 별도로 청구합니다. 연간 케어팩은 12개월분을 미리 결제하며 위 합계에 포함됩니다.</li>
       <li>사진 · 로고 등 고객이 주시는 자료의 저작권은 고객에게 있습니다.</li>
       <li>계약은 별도의 전자계약서로 진행되며, 서명 후 PDF 사본이 양쪽 메일로 발송됩니다.</li>
     </ul>
@@ -435,10 +436,12 @@ var PLANS = {
 var OPTIONS = [
   ['도메인 등록 + 연결', 30000], ['갤러리 + 인스타·블로그 자동 연동', 50000],
   ['네이버·구글 AI 검색 세팅', 50000], ['자동 계약서 작성·서명', 50000],
-  ['온라인 예약·신청 시스템', 150000], ['쇼핑몰·결제 연동', 300000],
-  ['AI 챗봇 상담', 200000], ['다국어(영·중·일)', 200000],
+  ['온라인 예약·신청 시스템', 150000], ['온라인 예약·신청 시스템 (회사형)', 250000], ['쇼핑몰·결제 연동', 300000],
+  ['AI 챗봇 상담', 200000], ['AI 챗봇 상담 (회사형)', 350000], ['다국어(영·중·일)', 200000],
   ['모바일 명함 + 콜백 문자', 50000], ['AI 검색 최적화 작업 (블로그글 10개 추가)', 50000],
   ['3D 무대시안 만들기', 100000],
+  ['온라인 마케팅 패키지 10회 · 월 결제 (월 150,000원)', 0], ['온라인 마케팅 패키지 10회 · 연간 케어팩 (12개월 선결제)', 1500000],
+  ['온라인 마케팅 패키지 25회 · 월 결제 (월 300,000원)', 0], ['온라인 마케팅 패키지 25회 · 연간 케어팩 (12개월 선결제)', 3000000],
   ['로고 + 브랜드 키트', 150000], ['상세 촬영 대행', 250000],
   ['페이지 추가', 30000], ['숏폼 홍보영상', 100000], ['AI 1:1 강의', 100000]
 ];
@@ -475,6 +478,10 @@ var Q = new URLSearchParams(location.search);
 var MODE = Q.get('admin')==='1' ? 'admin' : 'customer';
 
 /* ── 계산 ────────────────────────────── */
+/* 온라인 마케팅 패키지 — 월 결제 항목은 합계에 넣지 않고(단가 0), 이름의 「월 결제 (월 150,000원)」에서 월 금액을 읽는다 */
+function 월액(n){ n = String(n||''); var k = '월 결제 (월 ', a = n.indexOf(k); if (a < 0) return 0; var b = n.indexOf('원)', a); if (b < 0) return 0; return Number(n.slice(a + k.length, b).split(',').join('')) || 0; }
+var 마케팅설명 = { '온라인 마케팅 패키지 10회': '매월 네이버 블로그 기사 10회 · 인스타(페이스북 · 스레드) 홍보 10회 · 정보 칼럼 10회 · AI검색 트래픽 관리(매월 보고서 제출)', '온라인 마케팅 패키지 25회': '매월 네이버 블로그 기사 25회 · 인스타(페이스북 · 스레드) 홍보 25회 · 정보 칼럼 25회 · AI검색 트래픽 관리(격주 보고서 제출)' };
+function 항목설명(n){ n = String(n||''); for (var k in 마케팅설명) { if (n.indexOf(k) === 0) return 마케팅설명[k]; } return ''; }
 function 합계(){ var t=0; S.items.forEach(function(it){ t += (Number(it.q)||0)*(Number(it.p)||0); }); return t; }
 function 부가세(){ return S.fin.vat==='excl' ? Math.round(합계()*0.1) : 0; }
 function 총액(){ return 합계() + 부가세(); }
@@ -494,7 +501,7 @@ function 옵션그리기(){
   var box = $('#opts'); if(!box) return;
   box.innerHTML = OPTIONS.map(function(o,i){
     return '<label class="opt" data-oi="'+i+'"><input type="checkbox" value="'+i+'">' +
-      '<span>'+esc(o[0])+'</span><span class="p">'+원(o[1])+'</span></label>';
+      '<span>'+esc(o[0])+'</span><span class="p">'+(월액(o[0]) ? '월 '+원(월액(o[0])) : 원(o[1]))+'</span></label>';
   }).join('');
 }
 
@@ -558,11 +565,13 @@ function 그리기(){
   $('#d-items').innerHTML = S.items.length
     ? S.items.map(function(it){
         var 금액 = (Number(it.q)||0) * (Number(it.p)||0);
-        return '<tr><td>'+esc(it.n||'—')+'</td><td class="num">'+esc(it.q)+'</td>' +
-               '<td class="num">'+원(it.p)+'</td><td class="num">'+원(금액)+'</td></tr>';
+        var 월 = 월액(it.n), 설 = 항목설명(it.n);
+        return '<tr><td>'+esc(it.n||'—')+(설 ? '<div style="font-size:.85em;color:#7A756A;margin-top:3px;line-height:1.5">'+esc(설)+'</div>' : '')+'</td><td class="num">'+esc(it.q)+'</td>' +
+               (월 ? '<td class="num">월 '+원(월)+'</td><td class="num">합계 별도</td></tr>' : '<td class="num">'+원(it.p)+'</td><td class="num">'+원(금액)+'</td></tr>');
       }).join('')
     : '<tr><td colspan="4" class="quiet">항목을 선택해 주세요.</td></tr>';
 
+  var 월결제 = $('#d-monthly-note'); if(월결제) 월결제.hidden = !S.items.some(function(it){ return 월액(it.n); });
   $('#d-sum').textContent = 원(합계());
   $('#d-vat').textContent = S.fin.vat==='excl' ? 원(부가세())
     : (S.fin.vat==='incl' ? '금액에 포함' : '없음 (간이과세)');
@@ -640,11 +649,14 @@ document.addEventListener('change', function(e){
   var 칸 = t.closest && t.closest('.opt');
   if(칸){
     var o = OPTIONS[t.value];
-    if(t.checked){ S.items.push({ n:o[0], q:1, p:o[1] }); }
+    if(t.checked){
+      if(o[0].indexOf('온라인 마케팅 패키지') === 0) S.items = S.items.filter(function(it){ return String(it.n).indexOf('온라인 마케팅 패키지') !== 0; });
+      S.items.push({ n:o[0], q:1, p:o[1] });
+    }
     else { S.items = S.items.filter(function(it){ return it.n !== o[0]; }); }
     /* 목록 전체를 다시 그리면 스크롤이 튀므로 이 칸만 표시를 바꾼다 */
     칸.classList.toggle('on', t.checked);
-    항목그리기(); 그리기(); 해시저장();
+    항목그리기(); 그리기(); 옵션동기화(); 해시저장();
   }
 });
 document.addEventListener('click', function(e){

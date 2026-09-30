@@ -153,10 +153,12 @@ function 기억(){ try { sessionStorage.setItem('kb_go', JSON.stringify(st)); } 
 function toast(m){ var t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(function(){ t.classList.remove('on'); }, 2600); }
 
 /* ── 금액 — contract.html 과 같은 계산 (공급가 + 부가세 10%, 계약금 = 합계 × 비율, 반올림) ── */
+/* 옵션의 세 번째 값이 있으면 그 요금제에서만 보인다 (예: 회사형 전용) */
+function 보이나(o){ return !o[2] || o[2].split(' ').indexOf(st.plan) >= 0; }
 function 항목(){
   var p = B.PLANS[st.plan];
   var a = [{ n: p.name + ' 홈페이지 제작', q: 1, p: p.price }];
-  st.opts.forEach(function(i){ var o = B.OPTIONS[i]; if(o) a.push({ n: o[0], q: 1, p: o[1] }); });
+  st.opts.forEach(function(i){ var o = B.OPTIONS[i]; if(o && 보이나(o)) a.push({ n: o[0], q: 1, p: o[1] }); });
   return a;
 }
 function 금액(){
@@ -173,13 +175,20 @@ $('#plans').innerHTML = Object.keys(B.PLANS).map(function(k){
     (p.best ? '<span class="best">추천</span>' : '') + '<div class="nm">' + B.esc(p.name) + '</div><div class="pr">' + B.won(p.price) + '</div><div class="pt">' + B.esc(p.pitch) + '</div>' +
     '<ul>' + p.inc.slice(0, 5).map(function(x){ return '<li>' + B.esc(x) + '</li>'; }).join('') + '</ul></div></label>';
 }).join('');
-$('#opts').innerHTML = B.OPTIONS.map(function(o, i){
-  return '<label class="opt"><input type="checkbox" value="' + i + '"' + (st.opts.indexOf(i) >= 0 ? ' checked' : '') + '><span>' + B.esc(o[0]) + '</span><span class="p">+' + B.won(o[1]) + '</span></label>';
-}).join('');
+/* 요금제가 바뀌면 그 요금제에 없는 옵션은 감추고 선택도 푼다 */
+function 옵션그리기(){
+  st.opts = st.opts.filter(function(i){ var o = B.OPTIONS[i]; return o && 보이나(o); });
+  $('#opts').innerHTML = B.OPTIONS.map(function(o, i){
+    if(!보이나(o)) return '';
+    var m = B.monthlyOf(o[0]);
+    return '<label class="opt"><input type="checkbox" value="' + i + '"' + (st.opts.indexOf(i) >= 0 ? ' checked' : '') + '><span>' + B.esc(o[0]) + '</span><span class="p">' + (m ? '월 ' + B.won(m) : '+' + B.won(o[1])) + '</span></label>';
+  }).join('');
+}
+옵션그리기();
 
 function 합계그리기(){
   var m = 금액(), p = B.PLANS[st.plan];
-  $('#lines').innerHTML = 항목().map(function(it){ return '<div class="ln it"><span>' + B.esc(it.n) + '</span><b>' + B.won(it.p) + '</b></div>'; }).join('');
+  $('#lines').innerHTML = 항목().map(function(it){ return '<div class="ln it"><span>' + B.esc(it.n) + '</span><b>' + (B.monthlyOf(it.n) ? '월 ' + B.won(B.monthlyOf(it.n)) : B.won(it.p)) + '</b></div>'; }).join('');
   $('#t-sub').textContent = B.won(m.sub); $('#t-vat').textContent = B.won(m.vat); $('#t-total').textContent = B.won(m.total);
   $('#t-dep').textContent = B.won(m.dep); $('#t-bal').textContent = B.won(m.bal);
   $('#t-care').textContent = B.won(p.monthly) + (p.free ? ' · ' + p.free + ' 무상' : '');
@@ -187,8 +196,13 @@ function 합계그리기(){
   $('#b-quote').href = 견적서주소();
   기억();
 }
-$('#plans').addEventListener('change', function(e){ if(e.target.name === 'plan'){ st.plan = e.target.value; 합계그리기(); B.track('quote_plan', { plan: st.plan }); } });
-$('#opts').addEventListener('change', function(){ st.opts = $$('#opts input:checked').map(function(x){ return Number(x.value); }); 합계그리기(); });
+$('#plans').addEventListener('change', function(e){ if(e.target.name === 'plan'){ st.plan = e.target.value; 옵션그리기(); 합계그리기(); B.track('quote_plan', { plan: st.plan }); } });
+$('#opts').addEventListener('change', function(e){
+  var o = B.OPTIONS[Number(e.target.value)];
+  /* 온라인 마케팅 패키지는 한 번에 하나 */
+  if(e.target.checked && o && o[0].indexOf('온라인 마케팅 패키지') === 0) $$('#opts input').forEach(function(x){ var y = B.OPTIONS[Number(x.value)]; if(x !== e.target && y && y[0].indexOf('온라인 마케팅 패키지') === 0) x.checked = false; });
+  st.opts = $$('#opts input:checked').map(function(x){ return Number(x.value); }); 합계그리기();
+});
 
 /* 견적서 문서 — 기존 quote.html 고객 화면에 그대로 띄운다 (#q= 에 내용이 통째로 담긴다) */
 function 견적번호(){ var d = new Date(), p = function(n){ return (n < 10 ? '0' : '') + n; }; return 'Q-' + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + '-' + String(Math.floor(Math.random()*900) + 100); }

@@ -425,6 +425,7 @@ table.t tr.total td.num{color:#8A6A16}
       <ol>
         <li id="d-pay1">계약금은 계약 체결일로부터 7일 이내에 지급하고, 잔금은 홈페이지 오픈일로부터 7일 이내에 지급한다.</li>
         <li id="d-pay2">대금은 을이 지정하는 계좌로 입금하며, 입금 수수료는 갑이 부담한다.</li>
+        <li id="d-monthly" hidden>제3조 표의 「월 결제」 항목은 위 합계에 포함되지 않으며, 을은 표에 적힌 월 금액을 매월 갑에게 별도로 청구한다. 「연간 케어팩」은 12개월분을 미리 결제하는 것으로 위 합계에 포함된다.</li>
         <li>갑이 지급 기일을 지나 대금을 지급하지 않는 경우 을은 연 6%의 지연이자를 청구할 수 있으며, 지급이 완료될 때까지 오픈 또는 자료 인계를 보류할 수 있다.</li>
       </ol>
 
@@ -595,10 +596,12 @@ function 플랜글(){
 var OPTIONS = [
   ['도메인 등록 + 연결', 30000], ['갤러리 + 인스타·블로그 자동 연동', 50000],
   ['네이버·구글 AI 검색 세팅', 50000], ['자동 계약서 작성·서명', 50000],
-  ['온라인 예약·신청 시스템', 150000], ['쇼핑몰·결제 연동', 300000],
-  ['AI 챗봇 상담', 200000], ['다국어(영·중·일)', 200000],
+  ['온라인 예약·신청 시스템', 150000], ['온라인 예약·신청 시스템 (회사형)', 250000], ['쇼핑몰·결제 연동', 300000],
+  ['AI 챗봇 상담', 200000], ['AI 챗봇 상담 (회사형)', 350000], ['다국어(영·중·일)', 200000],
   ['모바일 명함 + 콜백 문자', 50000], ['AI 검색 최적화 작업 (블로그글 10개 추가)', 50000],
   ['3D 무대시안 만들기', 100000],
+  ['온라인 마케팅 패키지 10회 · 월 결제 (월 150,000원)', 0], ['온라인 마케팅 패키지 10회 · 연간 케어팩 (12개월 선결제)', 1500000],
+  ['온라인 마케팅 패키지 25회 · 월 결제 (월 300,000원)', 0], ['온라인 마케팅 패키지 25회 · 연간 케어팩 (12개월 선결제)', 3000000],
   ['로고 + 브랜드 키트', 150000], ['상세 촬영 대행', 250000],
   ['페이지 추가', 30000], ['숏폼 홍보영상', 100000], ['AI 1:1 강의', 100000]
 ];
@@ -640,6 +643,10 @@ var Q = new URLSearchParams(location.search);
 var MODE = Q.get('admin')==='1' ? 'admin' : (Q.get('preview')==='1' ? 'preview' : 'customer');
 
 /* ══ 계약 항목 ══ */
+/* 온라인 마케팅 패키지 — 월 결제 항목은 합계에 넣지 않고(단가 0), 이름의 「월 결제 (월 150,000원)」에서 월 금액을 읽는다 */
+function 월액(n){ n = String(n||''); var k = '월 결제 (월 ', a = n.indexOf(k); if (a < 0) return 0; var b = n.indexOf('원)', a); if (b < 0) return 0; return Number(n.slice(a + k.length, b).split(',').join('')) || 0; }
+var 마케팅설명 = { '온라인 마케팅 패키지 10회': '매월 네이버 블로그 기사 10회 · 인스타(페이스북 · 스레드) 홍보 10회 · 정보 칼럼 10회 · AI검색 트래픽 관리(매월 보고서 제출)', '온라인 마케팅 패키지 25회': '매월 네이버 블로그 기사 25회 · 인스타(페이스북 · 스레드) 홍보 25회 · 정보 칼럼 25회 · AI검색 트래픽 관리(격주 보고서 제출)' };
+function 항목설명(n){ n = String(n||''); for (var k in 마케팅설명) { if (n.indexOf(k) === 0) return 마케팅설명[k]; } return ''; }
 function 합계(){ var t=0; S.items.forEach(function(it){ t += (Number(it.q)||0)*(Number(it.p)||0); }); return t; }
 function 부가세(){ return S.fin.vat==='excl' ? Math.round(합계()*0.1) : 0; }
 function 총액(){ return 합계() + 부가세(); }
@@ -688,13 +695,15 @@ function 그리기(){
     rows += '<tr><td colspan="4" style="text-align:center;color:#9A958A">항목이 없습니다</td></tr>';
   } else {
     S.items.forEach(function(it){
-      rows += '<tr><td>'+esc(it.n)+'</td><td class="num">'+(it.q||1)+'</td>' +
-        '<td class="num">'+원(it.p)+'</td><td class="num">'+원((Number(it.q)||0)*(Number(it.p)||0))+'</td></tr>';
+      var 월 = 월액(it.n), 설 = 항목설명(it.n);
+      rows += '<tr><td>'+esc(it.n)+(설 ? '<div style="font-size:.85em;color:#7A756A;margin-top:3px;line-height:1.5">'+esc(설)+'</div>' : '')+'</td><td class="num">'+(it.q||1)+'</td>' +
+        (월 ? '<td class="num">월 '+원(월)+'</td><td class="num">합계 별도</td></tr>' : '<td class="num">'+원(it.p)+'</td><td class="num">'+원((Number(it.q)||0)*(Number(it.p)||0))+'</td></tr>');
     });
   }
   if(부가세()) rows += '<tr><td colspan="3" class="num">부가세 (10%)</td><td class="num">'+원(부가세())+'</td></tr>';
   rows += '<tr class="total"><td colspan="3" class="num">합계</td><td class="num">'+원(총액())+'</td></tr>';
   $('#d-items').innerHTML = rows;
+  var 월결제 = $('#d-monthly'); if(월결제) 월결제.hidden = !S.items.some(function(it){ return 월액(it.n); });
   $('#d-vatnote').textContent = S.fin.vat==='incl' ? '위 금액은 부가세가 포함된 금액이다.'
     : (S.fin.vat==='excl' ? '위 금액에는 부가세 10%가 포함되어 있다.' : '');
 
@@ -822,7 +831,7 @@ function 옵션그리기(){
   $('#optlist').innerHTML = OPTIONS.map(function(o,i){
     var 담김 = S.items.some(function(it){ return it.n===o[0]; });
     return '<label class="opt'+(담김?' on':'')+'"><input type="checkbox" data-opt="'+i+'"'+(담김?' checked':'')+'>' +
-      '<span class="nm">'+esc(o[0])+'</span><span class="pr">+'+원(o[1])+'</span></label>';
+      '<span class="nm">'+esc(o[0])+'</span><span class="pr">'+(월액(o[0]) ? '월 '+원(월액(o[0])) : '+'+원(o[1]))+'</span></label>';
   }).join('');
 }
 /* 목록을 다시 그리지 않고 체크 상태만 맞춘다 (스크롤 유지) */
@@ -837,10 +846,12 @@ function 옵션동기화(){
 document.addEventListener('change', function(e){
   var t=e.target; if(!t.dataset || t.dataset.opt===undefined) return;
   var o = OPTIONS[Number(t.dataset.opt)];
-  if(t.checked) S.items.push({ n:o[0], q:1, p:o[1] });
-  else S.items = S.items.filter(function(it){ return it.n!==o[0]; });
+  if(t.checked){
+    if(o[0].indexOf('온라인 마케팅 패키지') === 0) S.items = S.items.filter(function(it){ return String(it.n).indexOf('온라인 마케팅 패키지') !== 0; });
+    S.items.push({ n:o[0], q:1, p:o[1] });
+  } else S.items = S.items.filter(function(it){ return it.n!==o[0]; });
   t.closest('.opt').classList.toggle('on', t.checked);
-  항목그리기(); 그리기(); 해시저장();
+  항목그리기(); 그리기(); 옵션동기화(); 해시저장();
 });
 
 $('#btn-add-item') && $('#btn-add-item').addEventListener('click', function(){
