@@ -532,6 +532,8 @@
     catch (e) { return null; }
   })();
   var 키주소 = "kb-pub-url", 키암호 = "kb-pub-pw", 키기억 = "kb-pub-save";
+  /* 갤러리 발행 서버(앱스 스크립트) /exec 주소 — edit.js 가 쓰는 것과 같은 서버. 비밀번호는 그 프로젝트의 스크립트 속성 WRITE_PW. */
+  var 서버기본 = "https://script.google.com/macros/s/AKfycbwvndCS4_95zXdXvVd2r4gCCUivUDDa4Ik6r942mtuexUp0VljTqEpOm73xf4WLbsYv2w/exec";
 
   function 발행알림(글, 종류) {
     var el = $("#pub-msg");
@@ -553,11 +555,11 @@
   }
 
   (function 설정불러오기() {
-    if (!저장) { $("#pub-save").checked = false; return; }
+    if (!저장) { $("#pub-save").checked = false; $("#pub-url").value = 서버기본; return; }
     var 기억 = 저장.getItem(키기억) !== "0";
     $("#pub-save").checked = 기억;
     if (기억) {
-      $("#pub-url").value = 저장.getItem(키주소) || "";
+      $("#pub-url").value = 저장.getItem(키주소) || 서버기본;
       $("#pub-pw").value = 저장.getItem(키암호) || "";
     }
   })();
