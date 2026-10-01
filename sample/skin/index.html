@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&text=%EC%9C%A4%ED%95%98%EC%A7%84&display=swap">
-<link rel="stylesheet" href="skin.css?v=20261001a">
+<link rel="stylesheet" href="skin.css?v=20261001b">
 </head>
 <body>
 
@@ -99,11 +99,25 @@
         <li><b>비급여 안내 공개</b><span>시행 전 항목별 설명</span></li>
       </ul>
     </div>
-    <div class="lens-wrap" id="lensWrap">
-      <canvas id="lens" width="600" height="600" role="img" aria-label="확대 렌즈로 피부 표면의 모공과 피부결을 들여다보는 그림"></canvas>
-      <svg class="lens-ticks" id="lensTicks" aria-hidden="true"></svg>
-      <div class="poi" id="poi" aria-hidden="true"><i></i><span class="poi-t"></span><span class="poi-s"></span></div>
-      <p class="lens-cap" aria-hidden="true"><span id="lensZoom">×2.6</span><span>렌즈를 움직여 보세요</span></p>
+    <div class="hero-visual">
+      <div class="lens-wrap" id="lensWrap">
+        <canvas id="lens" width="600" height="600" role="img" aria-label="한 여성의 얼굴 사진에서 시작해 뺨, 피부결, 모공까지 천천히 확대되는 장면"></canvas>
+        <svg class="lens-ticks" id="lensTicks" aria-hidden="true"></svg>
+        <div class="poi" id="poiA" aria-hidden="true"><i></i><span class="poi-t">모공</span><span class="poi-s">지름 약 0.1 mm</span></div>
+        <div class="poi" id="poiB" aria-hidden="true"><i></i><span class="poi-t">피부결</span><span class="poi-s">미세한 결</span></div>
+      </div>
+      <div class="lens-hud">
+        <div class="hud-top">
+          <div class="hud-stages" role="group" aria-label="확대 단계">
+            <button type="button" data-p="0" aria-pressed="true">얼굴</button>
+            <button type="button" data-p="0.63" aria-pressed="false">피부결</button>
+            <button type="button" data-p="1" aria-pressed="false">모공</button>
+          </div>
+          <div class="hud-read"><output id="lensX">×1.0</output><span class="hud-scale" aria-hidden="true"><i id="lensBar"></i><b id="lensBarT">20 mm</b></span></div>
+        </div>
+        <input class="hud-range" id="lensRange" type="range" min="0" max="1000" step="1" value="0" aria-label="확대 정도">
+        <p class="hud-note">사진은 AI로 생성한 가상 인물 이미지입니다.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -421,9 +435,9 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="data.js?v=20261001a" defer></script>
-<script src="lens.js?v=20261001a" defer></script>
-<script src="app.js?v=20261001a" defer></script>
-<script src="bot.js?v=20261001a" defer></script>
+<script src="data.js?v=20261001b" defer></script>
+<script src="lens.js?v=20261001b" defer></script>
+<script src="app.js?v=20261001b" defer></script>
+<script src="bot.js?v=20261001b" defer></script>
 </body>
 </html>
