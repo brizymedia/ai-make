@@ -23,23 +23,41 @@
  * [코드를 고친 뒤에는]
  *  배포 → 배포 관리 → 연필 아이콘 → 버전: 새 버전 → 배포
  *  (새 버전으로 배포하지 않으면 수정 내용이 반영되지 않습니다)
+ *
+ * [막힌 사이트를 점검하려면]  (2026-10-02 추가)
+ *  어떤 사이트는 구글·해외 서버의 접속을 막아둡니다(403). 그러면 이 서버가 페이지를 가져올 수 없습니다.
+ *  그럴 때는 점검 페이지에서 사용자가 브라우저로 복사해 온 "페이지 소스"를 보냅니다.
+ *      POST {url, keyword, html}  →  접속하지 않고 소스만으로 점검합니다.
+ *  사이트 밖에서 확인해야 하는 항목(HTTPS · robots.txt · sitemap.xml · 응답 시간)은
+ *  "확인 못 함"으로 두고 점수에서 뺍니다. 없다고 단정하면 멀쩡한 사이트를 깎기 때문입니다.
+ *
+ * [제대로 배포됐는지 보려면]
+ *  웹 앱 URL 뒤에 ?ping=1 을 붙이면 {"ok":true,"service":"seo-check","version":"…"} 이 나와야 합니다.
+ *  모든 응답에 service · version 이 들어 있어서, 점검 페이지가 서버가 새 버전인지 알아봅니다.
  */
 
 /** ── 설정 ───────────────────────────────── */
 var UA = 'Mozilla/5.0 (compatible; KeungilBridgeSEO/1.0; +https://www.ai-make.co.kr/seo-check/)';
+var SERVICE = 'seo-check';
+var VERSION = '2026-10-02a';
+var 소스최대 = 1500000;   // 붙여넣은 소스는 이 글자 수까지만 읽는다
 /** ───────────────────────────────────────── */
 
 
 function doPost(e) {
   try {
     var d = JSON.parse(e.postData.contents);
-    return json(점검(d.url, d.keyword || ''));
+    return json(점검(d.url, d.keyword || '', d.html));
   } catch (err) {
     return json({ ok: false, error: 오류문구(err) });
   }
 }
 
 function doGet(e) {
+  /* 배포 확인용 — 이 주소가 점검 서버가 맞는지, 어느 버전인지 (service · version 은 json() 이 붙인다) */
+  if (e && e.parameter && e.parameter.ping) {
+    return json({ ok: true, time: new Date().toISOString() });
+  }
   if (e && e.parameter && e.parameter.url) {
     try {
       return json(점검(e.parameter.url, e.parameter.keyword || ''));
@@ -50,7 +68,7 @@ function doGet(e) {
   return HtmlService.createHtmlOutput(
     '<div style="font-family:-apple-system,sans-serif;max-width:560px;margin:60px auto;padding:0 20px;line-height:1.8">' +
     '<h2 style="margin:0 0 6px">큰길브리지 SEO 점검기</h2>' +
-    '<p style="color:#666;margin:0 0 24px">정상 작동 중입니다.</p>' +
+    '<p style="color:#666;margin:0 0 24px">정상 작동 중입니다. (버전 ' + VERSION + ')</p>' +
     '<p>주소창 뒤에 <code style="background:#f1f1f1;padding:2px 6px;border-radius:4px">?url=naver.com</code> 을 붙이면 결과를 바로 볼 수 있습니다.</p>' +
     '<p style="margin-top:28px"><a href="https://www.ai-make.co.kr/seo-check/" ' +
     'style="display:inline-block;background:#E8B84B;color:#111;padding:11px 20px;border-radius:8px;' +
@@ -62,36 +80,52 @@ function doGet(e) {
 /* ══════════════════════════════════════════════════════
    본체
    ══════════════════════════════════════════════════════ */
-function 점검(입력, 키워드) {
+function 점검(입력, 키워드, 붙인소스) {
   var url = 주소정리(입력);
   if (!url) return { ok: false, error: '주소를 확인해 주세요. 예) www.ai-make.co.kr' };
 
   키워드 = String(키워드 || '').trim();
 
-  /* 1) 페이지 가져오기 ───────────────────────── */
-  var t0 = Date.now(), res;
-  try {
-    res = UrlFetchApp.fetch(url, {
-      muteHttpExceptions: true,
-      followRedirects: true,
-      headers: { 'User-Agent': UA, 'Accept-Language': 'ko-KR,ko;q=0.9' }
-    });
-  } catch (err) {
-    return { ok: false, error: '사이트에 연결하지 못했습니다. 주소가 맞는지, 사이트가 열려 있는지 확인해 주세요.' };
-  }
-  var 소요 = Date.now() - t0;
-  var 코드 = res.getResponseCode();
-  if (코드 >= 400) {
-    return { ok: false, error: '사이트가 ' + 코드 + ' 오류를 돌려주었습니다. 주소를 다시 확인해 주세요.' };
-  }
+  /* 소스 붙여넣기 모드 — 사이트가 점검 서버의 접속을 막을 때(403 등) 쓴다.
+     페이지를 가져오지 않고, 사용자가 자기 브라우저에서 복사해 온 HTML 소스로 점검한다. */
+  var 소스모드 = typeof 붙인소스 === 'string' && 붙인소스.trim().length > 0;
+  var 소요 = 0, 코드 = 0, 바이트 = 0, html = '', 잘림 = false;
 
-  var 바이트 = 0;
-  try { 바이트 = res.getContent().length; } catch (e) {}
+  if (소스모드) {
+    html = 붙인소스;
+    if (html.length > 소스최대) { html = html.slice(0, 소스최대); 잘림 = true; }
+    if (!/<(html|head|body|title|meta|div)[\s>]/i.test(html)) {
+      return { ok: false, error: '붙여넣은 내용이 페이지 소스(HTML)로 보이지 않습니다. 사이트 화면에서 Ctrl + U 를 눌러 열린 창에서 Ctrl + A → Ctrl + C 로 전체를 복사해 붙여넣어 주세요.' };
+    }
+    바이트 = utf8바이트(html);
+  } else {
+    /* 1) 페이지 가져오기 ───────────────────────── */
+    var t0 = Date.now(), res;
+    try {
+      res = UrlFetchApp.fetch(url, {
+        muteHttpExceptions: true,
+        followRedirects: true,
+        headers: { 'User-Agent': UA, 'Accept-Language': 'ko-KR,ko;q=0.9' }
+      });
+    } catch (err) {
+      return {
+        ok: false, paste: true,
+        error: '사이트에 연결하지 못했습니다. 주소가 맞는지, 사이트가 열려 있는지 확인해 주세요. ' +
+               '주소가 맞고 브라우저에서는 열린다면 사이트가 점검 서버의 접속을 막고 있을 수 있습니다. ' +
+               '그럴 때는 페이지 소스를 붙여넣어 점검하실 수 있습니다.'
+      };
+    }
+    소요 = Date.now() - t0;
+    코드 = res.getResponseCode();
+    if (코드 >= 400) return 접속거부(코드);
 
-  var html = res.getContentText();
-  /* 오래된 국내 사이트는 EUC-KR 인 경우가 많다. 깨지면 다시 읽는다. */
-  if (/charset\s*=\s*["']?\s*(euc-kr|ks_c_5601)/i.test(html)) {
-    try { html = res.getContentText('EUC-KR'); } catch (e) {}
+    try { 바이트 = res.getContent().length; } catch (e) {}
+
+    html = res.getContentText();
+    /* 오래된 국내 사이트는 EUC-KR 인 경우가 많다. 깨지면 다시 읽는다. */
+    if (/charset\s*=\s*["']?\s*(euc-kr|ks_c_5601)/i.test(html)) {
+      try { html = res.getContentText('EUC-KR'); } catch (e) {}
+    }
   }
 
   var 기준 = 도메인(url);
@@ -201,7 +235,7 @@ function 점검(입력, 키워드) {
     처방: 막힘 ? '검색엔진에게 "우리를 빼달라"고 말하고 있습니다. 이게 켜져 있으면 다른 걸 아무리 해도 검색이 안 됩니다. 최우선으로 꺼야 합니다.' : ''
   });
 
-  var rt = 가져오기(기준 + '/robots.txt');
+  var rt = 소스모드 ? { ok: false, body: '' } : 가져오기(기준 + '/robots.txt');
   항목.push({
     id: 'robotstxt', 그룹: '색인', 이름: 'robots.txt', 값: rt.ok ? '있음' : '없음',
     상태: rt.ok ? 'ok' : 'warn', g: 5, n: 5,
@@ -211,7 +245,7 @@ function 점검(입력, 키워드) {
 
   /* 사이트맵 — robots.txt 에 적힌 주소를 먼저 따라간다 */
   var smUrl = (rt.body.match(/Sitemap:\s*(\S+)/i) || [])[1] || (기준 + '/sitemap.xml');
-  var sm = 가져오기(smUrl);
+  var sm = 소스모드 ? { ok: false, body: '' } : 가져오기(smUrl);
   var sm유효 = sm.ok && /<(urlset|sitemapindex)/i.test(sm.body);
   항목.push({
     id: 'sitemap', 그룹: '색인', 이름: 'sitemap.xml', 값: sm유효 ? '있음' : (sm.ok ? '형식 오류' : '없음'),
@@ -220,7 +254,7 @@ function 점검(입력, 키워드) {
     처방: sm유효 ? '' : '사이트맵이 없으면 새 글을 올려도 검색엔진이 한참 뒤에 발견합니다. 구글 서치콘솔·네이버 서치어드바이저에 제출하려면 반드시 필요합니다.'
   });
 
-  var rss = /<link[^>]+type\s*=\s*["']application\/(rss|atom)\+xml/i.test(html) || 가져오기(기준 + '/rss.xml').ok;
+  var rss = /<link[^>]+type\s*=\s*["']application\/(rss|atom)\+xml/i.test(html) || (!소스모드 && 가져오기(기준 + '/rss.xml').ok);
   항목.push({
     id: 'rss', 그룹: '색인', 이름: 'RSS 피드', 값: rss ? '있음' : '없음',
     상태: rss ? 'ok' : 'warn', g: 1, n: 6,
@@ -335,6 +369,15 @@ function 점검(입력, 키워드) {
     처방: kb >= 800 ? '문서가 무겁습니다. 데이터를 아껴 쓰는 손님은 열리기 전에 나갑니다.' : ''
   });
 
+  /* 소스 붙여넣기 점검 — 사이트 밖의 것은 열어볼 수 없다.
+     못 열었다고 "없음"으로 찍으면 멀쩡한 사이트를 깎는다. 확인 못 함(info)으로 두고 점수에서 뺀다. */
+  if (소스모드) {
+    항목 = 항목.map(function (it) {
+      var 안내 = 밖의항목(it, 기준);
+      return 안내 ? 보류로(it, 안내) : it;
+    });
+  }
+
   /* 8) 키워드 (입력했을 때만) ────────────────── */
   var 키워드결과 = null;
   if (키워드) {
@@ -352,15 +395,25 @@ function 점검(입력, 키워드) {
     };
   }
 
+  var 알림글 = [];
+  if (소스모드) {
+    알림글.push('붙여넣은 페이지 소스로 점검한 결과입니다. 사이트 밖에서 확인해야 하는 <b>HTTPS · robots.txt · sitemap.xml · 응답 시간</b>은 확인하지 못해 점수에서 뺐습니다.');
+    if (잘림) 알림글.push('소스가 너무 길어 앞부분 ' + 소스최대.toLocaleString('ko-KR') + '자까지만 읽었습니다.');
+  }
+  if (JS그림) {
+    알림글.push('이 사이트는 화면을 자바스크립트로 그립니다. 아래 <b>본문 글자 수 · 내부 링크</b> 수치는 실제보다 적게 나옵니다. 다만 네이버 수집기도 똑같이 못 읽으므로, 네이버 검색을 노린다면 그대로 문제가 됩니다.');
+  }
+
   /* 9) 점수 ─────────────────────────────────── */
   return {
     ok: true,
     url: url,
     코드: 코드,
+    모드: 소스모드 ? '소스' : '주소',
     점수: { google: 점수내기(항목, 'g'), naver: 점수내기(항목, 'n') },
     항목: 항목,
     키워드: 키워드결과,
-    알림: JS그림 ? '이 사이트는 화면을 자바스크립트로 그립니다. 아래 <b>본문 글자 수 · 내부 링크</b> 수치는 실제보다 적게 나옵니다. 다만 네이버 수집기도 똑같이 못 읽으므로, 네이버 검색을 노린다면 그대로 문제가 됩니다.' : '',
+    알림: 알림글.join(' '),
     점검시각: Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm')
   };
 }
@@ -369,6 +422,64 @@ function 점검(입력, 키워드) {
 /* ══════════════════════════════════════════════════════
    도우미
    ══════════════════════════════════════════════════════ */
+/* 사이트가 답은 줬지만 문을 열어주지 않은 경우의 안내.
+   403 은 "주소가 틀렸다"가 아니라 "사이트가 점검 서버를 막았다"는 뜻인 경우가 대부분이다.
+   점검 서버는 구글 쪽 주소로 접속하는데, 해외 접속·자동 접속을 걸러내는 사이트가 많다.
+   (점검 페이지에도 같은 문구가 있다 — 옛 서버가 코드만 돌려줄 때 대신 보여 주려고. 고치면 같이 고칠 것) */
+function 접속거부(코드) {
+  var 답 = { ok: false, 코드: 코드 };
+  if (코드 === 404 || 코드 === 410) {
+    답.error = '그 주소에는 페이지가 없습니다 (오류 코드 ' + 코드 + '). 주소를 다시 확인해 주세요.';
+    return 답;
+  }
+  답.paste = true;
+  if (코드 === 401 || 코드 === 403 || 코드 === 406 || 코드 === 451) {
+    답.blocked = true;
+    답.error = '사이트가 점검 서버의 접속을 막았습니다 (오류 코드 ' + 코드 + '). 주소가 틀린 것이 아니라, 사이트의 보안 설정이 해외 서버나 자동 접속을 걸러내고 있는 경우가 대부분입니다. 브라우저에서는 열린다면 페이지 소스를 붙여넣어 점검하실 수 있습니다.';
+  } else if (코드 === 429) {
+    답.error = '사이트가 접속이 많다며 점검 서버를 잠시 제한했습니다 (오류 코드 429). 잠시 뒤에 다시 해 보시거나, 페이지 소스를 붙여넣어 점검하실 수 있습니다.';
+  } else if (코드 >= 500) {
+    답.error = '사이트 서버가 오류를 돌려주었습니다 (오류 코드 ' + 코드 + '). 사이트가 잠시 닫혀 있거나 점검 중일 수 있습니다. 잠시 뒤에 다시 해 보시고, 브라우저에서는 정상으로 열린다면 페이지 소스를 붙여넣어 점검하실 수 있습니다.';
+  } else {
+    답.error = '사이트가 점검 서버의 요청을 받아주지 않았습니다 (오류 코드 ' + 코드 + '). 주소를 확인해 보시고, 브라우저에서는 열린다면 페이지 소스를 붙여넣어 점검하실 수 있습니다.';
+  }
+  return 답;
+}
+
+/* 소스만으로는 확인할 수 없는 항목의 안내문. 확인할 수 있는 항목이면 빈 문자열 */
+function 밖의항목(it, 기준) {
+  switch (it.id) {
+    case 'https':
+      return '주소창에 자물쇠 표시가 있으면 적용된 것입니다. 소스만으로는 접속 방식을 알 수 없어 확인하지 못했고, 점수에서는 뺐습니다.';
+    case 'robotstxt':
+      return '소스만으로는 robots.txt 파일을 열어볼 수 없어 확인하지 못했고, 점수에서는 뺐습니다. 브라우저 주소창에 ' + 기준 + '/robots.txt 를 열어 안내문이 나오는지 보시면 됩니다.';
+    case 'sitemap':
+      return '소스만으로는 sitemap.xml 파일을 열어볼 수 없어 확인하지 못했고, 점수에서는 뺐습니다. 브라우저 주소창에 ' + 기준 + '/sitemap.xml 을 열어 페이지 목록이 나오는지 보시면 됩니다.';
+    case 'rss':
+      return it.상태 === 'ok' ? '' : '소스의 머리 부분에 RSS 연결 표시는 보이지 않습니다. 다만 RSS 파일 자체는 열어볼 수 없어 없다고 단정하지 않았고, 점수에서는 뺐습니다.';
+    case 'speed':
+      return '소스를 붙여넣는 방식에서는 서버 응답 시간을 잴 수 없습니다. 점수에서는 뺐습니다. 속도가 궁금하시면 pagespeed.web.dev 에 주소를 넣어 보세요.';
+  }
+  return '';
+}
+
+function 보류로(it, 안내) {
+  return { id: it.id, 그룹: it.그룹, 이름: it.이름, 값: '확인 못 함', 상태: 'info', g: it.g, n: it.n, 설명: it.설명, 처방: 안내 };
+}
+
+/* 글자 수가 아니라 UTF-8 바이트 수 — 서버가 받았다면 이 크기였을 것이다 */
+function utf8바이트(s) {
+  var n = 0;
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+    if (c < 0x80) n += 1;
+    else if (c < 0x800) n += 2;
+    else if (c >= 0xD800 && c <= 0xDBFF) { n += 4; i++; }
+    else n += 3;
+  }
+  return n;
+}
+
 function 점수내기(항목, 키) {
   var 총 = 0, 획득 = 0;
   항목.forEach(function (it) {
@@ -469,6 +580,9 @@ function 오류문구(err) {
 }
 
 function json(obj) {
+  /* 모든 응답에 서비스 이름과 버전을 붙인다 — 배포 확인과, 점검 페이지가 새 서버인지 알아보는 데 쓴다 */
+  obj.service = SERVICE;
+  obj.version = VERSION;
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
