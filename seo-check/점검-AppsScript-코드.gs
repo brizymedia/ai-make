@@ -31,6 +31,13 @@
  *  사이트 밖에서 확인해야 하는 항목(HTTPS · robots.txt · sitemap.xml · 응답 시간)은
  *  "확인 못 함"으로 두고 점수에서 뺍니다. 없다고 단정하면 멀쩡한 사이트를 깎기 때문입니다.
  *
+ * [점검 리포트]  (2026-10-02 추가)
+ *  점검 결과를 고객에게 링크로 보낼 수 있다. 점검 결과에는 서버의 서명(sig)이 붙어 나가고,
+ *  리포트를 만들 때 그 결과를 되돌려 받아 서명을 확인한 뒤에만 저장한다(가짜 점검 결과를 만들 수 없게).
+ *      POST {action:'report', result}  →  {ok, id}      GET ?report=ID  →  {ok, result}
+ *  저장소는 스크립트 속성이다. 압축해 담고 오래된 것부터 지워 최근 100건 안팎을 보관한다.
+ *  새 버전을 배포하기 전에 편집기에서 함수 「권한확인」을 한 번 실행해 두면 안전하다(권한 창이 뜨면 허용).
+ *
  * [제대로 배포됐는지 보려면]
  *  웹 앱 URL 뒤에 ?ping=1 을 붙이면 {"ok":true,"service":"seo-check","version":"…"} 이 나와야 합니다.
  *  모든 응답에 service · version 이 들어 있어서, 점검 페이지가 서버가 새 버전인지 알아봅니다.
@@ -39,7 +46,7 @@
 /** ── 설정 ───────────────────────────────── */
 var UA = 'Mozilla/5.0 (compatible; KeungilBridgeSEO/1.0; +https://www.ai-make.co.kr/seo-check/)';
 var SERVICE = 'seo-check';
-var VERSION = '2026-10-02b';
+var VERSION = '2026-10-02c';
 var 소스최대 = 1500000;   // 붙여넣은 소스는 이 글자 수까지만 읽는다
 /** ───────────────────────────────────────── */
 
@@ -47,6 +54,7 @@ var 소스최대 = 1500000;   // 붙여넣은 소스는 이 글자 수까지만 
 function doPost(e) {
   try {
     var d = JSON.parse(e.postData.contents);
+    if (d.action === 'report') return json(리포트저장(d.result));
     return json(점검(d.url, d.keyword || '', d.html));
   } catch (err) {
     return json({ ok: false, error: 오류문구(err) });
@@ -56,7 +64,16 @@ function doPost(e) {
 function doGet(e) {
   /* 배포 확인용 — 이 주소가 점검 서버가 맞는지, 어느 버전인지 (service · version 은 json() 이 붙인다) */
   if (e && e.parameter && e.parameter.ping) {
-    return json({ ok: true, time: new Date().toISOString() });
+    var 건수 = -1;   // 보관 중인 리포트 수 — 배포 뒤 확인에 쓴다
+    try { 건수 = 색인읽기_(PropertiesService.getScriptProperties()).length; } catch (err) {}
+    return json({ ok: true, time: new Date().toISOString(), reports: 건수 });
+  }
+  if (e && e.parameter && e.parameter.report) {
+    try {
+      return json(리포트조회(e.parameter.report));
+    } catch (err) {
+      return json({ ok: false, error: 오류문구(err) });
+    }
   }
   if (e && e.parameter && e.parameter.url) {
     try {
@@ -405,7 +422,7 @@ function 점검(입력, 키워드, 붙인소스) {
   }
 
   /* 9) 점수 ─────────────────────────────────── */
-  return {
+  var 답 = {
     ok: true,
     url: url,
     코드: 코드,
@@ -416,6 +433,9 @@ function 점검(입력, 키워드, 붙인소스) {
     알림: 알림글.join(' '),
     점검시각: Utilities.formatDate(new Date(), 'Asia/Seoul', 'yyyy-MM-dd HH:mm')
   };
+  /* 서명 — 리포트를 만들 때 이 결과가 서버가 만든 그대로인지 확인한다. 서명을 못 해도 점검 결과는 돌려준다(리포트만 못 만든다) */
+  try { 답.sig = 서명하기_(답); } catch (err) {}
+  return 답;
 }
 
 
@@ -600,4 +620,134 @@ function json(obj) {
   obj.version = VERSION;
   return ContentService.createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+/* ══════════════════════════════════════════════════════
+   점검 리포트 — 결과를 서버에 저장하고 짧은 번호를 준다 (2026-10-02c)
+   ══════════════════════════════════════════════════════
+   저장소는 스크립트 속성(PropertiesService)이다. 전체 한도(500KB)가 작아서 압축해 담고,
+   오래된 것부터 자동으로 지운다. 속성 키: SIGN_KEY(서명 열쇠, 처음 쓸 때 저절로 만든다) ·
+   rep_index(보관 목록) · rep_rate(시간당 횟수) · rep_<번호>(리포트 하나). */
+var 리포트접두 = 'rep_';
+var 리포트예산 = 400000;   // 저장해 둔 리포트 전체 크기 상한(글자). 속성 전체 한도 500KB 에서 여유를 둔다
+var 리포트최대 = 150;      // 건수 상한 — 색인 속성이 한 속성의 한도(9KB) 안에 들어가게
+var 리포트시간한도 = 40;   // 한 시간에 만들 수 있는 리포트 수 — 누가 퍼부어 보관함을 비우는 것을 막는다
+
+function 서명키_() {
+  var P = PropertiesService.getScriptProperties();
+  var k = P.getProperty('SIGN_KEY');
+  if (k) return k;
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(5000); } catch (e) {}
+  try {
+    k = P.getProperty('SIGN_KEY');
+    if (!k) { k = Utilities.getUuid() + Utilities.getUuid(); P.setProperty('SIGN_KEY', k); }
+  } finally {
+    try { lock.releaseLock(); } catch (e) {}
+  }
+  return k;
+}
+
+function 서명하기_(obj) {
+  var raw = Utilities.computeHmacSha256Signature(JSON.stringify(obj), 서명키_());
+  return raw.map(function (b) { return ('0' + (b & 0xff).toString(16)).slice(-2); }).join('');
+}
+
+function 압축_(s) {
+  return Utilities.base64Encode(Utilities.gzip(Utilities.newBlob(s, 'text/plain', 'r.json')).getBytes());
+}
+function 압축풀기_(z) {
+  return Utilities.ungzip(Utilities.newBlob(Utilities.base64Decode(z), 'application/x-gzip', 'r.gz')).getDataAsString();
+}
+
+function 색인읽기_(P) {
+  try {
+    var a = JSON.parse(P.getProperty('rep_index') || '[]');
+    return Array.isArray(a) ? a : [];
+  } catch (e) { return []; }
+}
+
+/* 리포트 저장 — 점검 결과(서명 포함)를 받아 서명을 확인하고 저장한다 */
+function 리포트저장(r) {
+  if (!r || r.ok !== true || !r.sig || !r.항목 || !r.항목.length || !r.점수) {
+    return { ok: false, error: '리포트로 만들 점검 결과가 올바르지 않습니다. 다시 점검해 주세요.' };
+  }
+  /* 서명은 점검() 이 만든 모양 그대로(sig · service · version 만 뺀 것)에 대해 붙었다 */
+  var 본 = {};
+  Object.keys(r).forEach(function (k) {
+    if (k !== 'sig' && k !== 'service' && k !== 'version') 본[k] = r[k];
+  });
+  var 맞음 = false;
+  try { 맞음 = 서명하기_(본) === r.sig; } catch (e) {}
+  if (!맞음) {
+    return { ok: false, error: '점검 결과가 서버가 만든 것과 달라 리포트를 만들 수 없습니다. 다시 점검해 주세요.' };
+  }
+  var z = 압축_(JSON.stringify(본));
+  if (z.length > 8500) return { ok: false, error: '점검 결과가 너무 커서 리포트로 저장하지 못했습니다.' };
+
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(10000); }
+  catch (e) { return { ok: false, error: '지금 요청이 몰려 있습니다. 잠시 뒤에 다시 시도해 주세요.' }; }
+  try {
+    var P = PropertiesService.getScriptProperties();
+    var 시 = Math.floor(Date.now() / 3600000);
+    var 한 = String(P.getProperty('rep_rate') || '').split(':');
+    var 건 = (+한[0] === 시) ? (+한[1] || 0) : 0;
+    if (건 >= 리포트시간한도) {
+      return { ok: false, error: '한 시간에 만들 수 있는 리포트 수를 넘었습니다. 잠시 뒤에 다시 시도해 주세요.' };
+    }
+    var 색인 = 색인읽기_(P);
+    var id = '';
+    for (var 시도 = 0; 시도 < 8 && !id; 시도++) {
+      var 후보 = Utilities.getUuid().replace(/-/g, '').slice(0, 10);
+      if (!P.getProperty(리포트접두 + 후보)) id = 후보;
+    }
+    if (!id) return { ok: false, error: '리포트 번호를 만들지 못했습니다. 다시 시도해 주세요.' };
+
+    var 값 = JSON.stringify({ t: new Date().toISOString(), z: z });
+    var 합 = 0;
+    색인.forEach(function (x) { 합 += x[1]; });
+    /* 자리가 모자라면 오래된 것부터 지운다 */
+    while (색인.length && (합 + 값.length > 리포트예산 || 색인.length >= 리포트최대)) {
+      var 옛 = 색인.shift();
+      P.deleteProperty(리포트접두 + 옛[0]);
+      합 -= 옛[1];
+    }
+    P.setProperty(리포트접두 + id, 값);
+    색인.push([id, 값.length, Date.now()]);
+    P.setProperty('rep_index', JSON.stringify(색인));
+    P.setProperty('rep_rate', 시 + ':' + (건 + 1));
+    return { ok: true, id: id };
+  } finally {
+    try { lock.releaseLock(); } catch (e) {}
+  }
+}
+
+/* 리포트 조회 — 번호로 저장해 둔 점검 결과를 돌려준다 */
+function 리포트조회(id) {
+  id = String(id || '');
+  if (!/^[0-9a-f]{10}$/.test(id)) return { ok: false, error: '리포트 번호가 올바르지 않습니다.' };
+  var v = PropertiesService.getScriptProperties().getProperty(리포트접두 + id);
+  if (!v) {
+    return { ok: false, notFound: true, error: '리포트를 찾을 수 없습니다. 오래되어 정리되었거나 주소가 잘못되었을 수 있습니다.' };
+  }
+  try {
+    var rec = JSON.parse(v);
+    return { ok: true, id: id, created: rec.t, result: JSON.parse(압축풀기_(rec.z)) };
+  } catch (e) {
+    return { ok: false, error: '리포트를 읽지 못했습니다.' };
+  }
+}
+
+/* 편집기에서 한 번 실행해 보는 함수 — 리포트 저장소(스크립트 속성)와 잠금을 쓸 수 있는지 확인하고 서명 열쇠를 미리 만든다.
+   새 버전을 배포하기 전에 위쪽 함수 선택 칸에서 「권한확인」을 골라 ▶ 실행 하세요.
+   권한 승인 창이 뜨면 허용해 주세요(뜨지 않으면 이미 괜찮은 것입니다). 실행 로그에 「버전 … · 서명 열쇠 있음」이 나오면 됩니다. */
+function 권한확인() {
+  var P = PropertiesService.getScriptProperties();
+  var lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  lock.releaseLock();
+  서명키_();
+  console.log('버전 ' + VERSION + ' · 서명 열쇠 ' + (P.getProperty('SIGN_KEY') ? '있음' : '없음') + ' · 보관 중인 리포트 ' + 색인읽기_(P).length + '건');
 }

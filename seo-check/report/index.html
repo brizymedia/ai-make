@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>홈페이지 SEO 점검 리포트 — 큰길브리지</title>
+<!-- 점검 리포트는 업체마다 다른 내용이라 검색에 잡히면 안 된다 -->
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="description" content="구글·네이버 검색 노출에 필요한 24개 항목을 점검한 결과와 고치는 방법입니다.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="홈페이지 SEO 점검 리포트 — 큰길브리지">
+<meta property="og:description" content="구글·네이버 검색 노출에 필요한 24개 항목을 점검한 결과와 고치는 방법입니다.">
+<meta property="og:image" content="https://www.ai-make.co.kr/og.png">
+<meta property="og:site_name" content="큰길브리지">
+<meta property="og:locale" content="ko_KR">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+:root{
+  --ink:#07090F; --ink-2:#0B0F18; --gold:#E8B84B; --gold-2:#F3D07A; --teal:#3FD3C6; --coral:#FF6B4A;
+  --txt:#EDEAE3; --txt-dim:#9AA3B2; --txt-mute:#5C6577; --line:rgba(237,234,227,.10); --line-2:rgba(237,234,227,.20);
+  --paper:#FFFFFF; --paper-ink:#1A1D24; --paper-dim:#5A6070; --paper-line:#E2E0DA; --paper-soft:#FBFAF7;
+  --ok:#0E8F83; --ok-bg:#E4F6F3; --warn:#9A6408; --warn-bg:#FDF3DC; --fail:#C23B1A; --fail-bg:#FCEAE4; --info:#5F6778; --info-bg:#EEF0F4;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;word-break:keep-all}
+body{background:var(--ink);color:var(--txt);line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit}
+
+/* ── 상단바 ─────────────────────────── */
+.topbar{position:sticky;top:0;z-index:60;background:rgba(7,9,15,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;letter-spacing:-.03em}
+.brand svg{width:28px;height:28px}
+.pill{font-size:.68rem;font-weight:800;letter-spacing:.1em;padding:5px 11px;border-radius:99px;
+  background:rgba(232,184,75,.14);color:var(--gold);border:1px solid rgba(232,184,75,.35)}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:99px;
+  border:1px solid var(--line-2);background:transparent;font-size:.83rem;font-weight:700;
+  cursor:pointer;text-decoration:none;white-space:nowrap;transition:all .25s}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn-gold{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-2);color:var(--ink);border-color:var(--gold-2)}
+.btn[hidden]{display:none}
+
+.wrap{max-width:900px;margin:0 auto;padding:22px 16px 70px}
+
+/* ── 불러오는 중 · 오류 ───────────────── */
+.state{text-align:center;padding:70px 20px;color:var(--txt-dim);font-size:.95rem;line-height:1.8}
+.state b{color:var(--txt)}
+.state .acts{justify-content:center}
+.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(237,234,227,.2);border-top-color:var(--gold);
+  border-radius:50%;animation:sp .8s linear infinite;vertical-align:-4px;margin-right:10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.spin{animation:none}}
+
+/* ── 리포트(종이) ───────────────────── */
+.doc{background:var(--paper);color:var(--paper-ink);border-radius:16px;padding:clamp(24px,4vw,52px);overflow-wrap:anywhere;
+  box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.doc[hidden]{display:none}
+.doc-head{text-align:center;border-bottom:2px solid var(--paper-ink);padding-bottom:20px;margin-bottom:22px}
+.doc-head .no{font-size:.74rem;color:var(--paper-dim);letter-spacing:.08em;margin-bottom:8px}
+.doc-head .no b{color:var(--paper-ink);letter-spacing:.14em}
+.doc-head h1{font-size:clamp(1.45rem,3.6vw,2.05rem);font-weight:900;letter-spacing:-.045em}
+.doc-head .sub{font-size:.84rem;color:var(--paper-dim);margin-top:7px}
+.tg{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--paper-line);background:var(--paper-soft);
+  border-radius:12px;padding:12px 16px;margin-bottom:16px}
+.tg .k{font-size:.7rem;font-weight:800;letter-spacing:.1em;color:var(--paper-dim)}
+.tg .u{font-weight:800;font-size:1rem;word-break:break-all}
+.tg .m{margin-left:auto;font-size:.74rem;font-weight:700;padding:4px 10px;border-radius:99px;background:#EEF1F5;color:#42506B}
+.tg .m.src{background:var(--warn-bg);color:var(--warn)}
+
+.scores{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:560px){.scores{grid-template-columns:minmax(0,1fr)}}
+.sc{border:1px solid var(--paper-line);border-radius:14px;padding:18px 16px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:10px}
+.ring{position:relative;width:118px;height:118px}
+.ring svg{width:100%;height:100%;display:block}
+.ring .bg{fill:none;stroke:#ECE9E1;stroke-width:9}
+.ring .fg{fill:none;stroke-width:9;stroke-linecap:round}
+.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;font-weight:900;letter-spacing:-.05em}
+.sc h3{font-size:.95rem;font-weight:900;letter-spacing:-.03em}
+.sc p{font-size:.8rem;color:var(--paper-dim);line-height:1.6}
+.lead{margin-top:18px;font-size:.9rem;line-height:1.8}
+.lead b{font-weight:800}
+.callout{margin-top:14px;border-left:3px solid var(--gold);background:#FDF8EC;padding:12px 14px;
+  border-radius:0 10px 10px 0;font-size:.82rem;line-height:1.75}
+.callout b{color:#8A6512}
+
+.doc h2{font-size:1rem;font-weight:900;letter-spacing:-.03em;margin:30px 0 12px;padding-bottom:7px;
+  border-bottom:1px solid var(--paper-line)}
+.doc h2 em{font-style:normal;margin-left:4px}
+.doc h2 em.f{color:var(--fail)} .doc h2 em.o{color:var(--ok)} .doc h2 em.i{color:var(--info)}
+
+/* 고칠 것 */
+.fixes{list-style:none;display:grid;gap:12px}
+.fix{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px;border:1px solid var(--paper-line);border-radius:14px;padding:16px}
+.fix.s-fail{border-color:#F2C9BB;background:#FFFBF9}
+.fix .rank{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:.95rem;
+  background:var(--paper-ink);color:#fff}
+.fix.s-fail .rank{background:var(--fail)} .fix.s-warn .rank{background:var(--warn)}
+.fh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fh .nm{font-size:.98rem;font-weight:900;letter-spacing:-.03em}
+.tag{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:99px}
+.tag.fail{background:var(--fail-bg);color:var(--fail)} .tag.warn{background:var(--warn-bg);color:var(--warn)}
+.imp{font-size:.68rem;font-weight:700;color:var(--paper-dim);border:1px solid var(--paper-line);padding:2px 8px;border-radius:99px}
+.cur{margin-top:6px;font-size:.84rem;color:var(--paper-dim)}
+.cur b{color:var(--paper-ink);word-break:break-all}
+.why{margin-top:6px;font-size:.84rem;color:var(--paper-dim);line-height:1.7}
+.how{margin-top:10px;border-left:3px solid var(--gold);background:#FDF8EC;padding:10px 13px;border-radius:0 9px 9px 0;
+  font-size:.84rem;line-height:1.75}
+.how>.hk{display:block;font-size:.66rem;font-weight:800;letter-spacing:.1em;color:#8A6512;margin-bottom:3px}
+.how b{color:#8A6512}
+@media(max-width:520px){.fix{grid-template-columns:1fr;gap:10px}}
+
+/* 키워드 · 잘된 것 · 못 본 것 */
+.kwl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px}
+.kwl div{border:1px solid var(--paper-line);border-radius:11px;padding:10px 13px;font-size:.82rem;
+  display:flex;justify-content:space-between;align-items:center;gap:8px}
+.kwl span{color:var(--paper-dim)} .kwl b.y{color:var(--ok)} .kwl b.n{color:var(--fail)}
+.oks{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+@media(max-width:640px){.oks{grid-template-columns:minmax(0,1fr)}}
+.oks li{display:flex;align-items:center;gap:9px;min-width:0;font-size:.84rem;padding:8px 0;border-bottom:1px dashed var(--paper-line)}
+.oks .n{font-weight:700;flex:none}
+.oks .v{margin-left:auto;min-width:0;color:var(--paper-dim);text-align:right;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dot{width:18px;height:18px;border-radius:50%;flex:none;display:grid;place-items:center}
+.dot svg{width:10px;height:10px;stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dot.ok{background:var(--ok-bg)} .dot.ok svg{stroke:var(--ok)}
+.dot.info{background:var(--info-bg)} .dot.info svg{stroke:var(--info)}
+.infos{list-style:none;display:grid;gap:10px}
+.infos li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;font-size:.84rem;line-height:1.7}
+.infos .n{font-weight:800}
+.infos .d{color:var(--paper-dim)}
+
+/* 상담 안내 · 방법 · 맺음 */
+.cta{margin-top:30px;border:1px solid #E7D7A9;background:linear-gradient(135deg,#FFF9E8,#FFFDF6);border-radius:16px;padding:20px 22px}
+.cta h3{font-size:1.15rem;font-weight:900;letter-spacing:-.04em;margin-bottom:6px}
+.cta h3 em{font-style:normal;color:#9A6408}
+.cta p{font-size:.86rem;color:var(--paper-dim);line-height:1.75}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.doc .btn{border-color:#CFCBC0;color:var(--paper-ink)}
+.doc .btn:hover{border-color:var(--paper-ink);color:var(--paper-ink)}
+.doc .btn-gold{background:var(--gold);border-color:var(--gold);color:#07090F}
+.doc .btn-gold:hover{background:var(--gold-2);border-color:var(--gold-2)}
+.terms{list-style:none;font-size:.8rem;color:var(--paper-dim);line-height:1.75}
+.terms li{display:flex;gap:8px;margin-bottom:4px}
+.terms li::before{content:"—";flex:none}
+.doc-foot{margin-top:26px;padding-top:16px;border-top:1px solid var(--paper-line);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.78rem;color:var(--paper-dim)}
+.doc-foot b{color:var(--paper-ink)}
+.print-only{display:none}
+
+/* 리포트 밑 — 우리 사이트로 */
+.after{margin-top:26px;border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--ink-2);text-align:center}
+.after[hidden]{display:none}
+.after p{font-size:.9rem;color:var(--txt-dim);margin-bottom:12px}
+.after .btn{padding:12px 22px;font-size:.9rem}
+.gfoot{max-width:900px;margin:0 auto;padding:0 16px 40px;text-align:center;font-size:.74rem;color:var(--txt-mute);line-height:1.8}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{background:#fff}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .no-print{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .doc{box-shadow:none;border-radius:0;padding:0}
+  .doc h2,.fix,.sc,.cta,.callout{break-inside:avoid}
+  .doc h2{break-after:avoid}
+  .print-only{display:block}
+  .oks .v{max-width:60%}
+}
+</style>
+<script defer src="https://www.ai-make.co.kr/stats/stats.js" data-site="ai-make"></script>
+</head>
+<body>
+
+<header class="topbar no-print">
+  <div class="topbar-in">
+    <a href="../../" class="brand">
+      <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M2 30 C 10 12, 30 12, 38 30" stroke="#E8B84B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M2 30 H38" stroke="#3FD3C6" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M11 30 V20.5 M20 30 V17 M29 30 V20.5" stroke="#EDEAE3" stroke-opacity=".45" stroke-width="1.3"/>
+        <circle cx="20" cy="17" r="2.6" fill="#E8B84B"/>
+      </svg>
+      <span>큰길브리지</span>
+    </a>
+    <span class="pill">SEO 점검 리포트</span>
+    <div class="top-actions">
+      <button class="btn" id="btnPrint" type="button" hidden>PDF로 저장</button>
+      <a class="btn btn-gold" href="tel:1533-7295">1533-7295</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="state" id="state" role="status" aria-live="polite"><span class="spin"></span>리포트를 불러오는 중입니다…</div>
+  <article class="doc" id="doc" hidden></article>
+  <section class="after no-print" id="after" hidden>
+    <p>내 홈페이지는 검색에 잘 걸리고 있을까요? 주소만 넣으면 같은 24개 항목을 바로 점검해 드립니다.</p>
+    <a class="btn btn-gold" href="../">내 홈페이지도 무료 점검하기</a>
+  </section>
+</main>
+
+<footer class="gfoot no-print">
+  <p><b>큰길브리지</b> · (주)브리지미디어 · 대표 김효민 · 사업자등록번호 813-81-02252 · 대표번호 <a href="tel:1533-7295">1533-7295</a></p>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* 점검 서버 주소 — seo-check/index.html 의 CHECK_ENDPOINT 와 같은 것. 서버를 새로 배포해 주소가 바뀌면 두 곳을 같이 고친다 */
+  var CHECK_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwyYH1BgoOfaG6s5A_vFdwf5w4J3DGn4Mqt_V9xCLhL_3n_j7Fef8gstCk3DDLtxtGs/exec';
+  var SMS_TO = '010-7635-7886';
+  var TEL = '1533-7295';
+  var $ = function(s){ return document.querySelector(s); };
+
+  function esc(t){
+    return String(t == null ? '' : t)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  /* 우리가 쓴 <b> 만 살린다. 점검한 사이트에서 온 값(제목 · 설명문 등)에는 쓰지 않는다 */
+  function 굵게만(t){
+    return esc(t).split('&lt;b&gt;').join('<b>').split('&lt;/b&gt;').join('</b>');
+  }
+
+  var 상태글 = { fail:'고쳐야 함', warn:'주의', ok:'통과', info:'확인 못 함' };
+  var 아이콘 = {
+    ok:   '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>',
+    info: '<svg viewBox="0 0 24 24"><path d="M12 16v-5M12 8h.01"/></svg>'
+  };
+
+  function 색(v){ return v >= 90 ? '#0E8F83' : (v >= 70 ? '#B7770A' : '#D6431F'); }
+  function 평(v, 엔진){
+    if(v >= 90) return '기본기가 잘 갖춰져 있습니다. 이제 글과 후기를 쌓을 차례입니다.';
+    if(v >= 75) return '나쁘지 않습니다. 노란 항목 몇 개만 손보면 확실히 올라갑니다.';
+    if(v >= 55) return '검색에 걸리기는 하지만 손해를 보고 있습니다. 붉은 항목부터 고쳐야 합니다.';
+    return 엔진 + ' 검색에서 거의 안 보이는 상태입니다. 붉은 항목이 원인입니다.';
+  }
+  /* 점검 서버가 항목마다 매긴 가중치(구글 · 네이버)의 합으로 「영향」을 말한다 */
+  function 영향(it){
+    var w = (it.g || 0) + (it.n || 0);
+    return w >= 14 ? '영향 큼' : (w >= 8 ? '영향 보통' : (w > 0 ? '영향 작음' : ''));
+  }
+  /* 급한 것(고쳐야 함)이 먼저, 같은 등급 안에서는 영향이 큰 것이 먼저 */
+  function 비교(a, b){
+    var sa = a.상태 === 'fail' ? 2 : 1, sb = b.상태 === 'fail' ? 2 : 1;
+    if(sa !== sb) return sb - sa;
+    return ((b.g || 0) + (b.n || 0)) - ((a.g || 0) + (a.n || 0));
+  }
+
+  function 링(v){
+    var 칠 = 색(v), 비 = (326.7 * (1 - v / 100)).toFixed(1);
+    return '<div class="ring"><svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="52"/>' +
+      '<circle class="fg" cx="60" cy="60" r="52" stroke="' + 칠 + '" stroke-dasharray="326.7" stroke-dashoffset="' + 비 +
+      '" transform="rotate(-90 60 60)"/></svg><b style="color:' + 칠 + '">' + v + '</b></div>';
+  }
+
+  function 머리(R, id){
+    var 소스 = R.모드 === '소스';
+    return '<div class="doc-head"><div class="no">REPORT No. <b>' + esc(String(id).toUpperCase()) + '</b>' +
+      (R.점검시각 ? ' · 점검 ' + esc(R.점검시각) : '') + '</div>' +
+      '<h1>홈페이지 SEO 점검 리포트</h1>' +
+      '<div class="sub">구글 · 네이버 검색 노출 기본기 ' + R.항목.length + '개 항목</div></div>' +
+      '<div class="tg"><span class="k">점검 대상</span><b class="u">' + esc(R.url) + '</b>' +
+      '<span class="m' + (소스 ? ' src' : '') + '">' + (소스 ? '붙여넣은 소스 기준' : '주소를 직접 점검') + '</span></div>';
+  }
+  function 점수칸(R){
+    function 칸(이름, v, 엔진){ return '<div class="sc">' + 링(v) + '<h3>' + 이름 + '</h3><p>' + esc(평(v, 엔진)) + '</p></div>'; }
+    return '<div class="scores">' + 칸('Google 최적화', R.점수.google, '구글') + 칸('Naver 최적화', R.점수.naver, '네이버') + '</div>';
+  }
+  function 요약(R, 수){
+    var 글 = '총 <b>' + R.항목.length + '개</b> 항목 중 ' + 수.ok + '개 통과 · ' + 수.warn + '개 주의 · ' + 수.fail + '개 고쳐야 함' +
+      (수.info ? ' · ' + 수.info + '개 확인 못 함' : '') + '입니다. ';
+    if(수.fail) 글 += '검색 노출을 직접 막고 있는 항목이 <b>' + 수.fail + '개</b> 있습니다. 아래 순서대로 고치시면 가장 효과가 큽니다.';
+    else if(수.warn) 글 += '치명적인 문제는 없습니다. 아래 항목만 손보면 확실히 올라갑니다.';
+    else 글 += '기본기는 잘 갖춰져 있습니다. 이제 순위를 올리는 건 글과 후기입니다.';
+    return '<p class="lead">' + 글 + '</p>' + (R.알림 ? '<div class="callout">' + 굵게만(R.알림) + '</div>' : '');
+  }
+
+  function 고칠것(문제){
+    if(!문제.length) return '';
+    return '<h2>개선할 항목 <em class="f">' + 문제.length + '가지</em> — 우선순위 순</h2><ol class="fixes">' +
+      문제.map(function(it, i){
+        var 영 = 영향(it);
+        return '<li class="fix s-' + esc(it.상태) + '"><div class="rank">' + (i + 1) + '</div><div class="fx">' +
+          '<div class="fh"><b class="nm">' + esc(it.이름) + '</b><span class="tag ' + esc(it.상태) + '">' + 상태글[it.상태] + '</span>' +
+          (영 ? '<span class="imp">' + 영 + '</span>' : '') + '</div>' +
+          '<div class="cur">현재 상태 <b>' + esc(it.값) + '</b></div>' +
+          (it.설명 ? '<p class="why">' + esc(it.설명) + '</p>' : '') +
+          (it.처방 ? '<div class="how"><span class="hk">고치는 법</span>' + 굵게만(it.처방) + '</div>' : '') +
+          '</div></li>';
+      }).join('') + '</ol>';
+  }
+  function 키워드(k){
+    if(!k) return '';
+    function 칸(라벨, 참){
+      return '<div><span>' + esc(라벨) + '</span><b class="' + (참 ? 'y' : 'n') + '">' + (참 ? '들어있음' : '없음') + '</b></div>';
+    }
+    return '<h2>검색 키워드 점검 <em class="i">' + esc(k.말) + '</em></h2><div class="kwl">' +
+      칸('페이지 제목', k.title) + 칸('검색 설명문', k.desc) + 칸('대표 제목(h1)', k.h1) +
+      '<div><span>본문 등장</span><b class="' + (k.본문 > 0 ? 'y' : 'n') + '">' + (k.본문 || 0) + '회</b></div></div>';
+  }
+  function 잘된것(통과){
+    if(!통과.length) return '';
+    return '<h2>잘 되어 있는 항목 <em class="o">' + 통과.length + '가지</em></h2><ul class="oks">' +
+      통과.map(function(it){
+        return '<li><span class="dot ok">' + 아이콘.ok + '</span><span class="n">' + esc(it.이름) + '</span><span class="v">' + esc(it.값) + '</span></li>';
+      }).join('') + '</ul>';
+  }
+  function 못본것(보류){
+    if(!보류.length) return '';
+    return '<h2>확인하지 못한 항목 <em class="i">' + 보류.length + '가지</em></h2><ul class="infos">' +
+      보류.map(function(it){
+        return '<li><span class="dot info">' + 아이콘.info + '</span><div><div class="n">' + esc(it.이름) + '</div><div class="d">' +
+          굵게만(it.처방 || it.설명) + '</div></div></li>';
+      }).join('') + '</ul>';
+  }
+  function 상담(R, id, 수){
+    var 본 = ['[SEO 점검 리포트 상담]', '리포트 번호 : ' + String(id).toUpperCase(), '사이트 : ' + R.url,
+      '점수 : 구글 ' + R.점수.google + ' / 네이버 ' + R.점수.naver, '', '성함/상호 : ', '연락 가능한 시간 : '].join(String.fromCharCode(10));
+    var 구분 = /iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?';
+    var 문자 = 'sms:' + SMS_TO.replace(/[^0-9+]/g, '') + 구분 + 'body=' + encodeURIComponent(본);
+    var 있음 = 수.fail + 수.warn > 0;
+    return '<div class="cta"><h3>' + (있음 ? '이 항목들, <em>저희가 고쳐 드립니다</em>' : '다음 단계도 <em>함께 하겠습니다</em>') + '</h3>' +
+      '<p>큰길브리지는 홈페이지 제작 · 검색 설정(SEO) · 홍보영상을 함께 하는 업체입니다. ' +
+      (있음 ? '위에 적힌 항목을 우선순위대로 정리해 비용과 일정을 먼저 안내해 드립니다.' : '글과 후기를 쌓아 순위를 올리는 방법을 안내해 드립니다.') + '</p>' +
+      '<div class="acts no-print"><a class="btn btn-gold" href="' + 문자 + '">문자로 상담 신청</a>' +
+      '<a class="btn" href="tel:1533-7295">' + TEL + ' 전화</a><a class="btn" href="../../#price">요금 · 견적 보기</a></div>' +
+      '<p class="print-only" style="margin-top:10px">상담 · 문의 ' + TEL + ' · ' + SMS_TO + ' · www.ai-make.co.kr</p></div>';
+  }
+  function 안내(){
+    return '<h2>점검 방법과 안내</h2><ul class="terms">' +
+      '<li>자동 점검 도구가 공개된 웹 페이지(또는 붙여넣은 소스)를 읽어 24개 항목을 확인한 결과입니다. 로그인이 필요한 화면은 점검하지 않습니다.</li>' +
+      '<li>점수는 검색 순위 그 자체가 아니라 기본기를 갖췄는지 보는 지표입니다. 순위를 보장하거나 예측하지 않습니다.</li>' +
+      '<li>구글 소유확인처럼 페이지 밖에서는 확인할 수 없는 항목은 「확인 못 함」으로 두고 점수에서 뺍니다.</li>' +
+      '<li>점검한 시점의 상태입니다. 사이트를 고치면 결과가 달라지니, 고친 뒤에 다시 점검해 보세요.</li></ul>' +
+      '<div class="doc-foot"><span><b>큰길브리지</b> · (주)브리지미디어 · 대표 김효민</span>' +
+      '<span>사업자등록번호 813-81-02252 · 대표번호 ' + TEL + '</span></div>';
+  }
+
+  function 그리기(R, id){
+    var 문제 = R.항목.filter(function(it){ return it.상태 === 'fail' || it.상태 === 'warn'; }).sort(비교);
+    var 통과 = R.항목.filter(function(it){ return it.상태 === 'ok'; });
+    var 보류 = R.항목.filter(function(it){ return it.상태 === 'info'; });
+    var 수 = {
+      ok: 통과.length, info: 보류.length,
+      fail: 문제.filter(function(it){ return it.상태 === 'fail'; }).length,
+      warn: 문제.filter(function(it){ return it.상태 === 'warn'; }).length
+    };
+    $('#doc').innerHTML = 머리(R, id) + 점수칸(R) + 요약(R, 수) + 고칠것(문제) + 키워드(R.키워드) +
+      잘된것(통과) + 못본것(보류) + 상담(R, id, 수) + 안내();
+    $('#state').hidden = true;
+    $('#doc').hidden = false;
+    $('#after').hidden = false;
+    $('#btnPrint').hidden = false;
+    /* PDF 로 저장할 때 파일 이름이 되도록 제목에 주소를 넣는다 */
+    try { document.title = String(R.url).split('//').pop().split('/')[0] + ' SEO 점검 리포트 — 큰길브리지'; } catch(e){}
+  }
+
+  function 오류(제목, 설명, 다시){
+    var s = $('#state');
+    s.hidden = false;
+    $('#doc').hidden = true;
+    s.innerHTML = '<b>' + esc(제목) + '</b><br>' + esc(설명) +
+      '<div class="acts"><a class="btn btn-gold" href="../">무료 점검 해보기</a>' +
+      '<a class="btn" href="tel:1533-7295">' + TEL + ' 전화</a>' +
+      (다시 ? '<button class="btn" id="retry" type="button">다시 불러오기</button>' : '') + '</div>';
+    if(다시) $('#retry').addEventListener('click', 불러오기);
+  }
+
+  var id = (new URLSearchParams(location.search).get('r') || '').toLowerCase();
+
+  function 불러오기(){
+    if(!/^[0-9a-f]{10}$/.test(id)){
+      오류('리포트 주소를 확인해 주세요', '리포트 번호가 없거나 올바르지 않습니다. 보내 드린 링크를 그대로 열어 주세요.');
+      return;
+    }
+    $('#state').hidden = false;
+    $('#state').innerHTML = '<span class="spin"></span>리포트를 불러오는 중입니다…';
+    fetch(CHECK_ENDPOINT + '?report=' + encodeURIComponent(id))
+      .then(function(r){ return r.json(); })
+      .then(function(r){
+        if(r && r.ok && r.result && r.result.항목 && r.result.항목.length && r.result.점수){ 그리기(r.result, id); return; }
+        if(r && r.notFound){
+          오류('리포트를 찾을 수 없습니다', '오래되어 정리되었거나 주소가 잘못되었을 수 있습니다. 새로 점검하시면 같은 리포트를 다시 받으실 수 있습니다.');
+        }else{
+          오류('리포트를 불러오지 못했습니다', (r && r.error) || '잠시 뒤에 다시 열어 주세요.', true);
+        }
+      })
+      .catch(function(){
+        오류('리포트를 불러오지 못했습니다', '인터넷 연결을 확인하고 다시 열어 주세요. 계속 안 되면 ' + TEL + ' 로 연락 주세요.', true);
+      });
+  }
+
+  $('#btnPrint').addEventListener('click', function(){ window.print(); });
+  불러오기();
+
+  /* 테스트용 출입구 — 서버 없이 화면 그리는 부분만 볼 때 쓴다 */
+  window.__report = { 그리기: 그리기 };
+})();
+</script>
+</body>
+</html>

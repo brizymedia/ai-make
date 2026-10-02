@@ -2,6 +2,8 @@ User-agent: *
 Allow: /
 # 계약서에는 고객 정보가 들어간다. 수집을 막는다.
 Disallow: /contract.html
+# SEO 점검 리포트는 업체마다 다른 내용이다
+Disallow: /seo-check/report/
 # 유입 현황판 · 내부 화면은 내부용
 Disallow: /stats/
 Disallow: /me/

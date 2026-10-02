@@ -126,9 +126,34 @@
 .src-n{font-size:.78rem;color:var(--txt-mute)}
 .src-note{margin-top:12px;font-size:.78rem;color:var(--txt-mute);line-height:1.7}
 
+/* 점검 리포트 링크 — 점검이 끝난 결과를 고객에게 링크로 보낸다 */
+.trow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.trow .target{margin-bottom:0}
+.rep-btn{padding:9px 16px;border-radius:99px;border:1px solid rgba(232,184,75,.5);background:rgba(232,184,75,.1);color:var(--gold);
+  font:inherit;font-size:.8rem;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .25s}
+.rep-btn:hover:not(:disabled){background:var(--gold);color:var(--ink)}
+.rep-btn:disabled{opacity:.6;cursor:progress}
+.rep-btn[hidden]{display:none}
+.rep{margin-bottom:20px;padding:18px 20px;border-radius:16px;border:1px solid rgba(232,184,75,.4);
+  background:radial-gradient(120% 140% at 10% 0%,rgba(232,184,75,.1),transparent 60%),rgba(237,234,227,.03)}
+.rep[hidden]{display:none}
+.rep-t{display:block;font-size:.98rem;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
+.rep-d{font-size:.82rem;color:var(--txt-dim);line-height:1.7;margin-bottom:12px}
+.rep-row{display:flex;gap:8px}
+.rep-row input{flex:1;min-width:0;padding:12px 14px;border:1px solid var(--line-2);border-radius:11px;background:rgba(7,9,15,.55);
+  color:var(--txt,#EDEAE3);font-family:var(--f-mono);font-size:.8rem}
+.rep-copy,.rep-a{padding:11px 16px;border-radius:11px;border:1px solid var(--line-2);background:none;color:var(--txt);
+  font:inherit;font-size:.84rem;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap;transition:all .25s}
+.rep-copy{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:800}
+.rep-copy:hover,.rep-a:hover{filter:brightness(1.1);border-color:var(--gold)}
+.rep-a[hidden]{display:none}
+.rep-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.rep-n{margin-top:12px;font-size:.76rem;color:var(--txt-mute);line-height:1.7}
+.rep.rep-err{border-color:rgba(255,107,74,.35);background:rgba(255,107,74,.1);color:#FFB09A;font-size:.86rem;padding:13px 15px}
+
 /* ── 결과 ───────────────────────────────── */
 #out[hidden]{display:none}
-#out{margin-top:clamp(28px,4vw,44px)}
+#out{margin-top:clamp(28px,4vw,44px);scroll-margin-top:90px}
 .target{font-family:var(--f-mono);font-size:.72rem;color:var(--txt-mute);letter-spacing:.04em;
   word-break:break-all;margin-bottom:18px}
 .target b{color:var(--gold)}
@@ -313,7 +338,25 @@
   </div>
 
   <section id="out" hidden aria-live="polite">
-    <p class="target">점검 대상 · <b id="tUrl"></b> <span id="tAt"></span></p>
+    <div class="trow">
+      <p class="target">점검 대상 · <b id="tUrl"></b> <span id="tAt"></span></p>
+      <button class="rep-btn" id="repBtn" type="button" hidden>리포트 링크 만들기</button>
+    </div>
+    <div class="rep" id="repBox" hidden>
+      <b class="rep-t">점검 리포트 링크가 만들어졌습니다</b>
+      <p class="rep-d">받는 분은 이 점검 결과를 리포트 한 장으로 바로 볼 수 있고, PDF로 저장할 수도 있습니다. 링크를 아는 사람은 누구나 열 수 있습니다.</p>
+      <div class="rep-row">
+        <input id="repUrl" type="text" readonly aria-label="리포트 링크">
+        <button class="rep-copy" id="repCopy" type="button">링크 복사</button>
+      </div>
+      <div class="rep-acts">
+        <a class="rep-a" id="repOpen" href="#" target="_blank" rel="noopener">리포트 미리보기</a>
+        <a class="rep-a" id="repSms" href="#" hidden>문자로 보내기</a>
+        <button class="rep-a" id="repShare" type="button" hidden>공유하기</button>
+      </div>
+      <p class="rep-n">서버에는 최근 100건 안팎이 보관되고 오래된 것부터 정리됩니다. 오래 두려면 미리보기 화면에서 「PDF로 저장」으로 파일을 받아 두세요.</p>
+    </div>
+    <div class="rep rep-err" id="repErr" hidden></div>
 
     <div class="scores">
       <div class="sc">
@@ -382,6 +425,8 @@
       <p>구글 소유확인 방법은 메타태그 · HTML 파일 · DNS 세 가지입니다. 이 중 파일과 DNS 방식은 페이지 밖에 있어서 밖에서 들여다볼 방법이 없습니다. 그래서 저희는 없다고 단정하지 않고 회색 참고로 두며 점수에도 넣지 않습니다. 서치콘솔에 데이터가 보인다면 정상입니다.</p></details>
     <details><summary>남의 사이트도 점검할 수 있나요?</summary>
       <p>공개된 홈페이지라면 됩니다. 경쟁 업체가 무엇을 해두었는지 보시는 것도 좋은 방법입니다. 사이트가 외부 점검을 막아두었거나 로그인이 필요한 페이지는, 브라우저에서 페이지 소스를 복사해 붙여넣는 방식으로 점검할 수 있습니다. (이 경우 HTTPS · robots.txt · sitemap.xml · 응답 시간은 확인하지 못해 점수에서 뺍니다.) 내부망 주소는 점검할 수 없습니다.</p></details>
+    <details><summary>점검 결과를 다른 사람에게 보낼 수 있나요?</summary>
+      <p>점검이 끝나면 결과 위쪽의 <b>리포트 링크 만들기</b>를 누르세요. 점검 결과를 리포트 한 장으로 정리한 링크가 만들어집니다. 문자나 카카오톡으로 보내면 받는 분은 설치 없이 바로 열어 볼 수 있고, PDF로 저장할 수도 있습니다. 링크를 아는 사람은 누구나 열 수 있고, 서버에는 최근 100건 안팎이 보관됩니다.</p></details>
     <details><summary>고칠 게 많던데 직접 해야 하나요?</summary>
       <p>직접 하셔도 되고, 저희가 대신 해 드려도 됩니다. 결과 아래 <b>문자로 상담 신청</b>을 누르면 고칠 항목이 그대로 담긴 문자가 준비됩니다. 전송만 하시면 검토 후 연락드립니다. 상담은 무료이고, 필요 없는 건 필요 없다고 말씀드립니다.</p></details>
   </section>
@@ -538,6 +583,9 @@
       $('#todo').hidden = false;
     }
     $('#note').hidden = true;
+    /* 리포트 링크 — 서버가 서명을 붙여 준 결과(새 서버)만 리포트로 만들 수 있다. 새로 점검할 때마다 처음 상태로 */
+    $('#repBox').hidden = true; $('#repErr').hidden = true;
+    $('#repBtn').hidden = !r.sig; $('#repBtn').disabled = false; $('#repBtn').textContent = '리포트 링크 만들기';
     $('#out').hidden = false;
     $('#out').scrollIntoView({ behavior:'smooth', block:'start' });
   }
@@ -619,6 +667,69 @@
       note.innerHTML = '아래 내용을 <b>' + SMS_TO + '</b> 로 문자 보내주시거나 <b>' + TEL + '</b> 로 전화 주세요.';
       대체표시(note, text);
     }
+  });
+
+  /* ── 점검 리포트 링크 ──────────────────── */
+  var repBtn = $('#repBtn'), repBox = $('#repBox'), repErr = $('#repErr'), repUrl = $('#repUrl');
+
+  /* 리포트 화면(seo-check/report/)은 이 페이지와 같은 폴더 밑에 있다 */
+  function 리포트주소(id){ return new URL('report/?r=' + encodeURIComponent(id), location.href).href; }
+  function 리포트오류(msg){ repErr.innerHTML = msg; repErr.hidden = false; }
+
+  function 리포트보이기(url){
+    repUrl.value = url;
+    $('#repOpen').href = url;
+    /* 받는 사람은 문자 앱에서 고른다 — 번호 없이 본문만 채운다 (아이폰은 &, 안드로이드는 ?) */
+    var 글 = '[큰길브리지] ' + (마지막 ? 마지막.url + ' ' : '') + '홈페이지 SEO 점검 리포트입니다. ' + url;
+    $('#repSms').href = 'sms:' + (/iPhone|iPad|iPod|Mac/i.test(navigator.userAgent) ? '&' : '?') + 'body=' + encodeURIComponent(글);
+    $('#repSms').hidden = !isMobile;
+    $('#repShare').hidden = !navigator.share;
+    repBox.hidden = false;
+    repBtn.hidden = true;
+    repUrl.select();
+  }
+
+  repBtn.addEventListener('click', function(){
+    if(!마지막 || !마지막.sig) return;
+    repErr.hidden = true;
+    repBtn.disabled = true;
+    repBtn.textContent = '리포트 만드는 중…';
+    /* 받은 점검 결과를 서명 그대로 되돌려 보낸다. 서버가 서명을 확인한 결과만 리포트로 저장한다 */
+    fetch(CHECK_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'report', result: 마지막 })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(r){
+      if(r && r.ok && r.id){ 리포트보이기(리포트주소(r.id)); return; }
+      if(r && !r.version){
+        리포트오류('점검 서버가 아직 리포트를 만드는 새 버전이 아닙니다. 곧 쓰실 수 있게 됩니다. 급하시면 <b>' + TEL + '</b> 로 전화 주세요.');
+        return;
+      }
+      리포트오류(esc((r && r.error) || '리포트를 만들지 못했습니다. 잠시 뒤에 다시 시도해 주세요.'));
+    })
+    .catch(function(){
+      리포트오류('점검 서버에 연결하지 못했습니다. 잠시 뒤에 다시 시도해 주시거나 <b>' + TEL + '</b> 로 전화 주세요.');
+    })
+    .finally(function(){
+      repBtn.disabled = false;
+      repBtn.textContent = '리포트 링크 만들기';
+    });
+  });
+
+  $('#repCopy').addEventListener('click', function(){
+    var b = this;
+    function 됨(){ b.textContent = '복사됨'; setTimeout(function(){ b.textContent = '링크 복사'; }, 1500); }
+    function 옛방식(){ repUrl.select(); try{ document.execCommand('copy'); }catch(e){} 됨(); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(repUrl.value).then(됨).catch(옛방식);
+    }else{ 옛방식(); }
+  });
+  $('#repShare').addEventListener('click', function(){
+    if(!navigator.share) return;
+    navigator.share({ title: '홈페이지 SEO 점검 리포트', text: (마지막 ? 마지막.url + ' ' : '') + '홈페이지 SEO 점검 리포트', url: repUrl.value })
+      .catch(function(){});
   });
 
   /* ── 실행 ──────────────────────────────── */
