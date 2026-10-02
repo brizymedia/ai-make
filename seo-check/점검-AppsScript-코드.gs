@@ -39,7 +39,7 @@
 /** ── 설정 ───────────────────────────────── */
 var UA = 'Mozilla/5.0 (compatible; KeungilBridgeSEO/1.0; +https://www.ai-make.co.kr/seo-check/)';
 var SERVICE = 'seo-check';
-var VERSION = '2026-10-02a';
+var VERSION = '2026-10-02b';
 var 소스최대 = 1500000;   // 붙여넣은 소스는 이 글자 수까지만 읽는다
 /** ───────────────────────────────────────── */
 
@@ -309,13 +309,13 @@ function 점검(입력, 키워드, 붙인소스) {
           : '네이버는 글이 적은 페이지를 거의 노출하지 않습니다. 서비스 설명·자주 묻는 질문을 글로 채우면 바로 올라갑니다. (권장 800자 이상)')
   });
 
-  var 내부 = 0, 앵커 = 0;
+  var 내부 = 0, 앵커 = 0, 내호스트 = 호스트(기준);
   (html.match(/<a\b[^>]*href\s*=\s*["'][^"']+["']/gi) || []).forEach(function (t) {
     var h = 속성(t, 'href');
     if (!h) return;
     if (h.charAt(0) === '#') { 앵커++; return; }
     if (/^(mailto|tel|sms|javascript):/i.test(h)) return;
-    if (h.charAt(0) === '/' || h.indexOf(기준) === 0 || !/^https?:/i.test(h)) 내부++;
+    if (내부주소(h, 내호스트)) 내부++;
   });
   /* 한 장짜리 페이지는 섹션 이동이 곧 메뉴다. 이걸 0으로 세면 멀쩡한 원페이지가 실패로 찍힌다.
      우리 주력 상품이 원페이지다. 우리 고객을 우리 도구가 깎아내리게 둘 수는 없다. */
@@ -525,6 +525,21 @@ function 주소정리(입력) {
 function 도메인(url) {
   var m = url.match(/^(https?:\/\/[^\/]+)/i);
   return m ? m[1] : url;
+}
+
+/* 사이트 안으로 가는 링크인지 본다. www 가 붙은 주소와 안 붙은 주소, http 와 https 는 같은 사이트다.
+   (예전에는 https://gr1004.com 과 https://www.gr1004.com 을 다른 사이트로 세어 내부 링크가 적게 나왔다) */
+function 내부주소(h, 내호스트) {
+  if (h.indexOf('//') === 0) h = 'https:' + h;       // //example.com/x — 스킴을 생략한 주소는 호스트로 가린다
+  else if (h.charAt(0) === '/') return true;          // /about — 이 사이트 안의 경로
+  if (!/^https?:/i.test(h)) return true;              // about.html · ./x · ?page=2 — 상대 주소
+  return 호스트(h) === 내호스트;
+}
+
+/* 주소에서 호스트만 — 소문자, 앞의 www. 와 기본 포트(:80 · :443)는 뺀다 */
+function 호스트(주소) {
+  var m = String(주소).match(/^https?:\/\/([^\/?#]+)/i);
+  return m ? m[1].toLowerCase().replace(/^www\./, '').replace(/:(80|443)$/, '') : '';
 }
 
 function 가져오기(url) {
