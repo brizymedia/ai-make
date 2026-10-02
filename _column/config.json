@@ -251,6 +251,78 @@
     "name": "가게 유튜브 채널 시작 체크리스트",
     "keyword": "{city} 유튜브 홍보",
     "angle": "YouTube 공식 고객센터 기준"
+   },
+   {
+    "id": "naver-place",
+    "name": "네이버 스마트플레이스 정보 정리 순서",
+    "keyword": "{city} 스마트플레이스 등록",
+    "angle": "네이버 공식 도움말"
+   },
+   {
+    "id": "google-business",
+    "name": "구글 비즈니스 프로필 등록",
+    "keyword": "{city} 구글 비즈니스 프로필",
+    "angle": "구글 공식 도움말"
+   },
+   {
+    "id": "site-speed",
+    "name": "홈페이지가 느릴 때 점검할 것",
+    "keyword": "{city} 홈페이지 속도",
+    "angle": "web.dev · PageSpeed 공식"
+   },
+   {
+    "id": "mobile-check",
+    "name": "모바일에서 깨지는 홈페이지 점검",
+    "keyword": "{city} 모바일 홈페이지",
+    "angle": "구글 모바일 친화성 공식"
+   },
+   {
+    "id": "inquiry-form",
+    "name": "문의 폼 설계 — 항목을 줄여야 문의가 온다",
+    "keyword": "{city} 홈페이지 문의 폼",
+    "angle": "개인정보 최소수집(개인정보보호법) 포함"
+   },
+   {
+    "id": "domain-email",
+    "name": "도메인 이메일(회사 메일) 만들기",
+    "keyword": "{city} 회사 이메일",
+    "angle": "공식 도움말 기준"
+   },
+   {
+    "id": "ssl",
+    "name": "홈페이지 자물쇠(HTTPS) 경고가 뜰 때",
+    "keyword": "{city} 홈페이지 보안 경고",
+    "angle": "구글 · KISA 공식"
+   },
+   {
+    "id": "menu-structure",
+    "name": "홈페이지 메뉴 구성 — 3클릭 안에 찾게",
+    "keyword": "{city} 홈페이지 메뉴",
+    "angle": "일반 요령"
+   },
+   {
+    "id": "short-video-plan",
+    "name": "숏폼 홍보영상 한 달 계획 세우기",
+    "keyword": "{city} 숏폼 홍보",
+    "angle": "플랫폼 공식 도움말, 저작권"
+   },
+   {
+    "id": "ai-copy",
+    "name": "AI로 가게 소개글 쓸 때 확인할 것",
+    "keyword": "{city} 가게 소개글",
+    "angle": "사실 확인 · 표시광고법"
+   },
+   {
+    "id": "accessibility",
+    "name": "누구나 읽기 쉬운 홈페이지 — 글자 · 대비 · 대체텍스트",
+    "keyword": "{city} 웹 접근성",
+    "angle": "한국형 웹 콘텐츠 접근성 지침(공식)"
+   },
+   {
+    "id": "analytics",
+    "name": "홈페이지 방문자 수 보는 법",
+    "keyword": "{city} 홈페이지 방문자 분석",
+    "angle": "서치어드바이저 · 구글 애널리틱스 공식"
    }
   ]
  }
