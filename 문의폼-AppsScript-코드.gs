@@ -65,7 +65,7 @@ const 고객사 = {
   '한국체대 예그리나': { mail: 'knsuyegrina@naver.com', quote: 'https://brizymedia.github.io/yegrina/quote.html' },
   '행사ON': { mail: 'hoon0170800@hanmail.net', quote: 'https://brizymedia.github.io/haengsaon/quote.html' },
   'HD기획': { mail: '16zone@hanmail.net', quote: 'https://brizymedia.github.io/hd-event/quote.html' },
-  '프로이벤트': { mail: '', quote: 'https://brizymedia.github.io/pro-event/quote.html' }
+  '프로이벤트': { mail: 'pro-event@daum.net', quote: 'https://brizymedia.github.io/pro-event/quote.html' }
 };
 function 받는사람(d) {
   const 곳 = 고객사[브랜드(d)];
