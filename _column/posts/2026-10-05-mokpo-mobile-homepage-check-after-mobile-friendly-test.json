@@ -1,0 +1,234 @@
+{
+ "slug": "mokpo-mobile-homepage-check-after-mobile-friendly-test",
+ "date": "2026-10-05",
+ "category": "industry",
+ "topic": "mobile-check",
+ "city": "목포",
+ "title": "목포 모바일 홈페이지 점검 — 모바일 친화성 테스트가 없어진 뒤 확인하는 법",
+ "description": "구글 모바일 친화성 테스트는 2023년 12월 1일 종료됐습니다. 지금은 Lighthouse · PageSpeed Insights와 Chrome 기기 모드, 그리고 실제 휴대폰으로 확인합니다. 뷰포트 한 줄, 버튼 크기 48px, 글자 크기, 숨은 콘텐츠까지 공식 문서 기준으로 정리했습니다.",
+ "keyword": {
+  "main": "목포 모바일 홈페이지",
+  "sub": [
+   "모바일 친화성 테스트 종료",
+   "뷰포트 메타 태그",
+   "탭 타깃 크기",
+   "Lighthouse 모바일 점검"
+  ]
+ },
+ "lead": "목포 모바일 홈페이지가 휴대폰에서 깨지는지 보려고 예전 '모바일 친화성 테스트'를 찾으셨다면, 그 도구는 이제 없습니다. 구글은 2023년 12월 1일 서치 콘솔 모바일 사용성 보고서, 모바일 친화성 테스트 도구와 API를 종료했고, 대신 쓸 자료로 Chrome의 Lighthouse를 들었습니다. 지금은 **실제 휴대폰 → Chrome 기기 모드 → Lighthouse(PageSpeed Insights)** 순서로 확인하면 됩니다. 아래 기준은 Google · Chrome 공식 문서에서 확인한 내용입니다.",
+ "points": [
+  "모바일 친화성 테스트 · 모바일 사용성 보고서 · 관련 API는 2023년 12월 1일 종료됐고, 구글은 대안으로 Lighthouse를 안내했습니다.",
+  "head 안에 width=device-width, initial-scale=1 뷰포트 태그가 없으면 휴대폰이 PC 폭으로 그린 뒤 줄여서 보여 줍니다.",
+  "Lighthouse 문서 기준으로 48×48px 이상인 탭 타깃(버튼 · 링크)은 크기 항목에서 걸리지 않습니다.",
+  "글자 크기 감사 항목은 Lighthouse 13에서 빠졌지만, 문서는 12px보다 작은 글자가 휴대폰에서 읽기 어렵다고 설명합니다.",
+  "모바일 중심 색인 문서는 손님이 눌러야만 불러오는 주요 콘텐츠를 구글이 읽지 못한다고 안내합니다."
+ ],
+ "sections": [
+  {
+   "h2": "1. 모바일 친화성 테스트는 어디로 갔나요?",
+   "blocks": [
+    {
+     "p": "구글 검색 센터 블로그(2023년 4월)는 2023년 12월 1일부터 서치 콘솔의 '모바일 사용성' 보고서, 모바일 친화성 테스트 도구, 모바일 친화성 테스트 API를 종료한다고 알렸습니다. 같은 글은 모바일 사용성이 여전히 중요하고 페이지 경험 안내의 일부로 남는다고 밝히면서, 그동안 나온 평가 자료의 예로 **Chrome의 Lighthouse**를 들었습니다. 검색 센터 문서 업데이트 기록에도 그날 관련 언급을 문서 전체에서 지웠다고 적혀 있습니다."
+    },
+    {
+     "table": {
+      "head": [
+       "예전에 쓰던 것",
+       "상태",
+       "지금 쓸 것"
+      ],
+      "rows": [
+       [
+        "모바일 친화성 테스트(웹 도구)",
+        "2023-12-01 종료",
+        "PageSpeed Insights 휴대전화 탭 · Chrome DevTools의 Lighthouse"
+       ],
+       [
+        "서치 콘솔 모바일 사용성 보고서",
+        "2023-12-01 종료",
+        "실제 휴대폰 확인 + Lighthouse 결과"
+       ],
+       [
+        "모바일 친화성 테스트 API",
+        "2023-12-01 종료",
+        "Lighthouse(명령줄 · Chrome)"
+       ]
+      ]
+     }
+    },
+    {
+     "tip": "인터넷에 남아 있는 예전 글이 '모바일 친화성 테스트 주소'를 안내하더라도 그 도구로는 더 이상 검사할 수 없습니다."
+    }
+   ]
+  },
+  {
+   "h2": "2. 휴대폰과 PC에서 각각 무엇을 보나요?",
+   "blocks": [
+    {
+     "ol": [
+      "**실제 휴대폰으로 엽니다.** 와이파이와 데이터에서 한 번씩 열고, 메뉴 · 전화 버튼 · 지도 · 예약을 끝까지 눌러 봅니다(일반 요령).",
+      "**PC의 Chrome에서 기기 모드를 켭니다.** 개발자 도구(F12)를 열고 기기 툴바 전환 버튼을 누르면 폭 320px(소형) · 375px(모바일 M) · 425px(모바일 L) 같은 사전 설정으로 화면을 바꿔 볼 수 있습니다.",
+      "**가로 스크롤이 생기는지 봅니다.** 화면 폭을 줄였을 때 옆으로 밀리는 표 · 사진 · 배너가 있으면 그 부분부터 고칩니다(일반 요령).",
+      "**Lighthouse를 돌립니다.** PageSpeed Insights 휴대전화 탭이나 Chrome 개발자 도구의 Lighthouse에서 결과를 저장해 둡니다."
+     ]
+    },
+    {
+     "warn": "Chrome 문서는 기기 모드를 휴대기기 화면의 '1차 근사치'라고 설명합니다. 실제 휴대폰에서 코드를 돌리는 것이 아니므로, 확실하지 않으면 실제 기기에서 확인하는 것이 가장 좋다고 안내합니다."
+    }
+   ]
+  },
+  {
+   "h2": "3. 화면이 통째로 작게 보이면 무엇부터 의심하나요?",
+   "blocks": [
+    {
+     "p": "PC 화면이 그대로 줄어든 것처럼 보이면 **뷰포트 메타 태그**를 먼저 봅니다. Lighthouse 문서는 이 태그가 없으면 휴대기기가 일반 데스크톱 폭으로 그린 뒤 줄여서 보여 주어 읽기 어려워진다고 설명합니다. 고치는 방법은 head 안에 한 줄을 넣는 것입니다."
+    },
+    {
+     "quote": {
+      "text": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+      "from": "Chrome for Developers — Lighthouse 뷰포트 항목 예시"
+     }
+    },
+    {
+     "ul": [
+      "width=device-width는 화면 폭을 기기 폭에 맞추고, initial-scale=1은 처음 확대 배율을 정합니다.",
+      "initial-scale을 1보다 작게 두면 두 번 눌러 확대하는 기능이 켜질 수 있고, 그때 모든 탭에 300밀리초 지연이 생긴다고 문서에 적혀 있습니다.",
+      "이 항목은 Lighthouse 13부터 'Optimize viewport for mobile' 인사이트(viewport-insight)로 옮겨졌습니다."
+     ]
+    }
+   ]
+  },
+  {
+   "h2": "4. 버튼과 글자는 몇 픽셀이면 되나요?",
+   "blocks": [
+    {
+     "img": {
+      "src": "/free/img/pro.jpg",
+      "alt": "행사 업체 홈페이지의 휴대폰 화면 예시, 메뉴와 버튼 배치",
+      "caption": "큰길브리지 제작 예시 — 행사 업체(프로이벤트) 홈페이지 모바일 화면"
+     }
+    },
+    {
+     "table": {
+      "head": [
+       "항목",
+       "공식 문서 기준",
+       "가게 홈페이지에서 흔한 문제(일반 요령)"
+      ],
+      "rows": [
+       [
+        "탭 타깃(버튼 · 링크)",
+        "48×48px보다 작고, 중심 48px 안 영역의 25% 이상이 다른 타깃과 겹치면 Lighthouse가 표시. 48×48px 이상은 걸리지 않음",
+        "하단의 전화 · 문자 · 지도 아이콘이 붙어 있어 엉뚱한 것이 눌림"
+       ],
+       [
+        "타깃 사이 간격",
+        "8px 간격이 출발점이지만 작은 타깃은 그것만으로 모자랄 수 있음",
+        "메뉴 글자 링크가 줄마다 촘촘히 붙어 있음"
+       ],
+       [
+        "글자 크기",
+        "12px보다 작은 글자는 휴대기기에서 읽기 어려울 수 있음(예전 기준: 본문의 60% 이상을 12px 이상)",
+        "사진 위에 얹은 작은 안내 글, 표 안의 깨알 글씨"
+       ]
+      ]
+     }
+    },
+    {
+     "p": "Chrome 문서는 아이콘처럼 겉모양을 키우기 어려운 요소는 안쪽 여백(padding)을 늘려 누르는 영역만 넓히라고 안내합니다. 글자 크기 감사 항목은 Lighthouse 13에서 빠졌는데, 발표문은 작은 글자가 읽기 문제인 것은 맞지만 검색 신호로 남아 있다는 근거가 없고 유지 비용이 크다는 이유를 들었습니다. 점검표에서 빠졌을 뿐 손님이 읽기 어려운 것은 그대로이니 직접 확인합니다."
+    }
+   ]
+  },
+  {
+   "h2": "5. 휴대폰 화면에서만 빠지는 내용은 없나요?",
+   "blocks": [
+    {
+     "p": "화면은 멀쩡해도 구글이 읽지 못하는 부분이 생길 수 있습니다. 구글 검색 센터의 모바일 중심 색인 권장사항 가운데 화면 점검과 이어지는 항목만 추렸습니다."
+    },
+    {
+     "ul": [
+      "**눌러야 열리는 주요 내용** — 구글은 스와이프 · 클릭 · 입력처럼 사용자 동작이 필요한 콘텐츠는 불러오지 않는다고 안내합니다. 메뉴판 · 가격표를 '더보기'를 눌러야만 불러오게 만들었다면 확인합니다.",
+      "**robots.txt로 막은 파일** — 모바일 화면에 필요한 사진 · 스타일 파일 주소를 막아 두지 않았는지 봅니다.",
+      "**사진 대체 텍스트와 화질** — 모바일 쪽 사진도 데스크톱과 같은 대체 텍스트를 두고, 너무 작거나 흐린 사진은 피하라고 권합니다.",
+      "**구조화 데이터 · 제목 · 설명** — 모바일과 데스크톱 버전에 똑같이 들어가 있어야 합니다."
+     ]
+    },
+    {
+     "p": "같은 문서는 반응형 웹 디자인을 구현과 유지보수가 가장 쉬운 방식으로 권장합니다. 내용 자체를 PC와 똑같이 맞추는 이야기는 [원주 카탈로그 홈페이지 글](/column/wonju-catalog-pdf-to-homepage/)에서 다뤘습니다."
+    }
+   ]
+  },
+  {
+   "h2": "6. 목포 가게는 언제까지 점검해 두면 좋을까요?",
+   "blocks": [
+    {
+     "p": "목포문화관광 누리집에 따르면 2026목포항구축제는 **10월 16일(금)부터 18일(일)까지 3일간** 목포항과 삼학도 일원에서 열리고, 파시장터 · RETRO 선창거리 · 바다콘서트 · 항구음악회 등이 마련됩니다. 같은 안내는 목포가 1897년에 개항했다고 소개합니다. 축제 기간에 영업시간이나 메뉴가 바뀐다면, 그 안내가 휴대폰에서 잘리지 않는지 축제 전에 위 순서로 확인해 두면 좋습니다."
+    },
+    {
+     "p": "큰길브리지는 목포 지역 홈페이지 점검과 수정을 전국 비대면으로 진행합니다. 혼자 보기 어렵다면 [무료 SEO 점검](/seo-check/)에 주소를 남기시거나, 모바일 화면을 새로 맞추고 싶다면 [제작 문의](/order.html)에 홈페이지 주소와 깨지는 화면 캡처를 보내 주세요."
+    }
+   ]
+  }
+ ],
+ "faq": [
+  {
+   "q": "모바일 친화성 테스트 대신 쓸 수 있는 구글 도구가 있나요?",
+   "a": "구글은 종료를 알리면서 Chrome의 Lighthouse를 예로 들었습니다. Lighthouse는 PageSpeed Insights 휴대전화 탭이나 Chrome 개발자 도구에서 돌릴 수 있습니다."
+  },
+  {
+   "q": "서치 콘솔에서 모바일 사용성 메뉴가 안 보여요.",
+   "a": "모바일 사용성 보고서는 2023년 12월 1일 종료됐습니다. 메뉴가 없는 것이 정상입니다."
+  },
+  {
+   "q": "Lighthouse에서 글자 크기 경고가 안 나오면 괜찮은 건가요?",
+   "a": "글자 크기 항목은 Lighthouse 13에서 빠져 경고 자체가 나오지 않습니다. 12px보다 작은 글자는 휴대기기에서 읽기 어려울 수 있다는 설명은 그대로이니 실제 휴대폰으로 확인합니다."
+  },
+  {
+   "q": "버튼 크기는 어느 정도로 만들면 되나요?",
+   "a": "Lighthouse 문서 기준으로 48×48px 이상인 탭 타깃은 크기 항목에서 걸리지 않습니다. 아이콘은 안쪽 여백을 늘려 누르는 영역을 넓히는 방법이 안내돼 있습니다."
+  }
+ ],
+ "sources": [
+  {
+   "name": "Google 검색 센터 블로그 — The role of page experience in creating helpful content(2023-04)",
+   "url": "https://developers.google.com/search/blog/2023/04/page-experience-in-search"
+  },
+  {
+   "name": "Google 검색 센터 — Latest Google Search Documentation Updates",
+   "url": "https://developers.google.com/search/updates"
+  },
+  {
+   "name": "Chrome for Developers — Lighthouse: Does not have a viewport tag with width or initial-scale",
+   "url": "https://developer.chrome.com/docs/lighthouse/best-practices/viewport"
+  },
+  {
+   "name": "Chrome for Developers — Lighthouse: Tap targets are not sized appropriately",
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/tap-targets"
+  },
+  {
+   "name": "Chrome for Developers — Lighthouse: Document doesn't use legible font sizes",
+   "url": "https://developer.chrome.com/docs/lighthouse/seo/font-size"
+  },
+  {
+   "name": "Chrome for Developers 블로그 — What's new in Lighthouse 13",
+   "url": "https://developer.chrome.com/blog/lighthouse-13-0"
+  },
+  {
+   "name": "Chrome DevTools — 기기 모드로 휴대기기 시뮬레이션",
+   "url": "https://developer.chrome.com/docs/devtools/device-mode?hl=ko"
+  },
+  {
+   "name": "Google 검색 센터 — 모바일 중심 색인 생성 권장사항",
+   "url": "https://developers.google.com/search/docs/crawling-indexing/mobile/mobile-sites-mobile-first-indexing?hl=ko"
+  },
+  {
+   "name": "목포문화관광 — 목포항구축제",
+   "url": "https://www.mokpo.go.kr/tour/festival"
+  }
+ ],
+ "cover": {
+  "src": "/free/img/demo-cafe.jpg",
+  "alt": "메뉴와 위치와 예약 버튼이 보이는 카페 홈페이지 모바일 첫 화면 예시",
+  "caption": "큰길브리지 제작 예시 — 카페 홈페이지 예시 — 모바일 첫 화면에 메뉴 · 위치 · 예약 버튼"
+ }
+}
