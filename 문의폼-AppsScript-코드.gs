@@ -52,14 +52,14 @@ function 브랜드(d) {
 /**
  * 고객사 문의는 그 회사 대표에게도 같이 보낸다 (큰길브리지는 늘 받는다).
  * 바로기획 — 홈페이지 brizymedia.github.io/baro-event, 대표 김선호.
- * 이에스컴퍼니 — 홈페이지 brizymedia.github.io/es-company, 대표 박미배 (청주 행사용품 · 시스템 렌탈).
+ * 이에스컴퍼니 — 홈페이지 www.es-company.co.kr, 대표 박미배 (청주 행사용품 · 시스템 렌탈).
  * 2026-10-03 — 제이식스미디어 · 힐링엔터테인먼트 · 한국체대 예그리나 · 행사ON · HD기획 · 프로이벤트 추가(각 사이트 brizymedia.github.io/<레포>).
  *   메일이 없는 곳(mail: '')은 큰길브리지만 받는다.
  * 단, 「홈페이지 수정 요청」(사장님 수정 모드가 보내는 것)은 큰길브리지만 받는다.
  */
 const 고객사 = {
   '바로기획': { mail: 'mot2256@naver.com', quote: 'https://brizymedia.github.io/baro-event/quote.html' },
-  '이에스컴퍼니': { mail: 'esgroup0102@naver.com', quote: 'https://brizymedia.github.io/es-company/quote.html' },
+  '이에스컴퍼니': { mail: 'esgroup0102@naver.com', quote: 'https://www.es-company.co.kr/quote.html' },
   '제이식스미디어': { mail: 'j6_media@naver.com', quote: 'https://brizymedia.github.io/j6media/quote.html' },
   '힐링엔터테인먼트': { mail: 'leehh2153@gmail.com', quote: 'https://brizymedia.github.io/healing-ent/quote.html' },
   '한국체대 예그리나': { mail: 'knsuyegrina@naver.com', quote: 'https://brizymedia.github.io/yegrina/quote.html' },
