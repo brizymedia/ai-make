@@ -383,6 +383,78 @@
     "name": "홈페이지 AI 상담 챗봇 붙일 때 확인할 것",
     "keyword": "{city} AI 챗봇",
     "angle": "개인정보 · AI 이용 공식 지침"
+   },
+   {
+    "id": "faq-page",
+    "name": "자주 묻는 질문(FAQ) 페이지 만들기",
+    "keyword": "{city} 홈페이지 FAQ",
+    "angle": "Google 구조화 데이터 · 일반 요령"
+   },
+   {
+    "id": "price-display",
+    "name": "홈페이지 가격 표시 · 표시광고법",
+    "keyword": "{city} 가격 표시",
+    "angle": "공정위 공식"
+   },
+   {
+    "id": "review-policy",
+    "name": "후기 · 리뷰 게시 규칙(뒷광고 금지)",
+    "keyword": "{city} 후기 게시",
+    "angle": "공정위 추천보증 심사지침 공식"
+   },
+   {
+    "id": "kakao-map",
+    "name": "카카오맵 장소 등록 · 정보 수정",
+    "keyword": "{city} 카카오맵 등록",
+    "angle": "카카오 공식 도움말"
+   },
+   {
+    "id": "youtube-shorts-seo",
+    "name": "유튜브 쇼츠 제목 · 설명 · 해시태그",
+    "keyword": "{city} 유튜브 쇼츠",
+    "angle": "YouTube 공식 도움말"
+   },
+   {
+    "id": "sms-marketing",
+    "name": "문자 · 카톡 광고 발송 규칙",
+    "keyword": "{city} 광고 문자",
+    "angle": "정보통신망법 · KISA 공식"
+   },
+   {
+    "id": "homepage-photo-shoot",
+    "name": "홈페이지용 가게 사진 직접 찍기",
+    "keyword": "{city} 가게 사진",
+    "angle": "일반 요령 · 초상권 공식"
+   },
+   {
+    "id": "domain-choice",
+    "name": "도메인 이름 고르기 · .kr / .com",
+    "keyword": "{city} 도메인 등록",
+    "angle": "KISA 한국인터넷정보센터 공식"
+   },
+   {
+    "id": "site-renewal-check",
+    "name": "홈페이지 리뉴얼 전 점검",
+    "keyword": "{city} 홈페이지 리뉴얼",
+    "angle": "Google 사이트 이전 공식"
+   },
+   {
+    "id": "one-page-site",
+    "name": "원페이지 홈페이지 구성",
+    "keyword": "{city} 원페이지 홈페이지",
+    "angle": "일반 요령, 금액 없음"
+   },
+   {
+    "id": "google-ads-basic",
+    "name": "검색 광고 시작 전 알아둘 것",
+    "keyword": "{city} 검색 광고",
+    "angle": "네이버 · 구글 광고 공식 도움말, 금액 없음"
+   },
+   {
+    "id": "ai-image-use",
+    "name": "AI 이미지 홈페이지 사용 시 주의",
+    "keyword": "{city} AI 이미지",
+    "angle": "저작권위원회 AI 안내서 · 표시광고법"
    }
   ]
  }
