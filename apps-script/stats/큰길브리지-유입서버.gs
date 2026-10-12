@@ -6,8 +6,8 @@
  *   1) 기록 — 각 페이지에 붙은 stats.js 가 방문 한 번에 신호 한 번을 보낸다.
  *      POST 본문(JSON) 또는 GET 쿼리. 시트 「방문 기록」에 한 줄씩 쌓인다.
  *      IP·이름 같은 개인정보는 받지 않는다 (앱스 스크립트는 IP 를 볼 수도 없다).
- *   2) 조회 — 현황판(ai-make.co.kr/stats/)이 ?view=summary&key=열쇠&days=30 으로 부르면 집계를 JSON 으로 준다.
- *      열쇠는 스크립트 속성 STATS_KEY 에만 둔다. 이 파일에 적지 않는다.
+ *   2) 조회 — 현황판(ai-make.co.kr/stats/)이 ?view=summary&key=비밀번호&days=30 으로 부르면 집계를 JSON 으로 준다.
+ *      관리자 비밀번호는 스크립트 속성 STATS_KEY(전체), 고객사 대표 비밀번호는 SITE_KEYS(JSON, 자기 사이트만). 이 파일에 적지 않는다.
  *
  * 설치는 같은 폴더 README.md.
  */
@@ -17,7 +17,7 @@ var 폴더이름 = '큰길브리지 유입';
 var 파일이름 = '유입 기록';
 var 장이름   = '방문 기록';
 var 머리     = ['시각', '사이트', '경로', '제목', '유입', '출처', '검색어', 'utm_source', 'utm_medium', 'utm_campaign', '기기', '방문자', '새방문', '언어', '화면폭'];
-var 사이트이름 = { 'ai-make': '큰길브리지', 'keungil': '큰길이벤트', 'event-korea': '이벤트 코리아', 'baro': '바로기획', 'j6': '제이식스미디어', 'healing': '힐링엔터테인먼트', 'yegrina': '예그리나', 'haengsaon': '행사ON', 'hd': 'HD기획', 'pro': '프로이벤트' };
+var 사이트이름 = { 'ai-make': '큰길브리지', 'keungil': '큰길이벤트', 'event-korea': '이벤트 코리아', 'baro': '바로기획', 'j6': '제이식스미디어', 'healing': '힐링엔터테인먼트', 'yegrina': '예그리나', 'haengsaon': '행사ON', 'hd': 'HD기획', 'pro': '프로이벤트', 'es': '이에스컴퍼니' };
 var 우리도메인 = ['ai-make.co.kr', 'event-korea.co.kr', 'event-korea.com', 'xn--wk0bn7yi8h24iszc.com', 'brizymedia.github.io'];
 var 캐시초   = 300;      // 집계는 5분 캐시
 var 목록최대 = 40;       // 표 하나에 최대 몇 줄
@@ -121,19 +121,50 @@ function 검색어_(ref) {
 
 /* ══ 2. 조회 ═════════════════════════════════════════ */
 function 조회_(p) {
-  var 열쇠 = PropertiesService.getScriptProperties().getProperty('STATS_KEY') || '';
-  if (!열쇠) return json_({ ok: false, error: '서버에 STATS_KEY 가 없습니다. 스크립트 속성에 열쇠를 넣어 주세요' });
-  if (String(p.key || '') !== 열쇠) return json_({ ok: false, error: '열쇠가 다릅니다' });
+  /* 비밀번호 두 가지.
+     · 관리자(큰길브리지) — 스크립트 속성 STATS_KEY. 모든 사이트를 본다.
+     · 고객사 대표 — 스크립트 속성 SITE_KEYS = {"baro":"0655", ...} (대표 휴대폰 뒷번호 4자리). 자기 사이트만 본다.
+     어느 것도 이 파일에 적지 않는다. 틀리면 1.5초 늦게 답해 마구 넣어 보기를 어렵게 한다. */
+  var 속성 = PropertiesService.getScriptProperties();
+  var 열쇠 = 속성.getProperty('STATS_KEY') || '';
+  var 입력 = String(p.key || '').trim();
+  var 범위 = null;                                   // null = 전체(관리자)
+  if (!열쇠 || 입력 !== 열쇠) {
+    var 표 = {};
+    try { 표 = JSON.parse(속성.getProperty('SITE_KEYS') || '{}'); } catch (err) { 표 = {}; }
+    범위 = Object.keys(표).filter(function (k) { return 입력 && String(표[k]) === 입력; });
+    if (!범위.length) {
+      if (!열쇠 && !Object.keys(표).length) return json_({ ok: false, error: '서버에 STATS_KEY 가 없습니다. 스크립트 속성에 비밀번호를 넣어 주세요' });
+      Utilities.sleep(1500);
+      return json_({ ok: false, error: '비밀번호가 다릅니다' });
+    }
+  }
 
   var days = Math.max(1, Math.min(365, Number(p.days) || 30));
-  if (p.view === 'recent') return json_(최근_(Math.min(200, Number(p.n) || 40)));
+  if (p.view === 'recent') {
+    var n = Math.min(200, Number(p.n) || 40);
+    if (!범위) return json_(최근_(n));
+    var 최근 = 최근_(Math.min(2000, n * 30));
+    최근.rows = 최근.rows.filter(function (r) { return 범위.indexOf(String(r[1])) >= 0; }).slice(0, n);
+    return json_(최근);
+  }
   if (p.view !== 'summary') return json_({ ok: false, error: '모르는 view' });
 
-  var 캐시 = CacheService.getScriptCache(), ck = 'sum:' + days;
-  if (!p.fresh) { var 있 = 캐시.get(ck); if (있) return 텍스트json_(있); }
-  var 결과 = JSON.stringify(집계_(days));
-  try { 캐시.put(ck, 결과, 캐시초); } catch (err) { /* 100KB 넘으면 캐시만 건너뜀 */ }
-  return 텍스트json_(결과);
+  var 캐시 = CacheService.getScriptCache(), ck = 'sum:' + days, 결과 = null;
+  if (!p.fresh) 결과 = 캐시.get(ck);
+  if (!결과) {
+    결과 = JSON.stringify(집계_(days));
+    try { 캐시.put(ck, 결과, 캐시초); } catch (err) { /* 100KB 넘으면 캐시만 건너뜀 */ }
+  }
+  if (!범위) return 텍스트json_(결과);
+
+  /* 대표님 — 자기 사이트만 남긴다. 「전체」 칸도 자기 사이트 값으로 */
+  var 전부 = JSON.parse(결과), 남길 = {};
+  범위.forEach(function (k) { if (전부.sites[k]) 남길[k] = 전부.sites[k]; });
+  남길.all = 전부.sites[범위[0]] || null;
+  전부.sites = 남길; 전부.scope = 범위; 전부.rows = undefined;
+  전부.names = {}; 범위.forEach(function (k) { 전부.names[k] = 사이트이름[k] || k; });
+  return json_(전부);
 }
 
 function 집계_(days) {
