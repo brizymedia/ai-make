@@ -59,9 +59,9 @@ const T = {
   small: {
     dir: 'small', tag: '소상공인 · 가게 · 1인 사업자', color: '',
     title: '소상공인 홈페이지 마케팅 — 네이버 검색에 나오는 월 15만원 | 큰길브리지',
-    desc: '성과금 없이 월 정액만. 네이버 블로그 · 인스타 · 정보 칼럼으로 우리 가게가 검색에 나오게 만듭니다. 광고는 권하지 않습니다.',
+    desc: '성과금 없이 월 정액만. 네이버 블로그 · 인스타 · 정보 칼럼으로 우리 가게가 검색에 나오게 만듭니다. 유료 광고는 원하실 때 실비로 집행합니다.',
     h1: '검색하면 우리 가게가<br><span class="gold">나오게</span> 만드는 월 15만원',
-    lead: '큰 광고 대신 <b style="color:var(--txt)">네이버에서 찾아오는 손님</b>부터 만듭니다. 성과금 없이 월 정액만 받고, 복잡한 광고는 권하지 않습니다.',
+    lead: '큰 광고 대신 <b style="color:var(--txt)">네이버에서 찾아오는 손님</b>부터 만듭니다. 성과금 없이 월 정액만 받고, 네이버 · 인스타 유료 광고는 원하실 때만 실비로 집행합니다.',
     pains: [
       ['글 쓸 시간이 없습니다', '블로그 · 홍보는 해야 하는 걸 알지만 매번 밀립니다.'],
       ['광고비가 무섭습니다', '얼마가 나가는지 모르는 광고는 시작하기 겁납니다.'],
@@ -70,7 +70,7 @@ const T = {
     calc: { rate: 40, price: 6, fee: 15, priceLabel: '손님 1명당 평균 결제(만원 · 입력값)', rateLabel: '문의 → 방문 · 주문율', inqWord: '방문·주문' },
     feeNote: '객단가가 낮은 가게는 본전 문의 수가 많아집니다. 솔직히, 객단가가 낮고 재방문이 없는 가게에는 권하지 않습니다.',
     biz: { n: '문의', d: ['이름', '연락처', '문의 내용'] },
-    perf: '소상공인은 <b>성과금이 없습니다</b>. 건당 금액이 작아 월 정액만 받는 편이 사장님께 안전합니다. 광고비를 쓰는 운영은 원하실 때만 따로 상담합니다.',
+    perf: '소상공인은 <b>성과금이 없습니다</b>. 건당 금액이 작아 월 정액만 받는 편이 사장님께 안전합니다. 네이버 · 인스타 유료 광고는 원하실 때 실비로 집행하고, 광고 운영비는 따로 상담합니다.',
     special: {
       t: '이런 가게에 맞습니다',
       items: ['객단가가 높거나 한 번 오면 오래 이어지는 곳 — 미용 · 학원 · 인테리어 · 펜션 · 수리 · 렌탈 · 공방', '검색해서 찾아오는 손님이 있는 곳(지역 + 업종으로 검색되는 곳)', '월 1~2번 사진과 소식을 주실 수 있는 곳'],
@@ -165,7 +165,7 @@ const 문의늘리기 = (병원) => `
 <div class="line2"><span>퍼널 운영 · 월간 보고서</span><b>월 15만원부터</b></div>
 <div class="line2"><span>광고 운영 대행</span><b>광고비의 15% 안팎 · 월 최소 30만원</b></div>
 <div class="line2"><span>광고비</span><b>실비 · 고객 명의 계정에 고객 카드로 직접 결제</b></div>
-<p class="fine">광고비는 저희가 받아서 집행하지 않습니다.${병원 ? ' 병원은 광고를 집행하기 전에 의료광고 기준을 먼저 확인합니다.' : ''} 금액은 업종과 지역을 본 뒤 확정합니다.</p>`;
+<p class="fine">네이버 · 인스타그램 · 구글 유료 광고는 원하실 때 실비로 집행해 드립니다. 광고비는 저희가 받지 않고 고객 명의 계정에서 고객 카드로 직접 결제되며, 저희는 운영 대행비만 받습니다.${병원 ? ' 병원은 광고를 집행하기 전에 의료광고 기준을 먼저 확인합니다.' : ''} 금액은 업종과 지역을 본 뒤 확정합니다.</p>`;
 
 function 페이지(t) {
   const c = t.calc;
@@ -237,7 +237,7 @@ ${t.special ? `<section class="sec"><div class="wrap"><span class="eyebrow">${t.
   <p class="lead" style="max-width:560px;margin:14px auto 0">검색 노출 · 홈페이지 · 문의 동선을 확인하고 맞는 패키지를 권해 드립니다. 강요하지 않습니다.</p>
   <div class="btns" style="justify-content:center;display:flex;gap:10px;flex-wrap:wrap;margin-top:24px"><a class="btn gold" href="${SITE}#contact">무료 점검 신청 →</a><a class="btn" href="${SITE}seo-check/">내 사이트 SEO 점검기</a></div>
   <div class="sibs">${t.sib.map(s => `<a class="btn" href="${s[1]}">${s[0]} 마케팅 보기</a>`).join('')}</div>
-  <p class="fine" style="max-width:640px;margin:22px auto 0">계산은 예시이며 성과를 보장하지 않습니다. 금액은 VAT 별도입니다. 광고비는 고객 명의 · 고객 카드로 직접 결제합니다.</p>
+  <p class="fine" style="max-width:640px;margin:22px auto 0">계산은 예시이며 성과를 보장하지 않습니다. 금액은 VAT 별도입니다. 유료 광고는 원하실 때 실비로 집행하며, 광고비는 고객 명의 · 고객 카드로 직접 결제합니다.</p>
 </div></section>
 
 ${FOOT.replace('</body></html>', '')}
@@ -279,7 +279,7 @@ function 목록() {
 <section class="sec"><div class="wrap">
   <span class="eyebrow">공통 원칙</span><h2>어느 업종이든 이렇게 합니다</h2>
   <ul class="honest" style="margin-top:14px">${공통기대.map(x => `<li><b>${x[0]}</b><span>${x[1]}</span></li>`).join('')}</ul>
-  <p class="fine">광고비는 고객 명의 · 고객 카드로 직접 결제합니다. 성과를 보장하지 않으며, 금액은 VAT 별도입니다.</p>
+  <p class="fine">네이버 · 인스타그램 · 구글 유료 광고는 원하실 때 실비로 집행하며, 광고비는 고객 명의 · 고객 카드로 직접 결제합니다. 성과를 보장하지 않으며, 금액은 VAT 별도입니다.</p>
 </div></section>
 <section class="sec alt"><div class="wrap center"><h2>어느 쪽인지 모르겠다면</h2>
   <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:22px"><a class="btn gold" href="${SITE}#contact">무료 점검 신청 →</a><a class="btn" href="tel:1533-7295">전화 1533-7295</a></div></div></section>
