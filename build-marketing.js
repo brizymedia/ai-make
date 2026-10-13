@@ -152,9 +152,9 @@ const FOOT = `<footer class="foot"><div class="wrap">
 
 const 패키지 = `
 <div class="pk">
-  <div class="card"><h3>콘텐츠 10회</h3><div class="pr">월 15만원 <small>· 연간 케어팩 150만원</small></div>
+  <div class="card"><h3>콘텐츠 토탈 30회</h3><div class="pr">월 15만원 <small>· 연간 케어팩 150만원</small></div>
     <ul><li>네이버 블로그 기사 10회</li><li>인스타 · 페이스북 · 스레드 홍보 10회</li><li>정보 칼럼 10회</li><li>AI 검색 트래픽 관리 · 월간 보고서</li></ul></div>
-  <div class="card"><h3>콘텐츠 25회</h3><div class="pr">월 30만원 <small>· 연간 케어팩 300만원</small></div>
+  <div class="card"><h3>콘텐츠 토탈 75회</h3><div class="pr">월 30만원 <small>· 연간 케어팩 300만원</small></div>
     <ul><li>네이버 블로그 기사 25회</li><li>인스타 · 페이스북 · 스레드 홍보 25회</li><li>정보 칼럼 25회</li><li>AI 검색 트래픽 관리 · 격주 보고서</li></ul></div>
 </div>
 <p class="fine">연간 케어팩은 12개월을 10개월 가격으로 선결제합니다. 모두 VAT 별도. 홈페이지를 큰길브리지에서 만드신 분 대상이며, 회사형은 요금 계산기에서 바로 고를 수 있고 베이직 · 고급형은 상담으로 추가합니다.</p>`;
