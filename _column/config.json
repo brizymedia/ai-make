@@ -455,6 +455,96 @@
     "name": "AI 이미지 홈페이지 사용 시 주의",
     "keyword": "{city} AI 이미지",
     "angle": "저작권위원회 AI 안내서 · 표시광고법"
+   },
+   {
+    "id": "landing-form-spam",
+    "name": "문의 폼 스팸 · 봇 막기",
+    "keyword": "{city} 홈페이지 스팸",
+    "angle": "KISA · Google reCAPTCHA 공식"
+   },
+   {
+    "id": "blog-vs-news",
+    "name": "가게 소식 게시판 운영",
+    "keyword": "{city} 홈페이지 소식",
+    "angle": "일반 요령, Google 유용한 콘텐츠"
+   },
+   {
+    "id": "mobile-call-button",
+    "name": "모바일 전화 · 길찾기 버튼",
+    "keyword": "{city} 모바일 전화 버튼",
+    "angle": "web.dev · 접근성 공식"
+   },
+   {
+    "id": "site-map-page",
+    "name": "사이트맵 제출 · 색인 확인",
+    "keyword": "{city} 사이트맵 제출",
+    "angle": "Google · 네이버 공식"
+   },
+   {
+    "id": "video-embed",
+    "name": "홈페이지에 영상 넣기 — 속도 · 저작권",
+    "keyword": "{city} 홈페이지 영상",
+    "angle": "web.dev · YouTube 공식"
+   },
+   {
+    "id": "menu-board-online",
+    "name": "메뉴판 · 가격표 온라인 정리",
+    "keyword": "{city} 온라인 메뉴판",
+    "angle": "가격표시 공식"
+   },
+   {
+    "id": "google-ai-overview",
+    "name": "AI 검색에 가게 정보 나오게",
+    "keyword": "{city} AI 검색",
+    "angle": "Google AI 기능 공식"
+   },
+   {
+    "id": "naver-blog-link",
+    "name": "네이버 블로그와 홈페이지 연결",
+    "keyword": "{city} 네이버 블로그 홍보",
+    "angle": "네이버 공식 도움말"
+   },
+   {
+    "id": "cookie-banner",
+    "name": "쿠키 · 분석 도구 고지",
+    "keyword": "{city} 쿠키 고지",
+    "angle": "개인정보보호위원회 공식"
+   },
+   {
+    "id": "homepage-copy",
+    "name": "홈페이지 첫 화면 문구 쓰기",
+    "keyword": "{city} 홈페이지 문구",
+    "angle": "표시광고법 + 일반 요령"
+   },
+   {
+    "id": "hosting-choice",
+    "name": "호스팅 고르기 — 속도 · 백업 · 보안",
+    "keyword": "{city} 웹호스팅",
+    "angle": "KISA 공식 + 일반 요령"
+   },
+   {
+    "id": "thumbnail-design",
+    "name": "영상 썸네일 만들기",
+    "keyword": "{city} 썸네일",
+    "angle": "YouTube 공식 + 저작권"
+   },
+   {
+    "id": "local-landing",
+    "name": "지역별 랜딩페이지 — 도어웨이 피하기",
+    "keyword": "{city} 지역 랜딩페이지",
+    "angle": "Google 스팸 정책 공식"
+   },
+   {
+    "id": "email-newsletter",
+    "name": "이메일 소식지 발송 규칙",
+    "keyword": "{city} 이메일 마케팅",
+    "angle": "정보통신망법 · KISA 공식"
+   },
+   {
+    "id": "website-checklist-yearly",
+    "name": "홈페이지 연간 점검표",
+    "keyword": "{city} 홈페이지 점검",
+    "angle": "공식 출처 모음"
    }
   ]
  }
