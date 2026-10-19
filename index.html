@@ -891,6 +891,42 @@ h1 .thin{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(-
 .sample-wide:hover .wsite svg{transform:translate(3px,-3px)}
 @media(max-width:820px){.sample-wide{grid-template-columns:1fr}}
 
+/* 휴대폰으로 열어 본 샘플 두 줄 — 이벤트 코리아 「만든 것들」과 같은 틀. 한 화면에 --n 장: 컴퓨터 6 · 태블릿 4 · 폰 3 */
+.pm{margin-top:clamp(64px,9vw,110px)}
+.pm-head{margin-bottom:clamp(8px,1.6vw,18px)}
+.pm-head .pm-tag{color:var(--gold);display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pm-head .pm-tag::after{content:"";width:clamp(40px,8vw,110px);height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.pm-head h3{font-size:clamp(1.35rem,2.8vw,2rem);font-weight:800;letter-spacing:-.04em;line-height:1.25}
+.pm-head h3 em{font-family:var(--f-disp);font-style:italic;font-weight:400;color:var(--gold);letter-spacing:-.01em}
+.pm-head p{margin-top:12px;color:var(--txt-dim);font-size:.95rem;line-height:1.8;max-width:52ch;word-break:keep-all}
+.pm-head p b{color:var(--txt);font-weight:700}
+.pm-wrap{--n:6;--gap:24px;--cw:calc((min(100vw,1320px) - (var(--n) - 1)*var(--gap))/var(--n));max-width:1320px;margin:6px auto 0;overflow:hidden;overflow:clip;container-type:inline-size;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+@supports (width:1cqw){.pm-wrap{--cw:calc((100cqw - (var(--n) - 1)*var(--gap))/var(--n))}}
+.pm-row{display:flex;width:max-content;padding:16px 0}
+.pm-row.a{animation:pmL 70s linear infinite}
+.pm-row.b{animation:pmR 62s linear infinite}
+.pm-wrap:hover .pm-row,.pm-wrap:focus-within .pm-row{animation-play-state:paused}
+@keyframes pmL{to{transform:translateX(-50%)}}
+@keyframes pmR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.pm-card{--gel:var(--gold);flex:none;width:var(--cw);margin-right:var(--gap);text-decoration:none;color:var(--txt)}
+.pm-card.c{--gel:var(--coral)}
+.pm-card.t{--gel:var(--teal)}
+.pm-ph{position:relative;width:100%;aspect-ratio:390/844;border-radius:calc(var(--cw)*.13);padding:3px;background:linear-gradient(150deg,#3b4056,#171925);
+  box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08);transition:transform .25s,box-shadow .25s}
+.pm-card:hover .pm-ph,.pm-card:focus-visible .pm-ph{transform:translateY(-6px);box-shadow:0 26px 54px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.14)}
+.pm-ph::before{content:'';position:absolute;top:calc(3px + var(--cw)*.022);left:50%;transform:translateX(-50%);width:calc(var(--cw)*.18);height:calc(var(--cw)*.042);
+  border-radius:99px;background:#05060a;z-index:2}
+.pm-scr{position:relative;width:100%;height:100%;border-radius:calc(var(--cw)*.13 - 3px);overflow:hidden;background:#14151d}
+.pm-scr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.pm-scr::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--gel);box-shadow:0 0 10px var(--gel)}
+.pm-cap{margin-top:14px}
+.pm-cap b{display:block;font-weight:800;font-size:.95rem;letter-spacing:-.03em;line-height:1.3;text-wrap:balance}
+.pm-cap span{display:block;font-family:var(--f-mono);font-size:.66rem;letter-spacing:.08em;color:var(--gel);margin-top:4px}
+@media(max-width:1000px){.pm-wrap{--n:4;--gap:18px}}
+@media(max-width:640px){.pm-wrap{--n:3;--gap:12px}.pm-cap{margin-top:10px}.pm-cap b{font-size:.78rem}.pm-cap span{font-size:.58rem}}
+@media(prefers-reduced-motion:reduce){.pm-row.a,.pm-row.b{animation:none}.pm-ph{transition:none}.pm-wrap{overflow-x:auto}}
+
 .region{background:var(--ink);border-top:1px solid var(--line)}
 .region-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,56px);align-items:start}
 @media(max-width:880px){.region-grid{grid-template-columns:1fr}}
@@ -2039,6 +2075,39 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
       </div>
     </a>
   </div>
+
+  <!-- 휴대폰으로 열어 본 샘플 — 두 줄이 서로 반대로 흐른다 (이벤트 코리아 「만든 것들」과 같은 틀). 사이트를 더하거나 빼도 개수 글자는 스크립트가 센다 -->
+  <div class="pm" id="phones">
+    <div class="wrap">
+      <div class="pm-head rv">
+        <div class="mono pm-tag">MOBILE · LIVE SITES</div>
+        <h3>휴대폰으로 열어 보면 <em>이렇습니다.</em></h3>
+        <p>지금 살아 있는 <b id="pmN">18</b>곳의 휴대폰 첫 화면입니다. 눌러서 직접 열어 보세요.</p>
+      </div>
+    </div>
+    <div class="pm-wrap" role="group" aria-label="제작한 홈페이지의 휴대폰 화면 — 첫째 줄"><div class="pm-row a" id="pmA">
+      <a class="pm-card" href="https://xn--wk0bn7yi8h24iszc.com/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/keungil.webp" alt="큰길이벤트기획 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>큰길이벤트기획</b><span>행사기획 · 장비</span></div></a>
+      <a class="pm-card c" href="https://brizymedia.github.io/banilla-hair/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/banilla.webp" alt="바닐라헤어 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>바닐라헤어</b><span>미용실 · 광양읍</span></div></a>
+      <a class="pm-card c" href="https://www.xn--el3bx2ohi64bba144lgmbdzd.com/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/ym.webp" alt="YM토탈이벤트 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>YM토탈이벤트</b><span>토탈 행사대행</span></div></a>
+      <a class="pm-card t" href="https://brizymedia.github.io/parkjunhwa-music/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/parkjunhwa.webp" alt="박준화실용음악학원 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>박준화실용음악학원</b><span>학원 · 레슨</span></div></a>
+      <a class="pm-card t" href="https://brizymedia.github.io/goodfriend-event/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/goodfriend.webp" alt="굿프랜드유아체육연구소 &amp; 이벤트 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>굿프랜드유아체육연구소 &amp; 이벤트</b><span>유아체육 · 이벤트</span></div></a>
+      <a class="pm-card c" href="https://xn--wk0bn7yi8h24iszc.com/jisuyang/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/jisuyang.webp" alt="트로트 가수 지수양 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>트로트 가수 지수양</b><span>가수 프로필</span></div></a>
+      <a class="pm-card" href="https://brizymedia.github.io/hd-event/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/hd-event.webp" alt="HD기획 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>HD기획</b><span>행사기획 · 대행</span></div></a>
+      <a class="pm-card t" href="https://brizymedia.github.io/donghwa/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/donghwa.webp" alt="맞춤동화 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>맞춤동화</b><span>구독 서비스 랜딩</span></div></a>
+      <a class="pm-card" href="https://brizymedia.github.io/j6media/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/j6media.webp" alt="제이식스미디어 J6 MEDIA 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>제이식스미디어 J6 MEDIA</b><span>음향 · 영상 렌탈</span></div></a>
+    </div></div>
+    <div class="pm-wrap" role="group" aria-label="제작한 홈페이지의 휴대폰 화면 — 둘째 줄"><div class="pm-row b" id="pmB">
+      <a class="pm-card t" href="https://brizymedia.github.io/pro-event/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/pro-event.webp" alt="프로이벤트 PRO EVENT 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>프로이벤트 PRO EVENT</b><span>종합 이벤트 대행</span></div></a>
+      <a class="pm-card" href="https://brizymedia.github.io/suncheon-prugio/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/prugio.webp" alt="순천 푸르지오 더 퍼스트 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>순천 푸르지오 더 퍼스트</b><span>아파트 분양 · 순천</span></div></a>
+      <a class="pm-card t" href="https://brizymedia.github.io/es-company/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/es-company.webp" alt="이에스컴퍼니 ES COMPANY 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>이에스컴퍼니 ES COMPANY</b><span>행사용품 렌탈</span></div></a>
+      <a class="pm-card c" href="https://xn--wk0bn7yi8h24iszc.com/mari/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/mari.webp" alt="가수 마리 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>가수 마리</b><span>가수 프로필</span></div></a>
+      <a class="pm-card t" href="https://brizymedia.github.io/yegrina/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/yegrina.webp" alt="한국체대 예그리나 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>한국체대 예그리나</b><span>유아체육 · 운동회</span></div></a>
+      <a class="pm-card t" href="https://brizymedia.github.io/immagic/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/immagic.webp" alt="아이엠매직 I.M.MAGIC 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>아이엠매직 I.M.MAGIC</b><span>공연팀</span></div></a>
+      <a class="pm-card" href="https://brizymedia.github.io/healing-ent/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/healing-ent.webp" alt="힐링엔터테인먼트 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>힐링엔터테인먼트</b><span>기업행사 · 전문 MC</span></div></a>
+      <a class="pm-card c" href="https://brizymedia.github.io/baro-event/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/baro-event.webp" alt="바로기획 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>바로기획</b><span>행사대행</span></div></a>
+      <a class="pm-card c" href="https://brizymedia.github.io/haengsaon/" target="_blank" rel="noopener noreferrer"><div class="pm-ph"><div class="pm-scr"><img src="works/phone/haengsaon.webp" alt="행사ON 홈페이지 휴대폰 화면" width="360" height="780" loading="lazy" decoding="async"></div></div><div class="pm-cap"><b>행사ON</b><span>행사대행 · 렌탈</span></div></a>
+    </div></div>
+  </div>
 </section>
 
 <!-- ══════════ REGION ══════════ -->
@@ -2367,6 +2436,33 @@ footer{border-top:1px solid var(--line);padding:56px 0 120px;background:var(--in
   /* ---------- marquee duplicate ---------- */
   const mq = $('#mqTrack');
   if (mq) mq.innerHTML += mq.innerHTML;
+
+  /* ---------- 휴대폰 샘플 두 줄 (#phones) ---------- */
+  (function(){
+    const rows = ['#pmA', '#pmB'].map(s => $(s)).filter(Boolean);
+    if (!rows.length) return;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* 개수는 카드 수에서 읽는다 — 사이트를 더하거나 빼도 글자를 따로 고칠 일이 없다 */
+    const cnt = $('#pmN');
+    if (cnt) cnt.textContent = rows.reduce((a, r) => a + r.children.length, 0);
+    /* 끊김 없이 돌도록 한 벌을 더 이어 붙인다. 복사본은 읽기 · 탭 이동에서 뺀다. 움직임 줄이기 설정에서는 한 벌만 두고 가로로 밀어 본다 */
+    /* 복사본은 마크업 글자로 만든다 — 이미 있는 img 를 cloneNode 하면, 아직 화면에 붙지 않은 img 에는 loading=lazy 가 먹지 않아
+       그 자리에서 사진을 전부 받아 버린다. 그래서 src 를 data-src 로 바꿔 두었다가 깨울 때 채운다 */
+    if (!calm) rows.forEach(r => {
+      r.insertAdjacentHTML('beforeend', r.innerHTML.split('<a ').join('<a aria-hidden="true" tabindex="-1" ').split(' src="').join(' data-src="'));
+    });
+    /* 흐르는 줄 안의 사진은 lazy 로 두면 화면 밖에 가려진 카드가 늦게 떠서 빈 칸으로 보인다 → 줄이 화면에 가까워지면 한꺼번에 불러온다 */
+    const wake = () => document.querySelectorAll('#phones img').forEach(i => { if (i.dataset.src) i.src = i.dataset.src; i.loading = 'eager'; });
+    const box = $('#phones');
+    if (box && 'IntersectionObserver' in window) {
+      const pio = new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { wake(); pio.disconnect(); } }, { rootMargin: '900px 0px' });
+      pio.observe(box);
+    } else wake();
+    /* 화면이 넓어 카드가 커져도 초당 26px 로 흐르도록 한 바퀴 시간을 잰다 */
+    const speed = () => { if (calm) return; rows.forEach(r => { if (r.scrollWidth) r.style.animationDuration = Math.round(r.scrollWidth / 2 / 26) + 's'; }); };
+    speed();
+    let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(speed, 200); });
+  })();
 
   /* ---------- reveal ---------- */
   const io = new IntersectionObserver((entries)=>{
