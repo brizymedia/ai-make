@@ -1,0 +1,83 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>성하디앤씨 홈페이지 샘플 시안 B안 · 클린 라이트</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+:root{--bg:#f6faff;--ink:#10243f;--mute:#5a6e8a;--acc:#1f8bff;--acc2:#ff7a2f;--card:#ffffff;--line:#d9e5f5;--bi:#ffffff;--r:20px}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Pretendard,'Malgun Gothic',sans-serif;word-break:keep-all;line-height:1.55;max-width:430px;margin:0 auto;overflow-x:hidden}
+.nav{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:16px 18px;color:#fff}
+.logo{font-weight:800;letter-spacing:.14em;font-size:15px}.logo small{display:block;font-weight:500;font-size:9px;letter-spacing:.2em;opacity:.75}
+.burger{width:22px;height:14px;border-top:2px solid #fff;border-bottom:2px solid #fff;position:relative}.burger:after{content:"";position:absolute;left:0;right:0;top:4px;border-top:2px solid #fff}
+.hero{position:relative;height:560px;background:linear-gradient(180deg,#0008 0%,#0000 24%,#0000 42%,#0a2a4ccc 100%),url(img/hero-b.jpg) center/cover no-repeat;overflow:hidden;color:#fff}
+.cloud{position:absolute;background:#ffffffcc;border-radius:99px;filter:blur(2px);animation:drift 26s linear infinite}
+.cloud.c1{width:140px;height:30px;top:130px;left:-150px}.cloud.c2{width:200px;height:38px;top:210px;left:-220px;animation-duration:38s;animation-delay:-12s}.cloud.c3{width:110px;height:24px;top:90px;left:-120px;animation-duration:30s;animation-delay:-20s}
+@keyframes drift{to{transform:translateX(640px)}}
+.land{position:absolute;left:0;right:0;bottom:0;height:230px}
+.drone{position:absolute;width:170px;right:28px;top:190px;color:#1b3a63;animation:fly 5s ease-in-out infinite;filter:drop-shadow(0 12px 14px #0006)}
+@keyframes fly{50%{transform:translateY(-14px) rotate(-3deg)}}
+.rot{animation:spin .25s linear infinite;transform-origin:center}@keyframes spin{50%{opacity:.25}}
+.rec{position:absolute;top:78px;left:18px;font-size:11px;letter-spacing:.14em;display:flex;gap:6px;align-items:center;background:#0006;padding:4px 10px;border-radius:99px}
+.rec i{width:8px;height:8px;border-radius:50%;background:#ff4b4b;animation:blink 1.2s infinite}@keyframes blink{50%{opacity:.2}}
+.copy{position:absolute;left:18px;right:18px;bottom:36px;z-index:3}
+.copy .k{font-size:12px;letter-spacing:.18em;color:var(--acc2);margin-bottom:8px}
+.copy h1{font-size:33px;line-height:1.25;font-weight:800;text-shadow:0 2px 14px #0007}
+.btns{display:flex;gap:8px;margin-top:16px}
+.btn{flex:1;text-align:center;padding:13px 8px;border-radius:var(--r);font-weight:700;font-size:14px;border:1.5px solid var(--acc);color:var(--acc)}.btn.f{background:var(--acc);color:var(--bi)}
+.sec{padding:30px 18px 6px}
+.ey{font-size:11px;letter-spacing:.22em;color:var(--acc);font-weight:700;margin-bottom:5px}
+h2{font-size:21px;line-height:1.35;margin-bottom:12px}
+.svc{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.svc div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 12px;font-size:12.5px;color:var(--mute)}.svc b{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}
+.svc i{display:block;font-style:normal;font-size:20px;margin-bottom:4px}
+.work{display:flex;gap:9px;overflow:hidden;margin:0 -18px;padding:0 18px}
+.work div{flex:0 0 150px;height:190px;border-radius:var(--r);position:relative;background:linear-gradient(180deg,#0000 45%,#000a 100%),url(img/w1.jpg) center/cover;color:#fff;font-size:12px;padding:10px;display:flex;align-items:flex-end}
+.work div:nth-child(2){background:linear-gradient(180deg,#0000 45%,#000a 100%),url(img/w2.jpg) center/cover}.work div:nth-child(3){background:linear-gradient(180deg,#0000 45%,#000a 100%),url(img/w3.jpg) center/cover}
+.work div:before{content:"▶";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#0007;text-align:center;line-height:38px;font-size:14px}
+.lead{margin:26px 18px 0;border-radius:var(--r);padding:20px 16px;background:linear-gradient(135deg,var(--acc),var(--acc2));color:var(--bi)}
+.lead .t{font-size:11px;letter-spacing:.16em;font-weight:800;opacity:.75}.lead h3{font-size:19px;line-height:1.35;margin:4px 0 10px}
+.lead p{font-size:12.5px;margin-bottom:12px;opacity:.9}
+.lead .row{display:flex;gap:6px}.lead .in{flex:1;background:#fff;border-radius:calc(var(--r) - 4px);padding:11px;font-size:13px;color:#8a93a3}
+.lead .go{background:#10192b;color:#fff;border-radius:calc(var(--r) - 4px);padding:11px 14px;font-weight:700;font-size:13px}
+.lead .agree{font-size:10.5px;margin-top:8px;opacity:.8}
+.form{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.form .step{display:flex;gap:5px;margin-bottom:12px}.form .step i{flex:1;height:4px;border-radius:9px;background:var(--line)}.form .step i.on{background:var(--acc)}
+.form label{display:block;font-size:11.5px;color:var(--mute);margin:10px 0 4px}
+.form .fi{border:1px solid var(--line);border-radius:calc(var(--r) - 4px);padding:11px;font-size:13px;color:var(--mute);background:var(--bg)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips span{border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:12.5px;color:var(--mute)}.chips span.on{background:var(--acc);border-color:var(--acc);color:var(--bi);font-weight:700}
+.send{margin-top:14px;text-align:center;background:var(--acc);color:var(--bi);padding:14px;border-radius:var(--r);font-weight:800}
+footer{margin-top:28px;padding:22px 18px 80px;border-top:1px solid var(--line);font-size:11.5px;color:var(--mute);line-height:1.8}
+.fix{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;display:flex;gap:8px;padding:10px 14px;background:#ffffffee;border-top:1px solid var(--line);z-index:9}
+.fix a{flex:1;text-align:center;padding:12px;border-radius:var(--r);font-weight:700;font-size:14px;background:var(--card);color:var(--ink);border:1px solid var(--line)}.fix a.f{background:var(--acc);color:var(--bi);border:0}
+.badge{position:absolute;top:8px;right:8px;z-index:20;background:#ffcf33;color:#2a2100;font-size:10px;font-weight:800;padding:3px 8px;border-radius:99px}
+.hero .btn:not(.f){color:#fff;border-color:#fff;background:#0003}.copy .k{text-shadow:0 1px 8px #000a}
+</style></head><body>
+<span class="badge">큰길브리지 제안용 시안</span>
+<section class="hero">
+ <div class="nav"><div class="logo">SH D&amp;C<small>AERIAL · FILM</small></div><div class="burger"></div></div>
+ <div class="rec"><i></i>REC · 4K AERIAL</div>
+ <div class="copy"><div class="k">광주 드론 촬영 · 영상 제작</div><h1>가장 높은 곳에서<br>가장 선명하게.</h1>
+  <div class="btns"><div class="btn f">촬영 견적 문의</div><div class="btn">무료 자료 받기</div></div></div>
+</section>
+
+<section class="sec"><div class="ey">SERVICE</div><h2>촬영부터 편집까지,<br>한 번에 맡기세요</h2>
+ <div class="svc"><div><i>🚁</i><b>드론 촬영</b>건설·행사·관광·부동산</div><div><i>🎥</i><b>지상 촬영</b>미러리스 · 인터뷰</div><div><i>✂️</i><b>영상 편집</b>홍보·기록 영상</div><div><i>🎞️</i><b>영상 소스</b>필요한 컷만 납품</div></div></section>
+
+<section class="sec"><div class="ey">PORTFOLIO</div><h2>가장 최근 작업</h2>
+ <div class="work"><div>대표 영상 · 건설 현장</div><div>행사 · 축제 항공</div><div>관광지 홍보</div></div></section>
+
+<div class="lead"><div class="t">FREE GUIDE</div><h3>드론 촬영 의뢰 전<br>꼭 확인할 7가지 체크리스트</h3>
+ <p>비행 승인 · 촬영 시기 · 예산 기준을 한 장에 정리했습니다.</p>
+ <div class="row"><div class="in">이메일 주소</div><div class="go">무료 받기</div></div>
+ <div class="agree">☑ 자료 발송을 위한 개인정보 수집·이용에 동의합니다.</div></div>
+
+<section class="sec"><div class="ey">CONTACT</div><h2>어떤 촬영이 필요하세요?</h2>
+ <div class="form"><div class="step"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+  <label>촬영 종류</label><div class="chips"><span class="on">드론 촬영</span><span>행사 촬영</span><span>홍보 영상</span><span>기타</span></div>
+  <label>촬영 장소</label><div class="fi">예) 광주 북구 ○○ 현장</div>
+  <label>희망 일정</label><div class="fi">날짜를 선택하세요</div>
+  <div class="send">견적 요청 보내기</div></div></section>
+
+<footer><b style="color:var(--ink)">(유)성하디앤씨</b><br>광주광역시 · 010-****-****<br>© SH D&amp;C. 시안용 화면이며 사진은 AI로 생성한 이미지입니다.</footer>
+<div class="fix"><a>📞 전화</a><a class="f">견적 문의</a></div>
+</body></html>

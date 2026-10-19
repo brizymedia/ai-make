@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>홈페이지 제작 제안서 · 성하디앤씨</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+:root{--ink:#0f1b33;--navy:#13264a;--gold:#c79a46;--sky:#4aa3e8;--line:#dde1ea;--soft:#f4f6fa;--mute:#5a6479}
+*{box-sizing:border-box}
+body{margin:0;background:#e6e9ef;font-family:Pretendard,'Malgun Gothic',sans-serif;color:var(--ink);word-break:keep-all;line-height:1.6}
+.page{width:210mm;min-height:297mm;margin:16px auto;background:#fff;padding:18mm 16mm;box-shadow:0 2px 14px #0002;position:relative;overflow:hidden}
+.page .no{position:absolute;bottom:9mm;right:16mm;font-size:11px;color:#9aa3b5}
+.page .brand{position:absolute;bottom:9mm;left:16mm;font-size:11px;color:#9aa3b5}
+.cover{background:linear-gradient(180deg,#07122aee 0%,#07122a88 20%,#07122a00 40%,#07122a00 62%,#050d1ccc 88%,#050d1cf2 100%),url(img/drone-cover.jpg) center/cover no-repeat;color:#fff;display:flex;flex-direction:column;justify-content:space-between}
+
+.cover .k{letter-spacing:.35em;font-size:12px;color:#f2d28b}
+.cover h1{font-size:40px;line-height:1.3;margin:14mm 0 6mm;font-weight:800}
+.cover h1 em{font-style:normal;color:#f2d28b}
+.cover p{font-size:17px;color:#cfd9ee;max-width:130mm}
+.cover .for{border-top:1px solid #ffffff44;padding-top:8mm;font-size:15px;color:#cfd9ee;line-height:1.9}
+.cover .for b{color:#fff;font-size:20px}
+h2{font-size:26px;margin:0 0 4px}
+.ey{font-size:12.5px;letter-spacing:.2em;color:var(--gold);font-weight:700;margin-bottom:6px}
+.lead{color:var(--mute);font-size:15.5px;margin:0 0 14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.card{border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14.5px;background:#fff}
+.card h4{margin:0 0 4px;font-size:16px}
+.card .big{font-size:25px;font-weight:800;color:var(--navy)}
+.card.dark{background:var(--navy);color:#fff;border:0}.card.dark h4{color:#f2d28b}
+.card.hl{border:2px solid var(--gold);background:#fffaf0}
+.tag{display:inline-block;font-size:10.5px;background:var(--gold);color:#fff;border-radius:99px;padding:1px 9px;margin-bottom:5px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0}
+th{background:var(--soft);border-top:2px solid var(--ink);padding:7px 8px;text-align:left}
+td{border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
+td.n,th.n{text-align:right;white-space:nowrap}
+ul{margin:4px 0;padding-left:18px;font-size:14.5px}li{margin:2px 0}
+.note{font-size:12.5px;color:var(--mute);margin-top:6px}
+.sitemap{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:10px 0;font-size:13.5px}
+.sitemap div{border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--soft)}
+.sitemap b{display:block;color:var(--navy);margin-bottom:3px}
+.sitemap i{display:block;font-style:normal;color:var(--mute);font-size:12.5px}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.steps div{background:var(--soft);border-radius:8px;padding:9px;font-size:13.5px;text-align:center}
+.steps b{display:block;font-size:20px;color:var(--gold)}
+.why{counter-reset:w}.why .card{position:relative;padding-left:46px}
+.why .card:before{counter-increment:w;content:counter(w);position:absolute;left:12px;top:10px;width:25px;height:25px;border-radius:50%;background:var(--navy);color:#fff;text-align:center;line-height:25px;font-weight:700;font-size:13px}
+@media print{body{background:#fff}.page{margin:0;box-shadow:none;page-break-after:always;min-height:0;height:296mm}@page{size:A4;margin:0}}
+.tight{padding-top:12mm;padding-bottom:13mm}.tight .card,.tight li,.tight td,.tight th{font-size:13.2px}.tight .lead{margin-bottom:8px}.tight .big{font-size:22px}.tight .card{padding:9px 11px}.tight .grid3,.tight .grid2{margin:6px 0}.tight .why .card{padding-left:46px}
+@media screen and (max-width:800px){.page{width:auto;margin:0 0 10px;padding:22px 16px;min-height:0}.grid3,.grid2{grid-template-columns:1fr}.sitemap,.steps{grid-template-columns:1fr 1fr}.cover{min-height:100vh}.cover h1{font-size:30px}}
+.cdrone{position:absolute;right:10mm;top:78mm;width:112mm;filter:drop-shadow(0 14px 18px #0008);transform:rotate(-6deg)}
+.beam{position:absolute;right:30mm;top:112mm;width:70mm;height:96mm;background:linear-gradient(180deg,#8fd0ff66,transparent);clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);opacity:.7}
+.cover .ground{position:absolute;left:0;right:0;bottom:0;height:70mm;z-index:0}.cover .for{position:relative;z-index:2}
+.ph{display:flex;gap:7mm;justify-content:center;margin:6px 0 8px}
+.ph figure{margin:0;width:51mm;text-align:center}
+.ph .fr{border:3px solid #10192b;border-radius:20px;overflow:hidden;box-shadow:0 5px 14px #0003;background:#10192b}
+.ph img{display:block;width:100%}
+.ph figcaption{font-size:12.5px;margin-top:6px;line-height:1.45}.ph figcaption b{display:block;font-size:14.5px;color:var(--navy)}
+.gauges{display:flex;gap:10px;margin:8px 0 10px}
+.gauge{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;gap:12px;align-items:center;background:#fff}
+.ring{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;flex:none;background:conic-gradient(var(--c) calc(var(--v)*1%),#e6eaf2 0)}
+.ring b{width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:22px;color:var(--navy)}
+.gauge span{font-size:14px;color:var(--mute)}.gauge strong{display:block;font-size:16px;color:var(--ink)}
+.ok{color:#1d7a46}.warn{color:#b26a00}.bad{color:#c0392b}
+.chk li{list-style:none;margin-left:-14px}
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:8px 0}
+.flow .card b.n{display:inline-block;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;text-align:center;line-height:24px;font-size:13px;margin-right:6px}
+.pz2>*:not(.brand):not(.no){zoom:1.35}.pz3>*:not(.brand):not(.no){zoom:1.15}.pz4>*:not(.brand):not(.no){zoom:1.1}.pz5>*:not(.brand):not(.no){zoom:1.45}.pz6>*:not(.brand):not(.no){zoom:1.5}.pz9>*:not(.brand):not(.no){zoom:1.3}.pz10>*:not(.brand):not(.no){zoom:1.6}.pz11>*:not(.brand):not(.no){zoom:1.35}
+.pz7>*:not(.brand):not(.no){zoom:1.4}.pz8>*:not(.brand):not(.no){zoom:1.35}
+</style></head><body>
+
+<!-- 표지 -->
+<section class="page cover">
+ <div style="position:relative"><div class="k">WEBSITE PROPOSAL</div>
+ <h1>하늘에서 보는 가치를<br><em>검색되는 홈페이지</em>로.</h1>
+ <p>광주 항공촬영·영상제작 전문 (유)성하디앤씨를 위한 기업 홈페이지 제작 제안서 — 제작부터 AI 검색 시대의 월 마케팅까지.</p></div>
+ <div class="for">제안 대상 &nbsp;<b>(유)성하디앤씨 (Lamedia Korea) 대표님</b><br>제안일 &nbsp;2026. 10. 19.<br>제안사 &nbsp;주식회사 브리지미디어 · 큰길브리지 (대표 김효민) · 1533-7295<br><span style="font-size:10px;opacity:.6">표지 이미지는 AI로 생성한 이미지입니다.</span></div>
+</section>
+
+<!-- 1 이해 -->
+<section class="page pz2">
+ <div class="ey">01 · 요청 이해</div><h2>원하시는 것은 「이 느낌」의 홈페이지입니다</h2>
+ <p class="lead">보내 주신 참고 사이트(플라이뷰)의 구성을 살펴, 어떤 규모의 사이트인지부터 정리했습니다.</p>
+ <div class="grid2">
+  <div class="card"><h4>참고 사이트에서 읽은 것</h4><ul>
+   <li>첫 화면: 항공 영상·사진 풀스크린 + 로고</li>
+   <li>회사 소개 / 보유 장비·인력 / 오시는 길</li>
+   <li>서비스 소개: 드론촬영 · 일반촬영 · 영상제작 · 영상소스</li>
+   <li>포트폴리오: 영상 · 사진 게시판 (수상작 · 의뢰 사례)</li>
+   <li>온라인 문의 · 고객센터(게시판)</li></ul></div>
+  <div class="card"><h4>그래서 필요한 규모</h4><ul>
+   <li>한 장짜리 소개 페이지가 아니라 <b>약 10페이지 + 게시판형</b> 사이트</li>
+   <li>영상이 주인공 → 갤러리·영상 연동이 핵심</li>
+   <li>직접 올리고 고칠 수 있는 <b>관리자 페이지</b> 필요</li>
+   <li>광주 지역 검색 노출이 곧 수주 → <b>검색 설계</b> 필요</li></ul></div>
+ </div>
+ <div class="card dark" style="margin-top:12px"><h4>우리의 원칙</h4>
+  참고 사이트의 <b>구성과 분위기</b>만 참고하고, 그 사이트의 사진·영상·문구는 쓰지 않습니다. 성하디앤씨만의 영상과 이야기로 새로 만들어야 의뢰하시는 분께 「다른 곳과 다르다」가 전달됩니다. (타사 자료 사용은 저작권 문제도 생깁니다.)</div>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">2</div>
+</section>
+
+<!-- 2 구성 -->
+<section class="page tight pz3">
+ <div class="ey">02 · 제안 구성</div><h2>사이트 구조 (10페이지)</h2>
+ <p class="lead">의뢰인이 궁금해하는 순서대로 — 「누구인가 → 무엇을 하나 → 증거 → 문의」.</p>
+ <div class="sitemap">
+  <div><b>HOME</b>영상 히어로(자동 재생)<i>핵심 강점 · 대표 작품 · 무료 자료 · 문의</i></div>
+  <div><b>회사소개</b>이야기·인력<i>허가·인증 · 연혁 · 대표 인사</i></div>
+  <div><b>항공촬영</b>서비스<i>촬영 분야별 안내 · 진행 절차</i></div>
+  <div><b>영상제작</b>서비스<i>기획·촬영·편집·영상소스</i></div>
+  <div><b>보유장비</b><i>기체·카메라 소개</i></div>
+  <div><b>포트폴리오</b>영상<i>유튜브 연동 갤러리</i></div>
+  <div><b>포트폴리오</b>사진<i>분야별 필터 · 확대 보기</i></div>
+  <div><b>온라인 문의</b>단계형 견적 접수<i>촬영 종류·장소·일정 + 즉시 알림</i></div>
+  <div><b>고객센터</b>공지·FAQ<i>관리자 게시판</i></div>
+  <div><b>무료 자료</b>리드 마그넷<i>체크리스트 PDF → 연락처 확보</i></div>
+ </div>
+ <h2 style="font-size:19px;margin-top:16px">디자인 방향</h2>
+ <div class="grid3">
+  <div class="card"><h4>영상이 먼저</h4>첫 화면에서 대표 영상이 재생되어 3초 안에 「이 회사는 하늘을 안다」가 전해집니다.</div>
+  <div class="card"><h4>신뢰감 있는 톤</h4>짙은 남색·하늘색 기반. 허가·인증·납품 이력을 눈에 띄게 배치합니다.</div>
+  <div class="card"><h4>모바일 우선</h4>의뢰 문의의 상당수는 휴대폰에서 시작합니다. 폰에서 가장 먼저 완성도를 맞춥니다.</div>
+ </div>
+ <h2 style="font-size:19px;margin-top:16px">운영이 쉬운 구조</h2>
+ <ul><li>영상은 유튜브 주소만 붙이면 포트폴리오에 추가 — 개발자가 필요 없습니다.</li>
+ <li>공지·FAQ·포트폴리오를 관리자 페이지에서 직접 올리고, 사용 교육을 드립니다.</li>
+ <li>문의가 오면 휴대폰으로 즉시 알림, 견적 요청을 놓치지 않습니다.</li></ul>
+ <h2 style="font-size:19px;margin-top:16px">이번에 추가한 3가지 영업 장치</h2>
+ <div class="grid3">
+  <div class="card"><h4>영상 히어로</h4>첫 화면에 대표 항공 영상이 소리 없이 자동 재생. 휴대폰에서도 끊기지 않게 용량을 줄이고, 느린 회선에서는 대표 이미지로 대체합니다.</div>
+  <div class="card"><h4>촬영 견적 접수 폼</h4>촬영 종류 → 장소 → 일정 → 용도 순으로 묻는 단계형 폼. 접수 즉시 휴대폰 알림이 오고, 견적에 필요한 정보가 처음부터 모입니다.</div>
+  <div class="card"><h4>리드 마그넷</h4>「드론 촬영 의뢰 전 체크리스트」 같은 무료 자료를 받아 가도록 하여, 아직 의뢰 전인 방문자의 연락처(동의 기반)를 확보합니다.</div>
+ </div>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">3</div>
+</section>
+
+<!-- 샘플 시안 -->
+<section class="page tight pz4">
+ <div class="ey">03 · 샘플 시안 제안</div><h2>스마트폰에서 먼저 보여 드립니다</h2>
+ <p class="lead">같은 구성(영상 히어로 · 무료 자료 · 견적 접수 폼)에 분위기만 다른 3가지 방향입니다. 마음에 드는 쪽을 골라 주세요.</p>
+ <div class="ph">
+  <figure><div class="fr"><img src="shots/a.jpg" alt="A안"></div><figcaption><b>A안 · 스카이 시네마</b>짙은 남색 + 하늘색.<br>영화 같은 신뢰감</figcaption></figure>
+  <figure><div class="fr"><img src="shots/b.jpg" alt="B안"></div><figcaption><b>B안 · 클린 라이트</b>밝은 하늘색 + 주황 포인트.<br>친근하고 선명함</figcaption></figure>
+  <figure><div class="fr"><img src="shots/c.jpg" alt="C안"></div><figcaption><b>C안 · 골드 프리미엄</b>블랙 + 골드.<br>고급스러운 브랜드 느낌</figcaption></figure>
+ </div>
+ <div class="grid3">
+  <div class="card"><h4>세 시안 공통</h4><ul><li>첫 화면 영상 히어로(소리 없이 자동 재생)</li><li>화면 아래 고정 「전화 · 견적 문의」 버튼</li><li>무료 자료(리드 마그넷) 이메일 신청칸</li><li>단계형 촬영 견적 접수 폼</li></ul></div>
+  <div class="card"><h4>이렇게 고르세요</h4><ul><li><b>A</b> 건설·공공 의뢰가 많다면</li><li><b>B</b> 행사·관광·일반 고객이 많다면</li><li><b>C</b> 고급 브랜드·광고 영상이 중심이라면</li></ul></div>
+  <div class="card"><h4>시안은 이렇게 바뀝니다</h4><ul><li>시안 속 사진 → 성하디앤씨 실제 영상·사진</li><li>문구·색은 대표님 의견으로 조정</li><li>폰에서 직접 열어 보기: <a href="s/a.html">A안</a> · <a href="s/b.html">B안</a> · <a href="s/c.html">C안</a></li></ul></div>
+ </div>
+ <p class="note">※ 시안은 큰길브리지가 만든 가상 화면이며, 시안 속 사진은 AI로 생성한 이미지입니다(성하디앤씨의 실제 촬영본으로 교체됩니다). 다른 회사 사이트의 이미지·문구를 사용하지 않았습니다.</p>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">4</div>
+</section>
+
+<!-- 3 금액 -->
+<section class="page tight pz5">
+ <div class="ey">04 · 제안 금액</div><h2>초기 제작 168만원 (VAT 별도)</h2>
+ <p class="lead">참고 사이트와 같은 규모(10페이지 + 게시판)에 <b>영상 히어로 · 촬영 견적 접수 · 리드 마그넷</b>을 더해 <b>회사형</b>으로 구성했습니다.</p>
+ <div class="grid3">
+  <div class="card hl"><span class="tag">권장</span><h4>초기 제작</h4><div class="big">1,680,000원</div><div class="note">VAT 별도 · 부가세 포함 1,848,000원</div></div>
+  <div class="card"><h4>월 유지관리</h4><div class="big">50,000원</div><div class="note">첫 1개월 무료 · 서버·보안·수정 대응</div></div>
+  <div class="card"><h4>월 검색 마케팅</h4><div class="big">15만원~</div><div class="note">선택 · 다음 장 3단 구성</div></div>
+ </div>
+ <table>
+  <tr><th>항목</th><th class="n">금액</th></tr>
+  <tr><td>회사형 홈페이지 제작 — 10페이지 · 반응형 · 맞춤 디자인 · 게시판 관리자 · CMS 교육 · 브랜드 컨설팅 · 검색등록 · 1개월 무상 유지보수</td><td class="n">1,000,000</td></tr>
+  <tr><td>히어로 영상 제작 — 대표 영상 편집·루프 · PC/모바일 용량 최적화</td><td class="n">150,000</td></tr>
+  <tr><td>촬영 문의·견적 접수 시스템 — 단계형 폼 · 즉시 알림 · 접수 목록</td><td class="n">250,000</td></tr>
+  <tr><td>리드 마그넷 — 무료 자료 신청 · 자동 발송 · 명단 관리 · 자료 1종 제작</td><td class="n">200,000</td></tr>
+  <tr><td>갤러리 + 인스타·블로그 자동 연동 (영상 포트폴리오)</td><td class="n">50,000</td></tr>
+  <tr><td>도메인 등록 + 연결</td><td class="n">30,000</td></tr>
+  <tr><td><b>합계 (VAT 별도)</b></td><td class="n"><b>1,680,000</b></td></tr>
+ </table>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">5</div>
+</section>
+
+<section class="page tight pz6">
+ <div class="ey">04 · 제안 금액</div><h2>왜 이 금액이 합리적인가</h2>
+ <p class="lead">초기 제작 1,680,000원(VAT 별도)을 이렇게 판단했습니다.</p>
+ <div class="why">
+  <div class="card"><b>① 참고 사이트와 같은 일을 하는 규모입니다.</b><br>소개·서비스·포트폴리오(영상/사진)·문의·고객센터까지의 구조는 흔히 「중형 기업 사이트(10페이지 이상)」로 분류됩니다.</div>
+  <div class="card" style="margin-top:6px"><b>② 시장 가격대의 아래쪽, 기능은 위쪽입니다.</b><br>검색해 본 업체·블로그 자료에서는 10페이지 이상 중형 사이트를 600만~2,000만원, 저가 워드프레스형을 70만~150만원 수준으로 소개합니다(홍보성 글이 많아 참고용). 큰길브리지는 직접 제작·AI 활용으로 제작 과정을 줄여, 맞춤 디자인·관리자 기능·검색등록에 영상 히어로·견적 접수·리드 마그넷까지 168만원에 담았습니다.</div>
+  <div class="card" style="margin-top:6px"><b>③ 값이 「한 번 쓰고 끝」이 아닙니다.</b><br>직접 수정(CMS)과 교육이 포함되어, 이후 작은 수정마다 외주비를 내지 않으셔도 됩니다. 월 유지 5만원은 서버·보안·SSL 포함입니다.</div>
+  <div class="card" style="margin-top:6px"><b>④ 홈페이지가 「영업 사원」이 됩니다.</b><br>영상 히어로가 신뢰를 만들고, 단계형 견적 폼이 문의를 놓치지 않게 받으며, 리드 마그넷이 당장 의뢰하지 않는 방문자의 연락처까지 모읍니다.</div>
+  <div class="card" style="margin-top:6px"><b>⑤ 먼저 보고 결정합니다.</b><br>샘플 시안 3종 중 마음에 드는 방향을 고르신 뒤 제작에 들어갑니다. 수정 2회가 포함됩니다.</div>
+ </div>
+ <p class="note">※ 위 시장 가격대는 인터넷 검색 자료의 범위이며 업체·사양에 따라 크게 달라집니다. 확정 비교는 타 업체 견적서와 항목별로 맞춰 보시기를 권합니다.</p>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">6</div>
+</section>
+
+<!-- SEO 점검 -->
+<section class="page tight pz7">
+ <div class="ey">05 · 검색 노출 진단</div><h2>참고 사이트의 SEO 점검 점수</h2>
+ <p class="lead">보내 주신 참고 사이트(flyview.co.kr)를 큰길브리지 SEO 점검기(24개 항목)로 직접 열어 점검했습니다. 점검일 2026. 10. 19. · 확인 단어 「드론촬영」</p>
+ <div class="gauges">
+  <div class="gauge"><div class="ring" style="--v:83;--c:#4aa3e8"><b>83</b></div><div><strong>Google 최적화</strong><span>100점 만점 · 나쁘지 않음</span></div></div>
+  <div class="gauge"><div class="ring" style="--v:86;--c:#2fb26a"><b>86</b></div><div><strong>Naver 최적화</strong><span>100점 만점 · 나쁘지 않음</span></div></div>
+ </div>
+ <p class="note" style="margin-top:0">24개 항목 중 통과 18 · 주의 4 · 고쳐야 함 1</p>
+ <div class="grid2">
+  <div class="card"><h4 class="ok">잘 되어 있는 것</h4><ul class="chk">
+   <li>✔ 보안 접속(HTTPS) · 모바일 대응 · 언어 설정</li>
+   <li>✔ robots.txt · sitemap.xml · 대표 주소(canonical)</li>
+   <li>✔ 공유 미리보기(og 제목·설명·이미지)</li>
+   <li>✔ 네이버 소유확인 · 속도 양호(응답 0.7초, 32KB)</li></ul></div>
+  <div class="card"><h4 class="bad">아쉬운 것</h4><ul class="chk">
+   <li>✘ <b>구조화 데이터(JSON-LD) 없음</b> — 고쳐야 함</li>
+   <li>▲ 페이지 제목이 「플라이뷰」 4글자뿐 — 「드론촬영」이 제목·대표 제목에 없음</li>
+   <li>▲ 이미지 설명글(alt) 6개 중 2개만</li>
+   <li>▲ 트위터 카드 · RSS 없음</li></ul></div>
+ </div>
+ <div class="card dark" style="margin-top:6px"><h4>이 점수가 말해 주는 것</h4>
+  디자인이 좋은 사이트도 「지역 + 서비스」 키워드 설계와 구조화 데이터가 비어 있으면 AI 검색과 구글이 정보를 정확히 읽기 어렵습니다. 성하디앤씨 홈페이지는 이 빈칸을 제작 단계에서 처음부터 채웁니다.</div>
+ <p class="note">※ 점수는 큰길브리지 점검기 기준의 「사이트 설계 상태」이며, 실제 검색 순위·AI 답변 노출을 의미하거나 보장하지 않습니다. 위 점검은 공개된 페이지 1개(메인)만 읽은 결과입니다.</p>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">7</div>
+</section>
+
+<!-- AI 검색 최적화 -->
+<section class="page tight pz8">
+ <div class="ey">05 · AI 검색 최적화</div><h2>우리는 AI 검색 최적화를 이렇게 합니다</h2>
+ <p class="lead">구글도 「AI 전용 비법은 없고, 사람에게 유용하고 정확한 정보가 기본」이라고 안내합니다. 그래서 우리는 유행하는 요령이 아니라 <b>순서</b>대로 쌓습니다.</p>
+ <div class="flow">
+  <div class="card"><b class="n">1</b><b>키워드 설계</b><br>「광주 드론촬영」처럼 지역 + 서비스를 제목·설명·대표 제목·본문에 자연스럽게 배치합니다. 페이지마다 한 가지 주제만 맡깁니다.</div>
+  <div class="card"><b class="n">2</b><b>구조화 데이터</b><br>업체 정보(주소·전화·영업시간), 영상(포트폴리오), 자주 묻는 질문을 검색엔진이 읽는 형식으로 심습니다. 화면에 보이는 내용과 반드시 일치시킵니다.</div>
+  <div class="card"><b class="n">3</b><b>답이 되는 글쓰기</b><br>「드론 촬영 비용은?」「비행 승인은 누가?」처럼 고객이 묻는 질문에 첫 문장부터 답하는 글·FAQ를 만듭니다. AI가 가져다 쓰기 쉬운 형태입니다.</div>
+  <div class="card"><b class="n">4</b><b>검색 등록</b><br>네이버 서치어드바이저, 구글 서치콘솔 등록, sitemap.xml · robots.txt 정리, 구글 비즈니스 프로필·네이버 플레이스 정보를 일치시킵니다.</div>
+  <div class="card"><b class="n">5</b><b>근거 쌓기</b><br>홈페이지의 영상·사례를 블로그·인스타·유튜브 설명에 연결해, 여러 곳에서 같은 업체 정보가 확인되도록 합니다. (복사 글 금지, 직접 촬영한 사례 중심)</div>
+  <div class="card"><b class="n">6</b><b>측정과 보정</b><br>매달 노출·클릭·검색어·문의 수를 서치콘솔 등으로 확인해 보고하고, 반응이 있는 주제를 늘립니다. 숫자로 보고합니다.</div>
+ </div>
+ <div class="grid2">
+  <div class="card hl"><h4>제작할 때 (초기 비용에 포함)</h4>1~4단계 — 제목·설명·구조화 데이터·검색 등록을 처음부터 갖춘 상태로 오픈합니다.</div>
+  <div class="card"><h4>오픈 뒤 (월 마케팅)</h4>3·5·6단계 — 글을 꾸준히 쌓고, 측정하고, 보정합니다.</div>
+ </div>
+ <p class="note">※ 순위·AI 답변 노출은 누구도 보장할 수 없습니다. 큰길브리지는 보장 대신 「설계 · 기록 · 보고」를 약속합니다.</p>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">8</div>
+</section>
+
+<!-- 4 마케팅 -->
+<section class="page tight pz9">
+ <div class="ey">06 · 월 검색 마케팅 플랜 (선택)</div><h2>AI 검색 시대, 검색 노출이 안 되면<br>없는 것과 마찬가지입니다</h2>
+ <p class="lead">고객이 「광주 드론촬영」을 네이버·구글·AI 답변에 물을 때 성하디앤씨가 나오도록, 매달 꾸준히 쌓는 방식입니다.</p>
+ <div class="grid2">
+  <div class="card"><h4>달라진 검색</h4><ul>
+   <li>구글 AI 개요·AI 모드, 네이버 AI 브리핑이 답을 먼저 보여 줍니다.</li>
+   <li>AI는 웹 문서·블로그·지도 정보를 <b>근거</b>로 삼습니다. 근거가 되는 글이 쌓여 있어야 합니다.</li></ul></div>
+  <div class="card"><h4>정직하게 말씀드립니다</h4><ul>
+   <li>구글은 「AI용 특별 요건은 없고 기본 검색 품질이 핵심」이라 안내합니다.</li>
+   <li>어떤 업체도 <b>순위·노출을 보장할 수 없습니다</b>. 우리는 보장 대신 「순서와 기록」을 약속합니다.</li></ul></div>
+ </div>
+ <h2 style="font-size:19px;margin-top:12px">월 플랜 3단</h2>
+ <div class="grid3">
+  <div class="card"><h4>라이트</h4><div class="big">월 15만원</div><ul>
+   <li>네이버 블로그 기사 10회</li><li>인스타·페이스북·스레드 홍보 10회</li><li>홈페이지 정보 칼럼 10회</li><li>AI검색 트래픽 월간 보고서</li></ul></div>
+  <div class="card hl"><span class="tag">추천</span><h4>스탠다드</h4><div class="big">월 30만원</div><ul>
+   <li>블로그 기사 25회</li><li>SNS 홍보 25회</li><li>정보 칼럼 25회</li><li>AI검색 트래픽 격주 보고서</li></ul></div>
+  <div class="card"><h4>플러스 *</h4><div class="big">월 50만원</div><ul>
+   <li>스탠다드 전체</li><li>항공 숏폼 홍보영상 월 2편(기존 단가 편당 10만원 기준)</li><li><b>퍼널 마케팅 셋팅</b> — 고객을 끌어모으는 흐름(광고·검색 → 무료 자료 → 후속 안내 → 견적 상담) 구축·운영</li><li>키워드 순위 점검 월 1회</li></ul></div>
+ </div>
+ <p class="note">* 플러스는 기존 가격표(마케팅 25회 30만원 + 숏폼 2편 20만원)를 묶은 제안안입니다. VAT 별도. 연간 선결제(10회 150만원 · 25회 300만원)도 가능합니다.</p>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">9</div>
+</section>
+
+<section class="page tight pz10">
+ <div class="ey">06 · 월 검색 마케팅 플랜 (선택)</div><h2>이 업종에 맞춰, 이렇게 노출을 만듭니다</h2>
+ <p class="lead">광주·전남 지역 + 항공촬영에 맞춘 글 주제와 매달 하는 일입니다.</p>
+ <h2 style="font-size:19px;margin-top:12px">이 업종에 맞춘 글 주제 예시</h2>
+ <table>
+  <tr><th>종류</th><th>예시 (광주·전남 지역 + 항공촬영)</th></tr>
+  <tr><td>정보형 질문 대응</td><td>드론 촬영 비용은 얼마인가요? · 촬영 전 비행 승인은 누가 받나요? · 건설 현장 드론 촬영은 얼마나 자주 하나요?</td></tr>
+  <tr><td>지역 키워드</td><td>광주 드론촬영 · 광주 항공촬영 · 전남 행사 영상 · 광주 건설 현장 영상</td></tr>
+  <tr><td>사례형</td><td>납품 영상 소개(촬영 의도·장소·결과) — 영상 제목·설명을 검색에 맞게 정리</td></tr>
+ </table>
+ <h2 style="font-size:19px;margin-top:12px">매달 하는 일</h2>
+ <ul><li><b>기본기:</b> 네이버 서치어드바이저·구글 서치콘솔 등록·점검, 영상 구조화 정보, 구글 비즈니스·네이버 플레이스 정보 정리</li>
+ <li><b>콘텐츠:</b> 사실에 근거한 글(경험·전문성 중심, 복사 금지), 영상과 글을 한 쌍으로 발행</li>
+ <li><b>보고:</b> 방문·검색어·문의 수를 숫자로 보고하고 다음 달 방향 조정</li></ul>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">10</div>
+</section>
+
+<!-- 5 일정 -->
+<section class="page pz11">
+ <div class="ey">07 · 진행 일정</div><h2>약 2~3주, 5단계</h2>
+ <div class="steps">
+  <div><b>1</b>샘플 시안<br>선택</div><div><b>2</b>계약<br>계약금 50%</div><div><b>3</b>자료 전달<br>영상·로고·소개글</div><div><b>4</b>제작·시안<br>수정 2회</div><div><b>5</b>오픈·교육<br>잔금 50%</div>
+ </div>
+ <h2 style="font-size:19px;margin-top:16px">전달받아야 할 자료</h2>
+ <ul><li>로고(없으면 로고 리터치 제작) · 회사 소개글 · 대표 인사말</li><li>대표 영상(유튜브 주소 또는 파일) · 사진 · 주요 납품처</li><li>허가·인증서, 보유 장비 목록, 연락처·지도 주소</li><li>보유 도메인 여부, 선호하는 색·참고 사이트(느낌만 참고)</li></ul>
+ <h2 style="font-size:19px;margin-top:16px">약속 사항</h2>
+ <div class="grid2">
+  <div class="card"><h4>수정 2회 + 1개월 무상 유지보수</h4>오픈 뒤 한 달은 오류·수정 대응이 무료입니다.</div>
+  <div class="card"><h4>고객 자료의 권리는 고객에게</h4>촬영본·글의 저작권은 성하디앤씨의 것이며, 타사 자료는 쓰지 않습니다.</div>
+ </div>
+ <div class="card dark" style="margin-top:16px;text-align:center;padding:22px">
+  <h4 style="font-size:17px">다음 단계</h4>
+  대표님이 「이 방향이면 되겠다」 하시면, 마음에 드는 <b>샘플 시안</b>을 골라 주세요(섞어서도 가능합니다). 성하디앤씨 영상·로고를 넣어 본 제작에 들어갑니다.<br>
+  <b style="font-size:20px;color:#f2d28b;display:block;margin-top:10px">1533-7295 · gilauto325@gmail.com</b>
+  <span style="font-size:12px;color:#cfd9ee">주식회사 브리지미디어 · www.ai-make.co.kr</span></div>
+ <div class="brand">큰길브리지 · 홈페이지 제작 제안서</div><div class="no">11</div>
+</section>
+</body></html>

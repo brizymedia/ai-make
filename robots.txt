@@ -14,6 +14,8 @@ Disallow: /welcome/
 Disallow: /card/img/
 Disallow: /card/bg/
 Disallow: /card/og/
+# 고객별 제안 자료는 검색에 걸리지 않게 한다
+Disallow: /proposal/
 
 # AI 검색·요약 크롤러 명시 허용
 User-agent: GPTBot
