@@ -545,6 +545,78 @@
     "name": "홈페이지 연간 점검표",
     "keyword": "{city} 홈페이지 점검",
     "angle": "공식 출처 모음"
+   },
+   {
+    "id": "naver-smartstore-link",
+    "name": "스마트스토어와 홈페이지 연결",
+    "keyword": "{city} 스마트스토어 홈페이지",
+    "angle": "네이버 공식 · 전자상거래법"
+   },
+   {
+    "id": "og-image",
+    "name": "공유 미리보기(OG) 이미지 설정",
+    "keyword": "{city} 공유 미리보기",
+    "angle": "Open Graph · 카카오 공유 디버거 공식"
+   },
+   {
+    "id": "favicon-app-icon",
+    "name": "파비콘 · 홈 화면 아이콘",
+    "keyword": "{city} 파비콘",
+    "angle": "MDN · Google 검색 파비콘 공식"
+   },
+   {
+    "id": "404-page",
+    "name": "없는 페이지(404) 처리",
+    "keyword": "{city} 404 페이지",
+    "angle": "Google Search Central 공식"
+   },
+   {
+    "id": "redirect-301",
+    "name": "주소 바꿀 때 301 이동",
+    "keyword": "{city} 홈페이지 주소 변경",
+    "angle": "Google 사이트 이전 공식"
+   },
+   {
+    "id": "image-alt-text",
+    "name": "이미지 대체텍스트 쓰기",
+    "keyword": "{city} 이미지 대체텍스트",
+    "angle": "KWCAG · Google 이미지 공식"
+   },
+   {
+    "id": "web-font-speed",
+    "name": "웹폰트와 로딩 속도",
+    "keyword": "{city} 웹폰트",
+    "angle": "web.dev 공식"
+   },
+   {
+    "id": "online-reservation-noshow",
+    "name": "예약 노쇼 줄이는 안내",
+    "keyword": "{city} 예약 노쇼",
+    "angle": "공정위 소비자분쟁해결기준 공식"
+   },
+   {
+    "id": "ecommerce-business-info",
+    "name": "사업자 정보 표시(푸터)",
+    "keyword": "{city} 사업자 정보 표시",
+    "angle": "전자상거래법 공식"
+   },
+   {
+    "id": "kakao-share-button",
+    "name": "카카오톡 공유 버튼",
+    "keyword": "{city} 카카오톡 공유",
+    "angle": "Kakao Developers 공식"
+   },
+   {
+    "id": "search-console-start",
+    "name": "Search Console 처음 설정",
+    "keyword": "{city} 서치콘솔",
+    "angle": "Google Search Console 공식"
+   },
+   {
+    "id": "ai-voice-video",
+    "name": "AI 목소리 홍보영상 표기",
+    "keyword": "{city} AI 홍보영상",
+    "angle": "방통위 · 공정위 AI 표시 공식"
    }
   ]
  }
