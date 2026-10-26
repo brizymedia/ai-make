@@ -2,12 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.ai-make.co.kr/card/</loc>
-    <lastmod>2026-10-23</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>https://www.ai-make.co.kr/card/all/</loc>
-    <lastmod>2026-10-23</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>daily</changefreq>
   </url>
   <url>
@@ -78,6 +78,11 @@
   <url>
     <loc>https://www.ai-make.co.kr/card/ai-makecokrcardproevent/</loc>
     <lastmod>2026-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://www.ai-make.co.kr/card/pro-event2kr/</loc>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>weekly</changefreq>
   </url>
 </urlset>
