@@ -25,7 +25,7 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
-const VERSION    = '2026-10-07a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
+const VERSION    = '2026-10-28a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
 
 
@@ -38,13 +38,13 @@ const VERSION    = '2026-10-07a';                // 배포 확인용 — 코드�
  */
 function 브랜드(d) {
   const 글 = String((d && d.page) || '') + ' ' + String((d && d.service) || '');
-  if (/baro-event|바로기획/.test(글)) return '바로기획';
+  if (/baro-event|xn--ok0bx6qu3cus0b|바로기획/.test(글)) return '바로기획';   // xn--ok0bx6qu3cus0b = 바로기획.com
   if (/es-company|이에스컴퍼니/.test(글)) return '이에스컴퍼니';
   if (/\/j6media|제이식스미디어|J6 ?MEDIA/i.test(글)) return '제이식스미디어';
   if (/healing-ent|힐링엔터테인먼트/.test(글)) return '힐링엔터테인먼트';
   if (/\/yegrina|예그리나/.test(글)) return '한국체대 예그리나';
   if (/\/haengsaon|행사ON/i.test(글)) return '행사ON';
-  if (/\/hd-event|HD기획/.test(글)) return 'HD기획';
+  if (/\/hd-event|hdplan\.co\.kr|HD기획/.test(글)) return 'HD기획';
   if (/\/pro-event|프로이벤트/.test(글)) return '프로이벤트';
   return /xn--wk0bn7yi8h24iszc|큰길이벤트/.test(글) ? '큰길이벤트기획' : BRAND;
 }
@@ -55,21 +55,23 @@ function 브랜드(d) {
  * 이에스컴퍼니 — 홈페이지 www.es-company.co.kr, 대표 박미배 (청주 행사용품 · 시스템 렌탈).
  * 2026-10-03 — 제이식스미디어 · 힐링엔터테인먼트 · 한국체대 예그리나 · 행사ON · HD기획 · 프로이벤트 추가(각 사이트 brizymedia.github.io/<레포>).
  *   메일이 없는 곳(mail: '')은 큰길브리지만 받는다.
+ * 2026-10-28 — 제이식스미디어 · 힐링엔터테인먼트 · HD기획 · 프로이벤트는 「회사만: true」 — 그 회사 대표만 받고 큰길브리지는 안 받는다(형님 지시).
  * 단, 「홈페이지 수정 요청」(사장님 수정 모드가 보내는 것)은 큰길브리지만 받는다.
  */
 const 고객사 = {
   '바로기획': { mail: 'mot2256@naver.com', quote: 'https://brizymedia.github.io/baro-event/quote.html' },
   '이에스컴퍼니': { mail: 'esgroup0102@naver.com', quote: 'https://www.es-company.co.kr/quote.html' },
-  '제이식스미디어': { mail: 'j6_media@naver.com', quote: 'https://brizymedia.github.io/j6media/quote.html' },
-  '힐링엔터테인먼트': { mail: 'leehh2153@gmail.com', quote: 'https://brizymedia.github.io/healing-ent/quote.html' },
+  '제이식스미디어': { mail: 'j6_media@naver.com', quote: 'https://brizymedia.github.io/j6media/quote.html', 회사만: true },
+  '힐링엔터테인먼트': { mail: 'leehh2153@gmail.com', quote: 'https://brizymedia.github.io/healing-ent/quote.html', 회사만: true },
   '한국체대 예그리나': { mail: 'knsuyegrina@naver.com', quote: 'https://brizymedia.github.io/yegrina/quote.html' },
   '행사ON': { mail: 'hoon0170800@hanmail.net', quote: 'https://brizymedia.github.io/haengsaon/quote.html' },
-  'HD기획': { mail: '16zone@hanmail.net', quote: 'https://brizymedia.github.io/hd-event/quote.html' },
-  '프로이벤트': { mail: 'pro-event@daum.net', quote: 'https://brizymedia.github.io/pro-event/quote.html' }
+  'HD기획': { mail: '16zone@hanmail.net', quote: 'https://brizymedia.github.io/hd-event/quote.html', 회사만: true },
+  '프로이벤트': { mail: 'pro-event@daum.net', quote: 'https://brizymedia.github.io/pro-event/quote.html', 회사만: true }
 };
 function 받는사람(d) {
   const 곳 = 고객사[브랜드(d)];
   if (/수정 요청/.test(String((d && d.service) || ''))) return TO_EMAIL;   // 사장님 수정 요청은 우리만
+  if (곳 && 곳.mail && 곳.회사만) return 곳.mail;                          // 회사만: 그 회사 대표만 받는다 (큰길브리지 메일 X)
   return 곳 && 곳.mail ? TO_EMAIL + ',' + 곳.mail : TO_EMAIL;
 }
 
