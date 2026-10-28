@@ -1,0 +1,113 @@
+{
+ "slug": "gwangju-favicon-google-search-apple-touch-icon-manifest",
+ "date": "2026-10-29",
+ "category": "industry",
+ "topic": "favicon-app-icon",
+ "city": "광주",
+ "title": "광주 파비콘 만들기 — 구글 검색 아이콘 규격 · 아이폰 홈 화면 · 매니페스트까지",
+ "description": "광주 파비콘을 처음 다는 사장님을 위해 구글 검색 결과에 아이콘이 뜨는 조건(정사각형, 48×48보다 크게, 홈페이지 머리말), 아이폰 apple-touch-icon과 웹 앱 매니페스트 아이콘을 Google · MDN · web.dev 공식 문서 기준으로 정리했습니다.",
+ "keyword": {
+  "main": "광주 파비콘",
+  "sub": ["파비콘 크기", "구글 검색 파비콘", "apple-touch-icon", "웹 앱 매니페스트", "홈 화면 아이콘"]
+ },
+ "lead": "광주 파비콘을 새로 달 때는 그림 하나를 만드는 것보다 '어디에 보일 아이콘인지'를 먼저 나누는 것이 답입니다. 브라우저 탭 · 구글 검색 결과 · 휴대폰 홈 화면은 읽어 가는 태그와 권장 크기가 다릅니다. 구글은 정사각형에 48×48픽셀보다 큰 이미지를 권장하고, 홈페이지 첫 화면 머리말에 link 태그로 알려 주어야 합니다.",
+ "points": [
+  "구글 검색 파비콘은 1:1 정사각형, 최소 8×8픽셀이며 48×48픽셀보다 크게 만들기를 권장합니다. 현재 문서에 '48의 배수' 조건은 없습니다.",
+  "파비콘은 홈페이지 첫 화면 머리말에 link rel=\"icon\"으로 알리고, Googlebot-Image가 파일을 가져갈 수 있어야 합니다.",
+  "아이폰 홈 화면 아이콘은 비표준 apple-touch-icon을 따로 씁니다. MDN 예시는 180×180입니다.",
+  "안드로이드 · 크롬 설치 아이콘은 웹 앱 매니페스트에 192×192와 512×512를 넣으라고 web.dev가 안내합니다."
+ ],
+ "cover": {
+  "src": "/free/img/hd.jpg",
+  "alt": "행사 업체 홈페이지 모바일 화면, 왼쪽 위 정사각형 HD 로고 아이콘",
+  "caption": "큰길브리지 제작 예시 — 행사 업체(HD기획) 홈페이지 모바일 화면"
+ },
+ "sections": [
+  {
+   "h2": "1. 파비콘은 어디에 보이고, 무엇이 읽어 가나요?",
+   "blocks": [
+    { "stats": [
+      { "num": "1:1", "label": "구글 검색 파비콘 비율(정사각형)" },
+      { "num": "48×48", "label": "구글이 이보다 크게 만들기를 권장" },
+      { "num": "192 · 512", "label": "매니페스트 아이콘 크기(web.dev, Chromium)" }
+     ] },
+    { "table": {
+      "head": ["보이는 곳", "읽어 가는 태그", "공식 문서의 크기 안내"],
+      "rows": [
+       ["브라우저 탭 · 즐겨찾기", "link rel=\"icon\"", "여러 개면 브라우저가 media · type · sizes로 고름(MDN)"],
+       ["구글 검색 결과", "icon · apple-touch-icon · apple-touch-icon-precomposed", "정사각형, 최소 8×8, 48×48보다 크게 권장"],
+       ["아이폰 홈 화면", "apple-touch-icon(비표준)", "MDN 예시 180×180 · 167×167 · 152×152"],
+       ["안드로이드 · 앱 설치", "manifest의 icons", "192×192와 512×512(web.dev)"]
+      ]
+   } }
+   ]
+  },
+  {
+   "h2": "2. 구글 검색 결과에 아이콘이 안 뜬다면 무엇을 보나요?",
+   "blocks": [
+    { "p": "Google 검색 센터의 파비콘 문서를 기준으로 하나씩 확인합니다. 인터넷에 '48의 배수로 만들라'는 글이 많지만, 2026년 10월 현재 문서는 정사각형 · 최소 8×8을 조건으로 두고 48×48보다 크게 만들기를 권장하는 정도입니다." },
+    { "ol": [
+      "파비콘 link 태그가 **홈페이지 첫 화면** 머리말에 있는지 봅니다. 하위 페이지에만 있으면 안 됩니다.",
+      "robots.txt 등으로 홈페이지나 파비콘 파일을 막지 않았는지 봅니다. Googlebot과 Googlebot-Image가 둘 다 읽을 수 있어야 합니다.",
+      "형식이 지원되는지 봅니다. 문서는 BMP · GIF · ICO · PNG · JPEG 등을 지원 형식으로 적습니다.",
+      "파비콘 파일 주소를 자주 바꾸지 않습니다. 호스트 이름 하나에 파비콘은 하나만 쓰입니다.",
+      "고친 뒤에는 Search Console의 URL 검사로 홈페이지 색인을 요청합니다. 반영까지 며칠에서 몇 주가 걸릴 수 있습니다."
+     ] },
+    { "warn": "구글은 부적절하다고 판단한 이미지는 기본 아이콘으로 바꿔 보여 준다고 적습니다. 로고 대신 선정적이거나 남의 상표처럼 보이는 그림을 쓰지 마십시오." }
+   ]
+  },
+  {
+   "h2": "3. 태그는 몇 줄 넣으면 되나요?",
+   "blocks": [
+    { "p": "보통 세 줄이면 됩니다. 아래는 MDN · web.dev 예시를 줄인 것입니다(파일 이름은 예시)." },
+    { "ul": [
+      "**탭 · 검색용** — link rel=\"icon\" href=\"/favicon.ico\" (ICO는 한 파일에 여러 크기를 담을 수 있어 MDN이 호환성 면에서 권합니다)",
+      "**아이폰 홈 화면용** — link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\"",
+      "**앱 설치용** — link rel=\"manifest\" href=\"/manifest.json\" (web.dev는 모든 페이지에 넣으라고 안내)"
+     ] },
+    { "tip": "SVG 아이콘은 sizes=\"any\"로 적을 수 있습니다(MDN). 다만 구글 검색 지원 형식 목록에는 SVG가 없으니, 검색용으로는 ICO나 PNG를 함께 두는 편이 안전합니다." }
+   ]
+  },
+  {
+   "h2": "4. 휴대폰 홈 화면 아이콘은 꼭 만들어야 하나요?",
+   "blocks": [
+    { "p": "손님이 홈페이지를 '홈 화면에 추가'할 일이 있는 예약 · 주문형 가게라면 만들어 두는 것이 좋습니다. web.dev는 Chromium 브라우저용으로 192×192와 512×512 두 장을 넣으면 기기에 맞게 크기를 조절한다고 안내하고, 안드로이드의 둥근 · 네모 틀에 맞추려면 purpose에 maskable을 넣으라고 합니다. MDN은 매니페스트 icons 항목이 아직 모든 주요 브라우저에서 같게 동작하지는 않는다고 적으므로, 아이폰용 apple-touch-icon도 따로 둡니다." }
+   ]
+  },
+  {
+   "h2": "5. 광주 사례 — 이름이 바뀌면 아이콘과 주소는?",
+   "blocks": [
+    { "p": "광주 행정에서도 이 문제가 보입니다. 보도자료에 따르면 전남광주통합특별시 출범에 맞춰 7월 1일 통합 임시 누리집(jeonnam-gwangju.go.kr)이 열렸고, 기존 광주 · 전남 누리집은 정식 통합 누리집이 완성될 때까지 그대로 유지합니다. 기존 공지사항 게시판에는 '2026.7.1. 이후 공지사항은 통합특별시 임시 홈페이지 내 공지사항 메뉴를 이용해 주시기 바랍니다'라는 안내가 붙어 있고, 머리글에는 '(구)' 표시가 들어가 있습니다." },
+    { "p": "가게도 상호나 로고를 바꿀 때 같은 원칙을 쓰면 됩니다. 옛 주소는 바로 없애지 말고 새 주소로 안내하고, 파비콘은 파일 주소를 유지한 채 그림만 바꾼 뒤 URL 검사로 다시 읽게 합니다. 주소를 옮기는 순서는 [광주 도메인 연결 글](/column/gwangju-domain-connect-dns-https/)에 있습니다." }
+   ]
+  },
+  {
+   "h2": "6. 작게 보여도 알아보게 그리려면?",
+   "blocks": [
+    { "p": "아래는 공식 기준이 아니라 **일반적인 디자인 요령**입니다." },
+    { "ul": [
+      "로고 전체 대신 첫 글자나 상징 하나만 씁니다. 탭에서는 아주 작게 보입니다.",
+      "밝은 탭 · 어두운 탭 양쪽에서 보이도록 배경색을 채운 정사각형으로 만듭니다.",
+      "가장자리에 여백을 조금 둡니다. 홈 화면에서 모서리가 둥글게 잘릴 수 있습니다.",
+      "만든 뒤 휴대폰 · PC 탭과 검색 결과 화면에서 실제로 확인합니다."
+     ] },
+    { "p": "지금 홈페이지에 파비콘 태그가 제대로 들어갔는지는 [무료 SEO 점검](/seo-check/)으로 볼 수 있습니다. 광주는 큰길브리지가 직접 방문 상담을 하는 지역이라 로고 파일을 같이 보며 정리할 수도 있습니다. [광주 홈페이지 제작 안내](/gwangju/)나 [제작 문의](/order.html)에 남겨 주십시오." }
+   ]
+  }
+ ],
+ "faq": [
+  { "q": "파비콘은 48의 배수 크기로 만들어야 하나요?", "a": "2026년 10월 현재 Google 검색 센터 문서의 조건은 1:1 정사각형과 최소 8×8픽셀이고, 여러 화면에서 잘 보이도록 48×48픽셀보다 크게 만들기를 권장합니다. 배수 조건은 적혀 있지 않습니다." },
+  { "q": "파비콘을 바꿨는데 검색 결과에는 예전 아이콘이 나와요.", "a": "구글은 홈페이지를 다시 크롤링하고 처리하는 데 며칠에서 몇 주가 걸릴 수 있다고 안내합니다. Search Console의 URL 검사로 홈페이지 색인을 요청해 보십시오." },
+  { "q": "하위 페이지마다 다른 파비콘을 쓸 수 있나요?", "a": "구글 검색은 호스트 이름 하나에 파비콘 하나만 지원합니다. 검색에 쓰일 아이콘은 홈페이지 첫 화면에 지정한 것입니다." },
+  { "q": "아이폰에서 홈 화면에 추가하면 아이콘이 화면 캡처로 나와요.", "a": "아이폰은 rel=\"icon\" 대신 비표준 apple-touch-icon을 씁니다(MDN). 180×180 같은 정사각형 PNG를 apple-touch-icon으로 지정하십시오." }
+ ],
+ "sources": [
+  { "name": "Google 검색 센터 — 검색결과에 표시되는 파비콘 정의", "url": "https://developers.google.com/search/docs/appearance/favicon-in-search?hl=ko" },
+  { "name": "MDN — HTML attribute: rel (icon · apple-touch-icon · manifest)", "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/rel" },
+  { "name": "MDN — <link>: The External Resource Link element", "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link" },
+  { "name": "MDN — Web app manifest: icons", "url": "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Manifest/Reference/icons" },
+  { "name": "web.dev — 웹 앱 매니페스트 추가", "url": "https://web.dev/articles/add-manifest?hl=ko" },
+  { "name": "전남광주통합특별시 보도자료 — 통합 임시누리집 7월1일 개통(2026.6.28.)", "url": "https://www.jeonnam-gwangju.go.kr/boardView.do?pageId=www789&boardId=BD_0000000027&seq=22209&movePage=1&recordCnt=15" },
+  { "name": "전남광주통합특별시 누리집(구 광주) — 공지사항", "url": "https://www.jeonnam-gwangju.go.kr/boardList.do?boardId=BD_0000000022&pageId=www788" }
+ ]
+}
