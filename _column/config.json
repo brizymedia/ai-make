@@ -617,6 +617,78 @@
     "name": "AI 목소리 홍보영상 표기",
     "keyword": "{city} AI 홍보영상",
     "angle": "방통위 · 공정위 AI 표시 공식"
+   },
+   {
+    "id": "mobile-menu-nav",
+    "name": "모바일 메뉴(햄버거) 설계",
+    "keyword": "{city} 모바일 메뉴",
+    "angle": "web.dev · KWCAG 공식"
+   },
+   {
+    "id": "contact-page",
+    "name": "오시는 길 · 연락처 페이지",
+    "keyword": "{city} 오시는 길 페이지",
+    "angle": "Google 비즈니스 · 카카오맵 공식"
+   },
+   {
+    "id": "homepage-ga4-event",
+    "name": "GA4 전환 이벤트 설정",
+    "keyword": "{city} 홈페이지 전환 측정",
+    "angle": "Google Analytics 공식"
+   },
+   {
+    "id": "naver-place-photo",
+    "name": "네이버 플레이스 사진 관리",
+    "keyword": "{city} 플레이스 사진",
+    "angle": "네이버 스마트플레이스 공식"
+   },
+   {
+    "id": "youtube-embed-privacy",
+    "name": "유튜브 개인정보 보호 모드",
+    "keyword": "{city} 유튜브 퍼가기",
+    "angle": "YouTube 공식"
+   },
+   {
+    "id": "site-security-header",
+    "name": "홈페이지 보안 기본 설정",
+    "keyword": "{city} 홈페이지 보안",
+    "angle": "KISA 보호나라 공식"
+   },
+   {
+    "id": "ai-faq-chatbot-check",
+    "name": "AI 챗봇 답변 점검",
+    "keyword": "{city} AI 상담",
+    "angle": "개인정보위 · 공정위 AI 공식"
+   },
+   {
+    "id": "homepage-before-after",
+    "name": "시공 전후 사진 게시 기준",
+    "keyword": "{city} 시공 사진 홈페이지",
+    "angle": "표시광고법 · 초상권 공식"
+   },
+   {
+    "id": "holiday-hours-notice",
+    "name": "명절 · 연말 영업시간 공지",
+    "keyword": "{city} 영업시간 공지",
+    "angle": "Google 비즈니스 특별 영업시간 공식"
+   },
+   {
+    "id": "web-accessibility-mark",
+    "name": "웹 접근성 품질인증",
+    "keyword": "{city} 웹 접근성 인증",
+    "angle": "과기정통부 · NIA 공식"
+   },
+   {
+    "id": "landing-ab-test",
+    "name": "랜딩페이지 A/B 테스트",
+    "keyword": "{city} 랜딩페이지 테스트",
+    "angle": "Google 공식 · 일반 요령"
+   },
+   {
+    "id": "review-reply",
+    "name": "리뷰 답글 쓰는 법",
+    "keyword": "{city} 리뷰 답글",
+    "angle": "Google 비즈니스 리뷰 정책 공식"
    }
   ]
  }
