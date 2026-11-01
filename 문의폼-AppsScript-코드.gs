@@ -25,7 +25,7 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
-const VERSION    = '2026-10-07a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
+const VERSION    = '2026-11-01a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
 
 
@@ -46,6 +46,7 @@ function 브랜드(d) {
   if (/\/haengsaon|행사ON/i.test(글)) return '행사ON';
   if (/\/hd-event|HD기획/.test(글)) return 'HD기획';
   if (/\/pro-event|프로이벤트/.test(글)) return '프로이벤트';
+  if (/\/eventus|이벤투스|Eventoos/i.test(글)) return '이벤투스';
   return /xn--wk0bn7yi8h24iszc|큰길이벤트/.test(글) ? '큰길이벤트기획' : BRAND;
 }
 
@@ -55,6 +56,7 @@ function 브랜드(d) {
  * 이에스컴퍼니 — 홈페이지 www.es-company.co.kr, 대표 박미배 (청주 행사용품 · 시스템 렌탈).
  * 2026-10-03 — 제이식스미디어 · 힐링엔터테인먼트 · 한국체대 예그리나 · 행사ON · HD기획 · 프로이벤트 추가(각 사이트 brizymedia.github.io/<레포>).
  *   메일이 없는 곳(mail: '')은 큰길브리지만 받는다.
+ * 2026-11-01 — 이벤투스(영어행사, brizymedia.github.io/eventus, 대표 이성진) 추가. 고객 요청: 홈페이지 문의를 대표 메일로도.
  * 단, 「홈페이지 수정 요청」(사장님 수정 모드가 보내는 것)은 큰길브리지만 받는다.
  */
 const 고객사 = {
@@ -65,7 +67,8 @@ const 고객사 = {
   '한국체대 예그리나': { mail: 'knsuyegrina@naver.com', quote: 'https://brizymedia.github.io/yegrina/quote.html' },
   '행사ON': { mail: 'hoon0170800@hanmail.net', quote: 'https://brizymedia.github.io/haengsaon/quote.html' },
   'HD기획': { mail: '16zone@hanmail.net', quote: 'https://brizymedia.github.io/hd-event/quote.html' },
-  '프로이벤트': { mail: 'pro-event@daum.net', quote: 'https://brizymedia.github.io/pro-event/quote.html' }
+  '프로이벤트': { mail: 'pro-event@daum.net', quote: 'https://brizymedia.github.io/pro-event/quote.html' },
+  '이벤투스': { mail: 'sh712@daum.net', quote: '' }
 };
 function 받는사람(d) {
   const 곳 = 고객사[브랜드(d)];
@@ -132,7 +135,7 @@ function 데모주소(d) {
 /** 다음 단계 단추 둘 — 데모 신청이면 데모가 앞(노랑), 아니면 견적서가 앞 */
 function 다음단추(d) {
   const 곳 = 고객사[브랜드(d)];
-  if (곳) return '<a href="' + 고객사견적서주소(d, 곳) + '" style="display:inline-block;background:#E8B84B;color:#07090F;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin:0 8px 8px 0">📄 이 문의로 견적서 작성</a>';
+  if (곳) return !곳.quote ? '' : '<a href="' + 고객사견적서주소(d, 곳) + '" style="display:inline-block;background:#E8B84B;color:#07090F;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin:0 8px 8px 0">📄 이 문의로 견적서 작성</a>';
   const 데모 = /데모/.test(String(d.service || '') + ' ' + String(d.message || ''));
   const 노랑 = 'display:inline-block;background:#E8B84B;color:#07090F;text-decoration:none;font-weight:bold;padding:13px 26px;border-radius:10px;margin:0 8px 8px 0';
   const 흰색 = 'display:inline-block;background:#fff;border:1px solid #E8B84B;color:#8A6512;text-decoration:none;font-weight:bold;padding:12px 24px;border-radius:10px;margin:0 8px 8px 0';
