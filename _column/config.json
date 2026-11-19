@@ -689,6 +689,18 @@
     "name": "리뷰 답글 쓰는 법",
     "keyword": "{city} 리뷰 답글",
     "angle": "Google 비즈니스 리뷰 정책 공식"
+   },
+   {
+    "id": "google-business-posts",
+    "name": "구글 비즈니스 프로필 게시물",
+    "keyword": "{city} 구글 비즈니스 게시물",
+    "angle": "Google 비즈니스 프로필 공식"
+   },
+   {
+    "id": "image-alt-filename",
+    "name": "이미지 대체 텍스트 · 파일 이름",
+    "keyword": "{city} 홈페이지 이미지 검색",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
