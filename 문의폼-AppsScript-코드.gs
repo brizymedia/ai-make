@@ -25,7 +25,7 @@ const SHEET_NAME = '문의접수';                // 저장될 시트 탭 이름
 const BRAND      = '큰길브리지';
 const TEL        = '1533-7295';
 const SITE       = 'https://www.ai-make.co.kr';  // 견적서 · 계약서가 있는 주소
-const VERSION    = '2026-11-01b';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
+const VERSION    = '2026-11-19a';                // 배포 확인용 — 코드를 고칠 때마다 올린다. 주소 뒤에 ?ping=1 을 붙여 열면 이 값이 나온다
 /** ───────────────────────────────────────── */
 
 
@@ -47,6 +47,9 @@ function 브랜드(d) {
   if (/\/hd-event|HD기획/.test(글)) return 'HD기획';
   if (/\/pro-event|프로이벤트/.test(글)) return '프로이벤트';
   if (/\/eventus|이벤투스|Eventoos/i.test(글)) return '이벤투스';
+  if (/edu-event|event-edu|이벤트와 교육연구소/.test(글)) return '이벤트와 교육연구소';
+  if (/fj-event|F&J 이벤트/i.test(글)) return 'F&J 이벤트';
+  if (/jino-company|jinocompany|지노컴퍼니/.test(글)) return '지노컴퍼니';
   return /xn--wk0bn7yi8h24iszc|큰길이벤트/.test(글) ? '큰길이벤트기획' : BRAND;
 }
 
@@ -69,7 +72,12 @@ const 고객사 = {
   '행사ON': { mail: 'hoon0170800@hanmail.net', quote: 'https://brizymedia.github.io/haengsaon/quote.html' },
   'HD기획': { mail: '16zone@hanmail.net', quote: 'https://brizymedia.github.io/hd-event/quote.html' },
   '프로이벤트': { mail: 'pro-event@daum.net', quote: 'https://brizymedia.github.io/pro-event/quote.html' },
-  '이벤투스': { mail: 'sh712@daum.net', quote: '' }
+  '이벤투스': { mail: 'sh712@daum.net', quote: '' },
+  // 2026-11-19 형님 지시 「각 회사 문의는 각 회사 대표 이메일로」 — 빠져 있던 세 곳 추가
+  // (F&J · 지노는 견적서 · 계약서가 이제 자기 문의 서버로 가지만, 예전 화면이 남아 있을 때를 위해 같이 둔다)
+  '이벤트와 교육연구소': { mail: 'ihahanara@gmail.com', quote: 'https://www.event-edu.co.kr/quote.html' },
+  'F&J 이벤트': { mail: 'cwc9982@naver.com', quote: 'https://brizymedia.github.io/fj-event/quote.html' },
+  '지노컴퍼니': { mail: 'ghekddud1234@naver.com', quote: 'https://brizymedia.github.io/jino-company/quote.html' }
 };
 function 받는사람(d) {
   const 곳 = 고객사[브랜드(d)];
