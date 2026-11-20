@@ -701,6 +701,18 @@
     "name": "이미지 대체 텍스트 · 파일 이름",
     "keyword": "{city} 홈페이지 이미지 검색",
     "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "google-business-photos",
+    "name": "구글 비즈니스 프로필 사진 올리기",
+    "keyword": "{city} 구글 비즈니스 사진",
+    "angle": "Google 비즈니스 프로필 공식"
+   },
+   {
+    "id": "event-structured-data",
+    "name": "행사 · 이벤트 구조화 데이터",
+    "keyword": "{city} 이벤트 구조화 데이터",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
