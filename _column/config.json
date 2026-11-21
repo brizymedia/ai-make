@@ -713,6 +713,18 @@
     "name": "행사 · 이벤트 구조화 데이터",
     "keyword": "{city} 이벤트 구조화 데이터",
     "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "search-console-performance",
+    "name": "서치 콘솔 실적 보고서 읽기",
+    "keyword": "{city} 서치 콘솔 실적",
+    "angle": "Search Console 고객센터 공식"
+   },
+   {
+    "id": "custom-404-page",
+    "name": "없는 페이지(404) 안내 화면",
+    "keyword": "{city} 홈페이지 404 페이지",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
