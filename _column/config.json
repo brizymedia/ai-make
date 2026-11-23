@@ -737,6 +737,18 @@
     "name": "견적서 · 메뉴판 공유 링크 권한",
     "keyword": "{city} 구글 드라이브 공유",
     "angle": "Google 드라이브 고객센터 공식"
+   },
+   {
+    "id": "search-console-url-inspection",
+    "name": "새 페이지 색인 요청 · URL 검사",
+    "keyword": "{city} 색인 요청",
+    "angle": "Search Console 고객센터 공식"
+   },
+   {
+    "id": "breadcrumb-structured-data",
+    "name": "탐색경로 구조화 데이터",
+    "keyword": "{city} 탐색경로 구조화 데이터",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
