@@ -725,6 +725,18 @@
     "name": "없는 페이지(404) 안내 화면",
     "keyword": "{city} 홈페이지 404 페이지",
     "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "search-site-name",
+    "name": "검색 결과 사이트 이름",
+    "keyword": "{city} 검색 사이트 이름",
+    "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "drive-share-link",
+    "name": "견적서 · 메뉴판 공유 링크 권한",
+    "keyword": "{city} 구글 드라이브 공유",
+    "angle": "Google 드라이브 고객센터 공식"
    }
   ]
  }
