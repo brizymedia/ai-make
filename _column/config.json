@@ -749,6 +749,18 @@
     "name": "탐색경로 구조화 데이터",
     "keyword": "{city} 탐색경로 구조화 데이터",
     "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "google-business-description",
+    "name": "구글 비즈니스 소개글 쓰기",
+    "keyword": "{city} 구글 비즈니스 소개",
+    "angle": "Google 비즈니스 프로필 가이드라인 공식"
+   },
+   {
+    "id": "search-console-page-indexing",
+    "name": "페이지 색인 생성 보고서 읽기",
+    "keyword": "{city} 색인 생성 안 됨",
+    "angle": "Search Console 고객센터 공식"
    }
   ]
  }
