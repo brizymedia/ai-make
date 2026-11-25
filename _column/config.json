@@ -761,6 +761,18 @@
     "name": "페이지 색인 생성 보고서 읽기",
     "keyword": "{city} 색인 생성 안 됨",
     "angle": "Search Console 고객센터 공식"
+   },
+   {
+    "id": "google-review-request-link",
+    "name": "구글 리뷰 요청 링크 · QR",
+    "keyword": "{city} 구글 리뷰 요청",
+    "angle": "Google 비즈니스 프로필 공식"
+   },
+   {
+    "id": "search-title-link",
+    "name": "검색 결과 제목이 바뀌어 나올 때",
+    "keyword": "{city} 검색 결과 제목",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
