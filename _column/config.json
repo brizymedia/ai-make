@@ -773,6 +773,18 @@
     "name": "검색 결과 제목이 바뀌어 나올 때",
     "keyword": "{city} 검색 결과 제목",
     "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "mobile-first-indexing",
+    "name": "모바일 우선 색인 점검",
+    "keyword": "{city} 모바일 우선 색인",
+    "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "lazy-loading-content",
+    "name": "지연 로드 콘텐츠 점검",
+    "keyword": "{city} 지연 로드",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
