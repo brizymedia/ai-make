@@ -785,6 +785,18 @@
     "name": "지연 로드 콘텐츠 점검",
     "keyword": "{city} 지연 로드",
     "angle": "Google 검색 센터 공식"
+   },
+   {
+    "id": "search-console-links-report",
+    "name": "서치 콘솔 링크 보고서",
+    "keyword": "{city} 링크 보고서",
+    "angle": "Search Console 고객센터 공식"
+   },
+   {
+    "id": "search-spam-policies",
+    "name": "검색 스팸 정책 — 하면 안 되는 것",
+    "keyword": "{city} 검색 스팸 정책",
+    "angle": "Google 검색 센터 공식"
    }
   ]
  }
